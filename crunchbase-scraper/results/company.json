@@ -1,0 +1,482 @@
+{
+  "organization": {
+    "id": "tesla-motors",
+    "name": "Tesla",
+    "logo": "dj8rndg9wkqkpgvplvzi",
+    "description": "Tesla develops and manufactures electric vehicles and related technologies. The company produces its own branded vehicles and operates showrooms for direct sales. Tesla also supplies electric powertrain components and systems to other automotive manufacturers. Its product lineup supports various use cases in personal and commercial transportation.",
+    "linkedin": "https://www.linkedin.com/company/tesla-motors",
+    "facebook": null,
+    "twitter": "https://x.com/Tesla",
+    "email": "reservations@teslamotors.com",
+    "phone": "+1 650-681-5000",
+    "website": "https://www.tesla.com",
+    "ipo_status": "public",
+    "rank_org_company": 2151,
+    "semrush_global_rank": null,
+    "semrush_visits_latest_month": null,
+    "semrush_id": null,
+    "categories": [
+      "Automotive",
+      "Electric Vehicle",
+      "Energy",
+      "Manufacturing",
+      "Renewable Energy",
+      "Transportation"
+    ],
+    "legal_name": "Tesla, Inc.",
+    "operating_status": "active",
+    "last_funding_type": "post_ipo_debt",
+    "founded_on": "2003-07-01",
+    "location_groups": [
+      "Southern US"
+    ],
+    "trademarks": 116,
+    "trademark_popular_class": "c12",
+    "patents": 1528,
+    "patent_popular_category": "h01",
+    "investments": [
+      {
+        "raised_usd": null,
+        "name": "Venture Round - Coredax",
+        "organization": "Coredax",
+        "announced_on": "2022-09-05",
+        "is_lead_investor": true
+      },
+      {
+        "raised_usd": null,
+        "name": "Series D - Zola Electric",
+        "organization": "Zola Electric",
+        "announced_on": "2018-01-20",
+        "is_lead_investor": false
+      }
+    ],
+    "investors": [
+      {
+        "is_lead_investor": true,
+        "name": "Societe Generale"
+      },
+      {
+        "is_lead_investor": true,
+        "name": "European Union"
+      },
+      {
+        "is_lead_investor": true,
+        "name": "PennDOT"
+      },
+      {
+        "is_lead_investor": null,
+        "name": "George Soros"
+      },
+      {
+        "is_lead_investor": true,
+        "name": "Australian Renewable Energy Agency"
+      },
+      {
+        "is_lead_investor": true,
+        "name": "Industrial and Commercial Bank of China"
+      },
+      {
+        "is_lead_investor": null,
+        "name": "Shanghai Pudong Development Bank"
+      },
+      {
+        "is_lead_investor": null,
+        "name": "China Construction Bank"
+      },
+      {
+        "is_lead_investor": null,
+        "name": "Industrial and Commercial Bank of China"
+      },
+      {
+        "is_lead_investor": null,
+        "name": "Agricultural Bank of China"
+      }
+    ],
+    "acquisitions": null,
+    "contacts": null,
+    "funding_total_usd": null,
+    "stock_symbol": null,
+    "exits": null,
+    "similar_orgs": null,
+    "current_positions": null,
+    "investors_lead": 18,
+    "investments_lead": 1,
+    "funding_rounds": [
+      {
+        "announced_on": "2024-10-05",
+        "raised_usd": null,
+        "investors": 1,
+        "lead_investors": [
+          "Societe Generale"
+        ]
+      },
+      {
+        "announced_on": "2023-09-13",
+        "raised_usd": null,
+        "investors": 1,
+        "lead_investors": [
+          "European Union"
+        ]
+      },
+      {
+        "announced_on": "2023-08-15",
+        "raised_usd": null,
+        "investors": 1,
+        "lead_investors": [
+          "PennDOT"
+        ]
+      },
+      {
+        "announced_on": "2022-08-12",
+        "raised_usd": null,
+        "investors": 1,
+        "lead_investors": null
+      },
+      {
+        "announced_on": "2020-09-04",
+        "raised_usd": null,
+        "investors": 1,
+        "lead_investors": [
+          "Australian Renewable Energy Agency"
+        ]
+      },
+      {
+        "announced_on": "2020-05-09",
+        "raised_usd": null,
+        "investors": 1,
+        "lead_investors": [
+          "Industrial and Commercial Bank of China"
+        ]
+      },
+      {
+        "announced_on": "2019-12-23",
+        "raised_usd": null,
+        "investors": 4,
+        "lead_investors": null
+      },
+      {
+        "announced_on": "2019-10-06",
+        "raised_usd": null,
+        "investors": 1,
+        "lead_investors": [
+          "China Merchants Bank"
+        ]
+      },
+      {
+        "announced_on": "2019-05-14",
+        "raised_usd": null,
+        "investors": null,
+        "lead_investors": null
+      },
+      {
+        "announced_on": "2019-05-14",
+        "raised_usd": null,
+        "investors": null,
+        "lead_investors": null
+      }
+    ],
+    "event_appearances": null,
+    "advisors": null,
+    "buildwith_tech_used": 74,
+    "similar": [
+      {
+        "score": 1,
+        "reasons": null,
+        "id": "tesla-motors"
+      },
+      {
+        "score": 1,
+        "reasons": null,
+        "id": "tesla-motors"
+      },
+      {
+        "score": 1,
+        "reasons": null,
+        "id": "nextev"
+      },
+      {
+        "score": 1,
+        "reasons": null,
+        "id": "tesla-motors"
+      },
+      {
+        "score": 0.93327826,
+        "reasons": [
+          "category",
+          "funding_stage"
+        ],
+        "id": "nikola-motor-company"
+      },
+      {
+        "score": 0.92601585,
+        "reasons": [
+          "category"
+        ],
+        "id": "tesla-motors"
+      },
+      {
+        "score": 0.91792685,
+        "reasons": [
+          "category",
+          "last_funding_total"
+        ],
+        "id": "rad-power-bikes"
+      },
+      {
+        "score": 0.90959877,
+        "reasons": [
+          "category",
+          "num_employees"
+        ],
+        "id": "tesla-motors"
+      },
+      {
+        "score": 0.87983406,
+        "reasons": [
+          "category"
+        ],
+        "id": "penn-power-group"
+      },
+      {
+        "score": 0.8764526,
+        "reasons": [
+          "category"
+        ],
+        "id": "ev-connect"
+      },
+      {
+        "score": 0.8763117,
+        "reasons": [
+          "category"
+        ],
+        "id": "coreshell-technologies"
+      },
+      {
+        "score": 0.87480533,
+        "reasons": [
+          "category",
+          "funding_stage"
+        ],
+        "id": "achates-power"
+      },
+      {
+        "score": 0.8331086,
+        "reasons": [
+          "category",
+          "last_funding_total"
+        ],
+        "id": "tesla-motors"
+      },
+      {
+        "score": 0.64679235,
+        "reasons": [
+          "category"
+        ],
+        "id": "charging-center"
+      }
+    ],
+    "timeline": [
+      {
+        "title": "TSLA: Tesla Stock Powers Up as Musk Says $1 Trillion Pay Ain’t the Goal – It’s the Work",
+        "author": null,
+        "publisher": "TradingView",
+        "url": "https://www.tradingview.com/news/tradingview:db4c68b03094b:0-tsla-tesla-stock-powers-up-as-musk-says-1-trillion-pay-ain-t-the-goal-it-s-the-work/",
+        "thumb": null,
+        "date": "2025-09-25",
+        "type": "press_reference"
+      },
+      {
+        "title": "Tesla's Q3 Deliveries May Surprise to the Upside",
+        "author": "Daniel Sparks",
+        "publisher": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2025/09/25/teslas-q3-deliveries-may-surprise-to-the-upside/",
+        "thumb": null,
+        "date": "2025-09-25",
+        "type": "press_reference"
+      },
+      {
+        "title": "Gary Black Says Tesla Robotaxi Valuation Overstated, Advocates Market Share And TAM-Based Approach Amid Competition From Waymo",
+        "author": "Badar Shaikh",
+        "publisher": "Benzinga.com",
+        "url": "https://www.benzinga.com/markets/tech/25/09/47860966/gary-black-says-tesla-robotaxi-valuation-overstated-advocates-market-share-and-tam-based-approach-amid-competition-from-waymo",
+        "thumb": null,
+        "date": "2025-09-25",
+        "type": "press_reference"
+      },
+      {
+        "title": "China's BYD Logged Sales Surge in Europe Last Month",
+        "author": "Mauro Orru",
+        "publisher": "Morningstar.com",
+        "url": "https://www.morningstar.com/news/dow-jones/2025092542/chinas-byd-logged-sales-surge-in-europe-last-month",
+        "thumb": null,
+        "date": "2025-09-25",
+        "type": "press_reference"
+      },
+      {
+        "title": "Tesla Launches Ad Blitz Across Facebook, Instagram, Google And X Urging Shareholders To Back Elon Musk's Massive Pay Package And Board Proposals",
+        "author": "Badar Shaikh",
+        "publisher": "Benzinga.com",
+        "url": "https://www.benzinga.com/markets/tech/25/09/47858717/tesla-launches-ad-blitz-across-facebook-instagram-google-and-x-urging-shareholders-to-back-elon-musks-massive-pay-package-and-board-proposals",
+        "thumb": null,
+        "date": "2025-09-25",
+        "type": "press_reference"
+      },
+      {
+        "title": "Ex-Google CEO Eric Schmidt says flexible working is fine for government jobs, but winning in tech means 'tradeoffs'",
+        "author": "Theron Mohamed",
+        "publisher": "Business Insider",
+        "url": "https://www.businessinsider.com/eric-schmidt-google-wfh-work-life-balance-learning-tech-ai-2025-9",
+        "thumb": null,
+        "date": "2025-09-25",
+        "type": "press_reference"
+      },
+      {
+        "title": "Google's Waymo Introduces Robotaxi Fleet Tailored For Universities, Businesses And Private Events Amid Hot Self-Driving Race",
+        "author": "Badar Shaikh",
+        "publisher": "Benzinga.com",
+        "url": "https://www.benzinga.com/markets/tech/25/09/47857601/googles-waymo-introduces-robotaxi-fleet-tailored-for-universities-businesses-and-private-events-amid-hot-self-driving-race",
+        "thumb": null,
+        "date": "2025-09-25",
+        "type": "press_reference"
+      },
+      {
+        "title": "The No. 1 Holding on Robinhood Is Expected to Be at the Center of a $5 Trillion Addressable Opportunity by 2050 (Hint: It's not Nvidia)",
+        "author": "Sean Williams",
+        "publisher": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2025/09/25/no-1-holding-robinhood-5-trillion-opportunity-2050/",
+        "thumb": null,
+        "date": "2025-09-25",
+        "type": "press_reference"
+      },
+      {
+        "title": "Barclays sees \"far more differences than similarities to the 2000 episode\"",
+        "author": null,
+        "publisher": "Investing.com",
+        "url": "https://www.investing.com/news/stock-market-news/barclays-sees-far-more-differences-than-similarities-to-the-2000-episode-4255219",
+        "thumb": null,
+        "date": "2025-09-25",
+        "type": "press_reference"
+      },
+      {
+        "title": "BYD outsells Tesla in EU for second month, Stellantis returns to sales growth",
+        "author": "Reuters",
+        "publisher": "MarketScreener",
+        "url": "https://www.marketscreener.com/news/byd-outsells-tesla-in-eu-for-second-month-stellantis-returns-to-sales-growth-ce7d58d2dd8ff32d",
+        "thumb": null,
+        "date": "2025-09-25",
+        "type": "press_reference"
+      }
+    ],
+    "events": null
+  },
+  "employees": [
+    {
+      "name": "Anthony (A.J.) Graybill",
+      "linkedin": "ajgraybill",
+      "job_levels": [
+        "l_100_individual",
+        "l_500_exec"
+      ],
+      "job_departments": [
+        "management",
+        "operations"
+      ]
+    },
+    {
+      "name": "Beau Snyder",
+      "linkedin": "beau-snyder-b71b0aa1",
+      "job_levels": [
+        "l_100_individual",
+        "l_500_exec"
+      ],
+      "job_departments": [
+        "management"
+      ]
+    },
+    {
+      "name": "Dan Fingerman",
+      "linkedin": "danfingerman",
+      "job_levels": [
+        "l_100_individual",
+        "l_500_exec"
+      ],
+      "job_departments": [
+        "legal",
+        "management"
+      ]
+    },
+    {
+      "name": "Landon Moore",
+      "linkedin": "landon-moore-846b32144",
+      "job_levels": [
+        "l_500_exec"
+      ],
+      "job_departments": null
+    },
+    {
+      "name": "Nagesh Saldi",
+      "linkedin": "nageshsaldi",
+      "job_levels": [
+        "l_100_individual",
+        "l_500_exec"
+      ],
+      "job_departments": [
+        "finance",
+        "information_technology"
+      ]
+    },
+    {
+      "name": "Rob Estifanos",
+      "linkedin": "rob-estifanos-a0824ba8",
+      "job_levels": [
+        "l_100_individual",
+        "l_500_exec"
+      ],
+      "job_departments": [
+        "management"
+      ]
+    },
+    {
+      "name": "Jim Dunlay",
+      "linkedin": "jim-dunlay-a6a6b11",
+      "job_levels": [
+        "l_100_individual",
+        "l_400_vp"
+      ],
+      "job_departments": [
+        "engineering",
+        "finance"
+      ]
+    },
+    {
+      "name": "Troy Jones",
+      "linkedin": "troyjones2",
+      "job_levels": [
+        "l_100_individual",
+        "l_400_vp"
+      ],
+      "job_departments": [
+        "management",
+        "sales"
+      ]
+    },
+    {
+      "name": "Adam Howat",
+      "linkedin": "adam-howat",
+      "job_levels": [
+        "l_300_director"
+      ],
+      "job_departments": null
+    },
+    {
+      "name": "Aleks Taylor",
+      "linkedin": "aleks-taylor-346008b2",
+      "job_levels": [
+        "l_300_director"
+      ],
+      "job_departments": [
+        "human_resources"
+      ]
+    }
+  ]
+}

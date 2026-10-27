@@ -1,0 +1,171 @@
+# Adapted by AdsCrawl from scrapfly/scrapfly-scrapers. See NOTICE.
+"""
+This is an example web scraper for SimilarWeb.com.
+
+To run this scraper set env variable $ADSCRAWL_API_KEY with your AdsCrawl API key:
+$ export ADSCRAWL_API_KEY="your key from https://app.adscrawl.net/dashboard/keys/"
+"""
+from adscrawl_scrapers import managed
+
+import re
+import os
+import gzip
+import json
+import jmespath
+import base64
+from io import BytesIO
+from parsel import Selector
+from typing import Dict, List, Optional
+from loguru import logger as log
+from adscrawl_scrapers import Request, ScraperClient, Response
+
+CLIENT = ScraperClient()
+
+BASE_CONFIG = {
+    # bypass bestbuy.com web scraping blocking
+    'countryCode': "US",
+    'render': True,
+
+}
+
+def parse_hidden_data(response: Response) -> List[Dict]:
+    """parse website insights from hidden script tags"""
+    selector = response.selector
+    script = selector.xpath("//script[contains(text(), 'window.__APP_DATA__')]/text()").get()
+    if not script:
+        raise ValueError(f"no window.__APP_DATA__ script found on {response.url}")
+    match = re.findall(r"(\{.*?)(?=window\.__APP_META__)", script, re.DOTALL)
+    if not match:
+        raise ValueError(f"couldn't extract window.__APP_DATA__ payload from {response.url}")
+    data = json.loads(match[0])
+    return data
+
+
+@managed
+async def scrape_website(domains: List[str]) -> List[Dict]:
+    """scrape website inights from website pages"""
+    # define a list of similarweb URLs for website pages
+    urls = [f"https://www.similarweb.com/website/{domain}/" for domain in domains]
+    to_scrape = [
+        Request(url, **BASE_CONFIG, waitForSelector="//script[contains(text(), 'window.__APP_DATA__')]", waitMs=7000)
+        for url in urls
+    ]
+    data = []
+    async for response in CLIENT.fetch_many(to_scrape):
+        website_data = parse_hidden_data(response)["layout"]["data"]
+        data.append(website_data)
+    log.success(f"scraped {len(data)} website insights from similarweb website pages")
+    return data
+
+
+def parse_website_compare(response: Response, first_domain: str, second_domain: str) -> Dict:
+    """parse website comparings inights between two domains"""
+
+    def parse_domain_insights(data: Dict, second_domain: Optional[bool]=None) -> Dict:
+        """parse each website data and add it to each domain"""
+        data_key = data["layout"]["data"]
+        if second_domain:
+            data_key = data_key["compareCompetitor"] # the 2nd website compare key is nested
+        parsed_data = jmespath.search(
+            """{
+            overview: overview,
+            traffic: traffic,
+            trafficSources: trafficSources,
+            ranking: ranking,
+            demographics: demographics,
+            geography: geography
+            }""",
+            data_key
+        )
+        return parsed_data
+
+    script_data = parse_hidden_data(response)
+    data = {}
+    data[first_domain] = parse_domain_insights(data=script_data)
+    data[second_domain] = parse_domain_insights(data=script_data, second_domain=True)
+    return data
+
+
+@managed
+async def scrape_website_compare(first_domain: str, second_domain: str) -> Dict:
+    """parse website comparing data from similarweb comparing pages"""
+    url = f"https://www.similarweb.com/website/{first_domain}/vs/{second_domain}/"
+    response = await CLIENT.fetch(
+        Request(url, **BASE_CONFIG, waitForSelector="//script[contains(text(), 'window.__APP_DATA__')]")
+    )
+    data = parse_website_compare(response, first_domain, second_domain)
+    f"scraped comparing insights between {first_domain} and {second_domain}"
+    log.success(f"scraped comparing insights between {first_domain} and {second_domain}")
+    return data
+
+
+def parse_sitemaps(response: Response) -> List[str]:
+    """parse links for bestbuy sitemap"""
+    content = response.content
+
+    if isinstance(content, BytesIO):
+        content = content.read()
+
+    # gzip-compressed sitemap, delivered as base64-encoded string or raw bytes
+    if isinstance(content, (str, bytes)):
+        try:
+            raw_bytes = base64.b64decode(content) if isinstance(content, str) else content
+            xml = gzip.decompress(raw_bytes).decode('utf-8')
+        except Exception:
+            # plain-text XML sitemap (not gzipped)
+            xml = content.decode('utf-8') if isinstance(content, bytes) else content
+
+    # an HTML page (challenge or error page) instead of the sitemap would silently parse to no urls
+    if "<urlset" not in xml:
+        raise ValueError(
+            f"similarweb.com answered the sitemap request with {response.headers.get("content-type")} "
+            f"(HTTP {response.status_code}) instead of a sitemap xml"
+        )
+
+    # sitemaps declare a default xmlns: parse as XML and select url/loc in that namespace
+    selector = Selector(text=xml, type="xml")
+    namespaces = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
+    data = []
+    for url in selector.xpath("//sm:url/sm:loc/text()", namespaces=namespaces):
+        data.append(url.get())
+    return data
+
+
+@managed
+async def scrape_sitemaps(url: str) -> List[str]:
+    """scrape link data from bestbuy sitemap"""
+    promo_urls = None
+    try:
+        # plain requests get an HTML challenge page instead of the sitemap: the unblocker passes it
+        response = await CLIENT.fetch(
+            Request(url, countryCode="us")
+        )
+        promo_urls = parse_sitemaps(response)
+        log.success(f"scraped {len(promo_urls)} urls from sitemaps")
+    except Exception as e:
+        log.info(f"couldnt' scrape sitemaps, request was blocked: {e}")
+        pass
+    return promo_urls
+
+
+def parse_trending_data(response: Response) -> List[Dict]:
+    """parse hidden trending JSON data from script tags"""
+    selector = response.selector
+    json_data = json.loads(selector.xpath("//script[@id='dataset-json-ld']/text()").get())["mainEntity"]
+    data = {}
+    data["name"] = json_data["name"]
+    data["url"] = response.url
+    data["list"] = json_data["itemListElement"]
+    return data
+
+
+@managed
+async def scrape_trendings(urls: List[str]) -> List[Dict]:
+    """parse trending websites data"""
+    to_scrape = [Request(url, **BASE_CONFIG) for url in urls]
+    data = []
+    async for response in CLIENT.fetch_many(to_scrape):
+        category_data = parse_trending_data(response)
+        data.append(category_data)
+    log.success(f"scraped {len(data)} trneding categories from similarweb")
+    return data

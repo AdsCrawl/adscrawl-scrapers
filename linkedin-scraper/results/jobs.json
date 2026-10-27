@@ -1,0 +1,74 @@
+[
+  {
+    "@context": "http://schema.org",
+    "@type": "JobPosting",
+    "datePosted": "2024-12-15T23:55:13.000Z",
+    "employmentType": "FULL_TIME",
+    "hiringOrganization": {
+      "@type": "Organization",
+      "name": "Tactibit Technologies",
+      "sameAs": "https://www.linkedin.com/company/tactibit-technologies",
+      "logo": "https://media.licdn.com/dms/image/v2/C4D0BAQF3cA3dL3Af9w/company-logo_200_200/company-logo_200_200/0/1639511936333?e=2147483647&amp;v=beta&amp;t=FqVVBS3GVBXPMRlJnF0kIumEdk5hX8cp9y4_xqgRUrA"
+    },
+    "identifier": {
+      "@type": "PropertyValue",
+      "name": "Tactibit Technologies",
+      "value": "f51095db1ab01372033b67e5cd3bf8d1"
+    },
+    "image": "https://media.licdn.com/dms/image/v2/C4D0BAQF3cA3dL3Af9w/company-logo_100_100/company-logo_100_100/0/1639511936333?e=2147483647&amp;v=beta&amp;t=RzFQy5Ok__N9jLYF9R0bbXtNb4V7HA3R7VBy4d0NsPg",
+    "industry": "IT Services and IT Consulting",
+    "jobLocation": {
+      "@type": "Place",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "US",
+        "addressLocality": "Suitland",
+        "addressRegion": "MD",
+        "streetAddress": null
+      },
+      "latitude": 38.849377,
+      "longitude": -76.926
+    },
+    "skills": "",
+    "title": "Python Developer",
+    "validThrough": "2026-01-30T11:55:16.000Z",
+    "educationRequirements": {
+      "@type": "EducationalOccupationalCredential",
+      "credentialCategory": "bachelor degree"
+    },
+    "experienceRequirements": {
+      "@type": "OccupationalExperienceRequirements",
+      "monthsOfExperience": 48
+    },
+    "jobDescription": [
+      "Design and build serverless applications and infrastructure as code in the cloud following development standards and best practices",
+      "Develop tools, architecture components, and APIs in support of scientific application deployment",
+      "Collaborate with software developers, scientists, system/network administrators, and other technical experts to automate cloud deployments and manage CI/CD pipelines",
+      "Perform code reviews, refactoring, and source code repository maintenance",
+      "Function in a DevOps environment supporting development, testing, operations, and troubleshooting in a mission-critical environment",
+      "Support security testing, hardening, and assessments to meet strict compliance and operational security requirements",
+      "Write clean, maintainable and efficient code",
+      "Participate at all stages of the development lifecycle",
+      "Implement best practices of test-driven development, continuous integration, SCRUM, refactoring and code standards, and so on",
+      "Stay informed about relevant new technologies and drive their continuous adoption and integration into design",
+      "4+ years of software development experience",
+      "2+ years of experience of using AWS cloud services",
+      "2+ years of experience with Python",
+      "2+ years of experience with Unix/Linux operating systems",
+      "Experience with core AWS services including S3, CodePipeline, and Lambda",
+      "Experience with Perl and/or shell scripting",
+      "Experience with version control systems (preferably Git) and issue tracking software (preferably Jira)",
+      "Familiarity with modern DevOps principles, practices, methods, and tools.",
+      "Strong understanding of security best practices",
+      "Strong problem solving skills and ability to work under pressure",
+      "BS degree in Computer Science or other related area",
+      "Must be a US Citizen or Lawful Permanent Resident and able to pass a full background investigation to obtain a security badge to enter the applicable government facility",
+      "Experience with Federal government environments and concepts including FedRAMP, NIST Risk Management Framework, NIST SP 800-53 security controls",
+      "Experience with containerized workloads in the cloud using Docker or Kubernetes",
+      "Experience with NoSQL and/or SQL",
+      "Experience writing infrastructure as code (IaC) using CloudFormation or Terraform",
+      "Educational background or experience in satellites and or remote sensing",
+      "Industry certifications such as AWS certifications, CCSP, Cloud+, Security+, and GCLD"
+    ]
+  }
+]

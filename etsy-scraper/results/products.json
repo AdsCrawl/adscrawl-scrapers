@@ -1,0 +1,548 @@
+[
+  {
+    "@type": "Product",
+    "@context": "https://schema.org",
+    "url": "https://www.etsy.com/listing/949905096/oakywood-dual-laptop-stand-wood-vertical",
+    "name": "Oakywood Dual Laptop Stand Wood, Vertical Adjustable Macbook Double Dock Stand, Desk Organizer for Home Office, Valentine gift for Him",
+    "sku": "949905096",
+    "gtin": "n/a",
+    "description": "The Dual Laptop Dock is an innovative solution for your desk organization. The stand allows you to simultaneously store two devices: laptops or tablets up to 24mm (0.95 inch) thick. Streamline your work by securely storing your gadgets, organizing your desk space, and smoothly switching between the two devices.\n\nWant it PERSONALIZED? Add this - https://www.etsy.com/listing/662276951\n\nThe micro-suction technology allows you to control the stand with one hand while it sits securely on your desk.\n\nLined with soft wool felt and flock, the wooden laptop stand protects your devices from scratching and doesn’t block ventilation.\n\nFEATURES:\n• supports two devices up to 24mm (0.94 inch) thick and offers adjustable width for a secure fit\n• hand-polished solid oak or walnut wood\n• solid aluminum base - stable & safe\n• one-hand operation - micro-suction tape technology\n• soft wool felt and flock on the inside protects your devices\n• unique geometric design\n\nDIMENSIONS:\n• Length: 18 cm (7.1 inch)\n• Width: 11.3 cm (4.5 inch)\n• Height: 4 cm (4.5 inch)\n• Device thickness: 0.6 cm - 2.4 cm (0.2 inch - 0.94 inch)\n\nADDITIONAL INFORMATION:\n• Wood is a natural material, thus each individual product may slightly vary in color\n• Handcrafted in Poland, EU\n\n1 PRODUCT = 1 TREE\nYes! It&#39;s that simple! You buy 1 product from us, and we plant 1 tree! You can do something good for the environment while buying products for yourself. Isn’t that great?!",
+    "image": [
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "Oakywood",
+        "contentURL": "https://i.etsystatic.com/13285848/r/il/ea7b26/4369079578/il_fullxfull.4369079578_p74k.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/13285848/c/1452/1154/149/0/il/ea7b26/4369079578/il_340x270.4369079578_p74k.jpg"
+      },
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "Oakywood",
+        "contentURL": "https://i.etsystatic.com/13285848/r/il/47976e/5617640133/il_fullxfull.5617640133_f78z.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/13285848/r/il/47976e/5617640133/il_340x270.5617640133_f78z.jpg"
+      },
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "Oakywood",
+        "contentURL": "https://i.etsystatic.com/13285848/r/il/2bce5f/4416475123/il_fullxfull.4416475123_p28q.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/13285848/r/il/2bce5f/4416475123/il_340x270.4416475123_p28q.jpg"
+      },
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "Oakywood",
+        "contentURL": "https://i.etsystatic.com/13285848/r/il/edabd8/5693010358/il_fullxfull.5693010358_teh9.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/13285848/r/il/edabd8/5693010358/il_340x270.5693010358_teh9.jpg"
+      },
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "Oakywood",
+        "contentURL": "https://i.etsystatic.com/13285848/r/il/c02124/4416465723/il_fullxfull.4416465723_ddy9.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/13285848/r/il/c02124/4416465723/il_340x270.4416465723_ddy9.jpg"
+      },
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "Oakywood",
+        "contentURL": "https://i.etsystatic.com/13285848/r/il/1e4125/5617640107/il_fullxfull.5617640107_roa6.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/13285848/r/il/1e4125/5617640107/il_340x270.5617640107_roa6.jpg"
+      },
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "Oakywood",
+        "contentURL": "https://i.etsystatic.com/13285848/r/il/c4eb36/5617640105/il_fullxfull.5617640105_om5v.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/13285848/r/il/c4eb36/5617640105/il_340x270.5617640105_om5v.jpg"
+      },
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "Oakywood",
+        "contentURL": "https://i.etsystatic.com/13285848/r/il/1be16e/5617640099/il_fullxfull.5617640099_p3jt.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/13285848/r/il/1be16e/5617640099/il_340x270.5617640099_p3jt.jpg"
+      },
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "Oakywood",
+        "contentURL": "https://i.etsystatic.com/13285848/r/il/caffcc/5741052807/il_fullxfull.5741052807_asf6.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/13285848/r/il/caffcc/5741052807/il_340x270.5741052807_asf6.jpg"
+      },
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "Oakywood",
+        "contentURL": "https://i.etsystatic.com/13285848/r/il/9acd2e/5693008356/il_fullxfull.5693008356_ffv8.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/13285848/r/il/9acd2e/5693008356/il_340x270.5693008356_ffv8.jpg"
+      }
+    ],
+    "category": "Electronics & Accessories < Docking & Stands < Stands",
+    "brand": {
+      "@type": "Brand",
+      "@context": "https://schema.org",
+      "name": "Oakywood"
+    },
+    "logo": "https://i.etsystatic.com/13285848/r/isla/7cfa3d/58081234/isla_500x500.58081234_fqvaz995.jpg",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "reviewCount": 8280
+    },
+    "offers": {
+      "@type": "AggregateOffer",
+      "offerCount": 2986,
+      "lowPrice": "72.00",
+      "highPrice": "81.12",
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock",
+      "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+          "@type": "MonetaryAmount",
+          "value": "0",
+          "currency": "USD"
+        },
+        "shippingOrigin": {
+          "@type": "DefinedRegion",
+          "addressCountry": "PL"
+        }
+      }
+    },
+    "review": [
+      {
+        "@type": "Review",
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": 5,
+          "bestRating": 5
+        },
+        "datePublished": "2025-08-19",
+        "reviewBody": "Very well made and came on time.",
+        "author": {
+          "@type": "Person",
+          "name": "Aaron"
+        }
+      },
+      {
+        "@type": "Review",
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": 5,
+          "bestRating": 5
+        },
+        "datePublished": "2025-07-25",
+        "reviewBody": "Very prompt shipment. Product build quality and finish were outstanding as well.",
+        "author": {
+          "@type": "Person",
+          "name": "Kyio"
+        }
+      },
+      {
+        "@type": "Review",
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": 5,
+          "bestRating": 5
+        },
+        "datePublished": "2025-07-21",
+        "reviewBody": "These are well made - I have purchased 3 of these for different locations in the house.",
+        "author": {
+          "@type": "Person",
+          "name": "Nicola Biggs"
+        }
+      },
+      {
+        "@type": "Review",
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": 5,
+          "bestRating": 5
+        },
+        "datePublished": "2025-06-26",
+        "reviewBody": "Excellent design, clever adjustment with screws",
+        "author": {
+          "@type": "Person",
+          "name": "franalmar"
+        }
+      }
+    ],
+    "material": "Solid Wood/Walnut Wood/Oak Wood"
+  },
+  {
+    "@type": "Product",
+    "@context": "https://schema.org",
+    "url": "https://www.etsy.com/listing/529765307/laptop-macbook-wood-stand-ergonomic",
+    "name": "Laptop MacBook Wood Stand Ergonomic Computer Holder, Woodworking Gift, Workspace Desk Accessories, Gift for Men, Office Desk Accessory",
+    "sku": "529765307",
+    "gtin": "n/a",
+    "description": "Our wooden Laptop Stand guarantees you comfort and brings your workspace to new ergonomic heights. The stand elevates your device 15 cm to eye level allowing you to straighten your back, preventing the risk of neck and lower-back pain. The stand frees up space underneath your laptop providing extra storage.\n\nThe stand elevates your laptop to eye level which makes it an ergonomic solution for your workspace.\n\nThanks to our unique wood joining technique, the Laptop Stand can handle weight up to 100kg (220lbs).\n\nFEATURES:\n• boost your performance - rise your laptop to the perfect working angle,  reduce eye and neck strain\n• natural oil finish - incredibly natural look and feel of the stand\n• handcrafted from real solid wood\n• bottom cork protection pads - makes no scratches\n\nDIMENSIONS:\n- 13-14&quot; version:\n• length: 45 cm (17.7 inch)\n• width: 22 cm (8.7 inch)\n• height: 14 cm (5.5 inch)\n• tabletop measurement: 31 x 20 cm (12.2 x 7.9 inch)\n• tabletop thickness: 1.8 cm (0.7 inch)\n- 15-16&quot; version:\n• length: 50 cm (19.7 inch)\n• width: 25 cm (9.8 inch)\n• height: 15 cm (5.9 inch)\n• tabletop measurement: 36 x 23 cm (14.2 x 9.1 inch)\n• tabletop thickness: 1.8 cm (0.7 inch)\n\nBUY ONE, PLANT ONE\nYes! It&#39;s that simple! You buy 1 product from us, we plant 1 tree! You can do something good for the environment while buying product for yourself. Isn’t that great?!",
+    "image": [
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "Oakywood",
+        "contentURL": "https://i.etsystatic.com/13285848/r/il/8bdbeb/5693026984/il_fullxfull.5693026984_stab.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/13285848/c/1535/1219/0/9/il/8bdbeb/5693026984/il_340x270.5693026984_stab.jpg"
+      },
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "Oakywood",
+        "contentURL": "https://i.etsystatic.com/13285848/r/il/04e625/1574085717/il_fullxfull.1574085717_scw6.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/13285848/c/1663/1320/6/0/il/04e625/1574085717/il_340x270.1574085717_scw6.jpg"
+      },
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "Oakywood",
+        "contentURL": "https://i.etsystatic.com/13285848/r/il/527535/4416775087/il_fullxfull.4416775087_njge.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/13285848/r/il/527535/4416775087/il_340x270.4416775087_njge.jpg"
+      },
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "Oakywood",
+        "contentURL": "https://i.etsystatic.com/13285848/r/il/9d8a93/4416777167/il_fullxfull.4416777167_h49m.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/13285848/c/1199/953/0/0/il/9d8a93/4416777167/il_340x270.4416777167_h49m.jpg"
+      },
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "Oakywood",
+        "contentURL": "https://i.etsystatic.com/13285848/r/il/be5efc/3771111712/il_fullxfull.3771111712_c76g.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/13285848/c/1626/1292/215/257/il/be5efc/3771111712/il_340x270.3771111712_c76g.jpg"
+      },
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "Oakywood",
+        "contentURL": "https://i.etsystatic.com/13285848/r/il/21a533/2550814351/il_fullxfull.2550814351_7p1w.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/13285848/r/il/21a533/2550814351/il_340x270.2550814351_7p1w.jpg"
+      },
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "Oakywood",
+        "contentURL": "https://i.etsystatic.com/13285848/r/il/1816e6/4369380668/il_fullxfull.4369380668_kxmf.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/13285848/r/il/1816e6/4369380668/il_340x270.4369380668_kxmf.jpg"
+      },
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "Oakywood",
+        "contentURL": "https://i.etsystatic.com/13285848/r/il/e30da6/4416751819/il_fullxfull.4416751819_ps9q.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/13285848/r/il/e30da6/4416751819/il_340x270.4416751819_ps9q.jpg"
+      },
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "Oakywood",
+        "contentURL": "https://i.etsystatic.com/13285848/r/il/3f2596/4369361960/il_fullxfull.4369361960_mcnc.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/13285848/r/il/3f2596/4369361960/il_340x270.4369361960_mcnc.jpg"
+      },
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "Oakywood",
+        "contentURL": "https://i.etsystatic.com/13285848/r/il/974ea9/4369362420/il_fullxfull.4369362420_m1qg.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/13285848/r/il/974ea9/4369362420/il_340x270.4369362420_m1qg.jpg"
+      }
+    ],
+    "category": "Electronics & Accessories < Docking & Stands < Laptop Trays & Stands",
+    "brand": {
+      "@type": "Brand",
+      "@context": "https://schema.org",
+      "name": "Oakywood"
+    },
+    "logo": "https://i.etsystatic.com/13285848/r/isla/7cfa3d/58081234/isla_500x500.58081234_fqvaz995.jpg",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "reviewCount": 8280
+    },
+    "offers": {
+      "@type": "AggregateOffer",
+      "offerCount": 5992,
+      "lowPrice": "172.26",
+      "highPrice": "226.94",
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock",
+      "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+          "@type": "MonetaryAmount",
+          "value": "0",
+          "currency": "USD"
+        },
+        "shippingOrigin": {
+          "@type": "DefinedRegion",
+          "addressCountry": "PL"
+        }
+      }
+    },
+    "review": [
+      {
+        "@type": "Review",
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": 5,
+          "bestRating": 5
+        },
+        "datePublished": "2025-07-10",
+        "reviewBody": "Highly quality item very happy",
+        "author": {
+          "@type": "Person",
+          "name": "renata janusa"
+        }
+      },
+      {
+        "@type": "Review",
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": 5,
+          "bestRating": 5
+        },
+        "datePublished": "2024-09-05",
+        "reviewBody": "Sturdy and weak built stand.",
+        "author": {
+          "@type": "Person",
+          "name": "Ian Phelps"
+        }
+      },
+      {
+        "@type": "Review",
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": 5,
+          "bestRating": 5
+        },
+        "datePublished": "2024-02-19",
+        "reviewBody": "Great product and an easy solution for raising your laptop to get into a comfortable position. It turned out too high for me (because my desk is already pretty big), but Mateusz offered great service and allowed me to return the product. Thanks!",
+        "author": {
+          "@type": "Person",
+          "name": "Arie Tollenaar"
+        }
+      },
+      {
+        "@type": "Review",
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": 5,
+          "bestRating": 5
+        },
+        "datePublished": "2023-11-22",
+        "reviewBody": "Excellent quality, super fast shipping, perfect height. This is the 2nd stand that we&#39;ve purchased. Esty Seller is very professional, great with communication, product was packaged very well. You will not be disappointed.",
+        "author": {
+          "@type": "Person",
+          "name": "Michele"
+        }
+      }
+    ],
+    "material": "Solid Wood/Oak/Steel"
+  },
+  {
+    "@type": "Product",
+    "@context": "https://schema.org",
+    "url": "https://www.etsy.com/listing/1552627931/laptop-desk-designed-for-lying-down",
+    "name": "Laptop Desk Designed For Lying Down Sitting Posture, Helping To Relax The Neck & Back, Various Positions: Sitting Lying On Bed, Sofa, Floor",
+    "sku": "1552627931",
+    "gtin": "n/a",
+    "description": "Hello. Our products are highly appreciated by customers and are patented with WIPO, enjoying global protection. You can check the “Other reviews from this shop” section on the left to see feedback from customers who have used our products. Thank you very much!\n\nCUSTOM COMFORT FOR EVERY BODY TYPE: The only desk on the market that lets you comfortably use your laptop while lying completely flat — thanks to our exclusive, fully adjustable design. Unlike other desks with fixed heights that can’t accommodate different body types, ours features a height-adjustable tabletop that adapts to you. Whether you&#39;re slim or plus-sized, sitting up or lying flat in bed or on the sofa, this desk ensures ergonomic comfort and stability in any position.\n\nEASY TILT ADJUSTMENT FROM 0 - 90°: With the left and right rotation button, you can easily adjust the tilt angle from 0-90°, allowing you to sit in many different positions such as reclining or in bed, sofa, floor...\n\nHELPS TO RELAX THE SPINE: Our desk is the only one on the market that allows you to use your laptop while lying down. It helps you relax your spine comfortably after long periods of laptop use.\n\nHOLD THE LAPTOP TIGHTLY: The laptop is fixed with a lower support bar and an upper wire, ensuring the laptop is held firmly and cannot fall. The desk is designed to hold up to 40 lbs, making it able to accommodate even the heaviest laptops.\n\nMADE FROM WOOD MATERIAL: The environmentally friendly material is very durable and can be easily reused. It helps protect your health and is safe for children.\n\nCUP HOLDER AND MOUSE PAD: The cup holder allows you to easily place your water cup or snack bowl while you work without fear of spilling. The touchpad can be installed at two levels, high and low, helping to work comfortably in both sitting and lying positions.\n\nSUITABLE FOR BOTH RIGHT-HANDED AND LEFT-HANDED USERS: If you prefer to use the mouse with your left hand, you can remove the mouse pad and attach it to the other side for ease of use.\n\nIn conclusion, our Lap Desk Designed for Lying Down Sitting Posture is the perfect accessory for those seeking ergonomic comfort and relaxation while using their laptop. With its comfortable design, adjustable features, and convenient extras, it is sure to enhance your productivity and provide a more enjoyable computing experience.\n\nNOTE: The product has been copyrighted. Any form of copying violates the law and can be sued in court.\n\nNOTE: If you still find your laptop feels too far away, you can use the Laptop Stand Lowering Kit. Simply click on the store to find and purchase it for a more comfortable working experience.\n\nNOTE: If you have a larger waist size, please contact us. We can customize the desk to fit your measurements for optimal comfort.\n\nNOTE: Because the table has many details, some details of the table may be missing during the packaging process. If you receive an item and find it is missing, please message the shop before leaving feedback so we can send you the missing parts for free. Thanks a lot\n\nFAQ:\nQuestion 1: Hello! When lying down, is there a way to lock the laptop&#39;s position? I am concerned that the laptop might fall on my face\nAnswer: We fixed the laptop in 2 positions. 1 is equal to the bottom edge of the table. 2 is by a wire. and the lap top is held in a very solid position and cannot fall down\n\nQuestion 2: Could you please could give me the dimensions of the product?\nAnswer: Dimensions of the table after installation are 20 x 24 x 15 inches\n\nQuestion 3: Hi, does the desk work in all positions between lying and sitting or only at the two extremes? How does it lock in place?\nAnswer: Hello, our table has a tilt adjustment button and allows you to sit in most positions such as lying, sitting, or reclining.\n\nQuestion 4: I find my laptop desk too far away from me. What should I do to bring my laptop closer?\nAnswer: You can use the Laptop Stand Lowering Kit. This product adjusts the height and position of your laptop, bringing it closer to you for a more comfortable working experience without needing to change your desk.",
+    "image": [
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "GpshopCreations",
+        "contentURL": "https://i.etsystatic.com/26055334/r/il/38d8fe/5272958211/il_fullxfull.5272958211_s0uk.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/26055334/r/il/38d8fe/5272958211/il_340x270.5272958211_s0uk.jpg"
+      },
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "GpshopCreations",
+        "contentURL": "https://i.etsystatic.com/26055334/r/il/27323d/6899400297/il_fullxfull.6899400297_nfkg.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/26055334/r/il/27323d/6899400297/il_340x270.6899400297_nfkg.jpg"
+      },
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "GpshopCreations",
+        "contentURL": "https://i.etsystatic.com/26055334/r/il/6f2db0/5224794614/il_fullxfull.5224794614_95qk.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/26055334/r/il/6f2db0/5224794614/il_340x270.5224794614_95qk.jpg"
+      },
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "GpshopCreations",
+        "contentURL": "https://i.etsystatic.com/26055334/r/il/05fa05/5272958213/il_fullxfull.5272958213_73w1.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/26055334/r/il/05fa05/5272958213/il_340x270.5272958213_73w1.jpg"
+      },
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "GpshopCreations",
+        "contentURL": "https://i.etsystatic.com/26055334/r/il/5d6cb0/5224756170/il_fullxfull.5224756170_ngbu.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/26055334/r/il/5d6cb0/5224756170/il_340x270.5224756170_ngbu.jpg"
+      },
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "GpshopCreations",
+        "contentURL": "https://i.etsystatic.com/26055334/r/il/582054/5272958245/il_fullxfull.5272958245_8qew.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/26055334/r/il/582054/5272958245/il_340x270.5272958245_8qew.jpg"
+      },
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "GpshopCreations",
+        "contentURL": "https://i.etsystatic.com/26055334/r/il/79d675/5226696856/il_fullxfull.5226696856_2bf5.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/26055334/r/il/79d675/5226696856/il_340x270.5226696856_2bf5.jpg"
+      },
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "GpshopCreations",
+        "contentURL": "https://i.etsystatic.com/26055334/r/il/703037/5224756212/il_fullxfull.5224756212_12oo.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/26055334/r/il/703037/5224756212/il_340x270.5224756212_12oo.jpg"
+      },
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "GpshopCreations",
+        "contentURL": "https://i.etsystatic.com/26055334/r/il/917fcb/5274899085/il_fullxfull.5274899085_3ls5.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/26055334/r/il/917fcb/5274899085/il_340x270.5274899085_3ls5.jpg"
+      },
+      {
+        "@type": "ImageObject",
+        "@context": "https://schema.org",
+        "author": "GpshopCreations",
+        "contentURL": "https://i.etsystatic.com/26055334/r/il/b92cd0/5274899081/il_fullxfull.5274899081_37p2.jpg",
+        "description": null,
+        "thumbnail": "https://i.etsystatic.com/26055334/r/il/b92cd0/5274899081/il_340x270.5274899081_37p2.jpg"
+      }
+    ],
+    "category": "Electronics & Accessories < Docking & Stands < Laptop Trays & Stands",
+    "brand": {
+      "@type": "Brand",
+      "@context": "https://schema.org",
+      "name": "GpshopCreations"
+    },
+    "logo": "https://i.etsystatic.com/26055334/r/isla/4e62d8/65833573/isla_500x500.65833573_1x9m34wi.jpg",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "reviewCount": 206
+    },
+    "offers": {
+      "@type": "Offer",
+      "eligibleQuantity": 2,
+      "price": "164.00",
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock",
+      "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+          "@type": "MonetaryAmount",
+          "value": "0",
+          "currency": "USD"
+        },
+        "shippingOrigin": {
+          "@type": "DefinedRegion",
+          "addressCountry": "US",
+          "addressRegion": "CA"
+        }
+      }
+    },
+    "review": [
+      {
+        "@type": "Review",
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": 5,
+          "bestRating": 5
+        },
+        "datePublished": "2025-08-15",
+        "reviewBody": "This item truly allows you to work lying completely flat!! Easy to assemble,  youtube video was very helpful!",
+        "author": {
+          "@type": "Person",
+          "name": "phenders0175"
+        }
+      },
+      {
+        "@type": "Review",
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": 5,
+          "bestRating": 5
+        },
+        "datePublished": "2025-08-12",
+        "reviewBody": "Very sturdy and very easy to put together. I would like if it could be slightly lower but it does the job well",
+        "author": {
+          "@type": "Person",
+          "name": "Katherine Hansen"
+        }
+      },
+      {
+        "@type": "Review",
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": 5,
+          "bestRating": 5
+        },
+        "datePublished": "2025-08-10",
+        "reviewBody": "I love this! I recommend using the Youtube video for help putting it together, but it was easy. I am truly amazed at how everything is so thoughtfully designed and including the care in how it was packaged and shipped. It is super light weight but very strong and very high quality. And my back does not have to suffer anymore. Blessed",
+        "author": {
+          "@type": "Person",
+          "name": "Michael Tinsley"
+        }
+      },
+      {
+        "@type": "Review",
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": 5,
+          "bestRating": 5
+        },
+        "datePublished": "2025-08-06",
+        "reviewBody": "This adjustable laptop desk was so helpful during my recovery from a neck injury. Very easy to assemble and disassemble for travel.",
+        "author": {
+          "@type": "Person",
+          "name": "Lindsay Cole"
+        }
+      }
+    ],
+    "material": "Wood"
+  }
+]

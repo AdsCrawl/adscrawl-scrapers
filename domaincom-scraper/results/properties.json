@@ -1,0 +1,609 @@
+[
+  {
+    "listingId": 17773317,
+    "listingUrl": "https://www.domain.com.au/1518-474-flinders-street-melbourne-vic-3000-17773317",
+    "unitNumber": "1518",
+    "streetNumber": "474",
+    "street": "Flinders Street",
+    "suburb": "Melbourne",
+    "postcode": "3000",
+    "createdOn": "2025-09-23T10:10:16.66",
+    "propertyType": "Apartment / Unit / Flat",
+    "beds": 2,
+    "phone": "03 9520 9000",
+    "agencyName": "Biggin & Scott Stonnington",
+    "propertyDeveloperName": "Biggin & Scott Stonnington",
+    "agencyProfileUrl": "https://www.domain.com.au/real-estate-agencies/bigginscottstonnington-3276/",
+    "propertyDeveloperUrl": "https://www.domain.com.au/real-estate-agencies/bigginscottstonnington-3276/",
+    "description": [
+      "**TO BOOK A TIME TO INSPECT, SIMPLY CLICK ON BOOK AN INSPECTION TIME OR EMAIL AGENT TO BE NOTIFIED OF INSPECTION TIMES. BY REGISTERING, YOU WILL BE INSTANTLY INFORMED OF ANY UPDATES, CHANGES OR CANCELLATIONS FOR YOUR APPOINTMENT. IF YOU DO NOT REGISTER FOR AN INSPECTION, ACCESS MAY NOT BE PROVIDED**",
+      "",
+      "This large two-bedroom apartment is fully furnished and is positioned within walking distance of Crown Entertainment complex, Melbourne Aquarium, and the Yarra River you are at the centre of all the great attractions that Melbourne has to offer. Marvel Stadium, world class restaurants, universities, and all forms of shopping are a short stroll away. Flinders Street train station and Southern Cross train station are also within walking distance as well as the city loop tram network.",
+      "Featuring :",
+      "- Expansive living and dining area",
+      "- Sizeable kitchen with island bench/breakfast bar, recessed fridge area ",
+      "- Large bedroom with ensuite and built-in robes",
+      "- Ensuite bathroom with shower over bath and laundry facilities ",
+      "- Tall ceilings and large windows allow light to flood in ",
+      "- Ducted heating and cooling throughout ",
+      "- Floorboards throughout the living and bedroom"
+    ],
+    "loanfinder": null,
+    "schools": [
+      {
+        "id": "",
+        "educationLevel": "combined",
+        "name": "Eltham College - Lonsdale Street Campus",
+        "distance": 828.8077030066798,
+        "state": "VIC",
+        "postCode": "3000",
+        "year": "",
+        "gender": "",
+        "type": "Private",
+        "address": "Melbourne, VIC 3000",
+        "url": "",
+        "domainSeoUrlSlug": "eltham-college-lonsdale-street-campus-vic-3000-46233",
+        "status": "Open"
+      },
+      {
+        "id": "",
+        "educationLevel": "combined",
+        "name": "Haileybury College - City Girls",
+        "distance": 1071.1283150966153,
+        "state": "VIC",
+        "postCode": "3006",
+        "year": "",
+        "gender": "",
+        "type": "Private",
+        "address": "West Melbourne, VIC 3006",
+        "url": "",
+        "domainSeoUrlSlug": "haileybury-college-city-girls-vic-3006-53317",
+        "status": "Open"
+      },
+      {
+        "id": "",
+        "educationLevel": "combined",
+        "name": "Haileybury College - City Boys",
+        "distance": 1071.1283150966153,
+        "state": "VIC",
+        "postCode": "3006",
+        "year": "",
+        "gender": "",
+        "type": "Private",
+        "address": "West Melbourne, VIC 3006",
+        "url": "",
+        "domainSeoUrlSlug": "haileybury-college-city-boys-vic-3006-53316",
+        "status": "Open"
+      },
+      {
+        "id": "",
+        "educationLevel": "secondary",
+        "name": "Hester Hornbrook Academy - South Melbourne",
+        "distance": 1105.624130598862,
+        "state": "VIC",
+        "postCode": "3205",
+        "year": "",
+        "gender": "",
+        "type": "Private",
+        "address": "South Melbourne, VIC 3205",
+        "url": "",
+        "domainSeoUrlSlug": "hester-hornbrook-academy-south-melbourne-vic-3205-53254",
+        "status": "Open"
+      },
+      {
+        "id": "",
+        "educationLevel": "secondary",
+        "name": "Hester Hornbrook Academy",
+        "distance": 1123.1002675757093,
+        "state": "VIC",
+        "postCode": "3000",
+        "year": "10-12",
+        "gender": "CoEd",
+        "type": "Private",
+        "address": "Melbourne, VIC 3000",
+        "url": "https://www.melbournecitymission.org.au/services/.../hester-hornbrook-academy",
+        "domainSeoUrlSlug": "hester-hornbrook-academy-vic-3205-52517",
+        "status": "Open"
+      },
+      {
+        "id": "",
+        "educationLevel": "secondary",
+        "name": "Ozford College - Ozford College Campus",
+        "distance": 1369.9506228202174,
+        "state": "VIC",
+        "postCode": "3000",
+        "year": "",
+        "gender": "",
+        "type": "Private",
+        "address": "Melbourne, VIC 3000",
+        "url": "",
+        "domainSeoUrlSlug": "ozford-college-english-language-centre-vic-3000-52094",
+        "status": "Open"
+      },
+      {
+        "id": "",
+        "educationLevel": "secondary",
+        "name": "Ozford College",
+        "distance": 1370.4626564720234,
+        "state": "VIC",
+        "postCode": "3000",
+        "year": "10-12",
+        "gender": "CoEd",
+        "type": "Private",
+        "address": "Melbourne, VIC 3000",
+        "url": "http://www.ozford.edu.au",
+        "domainSeoUrlSlug": "ozford-college-vic-3000-40714",
+        "status": "Open"
+      },
+      {
+        "id": "",
+        "educationLevel": "primary",
+        "name": "Docklands Primary School",
+        "distance": 1667.7678421633632,
+        "state": "VIC",
+        "postCode": "3008",
+        "year": "Prep-6",
+        "gender": "CoEd",
+        "type": "Government",
+        "address": "Docklands, VIC 3008",
+        "url": "https://www.docklandsps.vic.edu.au",
+        "domainSeoUrlSlug": "docklands-primary-school-vic-3008-52915",
+        "status": "Open"
+      },
+      {
+        "id": "2668",
+        "educationLevel": "combined",
+        "name": "Port Phillip Specialist School",
+        "distance": 2369.540733994475,
+        "state": "VIC",
+        "postCode": "3207",
+        "year": "U",
+        "gender": "CoEd",
+        "type": "Government",
+        "address": "Port Melbourne, VIC 3207",
+        "url": "http://www.portphillip.vic.edu.au/index.php?id=andandp=home",
+        "domainSeoUrlSlug": "port-phillip-special-school-vic-3207-2668",
+        "status": "Open",
+        "isRadiusResult": true
+      },
+      {
+        "id": "3946",
+        "educationLevel": "secondary",
+        "name": "University High School",
+        "distance": 2542.9727358350888,
+        "state": "VIC",
+        "postCode": "3052",
+        "year": "7-12",
+        "gender": "CoEd",
+        "type": "Government",
+        "address": "Parkville, VIC 3052",
+        "url": "http://www.unihigh.vic.edu.au",
+        "domainSeoUrlSlug": "university-high-school-vic-3052-3946",
+        "status": "Open"
+      },
+      {
+        "id": "2212",
+        "educationLevel": "combined",
+        "name": "Collingwood English Language School",
+        "distance": 2682.139099872719,
+        "state": "VIC",
+        "postCode": "3066",
+        "year": "Prep-12",
+        "gender": "CoEd",
+        "type": "Government",
+        "address": "Collingwood, VIC 3066",
+        "url": "http://www.collingwoodels.vic.edu.au/",
+        "domainSeoUrlSlug": "collingwood-english-school-vic-3066-2212",
+        "status": "Open",
+        "isRadiusResult": true
+      }
+    ],
+    "suburbInsights": {
+      "beds": 2,
+      "propertyType": "Unit",
+      "suburb": "Melbourne",
+      "suburbProfileUrl": "/suburb-profile/melbourne-vic-3000",
+      "medianPrice": 565000,
+      "medianRentPrice": 720,
+      "avgDaysOnMarket": 115,
+      "auctionClearance": 58,
+      "nrSoldThisYear": 853,
+      "entryLevelPrice": 335000,
+      "luxuryLevelPrice": 980000,
+      "renterPercentage": 0.6970133677881032,
+      "singlePercentage": 0.7628455892048701,
+      "demographics": {
+        "population": 47279,
+        "avgAge": "20 to 39",
+        "owners": 0.3029866322118968,
+        "renters": 0.6970133677881032,
+        "families": 0.2371544107951299,
+        "singles": 0.7628455892048701,
+        "clarification": true
+      },
+      "salesGrowthList": [
+        {
+          "medianSoldPrice": 610000,
+          "annualGrowth": 0,
+          "numberSold": 713,
+          "year": "2020",
+          "daysOnMarket": 111
+        },
+        {
+          "medianSoldPrice": 576000,
+          "annualGrowth": -0.05573770491803279,
+          "numberSold": 563,
+          "year": "2021",
+          "daysOnMarket": 98
+        },
+        {
+          "medianSoldPrice": 560000,
+          "annualGrowth": -0.027777777777777776,
+          "numberSold": 642,
+          "year": "2022",
+          "daysOnMarket": 145
+        },
+        {
+          "medianSoldPrice": 517000,
+          "annualGrowth": -0.07678571428571429,
+          "numberSold": 665,
+          "year": "2023",
+          "daysOnMarket": 136
+        },
+        {
+          "medianSoldPrice": 585000,
+          "annualGrowth": 0.13152804642166344,
+          "numberSold": 1054,
+          "year": "2024",
+          "daysOnMarket": 111
+        },
+        {
+          "medianSoldPrice": 565000,
+          "annualGrowth": -0.03418803418803419,
+          "numberSold": 853,
+          "year": "2025",
+          "daysOnMarket": 115
+        }
+      ],
+      "mostRecentSale": null
+    },
+    "gallery": {
+      "slides": [
+        {
+          "thumbnail": "https://rimh2.domainstatic.com.au/Nx0pRLMani-3k3itC4sZBNXMh40=/fit-in/144x106/filters:format(jpeg):quality(80):no_upscale()/17140018_1_1_240731_105822-w3000-h2000",
+          "images": {
+            "original": {
+              "url": "https://rimh2.domainstatic.com.au/Ueq3Z-qu4wGvDTHQOrkuMx_2woE=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/17140018_1_1_240731_105822-w3000-h2000",
+              "width": 1620,
+              "height": 1080
+            },
+            "tablet": {
+              "url": "https://rimh2.domainstatic.com.au/QJtUfAhcQ2cPw_Gkh23gfF1c2UY=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/17140018_1_1_240731_105822-w3000-h2000",
+              "width": 1020,
+              "height": 680
+            },
+            "mobile": {
+              "url": "https://rimh2.domainstatic.com.au/_2rlnosm36e2vXiVBQ4KC62Ft74=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/17140018_1_1_240731_105822-w3000-h2000",
+              "width": 600,
+              "height": 400
+            }
+          },
+          "embedUrl": null,
+          "mediaType": "image"
+        },
+        {
+          "thumbnail": "https://rimh2.domainstatic.com.au/6epjaXQI7pjpgaIczPVvwEHtMSs=/fit-in/144x106/filters:format(jpeg):quality(80):no_upscale()/17140018_2_1_240731_105822-w3000-h2000",
+          "images": {
+            "original": {
+              "url": "https://rimh2.domainstatic.com.au/KvPAHCN5SC1XUbI4Xm1DoqEgu9U=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/17140018_2_1_240731_105822-w3000-h2000",
+              "width": 1620,
+              "height": 1080
+            },
+            "tablet": {
+              "url": "https://rimh2.domainstatic.com.au/4b0vWa90A7Oi68CE1IYuliuvbGY=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/17140018_2_1_240731_105822-w3000-h2000",
+              "width": 1020,
+              "height": 680
+            },
+            "mobile": {
+              "url": "https://rimh2.domainstatic.com.au/HjsNveRr_sO__tTZSlImFVMuX6U=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/17140018_2_1_240731_105822-w3000-h2000",
+              "width": 600,
+              "height": 400
+            }
+          },
+          "embedUrl": null,
+          "mediaType": "image"
+        },
+        {
+          "thumbnail": "https://rimh2.domainstatic.com.au/j2KoC99OdUt1IgB21GMeU2Zroas=/fit-in/144x106/filters:format(jpeg):quality(80):no_upscale()/17140018_3_1_240731_105822-w3000-h2000",
+          "images": {
+            "original": {
+              "url": "https://rimh2.domainstatic.com.au/mZSSiu2SmanQKvK3MzXFHzvGh3s=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/17140018_3_1_240731_105822-w3000-h2000",
+              "width": 1620,
+              "height": 1080
+            },
+            "tablet": {
+              "url": "https://rimh2.domainstatic.com.au/tCBYJ4tc267wEnQ3obh82aQyV_A=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/17140018_3_1_240731_105822-w3000-h2000",
+              "width": 1020,
+              "height": 680
+            },
+            "mobile": {
+              "url": "https://rimh2.domainstatic.com.au/wAfrlYtVb_A4JIb0sBV2gybP3xE=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/17140018_3_1_240731_105822-w3000-h2000",
+              "width": 600,
+              "height": 400
+            }
+          },
+          "embedUrl": null,
+          "mediaType": "image"
+        },
+        {
+          "thumbnail": "https://rimh2.domainstatic.com.au/FJW3thvQU5bFSBBjUEmJQl5lg88=/fit-in/144x106/filters:format(jpeg):quality(80):no_upscale()/17140018_4_1_240731_105822-w3000-h2000",
+          "images": {
+            "original": {
+              "url": "https://rimh2.domainstatic.com.au/bsJdWVuq2YhkjqX7dnLvnxwCK7U=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/17140018_4_1_240731_105822-w3000-h2000",
+              "width": 1620,
+              "height": 1080
+            },
+            "tablet": {
+              "url": "https://rimh2.domainstatic.com.au/mvXjoT5LSccQCh9eFqsX4sxK0j4=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/17140018_4_1_240731_105822-w3000-h2000",
+              "width": 1020,
+              "height": 680
+            },
+            "mobile": {
+              "url": "https://rimh2.domainstatic.com.au/b8TxubNnyGYl0_-98kMOU5baX7c=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/17140018_4_1_240731_105822-w3000-h2000",
+              "width": 600,
+              "height": 400
+            }
+          },
+          "embedUrl": null,
+          "mediaType": "image"
+        },
+        {
+          "thumbnail": "https://rimh2.domainstatic.com.au/N1krM7TQngWvq3Rz2jQQvIyH9Po=/fit-in/144x106/filters:format(jpeg):quality(80):no_upscale()/17140018_5_1_240731_105822-w3000-h2000",
+          "images": {
+            "original": {
+              "url": "https://rimh2.domainstatic.com.au/8qjs6Kxj8Sy_A8ix-OLEeIwya1Y=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/17140018_5_1_240731_105822-w3000-h2000",
+              "width": 1620,
+              "height": 1080
+            },
+            "tablet": {
+              "url": "https://rimh2.domainstatic.com.au/CDQHpWPCJji5dxZg-YB71aGRLG4=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/17140018_5_1_240731_105822-w3000-h2000",
+              "width": 1020,
+              "height": 680
+            },
+            "mobile": {
+              "url": "https://rimh2.domainstatic.com.au/rO6viebriF4QmZF5KunG6b0kfFE=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/17140018_5_1_240731_105822-w3000-h2000",
+              "width": 600,
+              "height": 400
+            }
+          },
+          "embedUrl": null,
+          "mediaType": "image"
+        },
+        {
+          "thumbnail": "https://rimh2.domainstatic.com.au/jhLUtnkjbQHj9POX4IfJvxFdoHA=/fit-in/144x106/filters:format(jpeg):quality(80):no_upscale()/17140018_6_1_240731_105822-w3000-h2000",
+          "images": {
+            "original": {
+              "url": "https://rimh2.domainstatic.com.au/rgZySL3U-u7kmK5V0zXa9U9-i8k=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/17140018_6_1_240731_105822-w3000-h2000",
+              "width": 1620,
+              "height": 1080
+            },
+            "tablet": {
+              "url": "https://rimh2.domainstatic.com.au/jkCEgpXAx898Qux7viOwVlSK4mQ=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/17140018_6_1_240731_105822-w3000-h2000",
+              "width": 1020,
+              "height": 680
+            },
+            "mobile": {
+              "url": "https://rimh2.domainstatic.com.au/6RqxTn_Jz2ZhDBR6YUsqS3z6Cc4=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/17140018_6_1_240731_105822-w3000-h2000",
+              "width": 600,
+              "height": 400
+            }
+          },
+          "embedUrl": null,
+          "mediaType": "image"
+        },
+        {
+          "thumbnail": "https://rimh2.domainstatic.com.au/9UW6O8ywEZIcGv59qaCEvHHIZLQ=/fit-in/144x106/filters:format(jpeg):quality(80):no_upscale()/17140018_7_1_240731_105822-w3000-h2000",
+          "images": {
+            "original": {
+              "url": "https://rimh2.domainstatic.com.au/Nm_f1yl31M6-Ne_U9zmRei_Kl0U=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/17140018_7_1_240731_105822-w3000-h2000",
+              "width": 1620,
+              "height": 1080
+            },
+            "tablet": {
+              "url": "https://rimh2.domainstatic.com.au/qbMKfowjllAK6NmykyJCUVfVxj0=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/17140018_7_1_240731_105822-w3000-h2000",
+              "width": 1020,
+              "height": 680
+            },
+            "mobile": {
+              "url": "https://rimh2.domainstatic.com.au/77xxSN2fWMmQX2MQgAM_Ihj52gA=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/17140018_7_1_240731_105822-w3000-h2000",
+              "width": 600,
+              "height": 400
+            }
+          },
+          "embedUrl": null,
+          "mediaType": "image"
+        },
+        {
+          "thumbnail": "https://rimh2.domainstatic.com.au/hbcAFDXsqS1uRDPJhd8UyZxCmx8=/fit-in/144x106/filters:format(jpeg):quality(80):no_upscale()/17140018_8_1_240731_105822-w3000-h2000",
+          "images": {
+            "original": {
+              "url": "https://rimh2.domainstatic.com.au/C-DiuNCuGFQgPXOOniCknkI6w1E=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/17140018_8_1_240731_105822-w3000-h2000",
+              "width": 1620,
+              "height": 1080
+            },
+            "tablet": {
+              "url": "https://rimh2.domainstatic.com.au/pF5gNkLBQrvUPN6yBolR1MdHVLg=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/17140018_8_1_240731_105822-w3000-h2000",
+              "width": 1020,
+              "height": 680
+            },
+            "mobile": {
+              "url": "https://rimh2.domainstatic.com.au/FJwAFY3PSozhfzNixjniwN9FDus=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/17140018_8_1_240731_105822-w3000-h2000",
+              "width": 600,
+              "height": 400
+            }
+          },
+          "embedUrl": null,
+          "mediaType": "image"
+        },
+        {
+          "thumbnail": "https://rimh2.domainstatic.com.au/9vJnkReW4tLoeUayevc6-bYbpNQ=/fit-in/144x106/filters:format(jpeg):quality(80):no_upscale()/17140018_9_1_240731_105822-w3000-h2000",
+          "images": {
+            "original": {
+              "url": "https://rimh2.domainstatic.com.au/Iw1yPxbDDngqcX_HA4V4JT8rkZU=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/17140018_9_1_240731_105822-w3000-h2000",
+              "width": 1620,
+              "height": 1080
+            },
+            "tablet": {
+              "url": "https://rimh2.domainstatic.com.au/Jdy7wbsqHfVaIDb7YsYdF4j4-TY=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/17140018_9_1_240731_105822-w3000-h2000",
+              "width": 1020,
+              "height": 680
+            },
+            "mobile": {
+              "url": "https://rimh2.domainstatic.com.au/Et-fP8hjiIhmd4Voh_c9skmeoxs=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/17140018_9_1_240731_105822-w3000-h2000",
+              "width": 600,
+              "height": 400
+            }
+          },
+          "embedUrl": null,
+          "mediaType": "image"
+        },
+        {
+          "thumbnail": "https://rimh2.domainstatic.com.au/xWgFmB2lAGPTlCOTrMz39cuqDtg=/fit-in/144x106/filters:format(jpeg):quality(80):no_upscale()/17140018_10_1_240731_105822-w3000-h2000",
+          "images": {
+            "original": {
+              "url": "https://rimh2.domainstatic.com.au/bW3kB7ET5JQwppwjRfZnCdfQogM=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/17140018_10_1_240731_105822-w3000-h2000",
+              "width": 1620,
+              "height": 1080
+            },
+            "tablet": {
+              "url": "https://rimh2.domainstatic.com.au/Bj40ZLVa3K20IifjyTq2hIzJ2CQ=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/17140018_10_1_240731_105822-w3000-h2000",
+              "width": 1020,
+              "height": 680
+            },
+            "mobile": {
+              "url": "https://rimh2.domainstatic.com.au/PYbBVt8HnokGOOaJEL3kY55uh9Y=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/17140018_10_1_240731_105822-w3000-h2000",
+              "width": 600,
+              "height": 400
+            }
+          },
+          "embedUrl": null,
+          "mediaType": "image"
+        }
+      ]
+    },
+    "listingSummary": {
+      "address": "1518/474 Flinders Street, Melbourne VIC 3000",
+      "baths": 2,
+      "beds": 2,
+      "houses": 0,
+      "isRural": false,
+      "listingType": "rent",
+      "mode": "rent",
+      "parking": 0,
+      "promoType": "platinum",
+      "propertyType": "Apartment / Unit / Flat",
+      "showDefaultFeatures": true,
+      "showDomainInsight": false,
+      "stats": [
+        {
+          "key": "availableFrom",
+          "value": "Thursday, 23rd October 2025",
+          "iso8601Value": "2025-10-23T00:00:00"
+        },
+        {
+          "key": "bond",
+          "value": 3259
+        }
+      ],
+      "status": "new",
+      "title": "$750 per week"
+    },
+    "agents": [
+      {
+        "name": "Tom Koller",
+        "photo": "https://rimh2.domainstatic.com.au/s6rwebweH3dqMSpq6lYO7na9GUI=/filters:format(png):quality(80):no_upscale()/https://images.domain.com.au/img/3276/contact_1797401.jpeg?date=638942347965370000",
+        "phone": "9520 9000",
+        "mobile": "0487 888 100",
+        "agentProfileUrl": "https://www.domain.com.au/real-estate-agent/tom-koller-1797401",
+        "email": "aW5zcGVjdC5wcmFocmFuQGJpZ2dpbnNjb3R0LmNvbS5hdQ=="
+      },
+      {
+        "name": "Ruari Clark",
+        "photo": null,
+        "phone": "0395209000",
+        "mobile": "0475777800",
+        "agentProfileUrl": "https://www.domain.com.au/real-estate-agent/ruari-clark-2008158",
+        "email": "aW5zcGVjdC5wcmFocmFuQGJpZ2dpbnNjb3R0LmNvbS5hdQ=="
+      }
+    ],
+    "features": [],
+    "structuredFeatures": [],
+    "faqs": [
+      {
+        "question": "What is the weekly rent for 1518/474 Flinders Street, Melbourne?",
+        "answer": [
+          {
+            "text": "The weekly rent for 1518/474 Flinders Street, Melbourne is $750 per week."
+          }
+        ]
+      },
+      {
+        "question": "When is 1518/474 Flinders Street, Melbourne available to rent?",
+        "answer": [
+          {
+            "text": "1518/474 Flinders Street, Melbourne is available to rent from Thursday 23rd October, 2025."
+          }
+        ]
+      },
+      {
+        "question": "How much is the rental bond for 1518/474 Flinders Street, Melbourne?",
+        "answer": [
+          {
+            "text": "The bond for 1518/474 Flinders Street, Melbourne is $3259."
+          }
+        ]
+      },
+      {
+        "question": "How many bedrooms does 1518/474 Flinders Street, Melbourne have?",
+        "answer": [
+          {
+            "text": "1518/474 Flinders Street, Melbourne is a 2 bedroom apartment."
+          }
+        ]
+      },
+      {
+        "question": "What are the key property features of 1518/474 Flinders Street, Melbourne?",
+        "answer": [
+          {
+            "text": "To enquire about specific property features for 1518/474 Flinders Street, Melbourne, "
+          },
+          {
+            "text": "contact the agent.",
+            "scrollTo": "enquiry-form"
+          }
+        ]
+      },
+      {
+        "question": "What is the size of the property at 1518/474 Flinders Street, Melbourne?",
+        "answer": [
+          {
+            "text": "The property size for 1518/474 Flinders Street, Melbourne has not been disclosed. To find detailed information on property size, "
+          },
+          {
+            "text": "contact the agent.",
+            "scrollTo": "enquiry-form"
+          }
+        ]
+      },
+      {
+        "question": "How many car spaces does 1518/474 Flinders Street, Melbourne have?",
+        "answer": [
+          {
+            "text": "There were no car spaces found on the listing for 1518/474 Flinders Street, Melbourne."
+          }
+        ]
+      }
+    ],
+    "url": "https://www.domain.com.au/1518-474-flinders-street-melbourne-vic-3000-17773317"
+  }
+]

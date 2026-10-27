@@ -1,0 +1,888 @@
+[
+  {
+    "directory": "airbnb-scraper",
+    "module": "airbnb.py",
+    "functions": [
+      "scrape_listings",
+      "scrape_properties"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "airfrance-scraper",
+    "module": "airfrance.py",
+    "functions": [
+      "scrape_flights"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "aliexpress-scraper",
+    "module": "aliexpress.py",
+    "functions": [
+      "scrape_search",
+      "scrape_product",
+      "scrape_product_reviews",
+      "find_aliexpress_products"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "allegro-scraper",
+    "module": "allegro.py",
+    "functions": [
+      "scrape_search",
+      "scrape_product"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "amazon-scraper",
+    "module": "amazon.py",
+    "functions": [
+      "scrape_search",
+      "scrape_reviews",
+      "scrape_product"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "app-store-scraper",
+    "module": "app_store.py",
+    "functions": [
+      "scrape_app_metadata",
+      "scrape_reviews"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "metadata_smoke_passed_2026-10-27",
+    "live_verification_details": {
+      "function": "scrape_app_metadata",
+      "app_id": "6448311069",
+      "country": "us",
+      "title": "ChatGPT",
+      "full_live_suite": "not_run"
+    }
+  },
+  {
+    "directory": "autoscout24-scraper",
+    "module": "autoscout24.py",
+    "functions": [
+      "scrape_listings",
+      "scrape_car_details"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "bestbuy-scraper",
+    "module": "bestbuy.py",
+    "functions": [
+      "scrape_sitemaps",
+      "scrape_products",
+      "search_products_data",
+      "scrape_search",
+      "scrape_reviews"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "bing-scraper",
+    "module": "bing.py",
+    "functions": [
+      "scrape_search",
+      "scrape_keywords"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "bookingcom-scraper",
+    "module": "bookingcom.py",
+    "functions": [
+      "search_location_suggestions",
+      "scrape_search",
+      "scrape_hotel",
+      "scrape_hotel_reviews"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "capterra-scraper",
+    "module": "capterra.py",
+    "functions": [
+      "scrape_category",
+      "scrape_reviews"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "chatgpt-scraper",
+    "module": "chatgpt.py",
+    "functions": [
+      "scrape_conversation"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "crunchbase-scraper",
+    "module": "crunchbase.py",
+    "functions": [
+      "scrape_company",
+      "scrape_person",
+      "discover_target"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "dhl-scraper",
+    "module": "dhl.py",
+    "functions": [
+      "scrape_tracking"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "digikey-scraper",
+    "module": "digikey.py",
+    "functions": [
+      "scrape_products",
+      "scrape_category",
+      "scrape_search"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "domaincom-scraper",
+    "module": "domaincom.py",
+    "functions": [
+      "scrape_properties",
+      "scrape_search"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "ebay-scraper",
+    "module": "ebay.py",
+    "functions": [
+      "scrape_product",
+      "scrape_product_variants",
+      "scrape_search"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "emirates-scraper",
+    "module": "emirates.py",
+    "functions": [
+      "scrape_flights"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "etsy-scraper",
+    "module": "etsy.py",
+    "functions": [
+      "scrape_search",
+      "scrape_product",
+      "scrape_shop"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "expedia-scraper",
+    "module": "expedia.py",
+    "functions": [
+      "scrape_hotel_search",
+      "scrape_flight_search"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "facebook-scraper",
+    "module": "facebook.py",
+    "functions": [
+      "scrape_facebook_events",
+      "scrape_marketplace_listings",
+      "scrape_facebook_page",
+      "scrape_group_posts"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "fashionphile-scraper",
+    "module": "fashionphile.py",
+    "functions": [
+      "scrape_products",
+      "scrape_search"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "g2-scraper",
+    "module": "g2.py",
+    "functions": [
+      "scrape_search",
+      "scrape_reviews",
+      "scrape_alternatives"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "glassdoor-scraper",
+    "module": "glassdoor.py",
+    "functions": [
+      "scrape_jobs",
+      "scrape_reviews",
+      "scrape_salaries",
+      "find_companies"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "goat-scraper",
+    "module": "goat.py",
+    "functions": [
+      "find_hidden_data",
+      "scrape_products",
+      "scrape_search"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "goibibo-scraper",
+    "module": "goibibo.py",
+    "functions": [
+      "scrape_hotel_search",
+      "scrape_flight_search"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "goodreads-scraper",
+    "module": "goodreads.py",
+    "functions": [
+      "scrape_book",
+      "scrape_list",
+      "scrape_reviews",
+      "scrape_search"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "google-flights-scraper",
+    "module": "google_flights.py",
+    "functions": [
+      "scrape_flights",
+      "scrape_price_insights"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "google-jobs-scraper",
+    "module": "google_jobs.py",
+    "functions": [
+      "scrape_jobs"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "google-play-scraper",
+    "module": "google_play.py",
+    "functions": [
+      "scrape_apps",
+      "scrape_reviews",
+      "scrape_search"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "google-scraper",
+    "module": "google.py",
+    "functions": [
+      "scrape_google_map_places",
+      "find_google_map_places",
+      "scrape_keywords",
+      "scrape_serp",
+      "scrape_ai_mode"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "homegate-scraper",
+    "module": "homegate.py",
+    "functions": [
+      "scrape_properties",
+      "scrape_search"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "idealista-scraper",
+    "module": "idealista.py",
+    "functions": [
+      "scrape_provinces",
+      "scrape_properties",
+      "crawl_search",
+      "scrape_search"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "idealo-scraper",
+    "module": "idealo.py",
+    "functions": [
+      "scrape_with_retry",
+      "scrape_products",
+      "scrape_search",
+      "scrape_manufacturer",
+      "scrape_price_history"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "imdb-scraper",
+    "module": "imdb.py",
+    "functions": [
+      "scrape_titles",
+      "scrape_reviews",
+      "scrape_search",
+      "scrape_chart",
+      "scrape_person"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "immobilienscout24-scraper",
+    "module": "immobilienscout24.py",
+    "functions": [
+      "find_json_objects",
+      "scrape_search",
+      "scrape_properties"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "immoscout24-scraper",
+    "module": "immoscout24.py",
+    "functions": [
+      "scrape_properties",
+      "scrape_search"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "immowelt-scraper",
+    "module": "immowelt.py",
+    "functions": [
+      "scrape_properties",
+      "find_json_objects",
+      "scrape_search"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "imovelweb-scraper",
+    "module": "imovelweb.py",
+    "functions": [
+      "scrape_properties",
+      "scrape_search"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "indeed-scraper",
+    "module": "indeed.py",
+    "functions": [
+      "scrape_search",
+      "scrape_jobs"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "instagram-scraper",
+    "module": "instagram.py",
+    "functions": [
+      "scrape_user",
+      "scrape_post",
+      "scrape_user_posts",
+      "scrape_post_comments"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "kayak-scraper",
+    "module": "kayak.py",
+    "functions": [
+      "scrape_flights"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "leboncoin-scraper",
+    "module": "leboncoin.py",
+    "functions": [
+      "scrape_search",
+      "scrape_ad"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "linkedin-scraper",
+    "module": "linkedin.py",
+    "functions": [
+      "scrape_profile",
+      "scrape_company",
+      "scrape_job_search",
+      "scrape_jobs",
+      "scrape_articles"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "loopnet-scraper",
+    "module": "loopnet.py",
+    "functions": [
+      "scrape_listings",
+      "scrape_search"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "lowes-scraper",
+    "module": "lowes.py",
+    "functions": [
+      "scrape_products",
+      "scrape_search",
+      "scrape_store_locations"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "maersk-scraper",
+    "module": "maersk.py",
+    "functions": [
+      "scrape_schedule_search",
+      "scrape_tracking"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "marriott-scraper",
+    "module": "marriott.py",
+    "functions": [
+      "scrape_search",
+      "scrape_hotels"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "mouser-scraper",
+    "module": "mouser.py",
+    "functions": [
+      "scrape_product",
+      "scrape_search"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "naver-scraper",
+    "module": "naver.py",
+    "functions": [
+      "scrape_web_search",
+      "scrape_image_search",
+      "scrape_blog_post",
+      "scrape_news_article"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "nordstorm-scraper",
+    "module": "nordstorm.py",
+    "functions": [
+      "find_hidden_data",
+      "scrape_products",
+      "scrape_search"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "perplexity-scraper",
+    "module": "perplexity.py",
+    "functions": [
+      "scrape_answer"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "pinterest-scraper",
+    "module": "pinterest.py",
+    "functions": [
+      "scrape_search",
+      "scrape_board",
+      "scrape_profile",
+      "scrape_pin"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "realestatecom-scraper",
+    "module": "realestate.py",
+    "functions": [
+      "scrape_properties",
+      "scrape_search"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "realtorcom-scraper",
+    "module": "realtorcom.py",
+    "functions": [
+      "scrape_property",
+      "scrape_search",
+      "scrape_feed"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "reddit-scraper",
+    "module": "reddit.py",
+    "functions": [
+      "scrape_paginated",
+      "scrape_subreddit",
+      "scrape_post_comments",
+      "scrape_post",
+      "scrape_user_posts",
+      "scrape_user_comments"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "redfin-scraper",
+    "module": "redfin.py",
+    "functions": [
+      "scrape_search",
+      "scrape_property_for_sale",
+      "scrape_property_for_rent"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "rightmove-scraper",
+    "module": "rightmove.py",
+    "functions": [
+      "find_json_objects",
+      "scrape_properties",
+      "find_locations",
+      "scrape_search"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "rs-online-scraper",
+    "module": "rs_online.py",
+    "functions": [
+      "scrape_products",
+      "scrape_category",
+      "scrape_search"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "seloger-scraper",
+    "module": "seloger.py",
+    "functions": [
+      "scrape_search",
+      "scrape_property"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "shopify-scraper",
+    "module": "shopify.py",
+    "functions": [
+      "classify_catalog_response",
+      "scrape_catalog",
+      "scrape_collection",
+      "scrape_product_pages",
+      "scrape_product_urls"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "similarweb-scraper",
+    "module": "similarweb.py",
+    "functions": [
+      "scrape_website",
+      "scrape_website_compare",
+      "scrape_sitemaps",
+      "scrape_trendings"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "skyscanner-scraper",
+    "module": "skyscanner.py",
+    "functions": [
+      "scrape_flights"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "stockx-scraper",
+    "module": "stockx.py",
+    "functions": [
+      "scrape_product",
+      "scrape_search"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "target-scraper",
+    "module": "target.py",
+    "functions": [
+      "scrape_product",
+      "scrape_availability",
+      "scrape_store_locations_sitemap",
+      "scrape_store_locations",
+      "scrape_search"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "threads-scraper",
+    "module": "threads.py",
+    "functions": [
+      "scrape_thread",
+      "scrape_profile"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "ticketmaster-scraper",
+    "module": "ticketmaster.py",
+    "functions": [
+      "scrape_artist",
+      "scrape_discovery"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "tiktok-scraper",
+    "module": "tiktok.py",
+    "functions": [
+      "scrape_posts",
+      "scrape_comments",
+      "scrape_profiles",
+      "scrape_search",
+      "scrape_channel"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "tripadvisor-scraper",
+    "module": "tripadvisor.py",
+    "functions": [
+      "scrape_location_data",
+      "scrape_search",
+      "scrape_hotel"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "trustpilot-scraper",
+    "module": "trustpilot.py",
+    "functions": [
+      "scrape_company",
+      "scrape_search",
+      "scrape_reviews"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "twitter-scraper",
+    "module": "twitter.py",
+    "functions": [
+      "scrape_tweet",
+      "scrape_profile"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "vestiairecollective-scraper",
+    "module": "vestiairecollective.py",
+    "functions": [
+      "find_hidden_data",
+      "scrape_products",
+      "scrape_search"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "walmart-scraper",
+    "module": "walmart.py",
+    "functions": [
+      "scrape_products",
+      "scrape_search"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "wellfound-scraper",
+    "module": "wellfound.py",
+    "functions": [
+      "scrape_search",
+      "scrape_companies"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "yellowpages-scraper",
+    "module": "yellowpages.py",
+    "functions": [
+      "scrape_search",
+      "scrape_pages"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "yelp-scraper",
+    "module": "yelp.py",
+    "functions": [
+      "scrape_pages",
+      "scrape_reviews",
+      "scrape_search"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "youtube-scraper",
+    "module": "youtube.py",
+    "functions": [
+      "scrape_video",
+      "scrape_comments",
+      "scrape_channel",
+      "scrape_channel_videos",
+      "scrape_search",
+      "scrape_shorts",
+      "find_value",
+      "find_transcript_items",
+      "scrape_transcript"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "zillow-scraper",
+    "module": "zillow.py",
+    "functions": [
+      "scrape_search",
+      "scrape_properties"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "zoominfo-scraper",
+    "module": "zoominfo.py",
+    "functions": [
+      "scrape_comapnies",
+      "scrape_directory",
+      "scrape_faqs"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "zoopla-scraper",
+    "module": "zoopla.py",
+    "functions": [
+      "scrape_properties",
+      "scrape_search"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  },
+  {
+    "directory": "zoro-scraper",
+    "module": "zoro.py",
+    "functions": [
+      "scrape_product",
+      "scrape_search_listing"
+    ],
+    "migration": "AdsCrawl SDK",
+    "live_verification": "not_run"
+  }
+]

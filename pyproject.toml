@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "adscrawl-scrapers"
+version = "0.1.0"
+description = "Site-specific Python web scrapers powered by the AdsCrawl SDK and remote browsers"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "OSL-3.0"
+authors = [{name = "AdsCrawl", email = "support@adscrawl.net"}]
+dependencies = [
+  "adscrawl>=0.1.0,<0.2", "playwright>=1.49,<2", "parsel>=1.8,<2",
+  "python-dateutil>=2.8,<4", "loguru>=0.7,<1", "jmespath>=1,<2", "nested-lookup>=0.2.25,<0.3",
+  "jsonpath-ng>=1.7,<2", "lzstring>=1.0.4,<2", "markdownify>=1,<2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10", "pytest-asyncio>=0.24,<2", "cerberus>=1.3,<2", "pytest-rerunfailures>=14,<17", "build>=1,<2"]
+
+[project.urls]
+Homepage = "https://www.adscrawl.net/"
+Repository = "https://github.com/AdsCrawl/adscrawl-scrapers"
+Documentation = "https://www.adscrawl.net/docs/"
+Issues = "https://github.com/AdsCrawl/adscrawl-scrapers/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+filterwarnings = ["ignore:invalid escape sequence:SyntaxWarning"]

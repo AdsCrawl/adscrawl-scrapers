@@ -1,0 +1,444 @@
+[
+  {
+    "title": "Płyta główna Socket AM5 ASUS B650E MAX GAMING WIFI ATX",
+    "price": {
+      "formattedPrice": "579,00 zł",
+      "formattedPriceParts": {
+        "main": "579,",
+        "fraction": "00 zł"
+      },
+      "currency": "PLN",
+      "coupon": null
+    },
+    "images": [
+      "https://a.allegroimg.com/s128/2900d5/43b14d1347168922795878dab904/Plyta-glowna-Socket-AM5-ASUS-B650E-MAX-GAMING-WIFI-ATX",
+      "https://a.allegroimg.com/s128/111a3b/5ad05f964342be3a6a36f30f1a08/Plyta-glowna-Socket-AM5-ASUS-B650E-MAX-GAMING-WIFI-ATX-Stan-opakowania-oryginalne",
+      "https://a.allegroimg.com/s128/115f46/4d7511fa4b53aff911d8097fc767/Plyta-glowna-Socket-AM5-ASUS-B650E-MAX-GAMING-WIFI-ATX-Kod-producenta-90MB1LD0-M0EAY0",
+      "https://a.allegroimg.com/s128/1107bb/02c330c74cde8f101c0efc7336f3/Plyta-glowna-Socket-AM5-ASUS-B650E-MAX-GAMING-WIFI-ATX-Producent-ASUS",
+      "https://a.allegroimg.com/s128/1150dc/dfceaf0b42acbebc4e496794c966/Plyta-glowna-Socket-AM5-ASUS-B650E-MAX-GAMING-WIFI-ATX-Model-B650E-MAX-GAMING-WIFI"
+    ],
+    "shipping_info": {
+      "shipping_price": null,
+      "return_policy": "Zwrot za darmo – 15 dni"
+    },
+    "rating": {
+      "@type": "AggregateRating",
+      "ratingValue": 4.92,
+      "ratingCount": 37
+    },
+    "specifications": [
+      {
+        "key": "Budowa sekcji zasilania",
+        "value": "8+2+1"
+      },
+      {
+        "key": "Chłodzenie sekcji zasilania radiatorem",
+        "value": "Tak (W pełni chłodzona sekcja zasilania aluminiowym radiatorem)"
+      },
+      {
+        "key": "Kompatybilność z dyskami SSD m.2 z radiatorem",
+        "value": "Tak - brak kolizji"
+      },
+      {
+        "key": "Rodzaj chłodzenia chipsetu płyty głównej",
+        "value": "Pasywny"
+      },
+      {
+        "key": "Obsługiwane rodziny procesorów",
+        "value": "AMD Ryzen™"
+      },
+      {
+        "key": "Gniazdo procesora",
+        "value": "Socket AM5"
+      },
+      {
+        "key": "Chipset",
+        "value": "AMD B650"
+      },
+      {
+        "key": "Architektura procesora",
+        "value": "Zen 4 (5 generacja); Zen 5 (6 generacja)"
+      },
+      {
+        "key": "Typ obsługiwanej pamięci OC",
+        "value": "DDR5-8000 MHz"
+      },
+      {
+        "key": "Liczba banków pamięci",
+        "value": "4 x DIMM"
+      },
+      {
+        "key": "Maksymalna wielkość pamięci RAM",
+        "value": "256 GB"
+      },
+      {
+        "key": "Architektura pamięci",
+        "value": "Dual-channel"
+      },
+      {
+        "key": "Wewnętrzne złącza",
+        "value": "SATA III (6 Gb/s) - 4 szt.; USB 2.0 - 3 szt.; Złącze COM - 1 szt.; Złącze wyjścia S/PDIF - 1 szt.; USB 3.2 Gen. 1 - 1 szt.; PCIe 4.0 x16 - 1 szt.; USB 3.2 Gen. 1 Typu-C - 1 szt.; Złącze pompy AIO - 1 szt.; Złącze zasilania 24 pin - 1 szt.; Złącze zasilania 8 pin - 1 szt.; Złącze modułu TPM - 1 szt.; Złącze wentylatora CPU 4 pin - 2 szt.; Złącze zasilania 4 pin - 1 szt.; Złącze wentylatora SYS/CHA - 4 szt.; M.2 PCIe NVMe 4.0 x4 - 1 szt.; Złącze ARGB 3 pin - 3 szt.; Thunderbolt 4 - 1 szt.; PCIe 5.0 x16 - 1 szt.; M.2 PCIe NVMe 5.0 x4 - 1 szt.; M.2 PCIe NVMe 4.0 x2 - 1 szt.; PCIe 3.0 x16 (tryb x1) - 2 szt."
+      },
+      {
+        "key": "Zewnętrzne złącza",
+        "value": "HDMI - 1 szt.; USB 3.2 Gen. 1 - 2 szt.; USB 2.0 - 2 szt.; Audio jack - 3 szt.; DisplayPort - 1 szt.; Złącze anteny Wi-Fi - 2 szt.; USB 3.2 Gen. 2 - 3 szt.; RJ45 (LAN) 2.5 Gbps - 1 szt.; Przycisk BIOS Flashback - 1 szt.; USB 3.2 Gen. 2 Type-C - 1 szt."
+      },
+      {
+        "key": "Obsługa RAID",
+        "value": "RAID 0; RAID 1; RAID 10; RAID 5"
+      },
+      {
+        "key": "Obsługa wielu kart graficznych",
+        "value": "Nie"
+      },
+      {
+        "key": "Obsługa układów graficznych w procesorach",
+        "value": "Tak"
+      },
+      {
+        "key": "Układ audio",
+        "value": "Realtek HD audio"
+      },
+      {
+        "key": "Łączność bezprzewodowa",
+        "value": "Wi-Fi 6E (802.11 a/b/g/n/ac/ax); Bluetooth 5.3"
+      },
+      {
+        "key": "Format",
+        "value": "ATX"
+      },
+      {
+        "key": "Szerokość",
+        "value": "244 mm"
+      },
+      {
+        "key": "Wysokość",
+        "value": "305 mm"
+      },
+      {
+        "key": "Dołączone akcesoria",
+        "value": "Antena Wi-Fi 2.4/5 GHz - 1 szt.; Kabel SATA - 2 szt.; Elementy montażowe"
+      },
+      {
+        "key": "Kolor",
+        "value": "Czarno-srebrny"
+      },
+      {
+        "key": "Kod produktu",
+        "value": ": ASUS B650E MAX GAMING WIFI | [*(1320756)*]"
+      }
+    ],
+    "seller": {
+      "name": "X-KOM_PL",
+      "rating": "98,7%",
+      "isSuperSeller": true,
+      "url": "https://allegro.pl/uzytkownik/X-KOM_PL"
+    },
+    "reviews": [
+      {
+        "author": "N...r",
+        "rating": 5,
+        "content": "Płyta jak najbardziej w porządku, przyszłościowa platforma AM5, obsługa PCIe 5.0, Flash BIOS. Obsłużyła RAM Crucial Pro Overclocking 6000MHz CL36 z procesorem R5 7500F. Temperatury sekcji zasilania przy tym procesorze niskie.",
+        "datePublished": "2025-11-26T08:04:38.729Z"
+      },
+      {
+        "author": "R...4",
+        "rating": 5,
+        "content": "Być może inne płyty główne z chipsetem B650-E są nieco lepsze, ale jeżeli weźmiemy pod uwagę ich cenę, to czar pryska. Tej płycie głównej naprawdę nic nie brakuje, ma wsparcie dla PCIe 5.0 zarówno dla dysku M.2 jak i karty graficznej, dzięki temu płyta powinna służyć przez długie lata ponieważ te standardy dopiero weszły, socket AM 5 również obsługuje kilka generacji procesorów AMD (począwszy od gen. 7) dzięki temu można sobie zmieniać procki bez potrzeby wymiany płyty głównej. U mnie z Ryzenem 7 7700 śmiga jak strzała. Posiada niezłą sekcję zasilania z aluminiowymi radiatorami oraz dodatkowye gniazdo 4pin do zasilania procesorsa ( służy ono do zasilania mocniejszych Ryzenów, mój Ryzen 7 7700 nie potrzebuje tego dodatkowego zasilania, działa stabilnie i bezproblemowo). Płyta ma fajny i czytelny BIOS, wszystkie potrzebne złącza (w tym ARGB), cóż chcieć więcej? Niektóym osobom może zabraknąć wyjścia SPDIF audio, na co należy zwrócić uwagę, jeżeli zamierzamy podłączyć jakieś urządzenie kablem optycznym.",
+        "datePublished": "2026-02-11T14:41:39.669Z"
+      },
+      {
+        "author": "A...5",
+        "rating": 5,
+        "content": "W tej cenie nie ma nic lepszego, płyta wizualnie bardzo fajna, laminat ciemny, radiatory dobrze wyglądają i w przeszkleniu wygląda ładnie. Płyta przyszłościowa, pcie 5.0, żywotność am5 daje jeszcze kilka lat do tego płyta posiada sporo złącz, jest przejzysta. Dodatkowo wifi, bluetooth. Trzy złącza nvme. Tylny panel z zaślepką jest już monolitem z płytą co również podwyższa standarti jest wygodniej.Z minusów mogłoby być więcej złącz sata bo są 4 i mi trochę ich brak. Największy minus płyty to ładowanie i odpalanie systemu. Jest długo, wentylatory na poczatku robią suszarkę trwa to 3/4 sekundy(bardzo irytujące) a później ładowanie loga płyty i systemu trwa czasem ponad 30 sekund. Mimo róznych kombinacji i ustawień,które latają po siecie to bootowanie srednio wychodzi około30 sekund. Udało mi się na jakiś czas zmniejszyć szybko.ść do 13 sekund ale wydłużenie ponownie wróciło i nie mam już siły grzebać w tym. Na am4 system mi wstawał w 3/4sekundy bez żadnych problemów ale płyta była od msi. Dodam, że mam wszystko na dyskach nvme i to nie jest problem dysku, programów,windowsa itp. jest to problem płyty. Może nowy bios to zmieni w przyszłości. Sam bios jest ok, dość przyjazny. Płyta sparowana z ryzenem 7 7700 bez problemów., kości LEXAR THOR RGB DDR5 32 GB 6000MHZ CL38 chodzą jak złoto",
+        "datePublished": "2025-12-25T16:44:53.409Z"
+      },
+      {
+        "author": "K...K",
+        "rating": 5,
+        "content": "Nie ma chyba lepszej płyty pod am5 w tym budżecie, jedynie karta sieciowa jest mierna, i tak zainstalowałem sterowniki",
+        "datePublished": "2025-08-23T10:24:21.260Z"
+      },
+      {
+        "author": "M...2",
+        "rating": 5,
+        "content": "Zestaw z proc. ryzen 7 7800x3d, łatwo zmienić bios na nowszy i pobrać nowsze sterownik i zainstalować. Wszystko śmiga pozytywnie.",
+        "datePublished": "2026-01-01T13:27:47.054Z"
+      },
+      {
+        "author": "c...3",
+        "rating": 5,
+        "content": "Jestem bardzo zadowolony, płyta śmiga, żadnych problemów.",
+        "datePublished": "2026-01-02T15:04:15.925Z"
+      },
+      {
+        "author": "N...L",
+        "rating": 5,
+        "content": "Spoko płytka. W niewielkich pieniądzach bogata w porty oraz Wi-fi. Pod 7500F jak znalazł.",
+        "datePublished": "2025-09-15T20:54:24.111Z"
+      },
+      {
+        "author": "k...g",
+        "rating": 2,
+        "content": "bardzo nie lubie tej plyty. zlozylem w zyciu ze 100 komuterow i tyle problemow co z ta nie mialem nigdy. opcje AI overclocking sa debilne, brak kontroli nad nim,i. manualnie ciezko ustawic co sie chce, duzo rzeczy wylaczonych w tym trybie. plyta po uruchomieniu 2krotnie sie restartuje. potem jest juz stabilna. w zyciu bym jej drugi raz nie kupil. jedyna nadzieja w updateach firmwareu.",
+        "datePublished": "2025-07-03T09:48:49.591Z"
+      },
+      {
+        "author": "r...3",
+        "rating": 5,
+        "content": "super !",
+        "datePublished": "2025-11-24T10:10:06.758Z"
+      },
+      {
+        "author": "D...n",
+        "rating": 5,
+        "content": "świetna płyta, łatwy montaż, wifi działa bezproblemowo",
+        "datePublished": "2025-08-27T20:10:11.899Z"
+      },
+      {
+        "author": "a...z",
+        "rating": 5,
+        "content": "Działa jak powinna",
+        "datePublished": "2025-05-25T11:11:17.734Z"
+      },
+      {
+        "author": "C...4",
+        "rating": 5,
+        "content": "Dobra deska w dobrej cenie. Szkoda, że nie poczekałem kilka dni, teraz jest o 400 CZK tańsza, nawet bez zniżki i w sprawdzonym czeskim sklepie. Nie mam jeszcze doświadczenia ze sprzedawcą Viakom.",
+        "datePublished": "2025-11-08T11:01:49.845Z"
+      }
+    ],
+    "allegro_smart_badge": true
+  },
+  {
+    "title": "Procesor AMD Ryzen 5 7500F TRAY",
+    "price": {
+      "formattedPrice": "552,41 zł",
+      "formattedPriceParts": {
+        "main": "552,",
+        "fraction": "41 zł"
+      },
+      "currency": "PLN",
+      "coupon": null
+    },
+    "images": [
+      "https://a.allegroimg.com/s128/119340/46363ac04937bbd8cecbb4bc4e05/Procesor-AMD-Ryzen-5-7500F-TRAY",
+      "https://a.allegroimg.com/s128/11b62a/976459d74a17afce6671ce619add/Procesor-AMD-Ryzen-5-7500F-TRAY-Kod-producenta-100-000000597",
+      "https://a.allegroimg.com/s128/11b973/60b064024dd38555ed69d2cd8142/Procesor-AMD-Ryzen-5-7500F-TRAY-Producent-AMD",
+      "https://a.allegroimg.com/s128/112e31/07b3ca7049688ca5f8f25271c8c2/Procesor-AMD-Ryzen-5-7500F-TRAY-Model-procesora-Ryzen-5-7500F",
+      "https://a.allegroimg.com/s128/11bd58/d770ed33444b9437b06f90b6a32b/Procesor-AMD-Ryzen-5-7500F-TRAY-Seria-AMD-Ryzen-5",
+      "https://a.allegroimg.com/s128/11326e/621f660c4ee9adeb2a4c4c3b302d/Procesor-AMD-Ryzen-5-7500F-TRAY-Generacja-procesora-4",
+      "https://a.allegroimg.com/s128/25c18b/5b7d5adf4709a9d0b02645deeba6/Procesor-AMD-Ryzen-5-7500F-TRAY-Model-zintegrowanej-karty-graficznej-RADEON-AI"
+    ],
+    "shipping_info": {
+      "shipping_price": null,
+      "return_policy": "Zwrot ograniczony, za darmo – 14 dni"
+    },
+    "rating": {
+      "@type": "AggregateRating",
+      "ratingValue": 4.93,
+      "ratingCount": 352
+    },
+    "specifications": [
+      {
+        "key": "System operacyjny",
+        "value": "Windows 11/10 x64, RHEL x86 64-bit, Ubuntu x86 64-bit"
+      },
+      {
+        "key": "Producent procesora",
+        "value": "AMD"
+      },
+      {
+        "key": "Liczba wątków",
+        "value": "12"
+      },
+      {
+        "key": "Model wbudowanej karty graficznej",
+        "value": "Niedostępny"
+      },
+      {
+        "key": "Ostrzeżenia",
+        "value": "Używaj odpowiedniego sprzętu do montażu procesora, aby uniknąć uszkodzeń mechanicznych."
+      },
+      {
+        "key": "Typy pamięci wspierane przez procesor",
+        "value": "DDR5-SDRAM"
+      },
+      {
+        "key": "Cache procesora",
+        "value": "32 MB"
+      },
+      {
+        "key": "Segment rynku",
+        "value": "Komputer stacjonarny"
+      },
+      {
+        "key": "Model procesora",
+        "value": "7500F"
+      },
+      {
+        "key": "Częstotliwość bazowa procesora",
+        "value": "3,7 GHz"
+      },
+      {
+        "key": "Obsługa kanałów pamięci",
+        "value": "Dwukanałowy"
+      },
+      {
+        "key": "Termiczny układ zasilania (TDP)",
+        "value": "65 W"
+      },
+      {
+        "key": "Wbudowana karta graficzna",
+        "value": "Nie"
+      },
+      {
+        "key": "Gniazdo procesora",
+        "value": "Gniazdo AM5"
+      },
+      {
+        "key": "Pudełko",
+        "value": "Nie"
+      },
+      {
+        "key": "Zawiera system chłodzący",
+        "value": "Nie"
+      },
+      {
+        "key": "Taktowanie zegara pamięci wspierane przez procesor",
+        "value": "5200 MHz"
+      },
+      {
+        "key": "Typ pamięci procesora",
+        "value": "L3"
+      },
+      {
+        "key": "Wersja gniazd typu Slot (PCI Express)",
+        "value": "5.0"
+      },
+      {
+        "key": "Liczba rdzeni procesora",
+        "value": "6"
+      },
+      {
+        "key": "Model dedykowanej karty graficznej",
+        "value": "Niedostępny"
+      },
+      {
+        "key": "Proces litograficzny",
+        "value": "5 nm"
+      },
+      {
+        "key": "Dedykowana karta graficzna",
+        "value": "Nie"
+      },
+      {
+        "key": "Maksymalne taktowanie procesora",
+        "value": "5 GHz"
+      },
+      {
+        "key": "Typ procesora",
+        "value": "AMD Ryzen™ 5"
+      }
+    ],
+    "seller": {
+      "name": "Elektromaniak_",
+      "rating": "97,7%",
+      "isSuperSeller": true,
+      "url": "https://allegro.pl/uzytkownik/Elektromaniak_"
+    },
+    "reviews": [
+      {
+        "author": "C...4",
+        "rating": 5,
+        "content": "Świetny procesor startowy na AM5! Z wynikami jest jedynie o jakieś 2-3% gorszy od legendarnego R7 5700X3D, a na nowszą platformę, z dłuższym supportem (do 2027 roku) a więc możliwościami rozwoju, mało prądożerny to i kosmicznego chłodzenia nie wymaga (u mnie do 70'C utrzymuje go 13-letni Cooler Master GTS V8), a w dodatku w przyzwoitej cenie. Przeskoczyłem z 9600k, różnica niebo a ziemia! Wiele osób będzie mówiło, by brać 7700x albo któreś z pamięcią 3D, ale szczerze 8400F i 7500F to budżetowi królowie, zamiast ulepszać martwą platformę, to za niską cenę można przejść na nową, a w dodatku z tak czy siak lepszymi osiągami.",
+        "datePublished": "2025-07-11T23:51:27.404Z"
+      },
+      {
+        "author": "C...0",
+        "rating": 5,
+        "content": "Procesor dotarł bardzo szybko - w ciągu kilku dni. Zewnętrzne opakowanie było lekko wgniecione, jednak w środku wszystko było bardzo dobrze zabezpieczone, nawet z małą gąbeczką pod stykami. Jestem bardzo zadowolony z zakupu - uruchomił się za pierwszym razem, prawie się nie nagrzewa i idealnie nadaje się zarówno do pracy, jak i do gier.",
+        "datePublished": "2025-05-28T16:51:02.537Z"
+      },
+      {
+        "author": "A...y",
+        "rating": 5,
+        "content": "Za te cenę daje radę. Dla budżetowego komputera do gier w sam ras. Z rtx 4070 zrównoważony w grach. Nie jest wąskim gardłem w 1440p i 4k. Wnuczka zadowolona. Moc 65 w nie wymaga wydajnego super chłodzenia.",
+        "datePublished": "2025-12-06T09:12:01.661Z"
+      },
+      {
+        "author": "M..._",
+        "rating": 4,
+        "content": "Tani i dobry, ale do gier modele X3D jednak sporo lepsze.",
+        "datePublished": "2026-04-18T23:06:31.480Z"
+      },
+      {
+        "author": "m...l",
+        "rating": 5,
+        "content": "Procek pierwsza klasa. Taniutki. Na razie tylko strzelanki i tu działa bardzo dobrze. Za tą cenę polecam z czystym sumieniem",
+        "datePublished": "2026-06-26T19:49:45.200Z"
+      },
+      {
+        "author": "S...1",
+        "rating": 5,
+        "content": "Nie widzę specjalnej różnicy w tym procku, a 7800x3D. W zupełności wystarcza do gier i montażu prostych filmów, a kosztuje 3 razy mniej niż wcześniej wymieniony. Jedyna różnica to czas renderowania i to w sumie znacząca różnica. Ale jak mówiłem, cena tutaj wygrywa",
+        "datePublished": "2025-09-30T14:24:37.699Z"
+      },
+      {
+        "author": "S...x",
+        "rating": 5,
+        "content": "Bardzo fajny procesor. W Cinebench 13-14k punktów. Temperatury do 73 stopni. W grach do 65. Tanio, a bardzo dobrze.",
+        "datePublished": "2025-10-29T12:41:39.415Z"
+      },
+      {
+        "author": "H...t",
+        "rating": 5,
+        "content": "W tej cenie naprawdę solidny wybór procesora, wszystko działa jak powinno",
+        "datePublished": "2025-10-28T22:49:40.948Z"
+      },
+      {
+        "author": "r...p",
+        "rating": 5,
+        "content": "Rewelacyjny w relacji wydajność/cena. Za nieduże pieniądze pozwala zbudować całkiem wydajną i nowoczesną platformę PC.",
+        "datePublished": "2026-07-09T12:38:55.253Z"
+      },
+      {
+        "author": "N...r",
+        "rating": 5,
+        "content": "Procesor bardzo wydajny i opłacalny w swoim segmencie cenowym. Na płycie ASUS B650E MAX GAMING WIFI zadziałał od strzała.",
+        "datePublished": "2025-11-26T08:00:33.984Z"
+      },
+      {
+        "author": "y...l",
+        "rating": 5,
+        "content": "Najtańszy na AM5, więc w jest miejsce na wymianę w przyszłości. Z RTX 5060 Ti 16gb bardzo dobre połączenie, wszystko działa sprawnie bez ograniczania karty.",
+        "datePublished": "2025-07-18T19:29:40.421Z"
+      },
+      {
+        "author": "C...1",
+        "rating": 5,
+        "content": "Procesor daje radę jak za tą cenę.Szkoda że niema integry.",
+        "datePublished": "2024-11-17T13:57:57.105Z"
+      },
+      {
+        "author": "K...l",
+        "rating": 5,
+        "content": "Raczej trudno o coś bardziej wydajnego i jednocześnie w miarę taniego do DDR5.",
+        "datePublished": "2026-08-03T17:01:49.008Z"
+      },
+      {
+        "author": "g...2",
+        "rating": 5,
+        "content": "Mocny procek w rozsądnej cenie zainstalowany na ASUS Prime B650M-A WIFI II z ddr5.",
+        "datePublished": "2026-06-04T08:44:01.338Z"
+      },
+      {
+        "author": "C...0",
+        "rating": 5,
+        "content": "Produkt bardzo dobrze zapakowany, procesor działa prawidłowo.",
+        "datePublished": "2026-07-02T05:55:44.311Z"
+      }
+    ],
+    "allegro_smart_badge": true
+  }
+]

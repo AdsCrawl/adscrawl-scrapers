@@ -1,0 +1,726 @@
+# Adapted by AdsCrawl from scrapfly/scrapfly-scrapers. See NOTICE.
+"""
+This is an example web scraper for YouTube.com.
+
+To run this scraper set env variable $ADSCRAWL_API_KEY with your AdsCrawl API key:
+$ export ADSCRAWL_API_KEY="your key from https://app.adscrawl.net/dashboard/keys/"
+"""
+from adscrawl_scrapers import managed
+
+import os
+import datetime
+import secrets
+import json
+import jmespath
+
+from jsonpath_ng.ext import parse
+from typing import Dict, List, Literal
+from urllib.parse import urlencode, quote, urlparse, parse_qs
+from loguru import logger as log
+from adscrawl_scrapers import Request, ScraperClient, Response, ScrapeError
+
+CLIENT = ScraperClient()
+
+BASE_CONFIG = {
+    'countryCode': "US",
+}
+
+jp_all = lambda query, data: [match.value for match in parse(query).find(data)]
+jp_first = lambda query, data: (
+    parse(query).find(data)[0].value if parse(query).find(data) else None
+)
+
+
+def convert_to_number(value):
+    if value is None:
+        return None
+
+    value = value.strip().upper()
+
+    if value.endswith("K"):
+        return int(float(value[:-1]) * 1_000)
+
+    elif value.endswith("M"):
+        return int(float(value[:-1]) * 1_000_000)
+
+    else:
+        return int(float(value))
+
+
+@managed
+async def call_youtube_api(
+    base_url: str,
+    continuation_token: str = None,
+    search_query: str = None,
+    search_params: str = None,
+) -> List[Dict]:
+    """call the YouTube comments API for continuation or search queries"""
+    payload = {
+        "context": {
+            "client": {
+                "hl": "en",
+                "gl": "US",
+                "remoteHost": "",
+                "deviceMake": "",
+                "deviceModel": "",
+                "visitorData": "",
+                "userAgent": "",
+                "clientName": "WEB",
+                "clientVersion": "2.20241111.07.00",
+                "osName": "",
+                "osVersion": "",
+                "originalUrl": "",
+                "platform": "DESKTOP",
+                "clientFormFactor": "UNKNOWN_FORM_FACTOR",
+                "configInfo": {"appInstallData": ""},
+                "userInterfaceTheme": "USER_INTERFACE_THEME_DARK",
+                "timeZone": "",
+                "browserName": "",
+                "browserVersion": "",
+                "acceptHeader": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+                "deviceExperimentId": "",
+                "screenWidthPoints": None,
+                "screenHeightPoints": None,
+                "screenPixelDensity": None,
+                "screenDensityFloat": None,
+                "utcOffsetMinutes": None,
+                "connectionType": "CONN_CELLULAR_4G",
+                "memoryTotalKbytes": "8000000",
+                "mainAppWebInfo": {
+                    "graftUrl": "",
+                    "pwaInstallabilityStatus": "PWA_INSTALLABILITY_STATUS_UNKNOWN",
+                    "webDisplayMode": "WEB_DISPLAY_MODE_BROWSER",
+                    "isWebNativeShareAvailable": True,
+                },
+            },
+            "user": {"lockedSafetyMode": False},
+            "request": {
+                "useSsl": True,
+                "internalExperimentFlags": [],
+                "consistencyTokenJars": [],
+            },
+            "clickTracking": {"clickTrackingParams": ""},
+        }
+    }
+
+    if search_query is not None:
+        payload["query"] = search_query
+        payload["params"] = search_params
+
+    if continuation_token is not None:
+        payload["continuation"] = continuation_token
+
+    response = await CLIENT.fetch(
+        Request(
+            base_url,
+            method="POST",
+            body=json.dumps(payload),
+            **BASE_CONFIG,
+            headers={"content-type": "application/json"},
+        )
+    )
+    return response
+
+
+def parse_script_variable(script: str, variable: str) -> Dict:
+    """parse the JSON object assigned to a JavaScript variable in a script tag"""
+    if not script:
+        raise ValueError(f"no script tag containing {variable} was found")
+    _, separator, payload = script.partition(variable)
+    if not separator:
+        raise ValueError(f"{variable} was not found in the script tag")
+
+    start = payload.find("{")
+    if start == -1:
+        raise ValueError(f"no JSON object was found after {variable}")
+
+    return json.JSONDecoder().raw_decode(payload[start:])[0]
+
+
+def parse_yt_initial_data(response: Response) -> Dict:
+    """parse ytInitialData script from YouTube pages"""
+    selector = response.selector
+    data = selector.xpath("//script[contains(text(),'ytInitialData')]/text()").get()
+    return parse_script_variable(data, "ytInitialData")
+
+
+def parse_video_details(response: Response) -> Dict:
+    """parse video metadata from YouTube video page"""
+    selector = response.selector
+    data = selector.xpath(
+        "//script[contains(text(),'ytInitialPlayerResponse')]/text()"
+    ).get()
+    player_response = parse_script_variable(data, "ytInitialPlayerResponse")
+    playability = player_response.get("playabilityStatus") or {}
+    # youtube sometimes answers with a bot check ("Sign in to confirm you're not a bot") instead of the video
+    if playability.get("status") == "LOGIN_REQUIRED":
+        reason = playability.get("reason") or ""
+        message = (
+            f"youtube.com blocked the request with its anti-bot check: {reason}"
+            if "not a bot" in reason
+            else f"youtube.com asked to sign in instead of returning the video: {reason}"
+        )
+        log.error(message)
+        raise Exception(message)
+    return player_response.get("videoDetails")
+
+
+def parse_video(response: Response) -> Dict:
+    """parse video metadata from YouTube video page"""
+    video_details = parse_video_details(response)
+    content_details = parse_yt_initial_data(response)
+
+    likes = [
+        i["title"]
+        for i in jp_all("$..buttonViewModel", content_details)
+        if "iconName" in i and i["iconName"] == "LIKE"
+    ]
+    channel_id = jp_first(
+        "$..channelEndpoint.browseEndpoint.canonicalBaseUrl", content_details
+    )
+    verified = jp_all(
+        "$..videoOwnerRenderer..badges[0].metadataBadgeRenderer", content_details
+    )
+
+    result = {
+        "video": {
+            "videoId": video_details.get("videoId"),
+            "title": video_details.get("title"),
+            "publishingDate": jp_first("$..dateText.simpleText", content_details),
+            "lengthSeconds": convert_to_number(video_details.get("lengthSeconds")),
+            "keywords": video_details.get("keywords"),
+            "description": video_details.get("shortDescription"),
+            "thumbnail": video_details.get("thumbnail").get("thumbnails"),
+            "stats": {
+                "viewCount": convert_to_number(video_details.get("viewCount")),
+                "likeCount": convert_to_number(likes[0]) if likes else None,
+                "commentCount": convert_to_number(
+                    jp_first("$..contextualInfo.runs[0].text", content_details)
+                ),
+            },
+        },
+        "channel": {
+            "name": video_details.get("author"),
+            "identifierId": video_details.get("channelId"),
+            "id": channel_id.replace("/", "") if channel_id else None,
+            # channels can carry other badges instead ("Official Artist Channel")
+            "verified": any(i.get("tooltip") == "Verified" for i in verified or []),
+            "channelUrl": (
+                f"https://www.youtube.com{channel_id}" if channel_id else None
+            ),
+            "subscriberCount": jp_first(
+                "$..subscriberCountText.simpleText", content_details
+            ),
+            "thumbnails": jp_first(
+                "$..engagementPanelSectionListRenderer..channelThumbnail.thumbnails",
+                content_details,
+            ),
+        },
+        "commentContinuationToken": jp_first(
+            "$..continuationCommand.token", content_details
+        ),
+    }
+
+    return result
+
+
+@managed
+async def scrape_video(ids: List[str]) -> List[Dict]:
+    """scrape video metadata from YouTube videos"""
+    data = []
+    to_scrape = [
+        Request(
+            # the youtu.be short link sometimes fails to resolve as www.youtu.be, use the page it redirects to
+            f"https://www.youtube.com/watch?v={video_id}",
+            **BASE_CONFIG,
+            render=True,
+            # the page is sometimes returned as an empty app shell, wait for the
+            # video metadata to make sure the data scripts are rendered
+            waitForSelector="//ytd-watch-metadata",
+        )
+        for video_id in ids
+    ]
+    log.info(f"scraping {len(to_scrape)} video metadata from video pages")
+    async for response in CLIENT.fetch_many(to_scrape):
+        # a failed request comes back as an error object, raise it instead of parsing it
+        if isinstance(response, ScrapeError):
+            log.error(f"failed to scrape a video page: {response}")
+            raise response
+        post_data = parse_video(response)
+        data.append(post_data)
+    log.success(f"scraped {len(data)} video metadata from video pages")
+    return data
+
+
+def parse_comments_api(response: Response) -> List[Dict]:
+    """parse comments API response for comment data"""
+    parsed_comments = []
+    data = json.loads(response.content)
+    continuation_tokens = jp_all("$..continuationCommand.token", data)
+    comments = jp_all("$..commentEntityPayload", data)
+    for comment in comments:
+        result = jmespath.search(
+            """{
+                comment: {
+                    id: properties.commentId,
+                    text: properties.content.content
+                    publishedTime: properties.publishedTime
+                },
+                author: {
+                    id: author.channelId,
+                    displayName: author.displayName,
+                    avatarThumbnail: author.avatarThumbnailUrl,
+                    isVerified: author.isVerified,
+                    isCurrentUser: author.isVerified,
+                    isCreator: author.isVerified
+                },
+                stats: {
+                    likeCount: toolbar.likeCountLiked,
+                    replyCount: toolbar.replyCount
+                }
+            }""",
+            comment,
+        )
+        parsed_comments.append(result)
+
+    return {
+        "comments": parsed_comments,
+        "continuationToken": continuation_tokens[-1] if continuation_tokens else None,
+    }
+
+
+@managed
+async def scrape_comments(video_id: str, max_scrape_pages=None) -> List[Dict]:
+    """scraper comments from a YouTube video"""
+    comments = []
+    cursor = 0
+    log.info(f"scraping video page for the comments continuation token")
+    video_data = await scrape_video([video_id])
+    continuation_token = video_data[0].get("commentContinuationToken")
+
+    while continuation_token and (
+        cursor < max_scrape_pages if max_scrape_pages else True
+    ):
+        cursor += 1
+        log.info(f"scraping comments page with index {cursor}")
+        response = await call_youtube_api(
+            base_url="https://www.youtube.com/youtubei/v1/next?prettyPrint=false",
+            continuation_token=continuation_token,
+        )
+        data = parse_comments_api(response)
+        comments.extend(data["comments"])
+        continuation_token = data["continuationToken"]
+
+    log.success(f"scraped {len(comments)} comments for the video {video_id}")
+    return comments
+
+
+def parse_channel(response: Response) -> Dict:
+    """parse channel metadata from YouTube channel page"""
+    _xhr_calls = response.network
+    info_call = [c for c in _xhr_calls if "youtube.com/youtubei/v1/browse" in c["url"]]
+    if not info_call:
+        raise ValueError(
+            "no browse API call was captured, the channel About panel didn't load"
+        )
+    data = json.loads(info_call[0]["response"]["body"])
+
+    metadata = jp_first("$..aboutChannelViewModel", data)
+    if not metadata:
+        raise ValueError("no aboutChannelViewModel was found in the browse API response")
+
+    links = []
+    for i in metadata.get("links") or []:
+        i = i["channelExternalLinkViewModel"]
+        links.append(
+            {
+                "title": i["title"]["content"],
+                "url": i["link"]["content"],
+                "favicon": i["favicon"],
+            }
+        )
+    result = jmespath.search(
+        """{
+        description: description,
+        url: displayCanonicalChannelUrl,
+        subscriberCount: subscriberCountText,
+        videoCount: videoCountText,
+        viewCount: viewCountText,
+        joinedDate: joinedDateText.content,
+        country: country
+        }""",
+        metadata,
+    )
+    result["links"] = links
+    return result
+
+
+@managed
+async def scrape_channel(channel_ids: List[str]) -> List[Dict]:
+    """scrape channel metadata from YouTube channel pages"""
+    to_scrape = [
+        Request(
+            f"https://www.youtube.com/@{channel_id}",
+            **BASE_CONFIG,
+            render=True,
+            waitForSelector="//yt-description-preview-view-model//button",
+            actions=[
+                # click on the "show more" button to load the full description
+                {"type": 'click', 'selector': "//yt-description-preview-view-model//button", 'timeoutMs': 10000},
+                {"type": 'waitForSelector', 'selector': "//ytd-about-channel-renderer", 'timeoutMs': 10000},
+            ],
+        )
+        for channel_id in channel_ids
+    ]
+    data = []
+    log.info(f"scraping {len(to_scrape)} channels")
+    async for response in CLIENT.fetch_many(to_scrape):
+        channel_data = parse_channel(response)
+        data.append(channel_data)
+    log.success(f"scraped {len(data)} cahnnel info")
+    return data
+
+
+def parse_video_items(items: List[Dict]) -> List[Dict]:
+    """parse video data from the video grid items of channel pages and API responses"""
+    parsed_videos = []
+    for i in items or []:
+        lockup = jp_first("$.richItemRenderer.content.lockupViewModel", i)
+        if not lockup:
+            continue
+        result = jmespath.search(
+            """{
+            videoId: contentId,
+            title: metadata.lockupMetadataViewModel.title.content,
+            publishedTime: metadata.lockupMetadataViewModel.metadata.contentMetadataViewModel.metadataRows[0].metadataParts[1].text.content,
+            viewCount: metadata.lockupMetadataViewModel.metadata.contentMetadataViewModel.metadataRows[0].metadataParts[0].text.content,
+            lengthText: contentImage.thumbnailViewModel.overlays[0].thumbnailBottomOverlayViewModel.badges[0].thumbnailBadgeViewModel.text,
+            thumbnails: contentImage.thumbnailViewModel.image.sources
+            }""",
+            lockup,
+        )
+        result["url"] = f"https://youtu.be/{result['videoId']}"
+        parsed_videos.append(result)
+    return parsed_videos
+
+
+def parse_channel_videos_page(data: Dict) -> Dict:
+    """parse the video grid rendered in the channel page HTML"""
+
+    contents = jp_first("$..richGridRenderer.contents", data) or []
+    return {
+        "videos": parse_video_items(contents),
+        "continuationToken": jp_first(
+            "$..continuationItemRenderer..continuationCommand.token", contents
+        ),
+    }
+
+
+def parse_video_api(response: Response) -> Dict:
+    """parse video data from YouTube API response"""
+    data = json.loads(response.content)
+    continuation_tokens = jp_all("$..continuationCommand.token", data)
+
+    videos = jp_all("$..reloadContinuationItemsCommand.continuationItems", data)
+    videos = videos[-1] if len(videos) > 1 else jp_first("$..continuationItems", data)
+
+    return {
+        "videos": parse_video_items(videos),
+        "continuationToken": continuation_tokens[-1] if continuation_tokens else None,
+    }
+
+
+@managed
+async def scrape_channel_videos(
+    channel_id: str,
+    sort_by: Literal["Latest", "Popular", "Oldest"] = "Latest",
+    max_scrape_pages: int = None,
+) -> List[Dict]:
+    """scrape video metadata from YouTube channel page"""
+    # 1. extract the continuation token from the HTML to call the API
+    response = await CLIENT.fetch(
+        Request(
+            f"https://www.youtube.com/@{channel_id}/videos",
+            **BASE_CONFIG,
+        )
+    )
+    initial_script_data = parse_yt_initial_data(response)
+    chips = jp_all("$..chipViewModel", initial_script_data)
+
+    # there are different continuation tokens based on the sorting order
+    continuation_token = next(
+        (
+            jp_first("$.tapCommand..continuationCommand.token", i)
+            for i in chips
+            if i.get("text") == sort_by
+        ),
+        None,
+    )
+
+    videos = []
+    cursor = 0
+
+    # channels below a certain size don't render the sorting chips at all and
+    # their videos are part of the channel page itself, already sorted by latest
+    if not continuation_token:
+        log.warning(
+            f"no {sort_by} sorting chip found for the channel {channel_id}, "
+            "falling back to the default video listing of the channel page"
+        )
+        data = parse_channel_videos_page(initial_script_data)
+        videos.extend(data["videos"])
+        continuation_token = data["continuationToken"]
+        cursor += 1
+
+    # 2. call the API to get the video data
+    while continuation_token and (
+        cursor < max_scrape_pages if max_scrape_pages else True
+    ):
+        cursor += 1
+        log.info(f"scraping video page with index {cursor}")
+        response = await call_youtube_api(
+            base_url="https://www.youtube.com/youtubei/v1/browse?key=yt_web",
+            continuation_token=continuation_token,
+        )
+        data = parse_video_api(response)
+        videos.extend(data["videos"])
+        continuation_token = data["continuationToken"]
+
+    log.success(f"scraped {len(videos)} video for the channel {channel_id}")
+    return videos
+
+
+def parse_search_response(response: Response) -> List[Dict]:
+    """parse search results from the YouTube API response"""
+    results = []
+    data = json.loads(response.content)
+    search_boxes = jp_all("$..videoRenderer", data)
+    for i in search_boxes:
+        if "videoId" not in i:
+            continue
+        result = jmespath.search(
+            """{
+            id: videoId,
+            title: title.runs[0].text,
+            description: detailedMetadataSnippets[0].snippetText.runs[0].text,
+            publishedTime: publishedTimeText.simpleText,
+            videoLength: lengthText.simpleText,
+            viewCount: viewCountText.simpleText,
+            videoBadges: badges[].metadataBadgeRenderer.label,
+            channelBadges: ownerBadges[].metadataBadgeRenderer.accessibilityData.label,
+            viewCount: shortViewCountText.simpleText,
+            videoThumbnails: thumbnail.thumbnails,
+            channelThumbnails: channelThumbnailSupportedRenderers.channelThumbnailWithLinkRenderer.thumbnail.thumbnails
+            }""",
+            i,
+        )
+        result["url"] = f"https://youtu.be/{result['id']}"
+        results.append(result)
+
+    return {
+        "videos": results,
+        # scoped to the results list, the search filter chips in the header carry
+        # their own tokens, which return pages without any search result
+        "continuationToken": jp_first(
+            "$..continuationItemRenderer..continuationCommand.token", data
+        ),
+    }
+
+
+@managed
+async def scrape_search(
+    search_query: str, max_scrape_pages: int = None, search_params: str = None
+) -> List[Dict]:
+    """scrape search results from YouTube search query"""
+    cursor = 0
+    search_data = []
+    response = await call_youtube_api(
+        base_url="https://www.youtube.com/youtubei/v1/search?prettyPrint=false",
+        search_query=search_query,
+        search_params=search_params,
+    )
+    data = parse_search_response(response)
+    search_data.extend(data["videos"])
+    continuation_token = data["continuationToken"]
+
+    while continuation_token and (
+        cursor < max_scrape_pages if max_scrape_pages else True
+    ):
+        cursor += 1
+        log.info(f"scraping search page with index {cursor}")
+        response = await call_youtube_api(
+            base_url="https://www.youtube.com/youtubei/v1/search?prettyPrint=false",
+            continuation_token=continuation_token,  # use the continuation token after the first page
+        )
+        data = parse_search_response(response)
+        search_data.extend(data["videos"])
+        continuation_token = data["continuationToken"]
+
+    log.success(f"scraped {len(search_data)} video for the query {search_query}")
+    return search_data
+
+
+@managed
+async def scrape_shorts(ids: List[str]) -> List[Dict]:
+    """scrape metadata from YouTube shorts"""
+    to_scrape = [
+        Request(
+            # the youtu.be short link redirects to the watch page, request it directly like scrape_video
+            f"https://www.youtube.com/watch?v={short_id}",
+            render=True,
+            **BASE_CONFIG,
+            # the page is sometimes returned as an empty app shell, wait for the video metadata
+            # to make sure the data scripts are rendered; the wait is optional because the
+            # metadata box sometimes renders late while the data scripts are already there
+            actions=[{"type": 'waitForSelector', 'selector': "//ytd-watch-metadata", 'timeoutMs': 15000, "optional": True}],
+        )
+        for short_id in ids
+    ]
+    data = []
+    log.info(f"scraping {len(to_scrape)} short video metadata from video pages")
+    async for response in CLIENT.fetch_many(to_scrape):
+        # a failed request comes back as an error object, raise it instead of parsing it
+        if isinstance(response, ScrapeError):
+            log.error(f"failed to scrape a short video page: {response}")
+            raise response
+        post_data = parse_video_details(response)
+        post_data["thumbnail"] = post_data["thumbnail"]["thumbnails"]
+        data.append(post_data)
+    log.success(f"scraped {len(data)} video metadata from short pages")
+    return data
+
+
+def find_value(data, key: str):
+    """first value of a key anywhere in nested dicts and lists"""
+    if isinstance(data, dict):
+        if key in data:
+            return data[key]
+        data = list(data.values())
+    if isinstance(data, list):
+        for value in data:
+            found = find_value(value, key)
+            if found is not None:
+                return found
+    return None
+
+
+def find_transcript_items(data, found: Dict) -> Dict:
+    """collect the transcript items of both transcript panels from a YouTube API answer"""
+    if isinstance(data, dict):
+        for key in ("transcriptSegmentRenderer", "macroMarkersPanelItemViewModel"):
+            if key in data:
+                found[key].append(data[key])
+        for value in data.values():
+            find_transcript_items(value, found)
+    elif isinstance(data, list):
+        for value in data:
+            find_transcript_items(value, found)
+    return found
+
+
+def parse_transcript(response: Response) -> List[Dict]:
+    """parse transcript segments from YouTube's own transcript call captured by the browser"""
+    video_id = parse_qs(urlparse(response.url).query)["v"][0]
+    answers = []  # status of each transcript answer, for the message when none has segments
+    for xhr in response.network:
+        url = xhr.get("url", "")
+        if not xhr.get("response") or not ("youtubei/v1/get_transcript" in url or "youtubei/v1/get_panel" in url):
+            continue
+        answers.append(xhr["response"].get("status"))
+        if xhr["response"].get("status") != 200:
+            continue
+        empty = {"transcriptSegmentRenderer": [], "macroMarkersPanelItemViewModel": []}
+        found = find_transcript_items(json.loads(xhr["response"]["body"]), empty)
+        # older transcript panel (get_transcript): every line has its start and end in milliseconds
+        if found["transcriptSegmentRenderer"]:
+            return [
+                {
+                    "videoId": video_id,
+                    "startMs": int(segment["startMs"]),
+                    "endMs": int(segment["endMs"]),
+                    "text": "".join(run.get("text", "") for run in segment["snippet"].get("runs", [])),
+                }
+                for segment in found["transcriptSegmentRenderer"]
+            ]
+        # newer transcript panel (get_panel): every line only has its start in whole seconds,
+        # so a line ends where the next one starts and the last one at the end of the video
+        lines = []
+        for marker in found["macroMarkersPanelItemViewModel"]:
+            items = marker.get("item", {}).get("timelineItemViewModel", {}).get("contentItems", [])
+            # chapter markers and empty lines have no transcript text
+            segments = [i["transcriptSegmentViewModel"] for i in items if "transcriptSegmentViewModel" in i]
+            texts = [segment["simpleText"] for segment in segments if segment.get("simpleText")]
+            seconds = find_value(marker.get("onTap", {}), "startTimeSeconds")
+            if texts and seconds is not None:
+                lines.append((int(float(seconds) * 1000), " ".join(texts)))
+        if lines:
+            video_end = int(parse_video_details(response).get("lengthSeconds") or 0) * 1000
+            return [
+                {
+                    "videoId": video_id,
+                    "startMs": start,
+                    "endMs": lines[n + 1][0] if n + 1 < len(lines) else max(video_end, start),
+                    "text": text,
+                }
+                for n, (start, text) in enumerate(lines)
+            ]
+    if not answers:
+        # videos without a transcript have no "Show transcript" button, so the page never asks for one
+        log.warning(
+            f"the page of video {video_id} sent no transcript request (no transcript, or the panel did not open)"
+        )
+    elif all(status != 200 for status in answers):
+        log.warning(f"youtube.com answered the transcript request of video {video_id} with status {answers[-1]}")
+    else:
+        log.warning(f"youtube.com answered the transcript request of video {video_id} without segments")
+    return []
+
+
+@managed
+async def scrape_transcript(video_ids: List[str]) -> List[Dict]:
+    """scrape transcript segments (start and end time in milliseconds and text) of YouTube videos"""
+    transcript_button = "ytd-video-description-transcript-section-renderer button"
+    # a transcript line in the older and in the newer transcript panel
+    transcript_line = "ytd-transcript-segment-renderer, transcript-segment-view-model"
+    click_button = f"document.querySelector('{transcript_button}')?.click();"
+    # language menu of the transcript panel ("English (auto-generated)" etc.)
+    menu = (
+        "ytd-engagement-panel-section-list-renderer[target-id='engagement-panel-searchable-transcript'] "
+        "yt-sort-filter-sub-menu-renderer"
+    )
+    no_line = f"!document.querySelector('{transcript_line}')"
+    to_scrape = [
+        Request(
+            f"https://www.youtube.com/watch?v={video_id}",
+            **BASE_CONFIG,
+            render=True,
+            # open the transcript panel, the page then loads the transcript with its get_transcript call.
+            # the button is clicked from javascript: a browser click is skipped when the button is off screen.
+            # the steps do nothing for videos without a transcript (no "Show transcript" button)
+            actions=[
+                {"type": 'waitForSelector', 'selector': transcript_button, 'timeoutMs': 10000, "optional": True},
+                {"type": 'evaluate', 'script': click_button},
+                {"type": 'waitForSelector', 'selector': transcript_line, 'timeoutMs': 10000, "optional": True},
+                # when no transcript line was loaded:
+                # - the page sometimes asks for a caption language the video does not have and gets no lines,
+                #   so pick the video's own language from the panel's language menu
+                # - a click right after the page loaded sometimes does not open the panel, so click once more
+                {"type": 'evaluate', 'script': f'if ({no_line}) {{ var label = document.querySelector("{menu} #label"); '
+                        f"if (label) {{ label.click(); }} else {{ {click_button} }} }}"},
+                {"type": "wait", "milliseconds": 1000},
+                {"type": 'evaluate', 'script': f'if ({no_line}) {{ document.querySelector("{menu} #menu a")?.click(); }}'},
+                {"type": 'waitForSelector', 'selector': transcript_line, 'timeoutMs': 10000, "optional": True},
+            ],
+        )
+        for video_id in video_ids
+    ]
+    data = []
+    log.info(f"scraping transcripts of {len(to_scrape)} videos")
+    async for response in CLIENT.fetch_many(to_scrape):
+        # a failed request comes back as an error object, raise it instead of parsing it
+        if isinstance(response, ScrapeError):
+            log.error(f"failed to scrape a video page: {response}")
+            raise response
+        data.extend(parse_transcript(response))
+    log.success(f"scraped {len(data)} transcript segments from {len(video_ids)} videos")
+    return data

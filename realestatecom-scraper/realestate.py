@@ -1,0 +1,139 @@
+# Adapted by AdsCrawl from scrapfly/scrapfly-scrapers. See NOTICE.
+"""
+This is an example web scraper for realestate.com.au
+
+To run this scraper set env variable $ADSCRAWL_API_KEY with your AdsCrawl API key:
+$ export ADSCRAWL_API_KEY="your key from https://app.adscrawl.net/dashboard/keys/"
+"""
+from adscrawl_scrapers import managed
+import os
+import re
+import json
+import jmespath
+from adscrawl_scrapers import Request, ScraperClient, Response
+from typing import Dict, List
+from pathlib import Path
+from loguru import logger as log
+
+CLIENT = ScraperClient()
+
+BASE_CONFIG = {
+    # bypass realesta.com.au scraping blocking
+    'countryCode': "US",
+    'render' : True
+}
+
+
+output = Path(__file__).parent / "results"
+output.mkdir(exist_ok=True)
+
+
+def parse_property_data(data: Dict) -> Dict:
+    """refine property data from JSON"""
+    if not data:
+        return
+    result = jmespath.search(
+        """{
+        id: id,
+        propertyType: propertyType.display,
+        description: description,
+        propertyLink: _links.canonical.href,
+        address: address,
+        propertySizes: propertySizes,
+        generalFeatures: generalFeatures,
+        propertyFeatures: propertyFeatures[].{featureName: displayLabel, value: value},
+        images: media.images[].templatedUrl,
+        videos: videos,
+        floorplans: floorplans,
+        listingCompany: listingCompany.{name: name, id: id, companyLink: _links.canonical.href, phoneNumber: businessPhone, address: address.display.fullAddress, ratingsReviews: ratingsReviews, description: description},
+        listers: listers,
+        auction: auction
+        }
+        """,
+        data,
+    )
+    return result
+
+
+def parse_hidden_data(response: Response) -> Dict:
+    """parse JSON data from script tag"""
+    selector = response.selector
+    script = selector.xpath(
+        "//script[contains(text(),'window.ArgonautExchange')]/text()"
+    ).get()
+    # data needs to be parsed mutiple times
+    data = json.loads(re.findall(r"window.ArgonautExchange=(\{.+\});", script)[0])
+    data = json.loads(data["resi-property_listing-experience-web"]["urqlClientCache"])
+    data = json.loads(list(data.values())[0]["data"])
+    return data
+
+
+def parse_search_data(data: List[Dict]) -> List[Dict]:
+    """refine search data"""
+    search_data = []
+    search_key = next((key for key in data if key.endswith("Search")), None)
+    if not search_key:
+        raise ValueError(f"no search key found in hidden data: {list(data)}")
+    results = data[search_key]["results"]
+    for listing in results["exact"]["items"]:
+        # refine each property listing in the search results
+        search_data.append(parse_property_data(listing["listing"]))
+    max_search_pages = results["pagination"]["maxPageNumberAvailable"]
+    return {"search_data": search_data, "max_search_pages": max_search_pages}
+
+
+@managed
+async def scrape_properties(urls: List[str]) -> List[Dict]:
+    """scrape listing data from property pages"""
+    # add the property pages URLs to a scraping list
+    to_scrape = [Request(url, **BASE_CONFIG) for url in urls]
+    properties = []
+    # scrape all the property page concurrently
+    async for response in CLIENT.fetch_many(to_scrape):
+        try:
+            data = parse_hidden_data(response)["details"]["listing"]
+            data = parse_property_data(data)
+            properties.append(data)
+        except Exception as e:
+            log.error(f"An error occurred while scraping property pages", e)
+            pass
+    log.success(f"scraped {len(properties)} property listings")
+    return properties
+
+
+@managed
+async def scrape_search(url: str, max_scrape_pages: int = None):
+    """scrape property listings from search pages"""
+    first_page = await CLIENT.fetch(Request(url, **BASE_CONFIG))
+    log.info("scraping search page {}", url)
+    data = parse_hidden_data(first_page)
+    data = parse_search_data(data)
+    search_data = data["search_data"]
+    # get the number of maximum search pages
+    max_search_pages = data["max_search_pages"]
+    # scrape all available pages if not max_scrape_pages or max_scrape_pages > max_search_pages
+    if max_scrape_pages and max_scrape_pages < max_search_pages:
+        max_scrape_pages = max_scrape_pages
+    else:
+        max_scrape_pages = max_search_pages
+    log.info(
+        f"scraping search pagination, remaining ({max_scrape_pages - 1} more pages)"
+    )
+    # add the remaining search pages in a scraping list
+    other_pages = [
+        Request(
+            str(first_page.url).split("/list")[0] + f"/list-{page}",
+            **BASE_CONFIG,
+        )
+        for page in range(2, max_scrape_pages + 1)
+    ]
+    # scrape the remaining search pages concurrently
+    async for response in CLIENT.fetch_many(other_pages):
+        try:
+            data = parse_hidden_data(response)
+            search_data.extend(parse_search_data(data)["search_data"])
+        except Exception as e:
+            log.error(f"An error occurred while scraping search pages", e)
+            pass
+    log.success(f"scraped ({len(search_data)}) from {url}")
+    return search_data

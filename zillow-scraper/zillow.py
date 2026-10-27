@@ -1,0 +1,125 @@
+# Adapted by AdsCrawl from scrapfly/scrapfly-scrapers. See NOTICE.
+"""
+This is an example web scraper for zillow.com adapted from the upstream Scrapfly example:
+https://scrapfly.io/blog/how-to-scrape-zillow/
+
+To run this scraper set env variable $ADSCRAWL_API_KEY with your AdsCrawl API key:
+$ export ADSCRAWL_API_KEY="your key from https://app.adscrawl.net/dashboard/keys/"
+"""
+from adscrawl_scrapers import managed
+import json
+import os
+import random
+import re
+from typing import List
+from urllib.parse import quote, urlencode
+
+from loguru import logger as log
+from adscrawl_scrapers import Request, ScraperClient, ScrapeError
+
+CLIENT = ScraperClient()
+BASE_CONFIG = {
+
+    'countryCode': "US",
+}
+
+def create_search_payload(query_data: dict, page_number: int = None):
+    """create a search payload for Zillow's search API"""
+    payload = {
+        "searchQueryState": query_data,
+        "wants": {"cat1": ["listResults", "mapResults"], "cat2": ["total"]},
+        "requestId": random.randint(2, 10),
+    }
+    if page_number:
+        payload["searchQueryState"]["pagination"] = {"currentPage": page_number}
+    return json.dumps(payload)
+
+
+def _load_search_api(result) -> dict:
+    """load a search API response, which is not JSON when zillow blocks or rejects the request"""
+    try:
+        return json.loads(result.content)
+    except json.JSONDecodeError:
+        message = f"zillow.com returned a search API response that is not JSON (status {result.upstream_status_code}), the request was likely blocked"
+        log.error(message)
+        raise Exception(message)
+
+
+@managed
+async def scrape_search(url: str, max_scrape_pages: int=None) -> List[dict]:
+    """base search function which is used by sale and rent search functions"""
+    search_data = []
+    log.info(f"scraping search: {url}")
+    # first scrape the search HTML page and find query variables for this search
+    html_result = await CLIENT.fetch(Request(url, **BASE_CONFIG))
+    script_data = json.loads(html_result.selector.xpath("//script[@id='__NEXT_DATA__']/text()").get())
+    query_data = script_data["props"]["pageProps"]["searchPageState"]["queryState"]
+
+    # then scrape Zillow's backend API for all query results:
+    _backend_url = "https://www.zillow.com/async-create-search-page-state"
+    api_result = await CLIENT.fetch(
+        Request(_backend_url, **BASE_CONFIG, headers={"content-type": "application/json"},
+                      body=create_search_payload(query_data), method="PUT")
+    )
+    data = _load_search_api(api_result)
+    property_data = data["cat1"]["searchResults"]["listResults"]
+    search_data.extend(property_data)
+    _total_pages = data["cat1"]["searchList"]["totalPages"]
+
+    # if no pagination data, return
+    if _total_pages == 1:
+        log.success(f"scraped {len(search_data)} properties from search pages")
+        return search_data
+
+    # else paginate remaining pages
+    if max_scrape_pages and max_scrape_pages < _total_pages:
+        _total_pages = max_scrape_pages
+
+    log.info(f"scraping search pagination, {_total_pages} more pages remaining")
+    to_scrape = [
+        Request(
+            _backend_url, **BASE_CONFIG, headers={"content-type": "application/json"},
+            body=create_search_payload(query_data, page_number=page), method="PUT"
+        )
+        for page in range(2, _total_pages + 1)
+    ]
+
+    async for result in CLIENT.fetch_many(to_scrape):
+        # a failed request comes back as an error object, raise it instead of parsing it
+        if isinstance(result, ScrapeError):
+            log.error(f"failed to scrape a search page: {result}")
+            raise result
+        property_data = _load_search_api(result)["cat1"]["searchResults"]["listResults"]
+        search_data.extend(property_data)
+
+    log.success(f"scraped {len(search_data)} properties from search pages")
+    return search_data
+
+
+@managed
+async def scrape_properties(urls: List[str]):
+    """scrape zillow property pages for property data"""
+    to_scrape = [Request(url, **BASE_CONFIG) for url in urls]
+    results = []
+    async for result in CLIENT.fetch_many(to_scrape):
+        if isinstance(result, ScrapeError):
+            log.error(f"failed to scrape a property page: {result}")
+            raise result
+        data = result.selector.css("script#__NEXT_DATA__::text").get()
+        if data:
+            # Option 1: some properties are located in NEXT DATA cache
+            data = json.loads(data)
+            property_data = json.loads(data["props"]["pageProps"]["componentProps"]["gdpClientCache"])
+            property_data = property_data[list(property_data)[0]]['property']
+        else:
+            # Option 2: other times it's in Apollo cache
+            data = result.selector.css("script#hdpApolloPreloadedData::text").get()
+            if not data:
+                # neither data script: zillow returned some other page, e.g. a block page
+                message = f"zillow.com returned a page without property data for {result.url}, the request was likely blocked"
+                log.error(message)
+                raise Exception(message)
+            data = json.loads(json.loads(data)["apiCache"])
+            property_data = next(v["property"] for k, v in data.items() if "ForSale" in k)
+        results.append(property_data)
+    return results

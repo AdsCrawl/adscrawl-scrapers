@@ -1,0 +1,95 @@
+# AdsCrawl Scrapers
+
+Repository: https://github.com/AdsCrawl/adscrawl-scrapers
+License: OSL-3.0; see NOTICE for upstream attribution.
+Install from root: python -m pip install -e ".[dev]"
+Credentials: ADSCRAWL_API_KEY (never print or commit it).
+Offline checks: python -m pytest tests -q; python scripts/check_catalog.py
+Live tests: python -m pytest <site>-scraper/test.py -v (consumes credits).
+Historical results are upstream examples, not verified AdsCrawl output.
+Use adscrawl_scrapers.Request and ScraperClient for HTML, JSON and network data.
+Remote traffic must go through the AdsCrawl SDK, never a local requests client.
+Decorate async site operations with managed to close named remote sessions.
+Unknown request options must raise errors. All sites need live verification.
+
+- airbnb-scraper/airbnb.py: scrape_listings, scrape_properties
+- airfrance-scraper/airfrance.py: scrape_flights
+- aliexpress-scraper/aliexpress.py: scrape_search, scrape_product, scrape_product_reviews, find_aliexpress_products
+- allegro-scraper/allegro.py: scrape_search, scrape_product
+- amazon-scraper/amazon.py: scrape_search, scrape_reviews, scrape_product
+- app-store-scraper/app_store.py: scrape_app_metadata, scrape_reviews
+- autoscout24-scraper/autoscout24.py: scrape_listings, scrape_car_details
+- bestbuy-scraper/bestbuy.py: scrape_sitemaps, scrape_products, search_products_data, scrape_search, scrape_reviews
+- bing-scraper/bing.py: scrape_search, scrape_keywords
+- bookingcom-scraper/bookingcom.py: search_location_suggestions, scrape_search, scrape_hotel, scrape_hotel_reviews
+- capterra-scraper/capterra.py: scrape_category, scrape_reviews
+- chatgpt-scraper/chatgpt.py: scrape_conversation
+- crunchbase-scraper/crunchbase.py: scrape_company, scrape_person, discover_target
+- dhl-scraper/dhl.py: scrape_tracking
+- digikey-scraper/digikey.py: scrape_products, scrape_category, scrape_search
+- domaincom-scraper/domaincom.py: scrape_properties, scrape_search
+- ebay-scraper/ebay.py: scrape_product, scrape_product_variants, scrape_search
+- emirates-scraper/emirates.py: scrape_flights
+- etsy-scraper/etsy.py: scrape_search, scrape_product, scrape_shop
+- expedia-scraper/expedia.py: scrape_hotel_search, scrape_flight_search
+- facebook-scraper/facebook.py: scrape_facebook_events, scrape_marketplace_listings, scrape_facebook_page, scrape_group_posts
+- fashionphile-scraper/fashionphile.py: scrape_products, scrape_search
+- g2-scraper/g2.py: scrape_search, scrape_reviews, scrape_alternatives
+- glassdoor-scraper/glassdoor.py: scrape_jobs, scrape_reviews, scrape_salaries, find_companies
+- goat-scraper/goat.py: find_hidden_data, scrape_products, scrape_search
+- goibibo-scraper/goibibo.py: scrape_hotel_search, scrape_flight_search
+- goodreads-scraper/goodreads.py: scrape_book, scrape_list, scrape_reviews, scrape_search
+- google-flights-scraper/google_flights.py: scrape_flights, scrape_price_insights
+- google-jobs-scraper/google_jobs.py: scrape_jobs
+- google-play-scraper/google_play.py: scrape_apps, scrape_reviews, scrape_search
+- google-scraper/google.py: scrape_google_map_places, find_google_map_places, scrape_keywords, scrape_serp, scrape_ai_mode
+- homegate-scraper/homegate.py: scrape_properties, scrape_search
+- idealista-scraper/idealista.py: scrape_provinces, scrape_properties, crawl_search, scrape_search
+- idealo-scraper/idealo.py: scrape_with_retry, scrape_products, scrape_search, scrape_manufacturer, scrape_price_history
+- imdb-scraper/imdb.py: scrape_titles, scrape_reviews, scrape_search, scrape_chart, scrape_person
+- immobilienscout24-scraper/immobilienscout24.py: find_json_objects, scrape_search, scrape_properties
+- immoscout24-scraper/immoscout24.py: scrape_properties, scrape_search
+- immowelt-scraper/immowelt.py: scrape_properties, find_json_objects, scrape_search
+- imovelweb-scraper/imovelweb.py: scrape_properties, scrape_search
+- indeed-scraper/indeed.py: scrape_search, scrape_jobs
+- instagram-scraper/instagram.py: scrape_user, scrape_post, scrape_user_posts, scrape_post_comments
+- kayak-scraper/kayak.py: scrape_flights
+- leboncoin-scraper/leboncoin.py: scrape_search, scrape_ad
+- linkedin-scraper/linkedin.py: scrape_profile, scrape_company, scrape_job_search, scrape_jobs, scrape_articles
+- loopnet-scraper/loopnet.py: scrape_listings, scrape_search
+- lowes-scraper/lowes.py: scrape_products, scrape_search, scrape_store_locations
+- maersk-scraper/maersk.py: scrape_schedule_search, scrape_tracking
+- marriott-scraper/marriott.py: scrape_search, scrape_hotels
+- mouser-scraper/mouser.py: scrape_product, scrape_search
+- naver-scraper/naver.py: scrape_web_search, scrape_image_search, scrape_blog_post, scrape_news_article
+- nordstorm-scraper/nordstorm.py: find_hidden_data, scrape_products, scrape_search
+- perplexity-scraper/perplexity.py: scrape_answer
+- pinterest-scraper/pinterest.py: scrape_search, scrape_board, scrape_profile, scrape_pin
+- realestatecom-scraper/realestate.py: scrape_properties, scrape_search
+- realtorcom-scraper/realtorcom.py: scrape_property, scrape_search, scrape_feed
+- reddit-scraper/reddit.py: scrape_paginated, scrape_subreddit, scrape_post_comments, scrape_post, scrape_user_posts, scrape_user_comments
+- redfin-scraper/redfin.py: scrape_search, scrape_property_for_sale, scrape_property_for_rent
+- rightmove-scraper/rightmove.py: find_json_objects, scrape_properties, find_locations, scrape_search
+- rs-online-scraper/rs_online.py: scrape_products, scrape_category, scrape_search
+- seloger-scraper/seloger.py: scrape_search, scrape_property
+- shopify-scraper/shopify.py: classify_catalog_response, scrape_catalog, scrape_collection, scrape_product_pages, scrape_product_urls
+- similarweb-scraper/similarweb.py: scrape_website, scrape_website_compare, scrape_sitemaps, scrape_trendings
+- skyscanner-scraper/skyscanner.py: scrape_flights
+- stockx-scraper/stockx.py: scrape_product, scrape_search
+- target-scraper/target.py: scrape_product, scrape_availability, scrape_store_locations_sitemap, scrape_store_locations, scrape_search
+- threads-scraper/threads.py: scrape_thread, scrape_profile
+- ticketmaster-scraper/ticketmaster.py: scrape_artist, scrape_discovery
+- tiktok-scraper/tiktok.py: scrape_posts, scrape_comments, scrape_profiles, scrape_search, scrape_channel
+- tripadvisor-scraper/tripadvisor.py: scrape_location_data, scrape_search, scrape_hotel
+- trustpilot-scraper/trustpilot.py: scrape_company, scrape_search, scrape_reviews
+- twitter-scraper/twitter.py: scrape_tweet, scrape_profile
+- vestiairecollective-scraper/vestiairecollective.py: find_hidden_data, scrape_products, scrape_search
+- walmart-scraper/walmart.py: scrape_products, scrape_search
+- wellfound-scraper/wellfound.py: scrape_search, scrape_companies
+- yellowpages-scraper/yellowpages.py: scrape_search, scrape_pages
+- yelp-scraper/yelp.py: scrape_pages, scrape_reviews, scrape_search
+- youtube-scraper/youtube.py: scrape_video, scrape_comments, scrape_channel, scrape_channel_videos, scrape_search, scrape_shorts, find_value, find_transcript_items, scrape_transcript
+- zillow-scraper/zillow.py: scrape_search, scrape_properties
+- zoominfo-scraper/zoominfo.py: scrape_comapnies, scrape_directory, scrape_faqs
+- zoopla-scraper/zoopla.py: scrape_properties, scrape_search
+- zoro-scraper/zoro.py: scrape_product, scrape_search_listing

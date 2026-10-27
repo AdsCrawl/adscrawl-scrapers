@@ -1,0 +1,25 @@
+name: Live scraper test (uses credits)
+on:
+  workflow_dispatch:
+    inputs:
+      scraper:
+        description: 'One directory, for example amazon-scraper'
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -e '.[dev]'
+      - name: Run selected site
+        env:
+          ADSCRAWL_API_KEY: ${{ secrets.ADSCRAWL_API_KEY }}
+          SELECTED_SCRAPER: ${{ inputs.scraper }}
+        run: python scripts/live_test.py

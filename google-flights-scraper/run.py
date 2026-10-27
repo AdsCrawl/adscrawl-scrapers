@@ -1,0 +1,59 @@
+# Adapted by AdsCrawl from scrapfly/scrapfly-scrapers. See NOTICE.
+"""
+This example run script shows how to run the Google Flights scraper defined in ./google_flights.py
+It scrapes data and saves it to ./results/
+
+To run this script set the env variable $ADSCRAWL_API_KEY with your AdsCrawl API key:
+$ export ADSCRAWL_API_KEY="your key from https://app.adscrawl.net/dashboard/keys/"
+"""
+from adscrawl_scrapers import run as run_scraper
+
+import asyncio
+import json
+from datetime import datetime, timedelta
+from pathlib import Path
+
+import google_flights
+
+output = Path(__file__).parent / "results"
+output.mkdir(exist_ok=True)
+
+TODAY = datetime.now().strftime('%Y-%m-%d')
+WEEK_FROM_NOW = (datetime.now() + timedelta(days=7)).strftime('%Y-%m-%d')
+
+
+async def run():
+
+    print("running Google Flights scrape and saving results to ./results directory")
+
+    roundtrip = await google_flights.scrape_flights(
+        origin="JFK",
+        destination="CDG",
+        depart=TODAY,
+        ret=WEEK_FROM_NOW,
+        currency="USD",
+    )
+    with open(output / "roundtrip.json", "w", encoding="utf-8") as f:
+        json.dump(roundtrip, f, indent=2, ensure_ascii=False)
+
+    oneway = await google_flights.scrape_flights(
+        origin="JFK",
+        destination="LHR",
+        depart=TODAY,
+        currency="USD",
+    )
+    with open(output / "oneway.json", "w", encoding="utf-8") as f:
+        json.dump(oneway, f, indent=2, ensure_ascii=False)
+
+    price_insights = await google_flights.scrape_price_insights(
+        origin="JFK",
+        destination="CDG",
+        depart=TODAY,
+        ret=WEEK_FROM_NOW,
+        currency="USD",
+    )
+    with open(output / "price_insights.json", "w", encoding="utf-8") as f:
+        json.dump(price_insights, f, indent=2, ensure_ascii=False)
+
+if __name__ == "__main__":
+    run_scraper(run())

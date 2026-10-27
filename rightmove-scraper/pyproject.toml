@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "adscrawl-rightmove"
+version = "0.1.0"
+description = "rightmove-scraper powered by the AdsCrawl Python SDK"
+authors = ["AdsCrawl <support@adscrawl.net>"]
+license = "OSL-3.0"
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.10"
+adscrawl-scrapers = {path = "..", develop = true, extras = ["dev"]}
+
+[tool.pytest.ini_options]
+python_files = "test.py"
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"

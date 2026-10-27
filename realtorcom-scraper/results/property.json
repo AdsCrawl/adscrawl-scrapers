@@ -1,0 +1,422 @@
+{
+  "id": "2944177456",
+  "slug": "12355-Attlee-Dr_Houston_TX_77077_M70330-35605",
+  "url": "https://www.realtor.com/realestateandhomes-detail/12355-Attlee-Dr_Houston_TX_77077_M70330-35605",
+  "status": "sold",
+  "tags": [
+    {
+      "id": "community_security_features",
+      "label": "Community security features"
+    },
+    {
+      "id": "fireplace",
+      "label": "Fireplace"
+    },
+    {
+      "id": "two_or_more_stories",
+      "label": "Two or more stories"
+    },
+    {
+      "id": "groundscare",
+      "label": "Grounds care"
+    },
+    {
+      "id": "central_heat",
+      "label": "Central heat"
+    },
+    {
+      "id": "central_air",
+      "label": "Central air"
+    }
+  ],
+  "sold_date": "2023-04-21",
+  "sold_price": null,
+  "list_date": "2022-06-10T21:02:49Z",
+  "list_price": 345000,
+  "list_price_last_change": -5000,
+  "details": {
+    "baths_3qtr": null,
+    "baths_full": 2,
+    "baths_half": 1,
+    "baths_max": null,
+    "baths_min": null,
+    "baths_total": null,
+    "baths_consolidated": "2.5",
+    "beds": 4,
+    "beds_max": null,
+    "beds_min": null,
+    "construction": null,
+    "cooling": null,
+    "exterior": null,
+    "fireplace": null,
+    "garage": 2,
+    "garage_max": null,
+    "garage_min": null,
+    "garage_type": null,
+    "heating": null,
+    "logo": null,
+    "lot_sqft": 7919,
+    "name": null,
+    "pool": null,
+    "roofing": null,
+    "rooms": null,
+    "sqft": 2122,
+    "sqft_max": null,
+    "sqft_min": null,
+    "stories": 2,
+    "styles": [
+      "colonial_revival"
+    ],
+    "sub_type": null,
+    "text": "Here it is! Do not miss this professionally remodeled home in highly desirable west Houston that includes new windows and HVAC system. You will love the brand new kitchen featuring quartz countertops, shaker cabinets, stainless steel appliances and tile backsplash. Both full bathrooms feature beautiful new showers and vanities with all the modern finishing touches. Light and bright with fresh paint and all new flooring. Nice backyard with mature landscaping is perfect for entertaining or letting the kids play. Send in your best offer today! This home has been Virtually Staged to illustrate its potential.",
+    "type": "single_family",
+    "units": null,
+    "year_built": 1970,
+    "year_renovated": null,
+    "zoning": null
+  },
+  "flags": {
+    "is_coming_soon": null,
+    "is_contingent": null,
+    "is_foreclosure": null,
+    "is_new_construction": null,
+    "is_pending": null,
+    "is_subdivision": null,
+    "is_price_reduced": false,
+    "is_new_listing": false,
+    "is_short_sale": null,
+    "is_price_excludes_land": null,
+    "is_usda_eligible": false,
+    "is_auction": null,
+    "is_fractionally_owned": null,
+    "is_non_deeded": null
+  },
+  "local": null,
+  "location": {
+    "street_view_url": "https://maps.googleapis.com/maps/api/streetview?channel=rdc-streetview&key=AIzaSyAP_xs30yS0J4xp8O1ZKUrUttIXKklrwaM&location=12355%20Attlee%20Dr%2C%20Houston%2C%20TX%2077077&size=950x428&source=outdoor&signature=q6SBV1-ifvJ9Bei570q8N0qaIrw=",
+    "street_view_metadata_url": "https://maps.googleapis.com/maps/api/streetview/metadata?channel=rdc-streetview&key=AIzaSyAP_xs30yS0J4xp8O1ZKUrUttIXKklrwaM&location=12355%20Attlee%20Dr%2C%20Houston%2C%20TX%2077077&size=640x480&source=outdoor&signature=qCD06391WXahxiqv2Txu7e-WoCw=",
+    "address": {
+      "city": "Houston",
+      "coordinate": {
+        "lat": 29.749552,
+        "lon": -95.600417
+      },
+      "country": "USA",
+      "line": "12355 Attlee Dr",
+      "postal_code": "77077",
+      "state": "Texas",
+      "state_code": "TX",
+      "street_direction": null,
+      "street_name": "Attlee",
+      "street_number": "12355",
+      "street_post_direction": null,
+      "street_suffix": "Dr",
+      "unit": null,
+      "validation_code": "121"
+    },
+    "county": {
+      "fips_code": "48201",
+      "name": "Harris",
+      "state_code": "TX"
+    },
+    "search_areas": [
+      {
+        "city": "houston",
+        "state_code": "tx"
+      }
+    ],
+    "city": {
+      "county_needed_for_uniq": false,
+      "slug_id": "Houston_TX"
+    },
+    "neighborhoods": [
+      {
+        "name": "Westside"
+      },
+      {
+        "name": "Briar Forest"
+      },
+      {
+        "name": "Ashford South"
+      }
+    ],
+    "postal_code": {
+      "geo_statistics": {
+        "housing_market": {
+          "hot_market_badge": "Other"
+        }
+      }
+    }
+  },
+  "agent": [
+    {
+      "agent_id": "rachid",
+      "agent_name": "Feras Rachid",
+      "agent_email": null,
+      "agent_phone": "8553279361",
+      "id": "HOTX",
+      "office_id": "OPBR01",
+      "office_name": null,
+      "office_phone": null,
+      "type": "seller"
+    },
+    {
+      "agent_id": "ARBONAV",
+      "agent_name": "Val Arbona",
+      "agent_email": null,
+      "agent_phone": null,
+      "id": "HOTX",
+      "office_id": "RMVP01",
+      "office_name": null,
+      "office_phone": null,
+      "type": "buyer"
+    }
+  ],
+  "advertisers": [
+    {
+      "team": null,
+      "state_license": "",
+      "address": null,
+      "builder": null,
+      "broker": null,
+      "email": null,
+      "fulfillment_id": null,
+      "href": null,
+      "mls_set": null,
+      "name": null,
+      "nrds_id": null,
+      "office": {
+        "address": {
+          "city": "DALLAS",
+          "coordinate": {
+            "lat": null,
+            "lon": null
+          },
+          "country": "US",
+          "line": "5307 E MOCKINGBIRD LN STE 220",
+          "postal_code": "75206",
+          "state": null,
+          "state_code": "TX"
+        },
+        "application_url": null,
+        "email": "homes@opendoor.com",
+        "lead_email": null,
+        "fulfillment_id": "4464789",
+        "hours": null,
+        "href": "http://opendoor.com",
+        "mls_set": "O-HOTX-OPBR01",
+        "out_of_community": null,
+        "name": "Opendoor Brokerage, LLC",
+        "phones": [
+          {
+            "ext": "",
+            "number": "18883527075",
+            "primary": true,
+            "trackable": null,
+            "type": "Toll Free"
+          },
+          {
+            "ext": "",
+            "number": "4804625392",
+            "primary": true,
+            "trackable": null,
+            "type": "Office"
+          }
+        ],
+        "photo": {
+          "href": "https://ap.rdcpix.com/bcb9341019f9ca0ed61c70a9adc664e6o-c3731063822l.jpg"
+        },
+        "slogan": null
+      },
+      "phones": null,
+      "photo": null,
+      "slogan": null,
+      "type": "seller"
+    }
+  ],
+  "tax_history": null,
+  "history": null,
+  "photos": [
+    {
+      "url": "https://ap.rdcpix.com/132d56bb4259d8a3f157f650dbbc314dl-m1594155027s.jpg",
+      "tags": null
+    },
+    {
+      "url": "https://ap.rdcpix.com/132d56bb4259d8a3f157f650dbbc314dl-m905340585s.jpg",
+      "tags": null
+    },
+    {
+      "url": "https://ap.rdcpix.com/132d56bb4259d8a3f157f650dbbc314dl-m1793590669s.jpg",
+      "tags": null
+    },
+    {
+      "url": "https://ap.rdcpix.com/132d56bb4259d8a3f157f650dbbc314dl-m1320565157s.jpg",
+      "tags": null
+    },
+    {
+      "url": "https://ap.rdcpix.com/132d56bb4259d8a3f157f650dbbc314dl-m2366184425s.jpg",
+      "tags": null
+    },
+    {
+      "url": "https://ap.rdcpix.com/132d56bb4259d8a3f157f650dbbc314dl-m3477719575s.jpg",
+      "tags": null
+    },
+    {
+      "url": "https://ap.rdcpix.com/132d56bb4259d8a3f157f650dbbc314dl-m2704413828s.jpg",
+      "tags": null
+    },
+    {
+      "url": "https://ap.rdcpix.com/132d56bb4259d8a3f157f650dbbc314dl-m2105253865s.jpg",
+      "tags": null
+    },
+    {
+      "url": "https://ap.rdcpix.com/132d56bb4259d8a3f157f650dbbc314dl-m3641318585s.jpg",
+      "tags": null
+    },
+    {
+      "url": "https://ap.rdcpix.com/132d56bb4259d8a3f157f650dbbc314dl-m1272382115s.jpg",
+      "tags": null
+    },
+    {
+      "url": "https://ap.rdcpix.com/132d56bb4259d8a3f157f650dbbc314dl-m842207905s.jpg",
+      "tags": null
+    },
+    {
+      "url": "https://ap.rdcpix.com/132d56bb4259d8a3f157f650dbbc314dl-m1351407913s.jpg",
+      "tags": null
+    },
+    {
+      "url": "https://ap.rdcpix.com/132d56bb4259d8a3f157f650dbbc314dl-m3031746566s.jpg",
+      "tags": null
+    },
+    {
+      "url": "https://ap.rdcpix.com/132d56bb4259d8a3f157f650dbbc314dl-m318561354s.jpg",
+      "tags": null
+    },
+    {
+      "url": "https://ap.rdcpix.com/132d56bb4259d8a3f157f650dbbc314dl-m1629933250s.jpg",
+      "tags": null
+    },
+    {
+      "url": "https://ap.rdcpix.com/132d56bb4259d8a3f157f650dbbc314dl-m960969417s.jpg",
+      "tags": null
+    },
+    {
+      "url": "https://ap.rdcpix.com/132d56bb4259d8a3f157f650dbbc314dl-m3013186773s.jpg",
+      "tags": null
+    },
+    {
+      "url": "https://ap.rdcpix.com/132d56bb4259d8a3f157f650dbbc314dl-m3547481808s.jpg",
+      "tags": null
+    },
+    {
+      "url": "https://ap.rdcpix.com/132d56bb4259d8a3f157f650dbbc314dl-m2108393014s.jpg",
+      "tags": null
+    },
+    {
+      "url": "https://ap.rdcpix.com/132d56bb4259d8a3f157f650dbbc314dl-m3372309277s.jpg",
+      "tags": null
+    },
+    {
+      "url": "https://ap.rdcpix.com/132d56bb4259d8a3f157f650dbbc314dl-m1102622999s.jpg",
+      "tags": null
+    },
+    {
+      "url": "https://ap.rdcpix.com/132d56bb4259d8a3f157f650dbbc314dl-m2853036951s.jpg",
+      "tags": null
+    },
+    {
+      "url": "https://ap.rdcpix.com/132d56bb4259d8a3f157f650dbbc314dl-m1221079774s.jpg",
+      "tags": null
+    },
+    {
+      "url": "https://ap.rdcpix.com/132d56bb4259d8a3f157f650dbbc314dl-m1410557868s.jpg",
+      "tags": null
+    }
+  ],
+  "phones": [
+    {
+      "type": "comm_console",
+      "number": "(281)336-9159"
+    },
+    {
+      "type": "schedule_tour",
+      "number": "(281)336-9618"
+    }
+  ],
+  "features": {
+    "Bedrooms": [
+      "Bedrooms: 4"
+    ],
+    "Bathrooms": [
+      "Total Bathrooms: 3",
+      "Full Bathrooms: 2",
+      "1/2 Bathrooms: 1"
+    ],
+    "Interior Features": [
+      "Alarm System - Owned"
+    ],
+    "Kitchen and Dining": [
+      "Microwave: Y"
+    ],
+    "Heating and Cooling": [
+      "Cooling Features: Central Electric",
+      "Heating Features: Central Gas",
+      "Number of Fireplaces: 1"
+    ],
+    "Land Info": [
+      "Lot Description: Subdivision Lot",
+      "Lot Size Acres: 0.1818",
+      "Lot Size Source: Appraisal District",
+      "Lot Size Square Feet: 7919"
+    ],
+    "Garage and Parking": [
+      "Garage Spaces: 2",
+      "Garage Description: Attached Garage"
+    ],
+    "Homeowners Association": [
+      "Association: Yes",
+      "Association Fee: 625",
+      "Association Fee Frequency: Annually",
+      "Calculated Total Monthly Association Fees: 52",
+      "Association Phone: 7133345055"
+    ],
+    "School Information": [
+      "Elementary School: ASHFORD/SHADOWBRIAR ELEMENTARY SCHOOL",
+      "High School: WESTSIDE HIGH SCHOOL",
+      "Middle School: WEST BRIAR MIDDLE SCHOOL",
+      "School District: 27 - Houston"
+    ],
+    "Other Property Info": [
+      "Annual Tax Amount: 6045",
+      "Source Listing Status: Sold",
+      "County: Harris",
+      "Directions: Head north on Addicks-Howell Rd Turn right onto Briar Forest Dr Turn right onto Ashford Pkwy Turn left onto Attlee Dr",
+      "Tax Year: 2021",
+      "Source Property Type: Single-Family",
+      "Exclusions: Exemptions: Homestead",
+      "Area: 31",
+      "Source Neighborhood: Ashford South Sec 02",
+      "Parcel Number: 101-010-000-0026",
+      "Postal Code Plus 4: 4801",
+      "Public Survey Section: 2",
+      "Subdivision: Ashford South Sec 02",
+      "Source System Name: C2C"
+    ],
+    "Building and Construction": [
+      "Total Square Feet Living: 2122",
+      "Year Built: 1970",
+      "Building Exterior Type: Brick, Vinyl",
+      "Foundation Details: Slab",
+      "Levels: 2",
+      "Living Area Source: Seller",
+      "Property Age: 53",
+      "Levels or Stories: 2",
+      "Structure Type: Free Standing",
+      "House Style: Traditional"
+    ],
+    "Utilities": [
+      "Water Source: Public Water"
+    ]
+  }
+}

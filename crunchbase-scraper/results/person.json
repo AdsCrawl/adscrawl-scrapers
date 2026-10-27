@@ -1,0 +1,176 @@
+{
+  "name": "Elon Musk",
+  "title": "Elon Musk - CEO @ Tesla",
+  "description": "Elon Musk has co-founded numerous companies including space exploration company SpaceX, brain-implant startup Neuralink, and tunneling start...",
+  "type": "investor",
+  "gender": "male",
+  "location_groups": [
+    "Greater Los Angeles Area",
+    "West Coast",
+    "Western US"
+  ],
+  "location": [
+    "Los Angeles",
+    "California",
+    "United States",
+    "North America"
+  ],
+  "current_jobs": 7,
+  "past_jobs": 5,
+  "education": [
+    {
+      "school": "University of Pennsylvania",
+      "type": "BA"
+    },
+    {
+      "school": "Wharton School of the University of Pennsylvania",
+      "type": "BS"
+    }
+  ],
+  "timeline": [
+    "SpaceX IPO At $1.5T Valuation Would Be 10x Larger Than Biggest VC-Backed Listing Of All Time",
+    "The Crunchbase Tech Layoffs Tracker",
+    "What Is XChat, Musk’s New Social App With Bitcoin-Like Privacy?",
+    "What Is XChat, Musk’s New Social App With Bitcoin-Like Privacy?",
+    "Hackers Threaten to Leak 1B Salesforce Records",
+    "The MVPs Of The Startup World Are Still Getting More Valuable",
+    "Biotech Share Of US Funding Hits Lowest Point In Crunchbase History",
+    "These Are The Speediest Companies To Go From Series A To Series C",
+    "Exclusive: Cache Raises $12.5M For Exchange Fund To Help Tech Workers Diversify Company Stock Without Tax Pain",
+    "July’s Most-Active US Investors: Andreessen, Insight And Y Combinator Top Busy Month"
+  ],
+  "investments": [
+    {
+      "identifier": {
+        "uuid": "b0f10d18-c1d5-4620-9609-1a356606cba9",
+        "value": "Elon Musk investment in Venture Round - X (formerly Twitter)",
+        "permalink": "elon-musk-invested-in-twitter-series-unknown--636b0eaa--b0f10d18",
+        "entity_def_id": "investment"
+      },
+      "organization_identifier": {
+        "uuid": "5da6106f-0d27-0d37-e9d7-dcfeccc1f709",
+        "value": "X (formerly Twitter)",
+        "permalink": "twitter",
+        "entity_def_id": "organization"
+      },
+      "funding_round_identifier": {
+        "uuid": "636b0eaa-400c-4214-aeb4-14f0eb905c6a",
+        "value": "Venture Round - X (formerly Twitter)",
+        "permalink": "twitter-series-unknown--636b0eaa",
+        "entity_def_id": "funding_round"
+      }
+    },
+    {
+      "identifier": {
+        "uuid": "7526387d-9bc7-4ea7-84a7-1329b5fdabf1",
+        "value": "Elon Musk investment in Series A - Stripe",
+        "permalink": "elon-musk-invested-in-stripe-series-a--a3d74035--7526387d",
+        "entity_def_id": "investment"
+      },
+      "organization_identifier": {
+        "uuid": "6f83ddd7-d637-61f8-06b2-438a0037605f",
+        "value": "Stripe",
+        "permalink": "stripe",
+        "entity_def_id": "organization"
+      },
+      "funding_round_identifier": {
+        "uuid": "a3d74035-aaf2-17d5-abc5-f2052dc2d930",
+        "value": "Series A - Stripe",
+        "permalink": "stripe-series-a--a3d74035",
+        "entity_def_id": "funding_round"
+      }
+    },
+    {
+      "identifier": {
+        "uuid": "12a28db9-6333-471f-910b-e75585dbce4f",
+        "value": "Elon Musk investment in Seed Round - Stripe",
+        "permalink": "elon-musk-invested-in-stripe-seed--c9ad7c9e--12a28db9",
+        "entity_def_id": "investment"
+      },
+      "organization_identifier": {
+        "uuid": "6f83ddd7-d637-61f8-06b2-438a0037605f",
+        "value": "Stripe",
+        "permalink": "stripe",
+        "entity_def_id": "organization"
+      },
+      "funding_round_identifier": {
+        "uuid": "c9ad7c9e-a915-bfb2-349b-8d63c0cbeb36",
+        "value": "Seed Round - Stripe",
+        "permalink": "stripe-seed--c9ad7c9e",
+        "entity_def_id": "funding_round"
+      }
+    },
+    {
+      "identifier": {
+        "uuid": "f0898700-4fcb-435c-ba04-75edfc010e12",
+        "value": "Elon Musk investment in Series B - Game Trust",
+        "permalink": "elon-musk-invested-in-game-trust-series-b--fc5dd7ca--f0898700",
+        "entity_def_id": "investment"
+      },
+      "organization_identifier": {
+        "uuid": "35b16561-1b57-6eb6-1ce6-e2877cf712de",
+        "value": "Game Trust",
+        "permalink": "game-trust",
+        "entity_def_id": "organization"
+      },
+      "funding_round_identifier": {
+        "uuid": "fc5dd7ca-2c24-12ac-189d-9c8c76562632",
+        "value": "Series B - Game Trust",
+        "permalink": "game-trust-series-b--fc5dd7ca",
+        "entity_def_id": "funding_round"
+      }
+    },
+    {
+      "identifier": {
+        "uuid": "cb1393ba-2cbc-49f1-b48b-31406e9b9a73",
+        "value": "Elon Musk investment in Series C - PayPal",
+        "permalink": "elon-musk-invested-in-paypal-series-c--004c4de3--cb1393ba",
+        "entity_def_id": "investment"
+      },
+      "organization_identifier": {
+        "uuid": "96ab87ca-00b5-2ebc-f218-86262954e320",
+        "value": "PayPal",
+        "permalink": "paypal",
+        "entity_def_id": "organization"
+      },
+      "funding_round_identifier": {
+        "uuid": "004c4de3-7f18-b517-a557-22af0d094dfb",
+        "value": "Series C - PayPal",
+        "permalink": "paypal-series-c--004c4de3",
+        "entity_def_id": "funding_round"
+      }
+    }
+  ],
+  "exits": [
+    {
+      "name": "X (formerly Twitter)",
+      "short_description": "X is a social networking platform that allows its users to send and read microblogs."
+    },
+    {
+      "name": "PayPal",
+      "short_description": "PayPal is a financial service company that provides online payment solutions to its users worldwide."
+    },
+    {
+      "name": "Game Trust",
+      "short_description": "Game Trust offers infrastructure for community and commerce apps in the online games and entertainment industry."
+    }
+  ],
+  "investing_overview": {
+    "num_current_advisor_jobs": 8,
+    "num_founded_organizations": 7,
+    "preview_properties": {
+      "num_exits": {
+        "is_present": true
+      }
+    },
+    "num_portfolio_organizations": 4,
+    "rank_principal_investor": 24962
+  },
+  "linkedin": "https://www.linkedin.com/in/elon-m-346799137",
+  "twitter": "https://x.com/elonmusk",
+  "facebook": null,
+  "current_advisor_jobs": 8,
+  "founded_orgs": 7,
+  "portfolio_orgs": 4,
+  "rank_principal_investor": 24962
+}

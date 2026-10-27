@@ -1,0 +1,139 @@
+# Adapted by AdsCrawl from scrapfly/scrapfly-scrapers. See NOTICE.
+"""
+This is an example web scraper for immowelt.de.
+
+To run this scraper set env variable $ADSCRAWL_API_KEY with your AdsCrawl API key:
+$ export ADSCRAWL_API_KEY="your key from https://app.adscrawl.net/dashboard/keys/"
+"""
+from adscrawl_scrapers import managed
+import os
+import json
+import math
+
+import re
+from typing import Dict, List
+from pathlib import Path
+from loguru import logger as log
+from adscrawl_scrapers import Request, ScraperClient, Response
+from lzstring import LZString
+
+CLIENT = ScraperClient()
+
+BASE_CONFIG = {
+    # bypass web scraping blocking
+    'countryCode': "DE",
+}
+
+output = Path(__file__).parent / "results"
+output.mkdir(exist_ok=True)
+
+
+def parse_property_pages(response: Response) -> Dict:
+    """parse lsiting data from property page"""
+    # get the property id from the page URL
+    # proeprty_id = str(response.url).split("expose/")[-1]
+    selector = response.selector
+    # extract the data from the script tag
+    data_script = selector.xpath("//script[contains(text(),'UFRN_LIFECYCLE_SERVERREQUEST')]/text()").get()
+    # find data in JSON.parse("<data>") pattern:
+    _hidden_datasets = re.findall(r'JSON.parse\("(.*)"\)', data_script)
+    # unescape escaped json characters like `\\"` to `"`
+    _property_datastring = _hidden_datasets[0].encode("utf-8").decode("unicode_escape")
+    property_data = json.loads(_property_datastring)
+    # the property page app was renamed from "app_cldp" to "app_demand_referral_cldp"
+    page_data = property_data["app_demand_referral_cldp"]["data"]
+    # expired listings (HTTP 410) set an error and return a stub classified without listing data
+    if page_data.get("error"):
+        raise Exception(f"classified not available: {page_data['error']}")
+    # remove web app related keys
+    parsed = {
+        key: value
+        for key, value in page_data["classified"].items()
+        if key
+        in [
+            "sections",
+            "id",
+            "brand",
+            "tags",
+            "contactSections",
+        ]
+    }
+    # listing photos and floorplans moved out of "sections" into "domains.medias", put them back where they used to be
+    medias = (page_data["classified"].get("domains") or {}).get("medias") or {}
+    gallery = {key: medias[key] for key in ("images", "floorplans") if medias.get(key)}
+    if gallery and "sections" in parsed:
+        parsed["sections"]["gallery"] = gallery
+    return parsed
+
+
+@managed
+async def scrape_properties(urls: List[str]) -> List[Dict]:
+    """scrape listings data from property pages"""
+    # add all property pages to a scraping list
+    to_scrape = [Request(url, **BASE_CONFIG) for url in urls]
+    properties = []
+    # scrape all property pages concurrently
+    async for response in CLIENT.fetch_many(to_scrape):
+        try:
+            data = parse_property_pages(response)
+            if "sections" not in data:
+                raise Exception("required schmea is not fullfilled")
+            properties.append(data)
+        except Exception as e:
+            log.warning("expired property page: {}", e)
+    log.success(f"scraped {len(properties)} property listings")
+    return properties
+
+
+def find_json_objects(text: str, decoder=json.JSONDecoder()):
+    """Find JSON objects in text, and generate decoded JSON data"""
+    pos = 0
+    while True:
+        match = text.find("{", pos)
+        if match == -1:
+            break
+        try:
+            result, index = decoder.raw_decode(text[match:])
+            yield result
+            pos = match + index
+        except ValueError:
+            pos = match + 1
+
+
+def parse_search_pages(response: Response) -> Dict:
+    """Parse search data from script tags using LZ-String decompression."""
+    selector = response.selector
+    script_content = selector.xpath('//script[contains(text(),"classified-serp-init-data")]/text()').get()
+    json_blob_string = script_content.split('JSON.parse("', 1)[1].rsplit('")', 1)[0]
+    outer_data = json.loads(json_blob_string.encode().decode("unicode_escape"))
+    compressed_data = outer_data["data"]["classified-serp-init-data"]
+    lz = LZString()
+    decompressed_string = lz.decompressFromBase64(compressed_data)
+    data = json.loads(decompressed_string)
+    classifieds_data = data["pageProps"]["classifiedsData"]
+    search_data = list(classifieds_data.values())
+    total_count = data["pageProps"]["totalCount"]
+    max_pages = math.ceil(total_count / len(search_data)) if search_data else 1
+    return {"search_data": search_data, "max_pages": max_pages}
+
+
+@managed
+async def scrape_search(url: str, max_scrape_pages: int = None) -> List[Dict]:
+    """scrape search pages from XHR call responses"""
+    log.info("scraping first search page")
+    first_page = await CLIENT.fetch(Request(url, **BASE_CONFIG))
+    data = parse_search_pages(first_page)
+    search_data = data["search_data"]
+    max_pages = data["max_pages"]
+
+    # get the total number of pages to scrape
+    if max_scrape_pages and max_scrape_pages < max_pages:
+        max_pages = max_scrape_pages
+    log.info(f"scraping search pagination, remaining ({max_pages - 1}) more pages")
+
+    # scrape the remaining search pages concurrently
+    to_scrape = [Request(url + f"&page={page}", **BASE_CONFIG) for page in range(2, max_pages + 1)]
+    async for response in CLIENT.fetch_many(to_scrape):
+        search_data.extend(parse_search_pages(response)["search_data"])
+    log.success(f"scraped {len(search_data)} properties from search")
+    return search_data

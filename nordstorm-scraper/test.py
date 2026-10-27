@@ -1,0 +1,128 @@
+# Adapted by AdsCrawl from scrapfly/scrapfly-scrapers. See NOTICE.
+from cerberus import Validator
+import pytest
+import nordstorm
+import pprint
+
+pp = pprint.PrettyPrinter(indent=4)
+
+# enable cache
+
+
+def validate_or_fail(item, validator):
+    if not validator.validate(item):
+        pp.pformat(item)
+        pytest.fail(f"Validation failed for item: {pp.pformat(item)}\nErrors: {validator.errors}")
+
+
+product_schema = {
+    "id": {"type": "string"},
+    "title": {"type": "string"},
+    "type": {"type": "string"},
+    "typeParent": {"type": "string"},
+    "brand": {
+        "type": "dict",
+        "schema": {
+            "brandName": {"type": "string"},
+            "brandUrl": {"type": "string"},
+            "labelId": {"type": "string"},
+        },
+    },
+    "description": {"type": "string"},
+    "features": {"type": "list", "schema": {"type": "string"}},
+    "gender": {"type": "string"},
+    "media": {
+        "type": "list",
+        "schema": {
+            "type": "dict",
+            "schema": {
+                "colorCode": {"type": "string"},
+                "colorName": {"type": "string"},
+                "urls": {
+                    "type": "list",
+                    "schema": {"type": "string"}
+                }
+            }
+        }
+    },
+    "variants": {
+        "type": "dict",
+        "valueschema": {
+            "type": "dict",
+            "schema": {
+                "id": {"type": "string"},
+                "sizeId": {"type": "string"},
+                "colorId": {"type": "string"},
+                "totalQuantityAvailable": {"type": "integer"},
+            },
+        },
+    },
+}
+
+search_schema = {
+    "id": {"type": "string"},
+    "labelId": {"type": "string"},
+    "labelDisplayName": {"type": "string"},
+    "webPathAlias": {"type": "string"},
+    "copyProductTitle": {"type": "string"},
+    "coreProducts": {
+        "type": "list",
+        "schema": {
+            "type": "dict",
+            "schema": {
+                "coreProductId": {"type": "string"},
+                "coreChoices": {
+                    "type": "list",
+                    "schema": {
+                        "type": "dict",
+                        "schema": {
+                            "coreChoiceId": {"type": "string"},
+                            "displayColorDescription": {"type": "string"},
+                        },
+                    },
+                },
+            },
+        },
+    },
+    "propositions": {
+        "type": "list",
+        "schema": {
+            "type": "dict",
+            "schema": {
+                "sellingRetailPriceRange": {
+                    "type": "dict",
+                    "schema": {
+                        "min": {"type": "string"},
+                        "max": {"type": "string"},
+                    },
+                },
+            },
+        },
+    },
+}
+
+
+@pytest.mark.asyncio
+async def test_product_scraping():
+    products_data = await nordstorm.scrape_products(
+        urls=[
+            "https://www.nordstrom.com/s/nike-air-max-90-sneaker-men/6549520",
+            "https://www.nordstrom.com/s/hank-kent-performance-twill-dress-shirt-regular-big/7783670",
+            "https://www.nordstrom.com/s/bp-fleece-hoodie/7786657",
+        ]
+    )
+    validator = Validator(product_schema, allow_unknown=True)
+    for item in products_data:
+        validate_or_fail(item, validator)
+    assert len(products_data) >= 1
+
+
+@pytest.mark.asyncio
+async def test_search_scraping():
+    search_data = await nordstorm.scrape_search(
+        url="https://www.nordstrom.com/sr?origin=keywordsearch&keyword=indigo", max_pages=3
+    )
+    validator = Validator(search_schema, allow_unknown=True)
+    for item in search_data:
+        validate_or_fail(item, validator)
+    assert len(search_data) >= 10

@@ -1,0 +1,264 @@
+# Adapted by AdsCrawl from scrapfly/scrapfly-scrapers. See NOTICE.
+"""
+This is an example web scraper for Twitter.com adapted from the upstream Scrapfly example:
+https://scrapfly.io/blog/how-to-scrape-twitter/
+
+To run this scraper set env variable $ADSCRAWL_API_KEY with your AdsCrawl API key:
+$ export ADSCRAWL_API_KEY="your key from https://app.adscrawl.net/dashboard/keys/"
+"""
+from adscrawl_scrapers import managed
+import re
+import os
+import base64
+import datetime
+from html import unescape
+from typing import Dict, List, Optional
+
+from loguru import logger as log
+from adscrawl_scrapers import Request, ScraperClient, Response
+
+CLIENT = ScraperClient()
+BASE_CONFIG = {
+    # X.com (Twitter) requires the Unblocker (anti-bot bypass) feature.
+    'render': True,
+    'autoScroll': True,
+    'waitMs': 2000,
+    'countryCode': "US",
+}
+
+
+def meta(sel, *, name: str = None, prop: str = None) -> Optional[str]:
+    """read a meta tag by name or property"""
+    if name:
+        return sel.xpath(f'//meta[@name="{name}"]/@content').get()
+    return sel.xpath(f'//meta[@property="{prop}"]/@content').get()
+
+
+def parse_count(text: Optional[str]) -> Optional[int]:
+    """parse compact counts like 2.2K, 2 k, or 5&nbsp;M"""
+    if not text:
+        return None
+    text = text.replace("&nbsp;", "").replace("\u00a0", "").replace(" ", "").replace(",", "")
+    match = re.match(r"^(\d+(?:\.\d+)?)([KMB])?$", text, re.I)
+    if not match:
+        return None
+    mult = {"K": 1_000, "M": 1_000_000, "B": 1_000_000_000}.get((match.group(2) or "").upper(), 1)
+    return int(float(match.group(1)) * mult)
+
+
+def inline_icons(html: str) -> str:
+    """x.com buttons and badges can draw their icon with <use href="#id">, where the id is the icon name itself
+    (#icon-reply-stroke) or a <symbol> of a shared sprite; copy the icon name onto the <use> tags so icon lookups
+    find them next to counts and names"""
+    sprite = dict(re.findall(r'<symbol id="([^"]+)"[^>]*>\s*<svg[^>]*?data-icon="([^"]+)"', html))
+
+    def add_name(match):
+        icon = sprite.get(match.group(1)) or (match.group(1) if match.group(1).startswith("icon-") else None)
+        return f'{match.group(0)} data-icon="{icon}"' if icon else match.group(0)
+
+    return re.sub(r'<use href="#([^"]+)"', add_name, html)
+
+
+def marked_count(html: str, marker: str, stop: str) -> Optional[int]:
+    """read the last number shown between a marker attribute and the next attribute of its kind (locale-independent)"""
+    start = html.find(marker)
+    if start == -1:
+        return None
+    end = html.find(stop, start + 1)
+    chunk = html[start : end if end != -1 else start + 2000]
+    nums = [t.strip() for t in re.findall(r">([^<>]+)<", chunk) if re.match(r"^\d", t.strip())]
+    return parse_count(nums[-1]) if nums else None
+
+
+def icon_count(html: str, icon: str) -> Optional[int]:
+    """read a count next to a stable icon"""
+    return marked_count(html, f'data-icon="icon-{icon}"', 'data-icon="icon-')
+
+
+def action_count(html: str, action: str, icon: str) -> Optional[int]:
+    """read the count of an engagement button from its data-engagement-action container (reply, retweet, like,
+    bookmark; x.com renames the icons now and then) or, on older pages, next to its icon"""
+    count = marked_count(html, f'data-engagement-action="{action}"', 'data-engagement-action="')
+    return count if count is not None else icon_count(html, icon)
+
+
+def icon_text(html: str, icon: str) -> Optional[str]:
+    """read text shown after a stable icon (location, etc.); the icon name is matched as a prefix because x.com renames
+    the variant now and then (icon-location-stroke became icon-location-pin)"""
+    match = re.search(
+        rf'data-icon="icon-{icon}[^"]*".{{0,2000}}?<div class="[^"]*font-normal[^"]*">([^<]+)</div>', html, re.S
+    )
+    return unescape(match.group(1)) if match else None
+
+
+def verified_badge(html: str, name: Optional[str]) -> bool:
+    """check for a verification badge rendered next to the display name"""
+    if not name:
+        return False
+    return bool(re.search(rf'>{re.escape(name)}</\w+>.{{0,600}}?data-icon="icon-verified', html, re.S))
+
+
+def website_url(html: str) -> Optional[str]:
+    """read profile website link next to the link icon"""
+    match = re.search(r'data-icon="icon-link".*?href="(https://t\.co/\w+)"', html)
+    return match.group(1) if match else None
+
+
+def href_count(html: str, path: str) -> Optional[int]:
+    """read a profile stat via a stable href path"""
+    match = re.search(
+        rf'href="[^"]*{re.escape(path)}"[^>]*><div[^>]*><(?:div|span)[^>]*>([^<]+)</(?:div|span)>',
+        html,
+    )
+    return parse_count(match.group(1)) if match else None
+
+
+def views_count(html: str, tweet_id: str) -> Optional[int]:
+    """read view count from the tweet permalink (locale-independent)"""
+    match = re.search(rf'href="/\w+/status/{re.escape(tweet_id)}"[^>]*>\s*<div[^>]*>([^<]+)</div>', html)
+    return parse_count(match.group(1)) if match else None
+
+
+def tweet_timestamp(html: str, tweet_id: str) -> Optional[str]:
+    """read the epoch timestamp attached to the tweet's own permalink"""
+    match = re.search(rf'href="/\w+/status/{re.escape(tweet_id)}".{{0,3000}}?"timestamp":(\d+)', html, re.S)
+    return match.group(1) if match else None
+
+
+def main_tweet_html(html: str, tweet_id: str) -> str:
+    """narrow the page down to the <article> of the scraped tweet (drops replies and thread context)"""
+    anchor = re.search(rf'href="/\w+/status/{re.escape(tweet_id)}"', html)
+    if not anchor:
+        return html
+    open_tags = []
+    for tag in re.finditer(r"<(/?)article", html):
+        if not tag.group(1):
+            open_tags.append(tag.start())
+            continue
+        start = open_tags.pop() if open_tags else None
+        # innermost articles close first, so the first article wrapping the permalink is the tweet itself
+        if start is not None and start < anchor.start() < tag.end():
+            return html[start:tag.end()]
+    return html
+
+
+def author_name(title: Optional[str]) -> Optional[str]:
+    match = re.match(r"^(.+?)\s*\(@", title or "")
+    return match.group(1) if match else None
+
+
+def twitter_date(ms: Optional[str]) -> Optional[str]:
+    if not ms:
+        return None
+    dt = datetime.datetime.fromtimestamp(int(ms) / 1000, tz=datetime.timezone.utc)
+    return dt.strftime("%a %b %d %H:%M:%S +0000 %Y")
+
+
+def published_date(iso: Optional[str]) -> Optional[str]:
+    """format the page's article:published_time meta (e.g. 2024-12-25T22:33:15.000Z) like twitter_date"""
+    if not iso:
+        return None
+    dt = datetime.datetime.fromisoformat(iso.replace("Z", "+00:00")).astimezone(datetime.timezone.utc)
+    return dt.strftime("%a %b %d %H:%M:%S +0000 %Y")
+
+
+def user_gid(rest_id: Optional[str]) -> Optional[str]:
+    return base64.b64encode(f"User:{rest_id}".encode()).decode() if rest_id else None
+
+
+def unique(pattern: str, text: str) -> List[str]:
+    return list(dict.fromkeys(re.findall(pattern, text)))
+
+
+def parse_tweet(response: Response) -> Dict:
+    """parse a rendered tweet/status page"""
+    html = inline_icons(response.content)
+    sel = response.selector
+
+    url = meta(sel, prop="og:url")
+    tweet_id = re.search(r"/status/(\d+)", url or "")
+    tweet_id = tweet_id.group(1) if tweet_id else None
+    # status pages embed the whole conversation, keep only the scraped tweet
+    html = main_tweet_html(html, tweet_id) if tweet_id else html
+    text = unescape(meta(sel, prop="og:description") or "") or None
+    name = author_name(meta(sel, prop="og:title"))
+    media = unique(r'src="(https://pbs\.twimg\.com/media/[^"]+)"', html)
+    views = views_count(html, tweet_id) if tweet_id else None
+
+    return {
+        "id": tweet_id,
+        "conversation_id": tweet_id,
+        "url": url,
+        "text": text,
+        # some pages have no timestamp next to the permalink; the published_time meta carries the same instant
+        "created_at": (twitter_date(tweet_timestamp(html, tweet_id)) if tweet_id else None)
+        or published_date(meta(sel, prop="article:published_time")),
+        "language": sel.xpath("//html/@lang").get(),
+        "attached_urls": unique(r"https://t\.co/\w+", text or ""),
+        "attached_media": [unescape(u) for u in media] or None,
+        "tagged_users": unique(r"@(\w+)", text or ""),
+        "tagged_hashtags": unique(r"#(\w+)", text or ""),
+        "reply_count": action_count(html, "reply", "reply-stroke"),
+        "retweet_count": action_count(html, "retweet", "retweet-stroke"),
+        "favorite_count": action_count(html, "like", "heart-stroke"),
+        "bookmark_count": action_count(html, "bookmark", "bookmark-stroke"),
+        "views": str(views) if views is not None else None,
+        "user": {
+            "name": name,
+            "screen_name": (meta(sel, name="twitter:creator") or "").lstrip("@") or None,
+            "profile_image_url": meta(sel, prop="og:image"),
+            "verified": verified_badge(html, name),
+        },
+    }
+
+
+def parse_profile(response: Response) -> Dict:
+    """parse a rendered profile page"""
+    html = inline_icons(response.content)
+    sel = response.selector
+
+    rest_id = re.search(r"profile_banners/(\d+)/", html)
+    rest_id = rest_id.group(1) if rest_id else None
+    description = unescape(meta(sel, prop="og:description") or "") or None
+    website = website_url(html)
+    bio_urls = unique(r"https://t\.co/\w+", description or "")
+    followers = href_count(html, "/verified_followers")
+    name = author_name(meta(sel, prop="og:title"))
+
+    return {
+        "id": user_gid(rest_id),
+        "rest_id": rest_id,
+        "name": name,
+        "screen_name": (meta(sel, name="twitter:creator") or "").lstrip("@") or None,
+        "verified": verified_badge(html, name),
+        "description": description,
+        "location": icon_text(html, "location"),
+        "joined": meta(sel, name="twitter:data2") if meta(sel, name="twitter:label2") == "Joined" else None,
+        "url": website,
+        "profile_image_url": meta(sel, prop="og:image"),
+        "profile_banner_url": meta(sel, name="twitter:image"),
+        "followers_count": followers,
+        "friends_count": href_count(html, "/following"),
+        "statuses_count": parse_count(meta(sel, name="twitter:data1")),
+        "fast_followers_count": 0,
+        "entities": {
+            "description": {"urls": [{"url": u} for u in bio_urls]},
+            "url": {"urls": [{"url": website}] if website else []},
+        },
+    }
+
+
+@managed
+async def scrape_tweet(url: str) -> Dict:
+    """scrape a tweet page"""
+    log.info("scraping tweet {}", url)
+    response = await CLIENT.fetch(Request(url, **BASE_CONFIG))
+    return parse_tweet(response)
+
+
+@managed
+async def scrape_profile(url: str) -> Dict:
+    """scrape a profile page"""
+    log.info("scraping profile {}", url)
+    response = await CLIENT.fetch(Request(url, **BASE_CONFIG))
+    return parse_profile(response)

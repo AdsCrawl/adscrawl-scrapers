@@ -1,0 +1,401 @@
+# Adapted by AdsCrawl from scrapfly/scrapfly-scrapers. See NOTICE.
+"""
+This is an example web scraper for idealo.de.
+
+To run this scraper set env variable $ADSCRAWL_API_KEY with your AdsCrawl API key:
+$ export ADSCRAWL_API_KEY="your key from https://app.adscrawl.net/dashboard/keys/"
+"""
+from adscrawl_scrapers import managed
+import os
+import re
+import json
+import asyncio
+from urllib.parse import urljoin, urlencode
+from typing import List, Literal, Optional, TypedDict
+
+from loguru import logger as log
+from adscrawl_scrapers import Request, ScraperClient, Response
+
+CLIENT = ScraperClient()
+
+BASE_CONFIG = {
+    'countryCode': "DE",
+    'render': True,
+
+}
+
+LOAD_MORE_JS = """
+const clickUntilGone = async () => {
+  while (true) {
+    const btn = document.querySelector('button.productOffers-listLoadMore');
+    if (!btn) break;
+    btn.click();
+    await new Promise(r => setTimeout(r, 500));
+  }
+};
+await clickUntilGone();
+"""
+
+BASE_URL = "https://www.idealo.de"
+SEARCH_PAGE_SIZE = 15
+MAX_RETRIES = 3
+RETRY_DELAY = 5
+PeriodType = Literal["1Y", "3M", "6M", "1M"]
+
+
+@managed
+async def scrape_with_retry(config: Request, _retries: int = 0) -> Response:
+    """scrape a config and retry on any failure - idealo blocks requests intermittently"""
+    try:
+        return await CLIENT.fetch(config)
+    except Exception as e:
+        if _retries < MAX_RETRIES:
+            log.debug(f"retrying failed request to {config.url}: {e}")
+            await asyncio.sleep(RETRY_DELAY)
+            return await scrape_with_retry(config, _retries=_retries + 1)
+        raise Exception(f"unable to scrape {config.url}, max retries exceeded") from e
+
+
+class IdealoOffer(TypedDict):
+    shop_name: str
+    shop_url: Optional[str]
+    shop_rating: Optional[str]
+    shop_rating_count: Optional[int]
+    price: Optional[float]
+    currency: str
+    delivery_info: Optional[str]
+    merchant_name: Optional[str]
+    url: str
+
+
+class IdealoProduct(TypedDict):
+    product_id: Optional[str]
+    name: Optional[str]
+    brand: Optional[str]
+    url: str
+    image: Optional[str]
+    description: Optional[str]
+    rating: Optional[float]
+    rating_count: Optional[int]
+    low_price: Optional[float]
+    high_price: Optional[float]
+    currency: Optional[str]
+    offer_count: Optional[int]
+    offers: List[IdealoOffer]
+
+
+class IdealoListingItem(TypedDict):
+    product_id: Optional[str]
+    name: Optional[str]
+    url: Optional[str]
+    image: Optional[str]
+    price: Optional[float]
+    currency: str
+    offer_count: Optional[int]
+    shop_name: Optional[str]
+
+
+class IdealoManufacturer(TypedDict):
+    name: Optional[str]
+    description: Optional[str]
+    url: str
+    result_count: Optional[int]
+    products: List[IdealoListingItem]
+
+
+class IdealoPriceHistoryPoint(TypedDict):
+    date: Optional[str]
+    price: Optional[float]
+
+
+class IdealoPriceHistory(TypedDict):
+    product_id: str
+    period: PeriodType
+    currency: str
+    start_date: Optional[str]
+    avg_price: Optional[float]
+    lowest_price: Optional[float]
+    lowest_price_days: Optional[int]
+    highest_price: Optional[float]
+    highest_price_days: Optional[int]
+    points: List[IdealoPriceHistoryPoint]
+
+
+def _parse_price(text: Optional[str]) -> Optional[float]:
+    if not text:
+        return None
+    cleaned = text.replace("\xa0", " ").replace("€", "").replace(" ", "")
+    match = re.search(r"[\d.]+,\d+|\d+", cleaned)
+    if not match:
+        return None
+    try:
+        return float(match.group(0).replace(".", "").replace(",", "."))
+    except ValueError:
+        return None
+
+
+def _parse_history_price(value) -> Optional[float]:
+    try:
+        return float(value) / 100
+    except (TypeError, ValueError):
+        return None
+
+def _parse_int(text: Optional[str]) -> Optional[int]:
+    if not text:
+        return None
+    match = re.search(r"[\d.]+", text.replace("\xa0", " ").replace(" ", ""))
+    if not match:
+        return None
+    try:
+        return int(match.group(0).replace(".", ""))
+    except ValueError:
+        return None
+
+
+def _parse_listing_item(card) -> IdealoListingItem:
+    href = card.css('a[href*="OffersOfProduct"]::attr(href)').get()
+    # cards come in two markups: the older `sr-*` classes and the newer `data-testid` attributes
+    name = card.css('[class*="sr-productSummary__title"]::text, [data-testid="product-summary-title"]::text').get()
+    shop_name = card.css('[class*="sr-singleOffer__shopName"] span::text').get()
+    wishlist_raw = card.css("[data-wishlist-heart]::attr(data-wishlist-heart)").get()
+    wishlist = json.loads(wishlist_raw) if wishlist_raw else {}
+
+    product_id = wishlist.get("id")
+    if not product_id and href:
+        match = re.search(r"/OffersOfProduct/(\d+)", href)
+        product_id = match.group(1) if match else None
+
+    return IdealoListingItem(
+        product_id=product_id,
+        name=name.strip() if name else None,
+        url=urljoin(BASE_URL, href) if href else None,
+        image=card.css(
+            '[class*="sr-resultItemTile__image"]::attr(src), [data-testid="result-item-image"]::attr(src)'
+        ).get(),
+        price=_parse_price(
+            "".join(
+                card.css(
+                    '[class*="sr-detailedPriceInfo__price"] ::text, [data-testid="detailed-price-info-price"] ::text'
+                ).getall()
+            )
+        ),
+        currency="EUR",
+        offer_count=_parse_int(
+            card.css(
+                '[class*="sr-detailedPriceInfo__offerCount"]::text, '
+                '[data-testid="detailed-price-info"] > div:first-child::text'
+            ).get()
+        ),
+        shop_name=shop_name.strip() if shop_name else None,
+    )
+
+
+def _parse_total_pages(sel) -> int:
+    pages = []
+    pagination = sel.css('[class*="sr-pagination"]')
+    for value in pagination.css("[aria-label]::attr(aria-label)").getall():
+        if value.strip().isdigit():
+            pages.append(int(value.strip()))
+    for value in pagination.css('[class*="sr-pageElement"]::text, [class*="sr-textElement"]::text').getall():
+        if value.strip().isdigit():
+            pages.append(int(value.strip()))
+    return max(pages) if pages else 1
+
+
+def parse_search(response: Response) -> dict:
+    """parse search listings from idealo.de"""
+    sel = response.selector
+    results = [_parse_listing_item(card) for card in sel.css('[class*="sr-resultList__item"]')]
+    return {"results": results, "total_pages": _parse_total_pages(sel)}
+
+
+def parse_manufacturer(response: Response) -> IdealoManufacturer:
+    """parse manufacturer listing data from idealo.de"""
+    sel = response.selector
+    name = sel.css("h1::text").get()
+    return IdealoManufacturer(
+        name=name.strip() if name else None,
+        description=sel.css('meta[name="description"]::attr(content)').get(),
+        url=response.url,
+        result_count=_parse_int(
+            sel.css('[class*="sr-resultTitle__resultCount"]::text, [data-testid="result-count"]::text').get()
+        ),
+        products=[
+            _parse_listing_item(card) for card in sel.css('[class*="sr-resultList__item"], [data-testid="result-item"]')
+        ],
+    )
+
+
+def _parse_offers(sel) -> List[IdealoOffer]:
+    offers = []
+    for li in sel.css("li.productOffers-listItem"):
+        mtrx_raw = li.attrib.get("data-mtrx-click")
+        mtrx = json.loads(mtrx_raw) if mtrx_raw else {}
+        mtrx_products = mtrx.get("products") or [{}]
+
+        shop_name_raw = li.css(".productOffers-listItemOfferShopV2LogoLink::attr(data-shop-name)").get()
+        shop_name = mtrx.get("shop_name") or (
+            shop_name_raw.split(" - Shop aus")[0].strip() if shop_name_raw else None
+        )
+        url = li.css("a.productOffers-listItemOfferCtaLeadout::attr(href)").get() or li.css(
+            "a.productOffers-listItemTitle::attr(href)"
+        ).get()
+        if not shop_name or not url:
+            continue
+
+        price = mtrx_products[0].get("price")
+        if price is None:
+            price = _parse_price(li.css(".productOffers-listItemOfferPrice::text").get())
+
+        delivery = li.css(".productOffers-listItemOfferDeliveryStatusDatesRange::text").get()
+        merchant = li.css(".productOffers-listItemOfferShopV2MarketPlaceMerchantName a::text").get()
+        rating_count = li.css(".productOffers-listItemOfferShopV2NORatings--numberOfRatings::text").get()
+
+        offers.append(
+            IdealoOffer(
+                shop_name=shop_name,
+                shop_url=li.css(".productOffers-listItemOfferShopV2StarsLink::attr(href)").get(),
+                shop_rating=li.css(".productOffers-listItemOfferShopV2Stars b::text").get(),
+                shop_rating_count=_parse_int(rating_count),
+                price=price,
+                currency="EUR",
+                delivery_info=delivery.strip() if delivery else None,
+                merchant_name=merchant.strip() if merchant else None,
+                url=urljoin(BASE_URL, url),
+            )
+        )
+    return offers
+
+
+def parse_product(response: Response) -> IdealoProduct:
+    """parse product data from idealo.de product pages"""
+    sel = response.selector
+    raw = sel.css('script[data-testid="Product"]::text').get()
+    data = json.loads(raw) if raw else {}
+
+    match = re.search(r"/OffersOfProduct/(\d+)", response.url)
+    images = data.get("image") or []
+    rating = data.get("aggregateRating") or {}
+    offer_summary = data.get("offers") or {}
+
+    return IdealoProduct(
+        product_id=match.group(1) if match else data.get("sku"),
+        name=data.get("name"),
+        brand=(data.get("brand") or {}).get("name"),
+        url=data.get("url") or response.url,
+        image=images[0] if images else None,
+        description=data.get("description"),
+        rating=rating.get("ratingValue"),
+        rating_count=rating.get("ratingCount"),
+        low_price=offer_summary.get("lowPrice"),
+        high_price=offer_summary.get("highPrice"),
+        currency=offer_summary.get("priceCurrency"),
+        offer_count=offer_summary.get("offerCount"),
+        offers=_parse_offers(sel),
+    )
+
+
+@managed
+async def scrape_products(urls: List[str]) -> List[IdealoProduct]:
+    """scrape product pages from idealo.de"""
+    products = []
+    to_scrape = [Request(url, javascript=LOAD_MORE_JS, **BASE_CONFIG) for url in urls]
+    responses = await asyncio.gather(
+        *[scrape_with_retry(config) for config in to_scrape], return_exceptions=True
+    )
+    for response in responses:
+        if isinstance(response, Exception):
+            log.error(f"failed to scrape product: {response}")
+            continue
+        products.append(parse_product(response))
+    log.success(f"scraped {len(products)} products")
+    return products
+
+
+@managed
+async def scrape_search(query: str, max_pages: int = 3) -> List[IdealoListingItem]:
+    """scrape search listings from idealo.de"""
+    params = urlencode({"q": query})
+    first_url = f"{BASE_URL}/preisvergleich/MainSearchProductCategory.html?{params}"
+    log.info(f"scraping the first search page {first_url}")
+
+    first_page = await scrape_with_retry(
+        Request(first_url, waitForSelector='[class*="sr-resultList"]', **BASE_CONFIG)
+    )
+    data = parse_search(first_page)
+    results = data["results"]
+    total_pages = min(data["total_pages"], max_pages)
+    log.info(f"found {data['total_pages']} search pages, scraping {total_pages}")
+
+    if total_pages > 1:
+        other_pages = []
+        for page in range(2, total_pages + 1):
+            offset = (page - 1) * SEARCH_PAGE_SIZE
+            url = f"{BASE_URL}/preisvergleich/MainSearchProductCategory/100I16-{offset}.html?{params}"
+            other_pages.append(Request(url, waitForSelector='[class*="sr-resultList"]', **BASE_CONFIG))
+
+        responses = await asyncio.gather(
+            *[scrape_with_retry(config) for config in other_pages], return_exceptions=True
+        )
+        for response in responses:
+            if isinstance(response, Exception):
+                log.error(f"failed to scrape search page: {response}")
+                continue
+            results.extend(parse_search(response)["results"])
+
+    log.success(f"scraped {len(results)} search results")
+    return results
+
+
+@managed
+async def scrape_manufacturer(url: str) -> IdealoManufacturer:
+    """scrape a manufacturer listing page from idealo.de"""
+    log.info(f"scraping manufacturer page {url}")
+    # manufacturer pages now use the `data-testid` markup, search pages still the `sr-*` one
+    response = await scrape_with_retry(
+        Request(url, waitForSelector='[class*="sr-resultList"], [data-testid="result-list"]', **BASE_CONFIG)
+    )
+    manufacturer = parse_manufacturer(response)
+    log.success(f"scraped manufacturer {manufacturer['name']} with {len(manufacturer['products'])} products")
+    return manufacturer
+
+
+def parse_price_history(response: Response, product_id: str, period: PeriodType) -> IdealoPriceHistory:
+    """parse price history data from idealo.de price-chart API"""
+    data = json.loads(response.content)
+    stats = data.get("statistics") or {}
+    points = [
+        IdealoPriceHistoryPoint(date=point.get("x"), price=_parse_history_price(point.get("y")))
+        for point in data.get("data") or []
+    ]
+    return IdealoPriceHistory(
+        product_id=product_id,
+        period=period,
+        currency="EUR",
+        start_date=data.get("startDate"),
+        avg_price=_parse_history_price(stats.get("avgPrice")),
+        lowest_price=_parse_history_price(stats.get("lowestPrice")),
+        lowest_price_days=stats.get("lowestPriceDays"),
+        highest_price=_parse_history_price(stats.get("highestPrice")),
+        highest_price_days=stats.get("highestPriceDays"),
+        points=points,
+    )
+
+
+@managed
+async def scrape_price_history(id: str, period: PeriodType, site_id=1) -> IdealoPriceHistory:
+    """scrape price history from idealo.de"""
+    # the product page is only used as the referer: the price history API answers on its own
+    url = f"{BASE_URL}/preisvergleich/OffersOfProduct/{id}.html"
+    history_url = f"{BASE_URL}/price-chart/sites/{site_id}/products/{id}/history?period={period}"
+    log.info(f"scraping price history API {history_url}")
+    response = await scrape_with_retry(
+        Request(
+            history_url,
+            headers={"accept": "application/json", "referer": url},
+            **{**BASE_CONFIG, 'render': False},
+        )
+    )
+    price_history = parse_price_history(response, id, period)
+    log.success(f"scraped price history {price_history['product_id']} with {len(price_history['points'])} price points")
+    return price_history

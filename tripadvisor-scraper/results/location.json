@@ -1,0 +1,42 @@
+[
+  {
+    "localizedName": "Malta",
+    "url": "/Tourism-g190311-Malta-Vacations.html",
+    "HOTELS_URL": "/Hotels-g190311-Malta-Hotels.html",
+    "ATTRACTIONS_URL": "/Attractions-g190311-Activities-Malta.html",
+    "RESTAURANTS_URL": "/Restaurants-g190311-Malta.html",
+    "placeType": "COUNTRY",
+    "latitude": 35.891998,
+    "longitude": 14.42979
+  },
+  {
+    "localizedName": "Malton",
+    "url": "/Tourism-g776616-Malton_North_Yorkshire_England-Vacations.html",
+    "HOTELS_URL": null,
+    "ATTRACTIONS_URL": null,
+    "RESTAURANTS_URL": null,
+    "placeType": "MUNICIPALITY",
+    "latitude": 54.136868,
+    "longitude": -0.799448
+  },
+  {
+    "localizedName": "Hôtel Malte - Astotel",
+    "url": "/Hotel_Review-g187147-d228694-Reviews-Hotel_Malte_Astotel-Paris_Ile_de_France.html",
+    "HOTELS_URL": null,
+    "ATTRACTIONS_URL": null,
+    "RESTAURANTS_URL": null,
+    "placeType": "ACCOMMODATION",
+    "latitude": 48.867207,
+    "longitude": 2.337543
+  },
+  {
+    "localizedName": "Malta",
+    "url": "/Tourism-g48103-Malta_Saratoga_County_New_York-Vacations.html",
+    "HOTELS_URL": null,
+    "ATTRACTIONS_URL": null,
+    "RESTAURANTS_URL": null,
+    "placeType": "CITY",
+    "latitude": 42.962582,
+    "longitude": -73.791443
+  }
+]

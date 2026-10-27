@@ -1,0 +1,270 @@
+# Adapted by AdsCrawl from scrapfly/scrapfly-scrapers. See NOTICE.
+"""
+This is an example web scraper for Ebay.com adapted from the upstream Scrapfly example:
+https://scrapfly.io/blog/how-to-scrape-ebay/
+
+To run this scraper set env variable $ADSCRAWL_API_KEY with your AdsCrawl API key:
+$ export ADSCRAWL_API_KEY="your key from https://app.adscrawl.net/dashboard/keys/"
+"""
+from adscrawl_scrapers import managed
+
+import json
+import math
+import os
+import re
+from collections import defaultdict
+from typing import Dict, List, Optional
+from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
+
+import dateutil
+from nested_lookup import nested_lookup
+from loguru import logger as log
+from adscrawl_scrapers import Response, Request, ScraperClient, ScrapeError
+
+CLIENT = ScraperClient()
+BASE_CONFIG = {
+
+
+    'countryCode': "US",  # change country for geo details like currency and shipping
+    'locale': "en-US",
+}
+
+
+def _find_json_objects(text: str, decoder=json.JSONDecoder()):
+    """Find JSON objects in text, and generate decoded JSON data"""
+    pos = 0
+    while True:
+        match = text.find("{", pos)
+        if match == -1:
+            break
+        try:
+            result, index = decoder.raw_decode(text[match:])
+            yield result
+            pos = match + index
+        except ValueError:
+            pos = match + 1
+
+
+def parse_variants(result: Response) -> dict:
+    """
+    Parse variant data from Ebay's listing page of a product with variants.
+    This data is located in a js variable MSKU hidden in a <script> element.
+    """
+    script = result.selector.xpath('//script[contains(., "MSKU")]/text()').get()
+    if not script:
+        return []
+    all_data = list(_find_json_objects(script))
+    msku_data = nested_lookup("MSKU", all_data)
+    if not msku_data:
+        return []  # No variants found for this product
+    data = msku_data[0]
+
+    # First retrieve names for all selection options (e.g. Model, Color)
+    selection_names = {}
+    for menu in data["selectMenus"]:
+        for id_ in menu["menuItemValueIds"]:
+            selection_names[id_] = menu["displayLabel"]
+    # example selection name entry:
+    # {0: 'Model', 1: 'Color', ...}
+
+    # Then, find all selection combinations:
+    selections = []
+    for v in data["menuItemMap"].values():
+        selections.append(
+            {
+                "name": v["valueName"],
+                "variants": v["matchingVariationIds"],
+                "label": selection_names[v["valueId"]],
+            }
+        )
+    # example selection entry:
+    # {'name': 'Gold', 'variants': [662315637181, 662315637177, 662315637173], 'label': 'Color'}
+
+    # Build ordered unique image list from URLs embedded in the MSKU script block
+    seen_ids: dict = {}
+    for url in re.findall(r"https://i\.ebayimg\.com/images/g/[^\"]+", script):
+        m = re.search(r"images/g/([^/]+)/", url)
+        if m:
+            img_id = m.group(1)
+            if img_id not in seen_ids:
+                seen_ids[img_id] = f"https://i.ebayimg.com/images/g/{img_id}/s-l1600.jpg"
+    ordered_images = list(seen_ids.values())
+
+    pic_index_map = data.get("menuItemPictureIndexMap", {})
+    variant_images: dict = {}
+    for idx_str, img_indices in pic_index_map.items():
+        menu_item = data["menuItemMap"].get(idx_str, {})
+        imgs = [ordered_images[i] for i in img_indices if i < len(ordered_images)]
+        for vid in menu_item.get("matchingVariationIds", []):
+            variant_images.setdefault(str(vid), []).extend(imgs)
+
+
+    # Finally, extract variants and apply selection details to each
+    results = []
+    variant_data = nested_lookup("variationsMap", data)[0]
+    for id_, variant in variant_data.items():
+        item: dict = {"id": id_}
+        for selection in selections:
+            if int(id_) in selection["variants"]:
+                item[selection["label"]] = selection["name"]
+        price_val = variant["binModel"]["price"]["value"]
+        item["price_original"] = price_val.get("convertedFromValue", price_val.get("value"))
+        item["price_original_currency"] = price_val.get("convertedFromCurrency", price_val.get("currency"))
+        item["price_converted"] = price_val.get("value")
+        item["price_converted_currency"] = price_val.get("currency")
+        qty = variant.get("quantity", {})
+        item["out_of_stock"] = qty.get("outOfStock", True)
+        if not item["out_of_stock"]:
+            validations = qty.get("quantityInput", {}).get("validations", [])
+            max_val = next(
+                (v.get("maxValue") for v in validations if v.get("_type") == "NumberValidation"),
+                None,
+            )
+            item["quantity_available"] = int(max_val) if max_val is not None else None
+        item["images"] = variant_images.get(id_, [])
+        results.append(item)
+    # example variant entry:
+    # {
+    #     'id': '477101697616',
+    #     'Color': 'Deep Blue',
+    #     'price_original': 2199,
+    #     'price_original_currency': 'USD',
+    #     'price_converted': 2199,
+    #     'price_converted_currency': 'USD',
+    #     'out_of_stock': False
+    #     'quantity_available': 10,
+    #     'images': ['https://i.ebayimg.com/images/g/3QMAAeSwqdxo1XOt/s-l1600.jpg', 'https://i.ebayimg.com/images/g/3QMAAeSwqdxo1XOt/s-l1600.jpg']
+    # }
+    return results
+
+
+def parse_product(result: Response):
+    """Parse Ebay's product listing page for core product data"""
+    sel = result.selector
+    css_join = lambda css: "".join(sel.css(css).getall()).strip()  # join all selected elements
+    css = lambda css: sel.css(css).get("").strip()  # take first selected element and strip of leading/trailing spaces
+
+    item = {}
+    item["url"] = css('link[rel="canonical"]::attr(href)')
+    item["id"] = item["url"].split("/itm/")[1].split("?")[0]  # we can take ID from the URL
+    item["price_original"] = css(".x-price-primary .ux-textspans::text")  # the price text sits in a nested span now
+    item["price_converted"] = css(".x-price-approx__price ::text")  # ebay automatically converts price for some regions
+
+    item["name"] = css_join("h1 span::text")
+    seller = sel.css('[data-testid=x-sellercard-atf] a[href*="/str/"]')
+    item["seller_name"] = seller.css("span::text").get("").strip()
+    seller_url = seller.css("::attr(href)").get("")
+    item["seller_url"] = seller_url.split("?")[0] if seller_url else None
+    item["photos"] = sel.css('.ux-image-filmstrip-carousel-item.image img::attr("src")').getall()  # carousel images
+    item["photos"].extend(sel.css('.ux-image-carousel-item.image img::attr("src")').getall())  # main image
+    # description is an iframe (independant page). We can keep it as an URL or scrape it later.
+    item["description_url"] = css("iframe#desc_ifr::attr(src)")
+    # feature details from the description table:
+    feature_table = sel.css("div.ux-layout-section--features")
+    features = {}
+    for dt in feature_table.css("dt.ux-labels-values__labels"):
+        label = "".join(dt.css("::text").getall()).strip(":\n ")
+        value = "".join(dt.xpath("following-sibling::dd[1]//text()").getall()).strip(":\n ")
+        if label:
+            features[label] = value
+    item["features"] = features
+    return item
+
+
+@managed
+async def scrape_product(url: str) -> Dict:
+    """Scrape ebay.com product listing page for product data"""
+    page = await CLIENT.fetch(Request(url, **BASE_CONFIG))
+    return parse_product(page)
+
+@managed
+async def scrape_product_variants(url: str) -> List[Dict]:
+    """Scrape ebay.com product listing page for variant data (price, stock, quantity, images)"""
+    page = await CLIENT.fetch(Request(url, **BASE_CONFIG))
+    return parse_variants(page)
+
+def parse_search(result: Response) -> List[Dict]:
+    """Parse ebay.com search result page for product previews"""
+    previews = []
+
+    for box in result.selector.css("ul.srp-results li"):
+        css = lambda css: box.css(css).get("").strip() or None
+        css_all = lambda css: box.css(css).getall()
+        css_re = lambda css, pattern: box.css(css).re_first(pattern, default="").strip()
+        css_float = lambda css: float(box.css(css).re_first(r"(\d+\.*\d*)", default="0.0")) if box.css(css) else None
+        location = box.xpath(".//*[contains(text(),'Located')]/text()").get()
+        price = css(".s-card__price::text") or css(".s-item__price::text")
+        url = css("a.s-card__link::attr(href)") or css("a.su-link::attr(href)")
+        rating = box.xpath(".//span[contains(text(), 'positive')]/text()").get()
+
+        if price is None:
+            continue  # skip boxes inside the best selling container
+
+        rating_count = None
+        if rating:
+            count_match = re.search(r'\(([\d.]+)K?\)', rating)
+            if count_match:
+                count_str = count_match.group(1)
+                if 'K)' in count_match.group(0):
+                    rating_count = int(float(count_str) * 1000)
+                else:
+                    rating_count = int(count_str)
+
+        item = {
+            "url": url.split("?")[0] if url else None,
+            "title": css(".s-card__title span::text"),
+            "price": css(".s-card__price::text") or css(".s-item__price::text"),
+            "shipping": box.xpath(".//*[contains(text(),'delivery')]/text()").get(),
+            "location": location.split("Located in ")[1] if location else None,
+            "subtitles": css(".s-card__subtitle span::text"),
+            "photo": css("img::attr(data-src)") or css("img::attr(src)"),
+            "rating": re.search(r'[\d.]+%', rating).group() if rating and re.search(r'[\d.]+%', rating) else None,
+            "rating_count": rating_count,
+        }
+        previews.append(item)
+    return previews
+
+
+def _get_url_parameter(url: str, param: str, default=None) -> Optional[str]:
+    """get url parameter value"""
+    query_params = dict(parse_qsl(urlparse(url).query))
+    return query_params.get(param) or default
+
+
+def _update_url_param(url: str, **params):
+    """adds url parameters or replaces them with new values"""
+    parsed_url = urlparse(url)
+    query_params = dict(parse_qsl(parsed_url.query))
+    query_params.update(params)
+    updated_url = parsed_url._replace(query=urlencode(query_params))
+    return urlunparse(updated_url)
+
+
+@managed
+async def scrape_search(url: str, max_pages: Optional[int] = None) -> List[Dict]:
+    """Scrape Ebay's search for product preview data for given"""
+    log.info("Scraping search for {}", url)
+
+    first_page = await CLIENT.fetch(Request(url, **BASE_CONFIG))
+    results = parse_search(first_page)
+    # find total amount of results for concurrent pagination
+    total_results = first_page.selector.css(".srp-controls__count-heading>span::text").get()
+    total_results = int(total_results.replace(",", "").replace(".", ""))
+    items_per_page = int(_get_url_parameter(first_page.url, "_ipg", default=60))
+    total_pages = math.ceil(total_results / items_per_page)
+    if max_pages and total_pages > max_pages:
+        total_pages = max_pages
+    other_pages = [
+        Request(_update_url_param(first_page.url, _pgn=i), **BASE_CONFIG)
+        for i in range(2, total_pages + 1)
+    ]
+    log.info("Scraping search pagination of {} total pages for {}", len(other_pages), url)
+    async for result in CLIENT.fetch_many(other_pages):
+        if not isinstance(result, ScrapeError):
+            try:
+                results.extend(parse_search(result))
+            except Exception as e:
+                log.error(f"failed to parse search: {result.url}: {e}")
+        else:
+            log.error(f"failed to scrape {result.response.request_url}, got: {result.message}")
+    return results

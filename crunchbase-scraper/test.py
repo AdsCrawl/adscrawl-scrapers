@@ -1,0 +1,176 @@
+# Adapted by AdsCrawl from scrapfly/scrapfly-scrapers. See NOTICE.
+import json
+import os
+from pathlib import Path
+from cerberus import Validator
+import pytest
+
+import crunchbase
+import pprint
+
+pp = pprint.PrettyPrinter(indent=2)
+
+# enable cache?
+
+
+def validate_or_fail(item, validator):
+    if not validator.validate(item):
+        pp.pformat(item)
+        pytest.fail(f"Validation failed for item: {pp.pformat(item)}\nErrors: {validator.errors}")
+
+
+@pytest.mark.asyncio
+async def test_company_scraping():
+    url = "https://www.crunchbase.com/organization/tesla-motors/people"
+    result = await crunchbase.scrape_company(url)
+    schema = {
+        "employees": {
+            "type": "list",
+            "schema": {
+                "type": "dict",
+                "schema": {
+                    "name": {"type": "string"},
+                    "linkedin": {"type": "string"},
+                    "job_departments": {"type": "list", "schema": {"type": "string"}, "nullable": True},
+                    "job_levels": {"type": "list", "schema": {"type": "string"}},
+                },
+            },
+        },
+        "organization": {
+            "type": "dict",
+            "schema": {
+                "id": {"type": "string"},
+                "name": {"type": "string"},
+                "description": {"type": "string"},
+                "linkedin": {"type": "string", "nullable": True, "regex": r"https*://www.linkedin.com/company/.+?"},
+                "twitter": {"type": "string", "nullable": True, "regex": r"https://(?:www\.)?x.com/.+?"},
+                "facebook": {"type": "string", "nullable": True, "regex": r"https://www.facebook.com/.+?"},
+                "email": {"type": "string", "nullable": True, "regex": r".+?@.+?"},
+                "phone": {"type": "string", "nullable": True, "regex": r"^\+?[\d\s-]+$"},
+                "website": {"type": "string", "nullable": True, "regex": r"https*://.+?"},
+                "categories": {"type": "list", "schema": {"type": "string"}},
+                "investments": {
+                    "type": "list",
+                    "schema": {
+                        "type": "dict",
+                        "schema": {
+                            "name": {"type": "string"},
+                            "raised": {"type": "integer"},
+                            "organization": {"type": "string"},
+                        },
+                    },
+                },
+            },
+        },
+    }
+    validator = Validator(schema, allow_unknown=True)
+    validate_or_fail(result, validator)
+    if os.getenv("SAVE_TEST_RESULTS") == "true":
+        (Path(__file__).parent / 'results/company.json').write_text(json.dumps(result, indent=2, ensure_ascii=False))
+
+
+@pytest.mark.asyncio
+async def test_person_scraping():
+    url = "https://www.crunchbase.com/person/elon-musk"
+    result = await crunchbase.scrape_person(url)
+    schema = {
+        "name": {"type": "string"},
+        "title": {"type": "string"},
+        "type": {"type": "string"},
+        "gender": {"type": "string"},
+        "linkedin": {"type": "string", "nullable": True},
+        "twitter": {"type": "string", "nullable": True},
+        "facebook": {"type": "string", "nullable": True},
+        "description": {"type": "string"},
+        "location_groups": {"type": "list", "schema": {"type": "string"}},
+        "location": {"type": "list", "schema": {"type": "string"}},
+        "current_jobs": {"type": "integer"},
+        "past_jobs": {"type": "integer"},
+        "education": {
+            "type": "list",
+            "schema": {
+                "type": "dict",
+                "schema": {
+                    "school": {"type": "string"},
+                    "type": {"type": "string", "nullable": True},
+                },
+            },
+        },
+        "timeline": {
+            "type": "list",
+            "schema": {"type": "string"},
+        },
+        "investments": {
+            "type": "list",
+            "schema": {
+                "type": "dict",
+                "schema": {
+                    "identifier": {
+                        "type": "dict",
+                        "schema": {
+                            "uuid": {"type": "string"},
+                            "value": {"type": "string"},
+                            "permalink": {"type": "string"},
+                            "entity_def_id": {"type": "string"},
+                        },
+                    },
+                    "organization_identifier": {
+                        "type": "dict",
+                        "schema": {
+                            "uuid": {"type": "string"},
+                            "value": {"type": "string"},
+                            "permalink": {"type": "string"},
+                            "entity_def_id": {"type": "string"},
+                        },
+                    },
+                    "funding_round_identifier": {
+                        "type": "dict",
+                        "schema": {
+                            "uuid": {"type": "string"},
+                            "value": {"type": "string"},
+                            "permalink": {"type": "string"},
+                            "entity_def_id": {"type": "string"},
+                        },
+                    },
+                },
+            },
+        },
+        "exits": {
+            "type": "list",
+            "schema": {
+                "type": "dict",
+                "schema": {
+                    "name": {"type": "string"},
+                    "short_description": {"type": "string"},
+                },
+            },
+        },
+        "investing_overview": {
+            "type": "dict",
+            "schema": {
+                "num_current_advisor_jobs": {"type": "integer"},
+                "num_founded_organizations": {"type": "integer"},
+                "preview_properties": {
+                    "type": "dict",
+                    "schema": {
+                        "num_exits": {
+                            "type": "dict",
+                            "schema": {
+                                "is_present": {"type": "boolean"},
+                            },
+                        },
+                    },
+                },
+                "num_portfolio_organizations": {"type": "integer"},
+                "rank_principal_investor": {"type": "integer"},
+            },
+        },
+        "current_advisor_jobs": {"type": "integer"},
+        "founded_orgs": {"type": "integer"},
+        "portfolio_orgs": {"type": "integer"},
+        "rank_principal_investor": {"type": "integer"},
+    }
+    validator = Validator(schema, allow_unknown=True)
+    validate_or_fail(result, validator)
+    if os.getenv("SAVE_TEST_RESULTS") == "true":
+        (Path(__file__).parent / 'results/person.json').write_text(json.dumps(result, indent=2, ensure_ascii=False))

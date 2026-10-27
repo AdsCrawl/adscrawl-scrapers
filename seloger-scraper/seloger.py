@@ -1,0 +1,186 @@
+# Adapted by AdsCrawl from scrapfly/scrapfly-scrapers. See NOTICE.
+"""
+This is an example web scraper for seloger.com.
+
+To run this scraper set env variable $ADSCRAWL_API_KEY with your AdsCrawl API key:
+$ export ADSCRAWL_API_KEY="your key from https://app.adscrawl.net/dashboard/keys/"
+"""
+from adscrawl_scrapers import managed
+import os
+import json
+import re
+from adscrawl_scrapers import Request, ScraperClient, Response
+from typing import Dict, List, Optional
+from pathlib import Path
+from loguru import logger as log
+
+CLIENT = ScraperClient()
+
+BASE_CONFIG = {
+    'countryCode': "fr",
+    'render': True,
+}
+
+output = Path(__file__).parent / "results"
+output.mkdir(exist_ok=True)
+
+
+def _format_price_per_m2(value: float) -> str:
+    """format a price per m² like the search cards used to show it: whole euros, "3\u202f916\xa0€/m²" """
+    return f"{int(value + 0.5):,}".replace(",", "\u202f") + "\xa0€/m²"
+
+
+def _compute_price_per_m2(listing: Dict) -> Optional[str]:
+    """price / living space from the listing data, for listings whose data has no price per m²"""
+    hard_facts = listing.get("hardFacts") or {}
+    price = re.sub(r"[^\d,]", "", (hard_facts.get("price") or {}).get("value") or "").replace(",", ".")
+    surface = next((f.get("splitValue") for f in hard_facts.get("facts") or [] if f.get("type") == "livingSpace"), None)
+    if not price or not surface:
+        return None
+    return _format_price_per_m2(float(price) / float(surface.replace(",", ".")))
+
+
+def parse_search(result: Response):
+    """parse property listing data from seloger search pages"""
+    # select the script tag from the HTML
+    selector = result.selector
+    # listing data embedded in the page as window["__UFRN_FETCHER__"]=JSON.parse("..."), keyed by listing id
+    classifieds = {}
+    fetcher_script = selector.xpath("//script[contains(text(), '__UFRN_FETCHER__')]/text()").get()
+    if fetcher_script:
+        fetcher_json = re.search(r'JSON\.parse\((".+")\)', fetcher_script, re.DOTALL).group(1)
+        fetcher_data = json.loads(json.loads(fetcher_json))["data"]
+        # the listing data is under "classified-serp-data" (earlier pages: "classified-serp-init-data" -> pageProps)
+        serp_data = fetcher_data.get("classified-serp-data") or {}
+        serp_init_data = fetcher_data.get("classified-serp-init-data") or {}
+        classifieds = (
+            serp_data.get("classifiedsData") or serp_init_data.get("pageProps", {}).get("classifiedsData") or {}
+        )
+    data = []
+    for i in selector.xpath("//div[@data-testid='serp-core-classified-card-testid']"):
+        # If the card doesn't have a main link, it's an empty placeholder, so we skip it.
+        if not i.xpath(".//a[@data-testid='card-mfe-covering-link-testid']/@href").get():
+            continue
+
+        # the card no longer renders the price per m², read it from the listing data (card id: "classified-card-<id>")
+        listing = classifieds.get(i.attrib.get("id", "").replace("classified-card-", ""), {})
+        price_per_m2 = ((listing.get("hardFacts") or {}).get("price") or {}).get("additionalInformation")
+        if price_per_m2 and "€/m²" in price_per_m2:
+            # round "3\u202f915,66\xa0€/m²" to the format the cards used to show: "3\u202f916\xa0€/m²"
+            price_per_m2 = _format_price_per_m2(
+                float(price_per_m2.split("\xa0")[0].replace("\u202f", "").replace(",", "."))
+            )
+        else:
+            # no price per m² in the data (a life annuity shows "et 1\u202f982\xa0€/mois" there): price / living space
+            price_per_m2 = _compute_price_per_m2(listing)
+        if not price_per_m2:
+            # fallback to html parsing
+            price_per_m2 = i.xpath(
+                ".//div[contains(@data-testid, 'cardmfe-price')]//span[contains(text(),'m²')]/text()"
+            ).get()
+
+        data.append(
+            {
+                "title": i.xpath(".//a[@data-testid='card-mfe-covering-link-testid']/@title").get(),
+                "url": i.xpath(".//a[@data-testid='card-mfe-covering-link-testid']/@href").get(),
+                "images": i.xpath(".//div[contains(@data-testid, 'cardmfe-picture')]//img/@src").getall(),
+                "price": i.xpath(".//div[contains(@data-testid, 'cardmfe-price')]/@aria-label").get(),
+                "price_per_m2": price_per_m2,
+                "property_facts": i.xpath(
+                    ".//div[contains(@data-testid, 'keyfacts')]/div[text() != '·']/text()"
+                ).getall(),
+                "address": i.xpath(".//div[contains(@data-testid, 'address')]//text()").get(),
+                "agency": i.xpath(
+                    ".//div[contains(@data-testid, 'cardmfe-bottom')]/div//span[not(contains(text(), 'sur SeLoger Neuf'))]/text()"
+                ).get(),
+            }
+        )
+
+    max_results = result.selector.xpath("//h1[contains(@data-testid, 'serp-title')]/text()").get()
+    max_results = int(re.sub(r"\D", "", max_results)) if re.search(r"\d", max_results) else max_results
+    return {"results": data, "max_results": max_results}
+
+
+def parse_property_page(result: Response):
+    """parse property data from the nextjs cache"""
+    # select the script tag from the HTML
+    script_tags = result.selector.css("body > script::text").getall()
+    target_script = None
+    for script_text in script_tags:
+        if script_text and '["__UFRN_LIFECYCLE_SERVERREQUEST__"]' in script_text:
+            target_script = script_text
+            break
+
+    if not target_script:
+        raise ValueError("Could not find script tag containing '__UFRN_LIFECYCLE_SERVERREQUEST__'")
+    pattern = r'window\["__UFRN_LIFECYCLE_SERVERREQUEST__"\]=JSON\.parse\("(.+)"\);?'
+
+    match = re.search(pattern, script_text, re.DOTALL)
+    if not match:
+        raise ValueError("Could not extract JSON string from script tag")
+    json_str_escaped = match.group(1)
+    json_str = json_str_escaped.encode("utf-8").decode("unicode_escape")
+    listing_data = json.loads(json_str)
+    app_data = listing_data["app_cldp"]["data"]
+    listing_data = app_data["classified"]
+    if listing_data is None:
+        # a 404 page has no classified, only an error object ({"code": 404, "status": "broken link"})
+        error = app_data.get("error") or {}
+        raise ValueError(
+            f"seloger.com answered {error.get('code')} ({error.get('status')}) for {result.url}"
+            " instead of the listing data"
+        )
+    if "statusCode" in listing_data:
+        # a listing that is gone has a status object ({"statusCode": 410, "message": "classified not available..."}) here
+        raise ValueError(
+            f"seloger.com answered {listing_data['statusCode']} ({listing_data.get('message')}) for {result.url}"
+            " instead of the listing data"
+        )
+    return listing_data
+
+
+@managed
+async def scrape_search(
+    url: str,
+    max_pages: int = 10,
+) -> List[Dict]:
+    """
+    scrape seloger search pages, which supports pagination by adding a LISTING-LISTpg parameter at the end of the URL
+    https://www.seloger.com/classified-search?distributionTypes=Buy&estateTypes=Apartment&locations=AD08FR13100&page=page_number
+    """
+    log.info("scraping search page {}", url)
+    # scrape the first page first
+    first_page = await CLIENT.fetch(Request(url, **BASE_CONFIG))
+    search_page_result = parse_search(first_page)
+    # extract the property listing data
+    search_data = search_page_result["results"]
+    # get the max search pages number
+    total_search_pages = search_page_result["max_results"] // 30  # 30 results per page
+    # get the number of pages to scrape
+    if max_pages and max_pages <= total_search_pages:
+        total_search_pages = max_pages
+
+    log.info("scraping search {} pagination ({} more pages)", url, total_search_pages - 1)
+    # add the ramaining pages in a scraping list
+    _other_pages = [
+        Request(first_page.url + f"&page={page}", **BASE_CONFIG)
+        for page in range(2, total_search_pages + 1)
+    ]
+    # scrape the remaining pages concurrently
+    async for result in CLIENT.fetch_many(_other_pages):
+        page_data = parse_search(result)["results"]
+        search_data.extend(page_data)
+    log.info("scraped {} proprties from {}", len(search_data), url)
+    return search_data
+
+
+@managed
+async def scrape_property(urls: List[str]) -> List[Dict]:
+    """scrape seloger property pages"""
+    data = []
+    to_scrape = [Request(url, **BASE_CONFIG) for url in urls]
+    async for result in CLIENT.fetch_many(to_scrape):
+        property_data = parse_property_page(result)
+        data.append(property_data)
+    log.success(f"scraped {len(data)} properties from Seloger property pages")
+    return data

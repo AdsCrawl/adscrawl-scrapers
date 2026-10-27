@@ -1,0 +1,1018 @@
+[
+  {
+    "brand": "immowelt",
+    "id": "259IMAMBYQJV",
+    "sections": {
+      "location": {
+        "address": {
+          "country": "DE",
+          "city": "MÃ¼nchen",
+          "zipCode": "81375",
+          "street": "WÃ¼rmtalstr. 79",
+          "district": "Hadern"
+        },
+        "isAddressPublished": true,
+        "geometry": {
+          "type": "MultiPolygon",
+          "coordinates": [
+            [
+              [
+                [
+                  11.48026,
+                  48.13151
+                ],
+                [
+                  11.47476,
+                  48.13225
+                ],
+                [
+                  11.47256,
+                  48.12984
+                ],
+                [
+                  11.46486,
+                  48.12787
+                ],
+                [
+                  11.46309,
+                  48.10537
+                ],
+                [
+                  11.47463,
+                  48.10459
+                ],
+                [
+                  11.47188,
+                  48.10015
+                ],
+                [
+                  11.48616,
+                  48.09853
+                ],
+                [
+                  11.49302,
+                  48.10116
+                ],
+                [
+                  11.50135,
+                  48.10869
+                ],
+                [
+                  11.50405,
+                  48.12521
+                ],
+                [
+                  11.49785,
+                  48.12555
+                ],
+                [
+                  11.49221,
+                  48.12952
+                ],
+                [
+                  11.48026,
+                  48.13151
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      "description": {
+        "description": "Ein Viertel, ein Zuhause, ein Ort des GlÃ¼cks. Wer das Besondere sucht, wird es hier zwischen WÃ¼rmtal- und GaberlstraÃe finden. Wo die Natur wortwÃ¶rtlich vor der TÃ¼re liegt und jede Perspektive Hoffnung macht. Denn GrÃ¼n ist hier Ã¼berall zu finden. Inmitten der drei attraktiven WohngebÃ¤ude gehen die privaten GÃ¤rten in einen gemeinschaftlichen Freiraum Ã¼ber. Platz fÃ¼r Lebensfreude und Leichtigkeit, fÃ¼r Inspiration und Ideen, fÃ¼r Gemeinschaft und Einzigartigkeit. FÃ¼r unvergessliche Momente in jedem Alter und zu jeder Zeit. Willkommen in den WÃRMTALGÃRTEN!",
+        "texts": [
+          {
+            "text": "Ein Viertel, ein Zuhause, ein Ort des GlÃ¼cks. Wer das Besondere sucht, wird es hier zwischen WÃ¼rmtal- und GaberlstraÃe finden. Wo die Natur wortwÃ¶rtlich vor der TÃ¼re liegt und jede Perspektive Hoffnung macht. Denn GrÃ¼n ist hier Ã¼berall zu finden. Inmitten der drei attraktiven WohngebÃ¤ude gehen die privaten GÃ¤rten in einen gemeinschaftlichen Freiraum Ã¼ber. Platz fÃ¼r Lebensfreude und Leichtigkeit, fÃ¼r Inspiration und Ideen, fÃ¼r Gemeinschaft und Einzigartigkeit. FÃ¼r unvergessliche Momente in jedem Alter und zu jeder Zeit. Willkommen in den WÃRMTALGÃRTEN!"
+          }
+        ],
+        "headline": "WÃRMTALGÃRTEN"
+      },
+      "hardFacts": {
+        "title": "WÃRMTALGÃRTEN",
+        "keyfacts": [
+          "Bezugsbereit Sommer",
+          "2 bis 4 Zimmer",
+          "48 bis 105 mÂ²"
+        ],
+        "facts": [
+          {
+            "type": "deliveryDate",
+            "value": "Bezugsbereit Sommer",
+            "splitValue": "Bezugsbereit",
+            "label": "Sommer"
+          },
+          {
+            "type": "numberOfRooms",
+            "value": "2 bis 4 Zimmer",
+            "splitValue": "2",
+            "label": "bis 4 Zimmer"
+          },
+          {
+            "type": "livingSpace",
+            "value": "48 bis 105 mÂ²",
+            "splitValue": "48",
+            "label": "bis 105 mÂ²"
+          }
+        ],
+        "price": {
+          "value": "ab 565.000 â¬"
+        }
+      },
+      "energy": {
+        "features": [
+          {
+            "type": "heatingSystem",
+            "label": "Heizungsart",
+            "value": "FuÃbodenheizung"
+          },
+          {
+            "type": "energySource",
+            "label": "Wesentliche EnergietrÃ¤ger",
+            "value": "Pellets"
+          }
+        ],
+        "hasScales": false
+      },
+      "key": {
+        "keys": [
+          {
+            "label": "Online-ID",
+            "value": "k2bw932"
+          },
+          {
+            "label": "Anzeigen ID",
+            "value": "259IMAMBYQJV"
+          }
+        ]
+      },
+      "price": {
+        "base": {
+          "main": {
+            "key": "0f72b2a2-d287-411e-aeee-25af384ed295",
+            "label": {
+              "main": "Kaufpreis"
+            },
+            "value": {
+              "main": {
+                "value": "auf Anfrage"
+              }
+            }
+          },
+          "type": "SALE"
+        },
+        "components": [
+          {
+            "key": "28db31df-1980-43f9-9aa7-1722f26e41d9",
+            "type": "PRIMARY",
+            "units": [
+              {
+                "key": "a5e04178-0450-4332-ad23-0769a280527b",
+                "main": {
+                  "price": {
+                    "key": "b1795811-55c7-461a-ae43-76bb5b0a3121",
+                    "value": {
+                      "main": {
+                        "value": "Preis auf Anfrage"
+                      }
+                    },
+                    "highlighted": true
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "layout": "GERMAN_SALE"
+      },
+      "features": {
+        "preview": [
+          {
+            "icon": "estateType",
+            "value": "Wohnung"
+          },
+          {
+            "icon": "entrance-hall",
+            "value": "15 Einheiten"
+          },
+          {
+            "icon": "parking-lots",
+            "value": "Stellplatz"
+          },
+          {
+            "icon": "outside",
+            "value": "Balkon, Terrasse, Garten"
+          },
+          {
+            "icon": "furnishingLevel",
+            "value": "Gehoben"
+          },
+          {
+            "icon": "floor-covering",
+            "value": "Fliesen, Parkett"
+          }
+        ],
+        "details": {
+          "additionalText": "RUNDUM WOHLFÃHLEN\\nFarben,  Formen,  Licht.  Ein  harmonisches  Zuhause  beginnt  bei  einer  \\nansprechenden Architektur, intelligenter  Grundrissplanung und zeitloser \\nAuswahl an Produkten und Materialien. \\nDie  WÃRMTALGÃRTEN  bieten  offene  Raumkonzepte,  die  sich  hervorragend fÃ¼r flexible Lebensformen eignen. ZeitgemÃ¤Ã groÃe Fensterfronten sÃ¤umen die drei HÃ¤user und ermÃ¶glichen in jeder Wohnung Perspektiven in den grÃ¼nen Innenhof. In allen Wohnungen der WÃRMTALGÃRTEN dÃ¼rfen sich Bewohner auf den Einbau von hochwertigen HebeschiebetÃ¼ren zu den nach SÃ¼den ausgerichteten Terrassen, Loggien, Balkonen und Dachterrassen freuen.  \\nDie  moderne  Ausstattung  bietet  jede  Menge  komfortable  Details,  wie \\netwa eine im Winter angenehme FuÃbodenheizung oder die im Alltag  \\nÃ¤uÃerst praktischen AufzÃ¼ge vom UG bis ins 2. OG., WohnungseingangstÃ¼ren mit besonderer Sicherheitsklasse und eine Video-Sprechanlage mit Farbdisplay sind wertvoll fÃ¼r die Sicherheit und maximale Entspannung in den eigenen vier WÃ¤nden.\\n\\nAusstattung im Ãberblick\\n\\nNACHHALTIGE PELLETHEIZUNG\\nAUFZÃGE IN JEDEM TREPPENHAUS\\nFUSSBODENHEIZUNG\\nVIDEO-TÃRSPRECHANLAGE MIT FARBDISPLAY\\nGEFLIESTE, BODENGLEICHE DUSCHEN\\nNETZWERKVERKABELUNG IN DEN WOHNUNGEN\\nGLASFASERLEITUNGEN BIS IN DIE WOHNUNG\\nTIEFGARAGE MIT EINZELSTELLPLÃTZEN\\nKALKSCHUTZANLAGE FÃR TRINKWASSER-INSTALLATION"
+        }
+      },
+      "gallery": {
+        "images": [
+          {
+            "key": "295ba735-0dc8-41a6-a091-414e358ec768",
+            "url": "https://mms.immowelt.de/2/9/5/b/295ba735-0dc8-41a6-a091-414e358ec768.jpg?ci_seal=42aa5b3c212b40366af11ccdedd58242b927865c",
+            "description": "Aussen A.jpg",
+            "alt": "Neubauprojekt zum Kauf WÃ¼rmtalstr. 79 Hadern MÃ¼nchen 81375",
+            "title": "Aussen A.jpg",
+            "ariaLabel": "Aussen A.jpg",
+            "classification": {
+              "name": "BUILDING_FACADE",
+              "version": "scene-classification-sagemaker-endpoint-live-1-3-9"
+            }
+          },
+          {
+            "key": "f637f632-3448-4db4-9bb6-afd4484a8e6d",
+            "url": "https://mms.immowelt.de/f/6/3/7/f637f632-3448-4db4-9bb6-afd4484a8e6d.jpg?ci_seal=8494ab06137e55f0df38c1751e9e0d101451cdcf",
+            "description": "Aussen B + C.jpg",
+            "title": "Aussen B + C.jpg",
+            "ariaLabel": "Aussen B + C.jpg",
+            "classification": {
+              "name": "HOUSE_FACADE",
+              "version": "scene-classification-sagemaker-endpoint-live-1-3-9"
+            }
+          },
+          {
+            "key": "5839baa2-d958-41a9-9d23-df605f0d4227",
+            "url": "https://mms.immowelt.de/5/8/3/9/5839baa2-d958-41a9-9d23-df605f0d4227.jpg?ci_seal=9174d7a3146b6e45553a34538bb9f8bfe5515caf",
+            "description": "Aussen B+C.jpg",
+            "title": "Aussen B+C.jpg",
+            "ariaLabel": "Aussen B+C.jpg",
+            "classification": {
+              "name": "HOUSE_FACADE",
+              "version": "scene-classification-sagemaker-endpoint-live-1-3-9"
+            }
+          },
+          {
+            "key": "13a6d6cb-d538-45e2-b3ec-cf0f6b696da8",
+            "url": "https://mms.immowelt.de/1/3/a/6/13a6d6cb-d538-45e2-b3ec-cf0f6b696da8.jpg?ci_seal=d89e368ee0e47b512664c1c487d600606f2968af",
+            "description": "AussenA.jpg",
+            "title": "AussenA.jpg",
+            "ariaLabel": "AussenA.jpg",
+            "classification": {
+              "name": "HOUSE_FACADE",
+              "version": "scene-classification-sagemaker-endpoint-live-1-3-9"
+            }
+          },
+          {
+            "key": "03a7d580-c274-4b19-9ab0-98da1da16bac",
+            "url": "https://mms.immowelt.de/0/3/a/7/03a7d580-c274-4b19-9ab0-98da1da16bac.jpg?ci_seal=0c8b0cdf693941628adaca74e8ad4b6ae6a696ae",
+            "description": "Bad.jpg",
+            "title": "Bad.jpg",
+            "ariaLabel": "Bad.jpg",
+            "classification": {
+              "name": "BATHROOM",
+              "version": "scene-classification-sagemaker-endpoint-live-1-3-9"
+            }
+          },
+          {
+            "key": "e50a179a-1d11-4c72-8742-7c7c9e9ac307",
+            "url": "https://mms.immowelt.de/e/5/0/a/e50a179a-1d11-4c72-8742-7c7c9e9ac307.jpg?ci_seal=0163f15f0770a2b4c9838f370f07623c51ee8cba",
+            "description": "Schlafen.jpg",
+            "title": "Schlafen.jpg",
+            "ariaLabel": "Schlafen.jpg",
+            "classification": {
+              "name": "BEDROOM",
+              "version": "scene-classification-sagemaker-endpoint-live-1-3-9"
+            }
+          },
+          {
+            "key": "2a59e36d-6d7b-4b92-b64b-7c3d2a01ea34",
+            "url": "https://mms.immowelt.de/2/a/5/9/2a59e36d-6d7b-4b92-b64b-7c3d2a01ea34.jpg?ci_seal=b5f75a2d4f66f63e392951aa0938fd524a3ce5b4",
+            "description": "Wohnen.jpg",
+            "title": "Wohnen.jpg",
+            "ariaLabel": "Wohnen.jpg",
+            "classification": {
+              "name": "LIVING_ROOM",
+              "version": "scene-classification-sagemaker-endpoint-live-1-3-9"
+            }
+          },
+          {
+            "key": "8ec5f51d-25db-406c-8ae7-3133b3a8956a",
+            "url": "https://mms.immowelt.de/8/e/c/5/8ec5f51d-25db-406c-8ae7-3133b3a8956a.jpg?ci_seal=bc0f739191a4f5a9da5e114633d8022ed08a39f3",
+            "description": "Wohnen_Kochen.jpg",
+            "title": "Wohnen_Kochen.jpg",
+            "ariaLabel": "Wohnen_Kochen.jpg",
+            "classification": {
+              "name": "LIVING_ROOM",
+              "version": "scene-classification-sagemaker-endpoint-live-1-3-9"
+            }
+          }
+        ]
+      },
+      "documents": {
+        "display": true,
+        "files": [
+          {
+            "key": "0a1e538e-eb8d-4717-8679-1ca9fe80e24e",
+            "url": "https://mms.immowelt.de/0/a/1/e/0a1e538e-eb8d-4717-8679-1ca9fe80e24e.pdf?ci_seal=25a30d68973f330c557dd238056e71c2b32b7205",
+            "title": "2025-08-20-BroschuÌre-WuÌrmtalgaÌrten_FINAL_WEB_small.pdf",
+            "subtitle": "PDF-Dokument"
+          }
+        ]
+      },
+      "enrichedMedia": {
+        "medias": []
+      },
+      "mortgage": {
+        "brand": "immowelt",
+        "id": "8074",
+        "federalStateGeoId": "AD04DE9",
+        "zip": "81375",
+        "city": "MÃ¼nchen",
+        "country": "DE",
+        "subType": "NEW_BUILD_PROJECT",
+        "region": "Bayern",
+        "showRentLabel": false,
+        "showMonthlyRateLabel": false,
+        "price": 0,
+        "prov": 0,
+        "monthlyAmount": 0
+      },
+      "partnerAd": {
+        "showPartnerAd": false
+      },
+      "sellerLeadLink": {},
+      "mainDescription": {
+        "headline": "Ãber dieses Projekt",
+        "description": "Ein Viertel, ein Zuhause, ein Ort des GlÃ¼cks. Wer das Besondere sucht, wird es hier zwischen WÃ¼rmtal- und GaberlstraÃe finden. Wo die Natur wortwÃ¶rtlich vor der TÃ¼re liegt und jede Perspektive Hoffnung macht. Denn GrÃ¼n ist hier Ã¼berall zu finden. Inmitten der drei attraktiven WohngebÃ¤ude gehen die privaten GÃ¤rten in einen gemeinschaftlichen Freiraum Ã¼ber. Platz fÃ¼r Lebensfreude und Leichtigkeit, fÃ¼r Inspiration und Ideen, fÃ¼r Gemeinschaft und Einzigartigkeit. FÃ¼r unvergessliche Momente in jedem Alter und zu jeder Zeit. Willkommen in den WÃRMTALGÃRTEN!",
+        "metadata": {
+          "language": "de"
+        }
+      },
+      "areaDescription": {
+        "headline": "Lage"
+      },
+      "extendedInfoDescription": {
+        "headline": "Weitere Informationen"
+      },
+      "statistics": {
+        "published": "1 Monat online",
+        "views": "999+ gesehen",
+        "saves": "6 favorisiert"
+      }
+    },
+    "contactSections": {
+      "id": "259IMAMBYQJV",
+      "legacyId": "8074",
+      "brand": "immowelt",
+      "agencyId": "7973846",
+      "static": {
+        "phoneNumbers": []
+      },
+      "sticky": {
+        "phoneNumbers": []
+      },
+      "contactCard": {
+        "title": "KM-WOHNBAU Baubetreuung GmbH",
+        "subtitle": "Florian  Staimer",
+        "phoneNumbers": [],
+        "isPrivateOwner": false,
+        "agencyLogo": {
+          "logoUrl": "https://mms.immowelt.de/a/f/3/b/af3bccab-25ff-4250-9f49-0173c3f94400.jpg?ci_seal=5f57a89063ea7bdd5caff3a67892981c40c8dcb0",
+          "display": true
+        },
+        "contactLogo": {
+          "logoUrl": null,
+          "display": false
+        }
+      },
+      "contactForm": {
+        "contactCard": {
+          "title": "KM-WOHNBAU Baubetreuung GmbH",
+          "subtitle": "Florian  Staimer",
+          "phoneNumbers": [],
+          "isPrivateOwner": false,
+          "logoUrl": "https://mms.immowelt.de/a/f/3/b/af3bccab-25ff-4250-9f49-0173c3f94400.jpg?ci_seal=5f57a89063ea7bdd5caff3a67892981c40c8dcb0"
+        },
+        "displayOwnerFlag": false,
+        "subjectLabel": "Deine Nachricht an Florian  Staimer",
+        "shouldSendLeadValue": false
+      },
+      "mobilePhones": {
+        "title": "Florian  Staimer",
+        "subtitle": "KM-WOHNBAU Baubetreuung GmbH",
+        "phoneNumbers": [],
+        "logoUrl": null,
+        "isPrivateOwner": false
+      },
+      "provider": {
+        "intermediaryCard": {
+          "title": "KM-WOHNBAU Baubetreuung GmbH",
+          "subtitle": "Gewerblicher Anbieter",
+          "display": true,
+          "logoUrl": "https://mms.immowelt.de/a/f/3/b/af3bccab-25ff-4250-9f49-0173c3f94400.jpg?ci_seal=5f57a89063ea7bdd5caff3a67892981c40c8dcb0",
+          "logoHref": "https://www.immowelt.de/profil/7973846"
+        },
+        "contactCard": {
+          "title": "Florian  Staimer",
+          "subtitle": "Dein Kontakt",
+          "display": true,
+          "logoUrl": null
+        },
+        "website": "http://www.km-wohnbau.de",
+        "isPrivateOwner": false,
+        "profileUrl": "https://www.immowelt.de/profil/7973846",
+        "imprintUrl": "https://www.immowelt.de/profil/7973846#impressum",
+        "agencyLegalInformations": [],
+        "publisherType": "PARTNER",
+        "displayLinks": true,
+        "badges": [
+          {
+            "title": "Business Partner",
+            "description": "Nach 3 Jahren professioneller Zusammenarbeit werden immowelt Partner mit dem immowelt Business Partner Award ausgezeichnet.",
+            "imageUrl": "https://s.immowelt.org/shared/images/partner-badges/business-partner.svg",
+            "duration": "3 Jahre Partnerschaft"
+          }
+        ],
+        "address": "MÃ¼nchener StraÃe 25, 85540 Haar",
+        "phoneNumbers": []
+      },
+      "confirmationPage": {
+        "isFinanceOfferButtonEnabled": true
+      }
+    },
+    "tags": {
+      "isExclusive": false,
+      "has3DVisit": false,
+      "hasBrokerageFee": false,
+      "isNew": false
+    }
+  },
+  {
+    "brand": "immowelt",
+    "id": "246V2P5Z527M",
+    "sections": {
+      "location": {
+        "address": {
+          "country": "DE",
+          "city": "MÃ¼nchen",
+          "zipCode": "81475",
+          "street": "Oberbrunner StraÃe 20",
+          "district": "Thalk.Obersendl.-Forsten-FÃ¼rstenr.-Solln"
+        },
+        "isAddressPublished": true,
+        "geometry": {
+          "type": "MultiPolygon",
+          "coordinates": [
+            [
+              [
+                [
+                  11.5471,
+                  48.106
+                ],
+                [
+                  11.5418,
+                  48.10345
+                ],
+                [
+                  11.50938,
+                  48.10386
+                ],
+                [
+                  11.50432,
+                  48.10209
+                ],
+                [
+                  11.49638,
+                  48.1054
+                ],
+                [
+                  11.49302,
+                  48.10116
+                ],
+                [
+                  11.48616,
+                  48.09853
+                ],
+                [
+                  11.47188,
+                  48.10015
+                ],
+                [
+                  11.47421,
+                  48.09545
+                ],
+                [
+                  11.47214,
+                  48.09033
+                ],
+                [
+                  11.47649,
+                  48.08869
+                ],
+                [
+                  11.47094,
+                  48.083
+                ],
+                [
+                  11.48694,
+                  48.07632
+                ],
+                [
+                  11.48608,
+                  48.07423
+                ],
+                [
+                  11.4876,
+                  48.0761
+                ],
+                [
+                  11.50365,
+                  48.06917
+                ],
+                [
+                  11.50422,
+                  48.06227
+                ],
+                [
+                  11.50879,
+                  48.0616
+                ],
+                [
+                  11.51156,
+                  48.06433
+                ],
+                [
+                  11.51544,
+                  48.06343
+                ],
+                [
+                  11.51719,
+                  48.06671
+                ],
+                [
+                  11.52294,
+                  48.06652
+                ],
+                [
+                  11.52382,
+                  48.06838
+                ],
+                [
+                  11.52825,
+                  48.06896
+                ],
+                [
+                  11.53252,
+                  48.07728
+                ],
+                [
+                  11.53973,
+                  48.07795
+                ],
+                [
+                  11.54232,
+                  48.08115
+                ],
+                [
+                  11.54965,
+                  48.09103
+                ],
+                [
+                  11.54978,
+                  48.10036
+                ],
+                [
+                  11.55392,
+                  48.10333
+                ],
+                [
+                  11.5471,
+                  48.106
+                ]
+              ]
+            ]
+          ]
+        }
+      },
+      "description": {
+        "description": "AKTUELL kÃ¶nnen wir Ihnen NOCH VIER WOHNUNGEN anbieten!\\n\\nHochwertig und mit viel FeingefÃ¼hl haben wir zwei attraktive MehrfamilienhÃ¤user mit Aufzug in einem sehr ruhigen Wohngebiet in Forstenried-Maxhof, der Oberbrunner StraÃe 20 errichtet. Die beiden HÃ¤user wurden nach dem energiesparenden Standard Effizienzhaus 55 gebaut und gliedern sich in Haus A mit 6 Parteien und in Haus B mit 5 Parteien auf. Die Wohneinheiten sind auf alle individuellen BedÃ¼rfnisse und WÃ¼nsche abgestimmt â fÃ¼r Singles, Paare und Familien - von ca. 69 mÂ² bis zur Wohnung mit ca. 110 mÂ² WohnflÃ¤che. Sie bestechen durch ihre gut durchdachte Raumaufteilung und anspruchsvolle Ausstattung, damit ein besonderes Ambiente und WohlfÃ¼hlen geschaffen wird. Die offen gestalteten Wohn-Ess-KÃ¼chenbereiche rufen eine entsprechende GroÃzÃ¼gigkeit hervor. Der Einbau der bodentiefen FenstertÃ¼r-Elemente und groÃen DachflÃ¤chenfenster gewÃ¤hrleisten ein Maximum an Lichteinfall. Unsere Gartenwohnungen erhielten jeweils eigene Gartenanteile. Drei der EG-Wohnungen umfassen zusÃ¤tzliche Souterrainbereiche, die taghell und in WohnraumqualitÃ¤t ausgebaut sind. Die Terrassen und Balkone sind sÃ¼dwestlich ausgerichtet und laden zum schÃ¶nen Ausklang des Tages ein. Eine Tiefgarage komplettiert unser Ã¼beraus ansprechendes Neubauobjekt. Die verwendeten Materialien wurden sogfÃ¤ltig ausgewÃ¤hlt und die Haustechnik entspricht modernsten Standards. Handwerklich erstklassig ausgefÃ¼hrte Arbeiten garantieren Ihnen eine besondere WohnqualitÃ¤t und eine hohe WertbestÃ¤ndigkeit der Immobilie. Zur Erreichung dieser Ziele pflegt die RS-Wohnbau Jahrzehnte wÃ¤hrende Beziehungen mit Handwerkern und Lieferanten aus der Region.",
+        "texts": [
+          {
+            "text": "AKTUELL kÃ¶nnen wir Ihnen NOCH VIER WOHNUNGEN anbieten!\\n\\nHochwertig und mit viel FeingefÃ¼hl haben wir zwei attraktive MehrfamilienhÃ¤user mit Aufzug in einem sehr ruhigen Wohngebiet in Forstenried-Maxhof, der Oberbrunner StraÃe 20 errichtet. Die beiden HÃ¤user wurden nach dem energiesparenden Standard Effizienzhaus 55 gebaut und gliedern sich in Haus A mit 6 Parteien und in Haus B mit 5 Parteien auf. Die Wohneinheiten sind auf alle individuellen BedÃ¼rfnisse und WÃ¼nsche abgestimmt â fÃ¼r Singles, Paare und Familien - von ca. 69 mÂ² bis zur Wohnung mit ca. 110 mÂ² WohnflÃ¤che. Sie bestechen durch ihre gut durchdachte Raumaufteilung und anspruchsvolle Ausstattung, damit ein besonderes Ambiente und WohlfÃ¼hlen geschaffen wird. Die offen gestalteten Wohn-Ess-KÃ¼chenbereiche rufen eine entsprechende GroÃzÃ¼gigkeit hervor. Der Einbau der bodentiefen FenstertÃ¼r-Elemente und groÃen DachflÃ¤chenfenster gewÃ¤hrleisten ein Maximum an Lichteinfall. Unsere Gartenwohnungen erhielten jeweils eigene Gartenanteile. Drei der EG-Wohnungen umfassen zusÃ¤tzliche Souterrainbereiche, die taghell und in WohnraumqualitÃ¤t ausgebaut sind. Die Terrassen und Balkone sind sÃ¼dwestlich ausgerichtet und laden zum schÃ¶nen Ausklang des Tages ein. Eine Tiefgarage komplettiert unser Ã¼beraus ansprechendes Neubauobjekt. Die verwendeten Materialien wurden sogfÃ¤ltig ausgewÃ¤hlt und die Haustechnik entspricht modernsten Standards. Handwerklich erstklassig ausgefÃ¼hrte Arbeiten garantieren Ihnen eine besondere WohnqualitÃ¤t und eine hohe WertbestÃ¤ndigkeit der Immobilie. Zur Erreichung dieser Ziele pflegt die RS-Wohnbau Jahrzehnte wÃ¤hrende Beziehungen mit Handwerkern und Lieferanten aus der Region."
+          }
+        ],
+        "headline": "WOHNKOMFORT + QUALITÃT . Hochwertige Neubauwohnungen in ruhiger Wohnlage in MÃ¼nchen-Forstenried (Maxhof) - O20 L|I|V|I|N|G - Oberbrunner StraÃe 20"
+      },
+      "hardFacts": {
+        "title": "WOHNKOMFORT + QUALITÃT . Hochwertige Neubauwohnungen in ruhiger Wohnlage in MÃ¼nchen-Forstenried (Maxhof) - O20 L|I|V|I|N|G - Oberbrunner StraÃe 20",
+        "keyfacts": [
+          "Bezugsbereit ab sofort",
+          "2,5 bis 3,5 Zimmer",
+          "69 bis 108 mÂ²"
+        ],
+        "facts": [
+          {
+            "type": "deliveryDate",
+            "value": "Bezugsbereit ab sofort",
+            "splitValue": "Bezugsbereit",
+            "label": "ab sofort"
+          },
+          {
+            "type": "numberOfRooms",
+            "value": "2,5 bis 3,5 Zimmer",
+            "splitValue": "2,5",
+            "label": "bis 3,5 Zimmer"
+          },
+          {
+            "type": "livingSpace",
+            "value": "69 bis 108 mÂ²",
+            "splitValue": "69",
+            "label": "bis 108 mÂ²"
+          }
+        ],
+        "price": {
+          "value": "ab 859.000 â¬"
+        }
+      },
+      "energy": {
+        "features": [
+          {
+            "type": "heatingSystem",
+            "label": "Heizungsart",
+            "value": "FuÃbodenheizung"
+          },
+          {
+            "type": "energySource",
+            "label": "Wesentliche EnergietrÃ¤ger",
+            "value": "Elektro, Luft-/Wasser-WÃ¤rmepumpe"
+          }
+        ],
+        "hasScales": false
+      },
+      "key": {
+        "keys": [
+          {
+            "label": "Online-ID",
+            "value": "k2ag632"
+          },
+          {
+            "label": "Anzeigen ID",
+            "value": "246V2P5Z527M"
+          }
+        ]
+      },
+      "price": {
+        "base": {
+          "main": {
+            "key": "37afb8f7-f319-4c24-bcf4-b90258487083",
+            "label": {
+              "main": "Kaufpreis"
+            },
+            "value": {
+              "main": {
+                "value": "auf Anfrage"
+              }
+            }
+          },
+          "type": "SALE"
+        },
+        "components": [
+          {
+            "key": "4b3904c6-a50e-4c9b-99fe-d154f47e442a",
+            "type": "PRIMARY",
+            "units": [
+              {
+                "key": "eb63cd49-38dc-4806-8467-c00cc54991e9",
+                "main": {
+                  "price": {
+                    "key": "9d473db4-73bb-41de-93c9-04236d194124",
+                    "value": {
+                      "main": {
+                        "value": "Preis auf Anfrage"
+                      }
+                    },
+                    "highlighted": true
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "layout": "GERMAN_SALE"
+      },
+      "features": {
+        "preview": [
+          {
+            "icon": "estateType",
+            "value": "Wohnung"
+          },
+          {
+            "icon": "entrance-hall",
+            "value": "10 Einheiten"
+          },
+          {
+            "icon": "parking-lots",
+            "value": "Stellplatz"
+          },
+          {
+            "icon": "outside",
+            "value": "Balkon, Terrasse, Garten"
+          },
+          {
+            "icon": "furnishingLevel",
+            "value": "Gehoben"
+          },
+          {
+            "icon": "floor-covering",
+            "value": "Fliesen, Parkett"
+          }
+        ],
+        "details": {
+          "additionalText": "Energiesparendes Effizienzhaus 55 in bewÃ¤hrter RS-Wohnbau-QualitÃ¤t Um natÃ¼rliche Ressourcen zu schonen, ist das Objekt mit modernster WÃ¤rmepumpentechnologie ausgestattet. Damit wird seinen Bewohnern gleichzeitig eine hohe Energieeffizienz (Energieeffizienzklasse A+) gewÃ¤hrleistet. FÃ¼r ein gesundes Wohnklima errichteten wir das Projekt in massiver Ziegelbauweise mit innenliegender WÃ¤rmedÃ¤mmung. Ganz in unserem Sinne: Modern - Nachhaltig â Wirtschaftlich - ZuverlÃ¤ssig Objekthighlights: â¢ energiesparendes Effizienzhaus 55 mit Energieeffizienzklasse A+ â¢ hochwÃ¤rmedÃ¤mmende Massiv-Ziegelbauweise â¢ aufwÃ¤ndige Putzarbeiten an der Fassade â¢ umweltschonende und modernste WÃ¤rmepumpentechnologie â¢ FuÃbodenheizung mit Einzelraumsteuerung â¢ Treppenlauf mit ausgewÃ¤hltem Granitbelag und Edelstahlhandlauf â¢ Kunststofffenster mit erstklassiger Alu-Vorsatzschale, 3-fach WÃ¤rmeschutzverglasung (Sicherheitsfenster im EG) â¢ elektrische RolllÃ¤den an allen Fenstern â¢ hochwertige Elektroausstattung mit CAT7 Verkabelung â¢ Videosprechanlage â¢ elegante Porzellan-Serie und formschÃ¶ne Armaturen von namhaften Herstellern â¢ komfortable, bodengleiche Duschen (sofern technisch realisierbar) â¢ exklusive BodenbelÃ¤ge z.B. edles Parkett oder groÃformatige Fliesen Die vollstÃ¤ndige Baubeschreibung lassen wir Ihnen gerne auf Anfrage zukommen."
+        }
+      },
+      "gallery": {
+        "images": [
+          {
+            "key": "474a2448-0ae5-4d4f-9fbd-5c21f919a002",
+            "url": "https://mms.immowelt.de/4/7/4/a/474a2448-0ae5-4d4f-9fbd-5c21f919a002.png?ci_seal=048fc4939852c9688274b27bbf7ae93584a47a4f",
+            "description": "OPEN HOUSE SEP 2025",
+            "alt": "Neubauprojekt zum Kauf Oberbrunner StraÃe 20 Thalk.Obersendl.-Forsten-FÃ¼rstenr.-Solln MÃ¼nchen 81475",
+            "title": "OPEN HOUSE SEP 2025",
+            "ariaLabel": "OPEN HOUSE SEP 2025",
+            "classification": {
+              "name": "HOUSE_FACADE",
+              "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+            }
+          },
+          {
+            "key": "b1cea82f-675b-4f14-8d61-ad9aa7028cb3",
+            "url": "https://mms.immowelt.de/b/1/c/e/b1cea82f-675b-4f14-8d61-ad9aa7028cb3.jpg?ci_seal=9fb3a06e586bea51a5e529a1b8b7f73ee52d7806",
+            "description": "3-ZIMMER-WHG A-04 (verfÃ¼gbar)",
+            "title": "3-ZIMMER-WHG A-04 (verfÃ¼gbar)",
+            "ariaLabel": "3-ZIMMER-WHG A-04 (verfÃ¼gbar)",
+            "classification": {
+              "name": "TERRACE",
+              "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+            }
+          },
+          {
+            "key": "16a8f228-dc35-4e6a-96ca-29e6e9d3a97e",
+            "url": "https://mms.immowelt.de/1/6/a/8/16a8f228-dc35-4e6a-96ca-29e6e9d3a97e.png?ci_seal=2555a39dd742ba54efab286e0635f49dfa54850f",
+            "description": "WHG A 04_Wohnen Sie schÃ¶n ! ",
+            "title": "WHG A 04_Wohnen Sie schÃ¶n ! ",
+            "ariaLabel": "WHG A 04_Wohnen Sie schÃ¶n ! ",
+            "classification": {
+              "name": "EMPTY_ROOM",
+              "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+            }
+          },
+          {
+            "key": "8d531b4f-fc41-4027-ad23-2adcb8a7152e",
+            "url": "https://mms.immowelt.de/8/d/5/3/8d531b4f-fc41-4027-ad23-2adcb8a7152e.jpg?ci_seal=a5b39f58bcb7c094efea97565acd3741689f6a56",
+            "description": "3-ZIMMER-WHG A-03 (verfÃ¼gbar)",
+            "title": "3-ZIMMER-WHG A-03 (verfÃ¼gbar)",
+            "ariaLabel": "3-ZIMMER-WHG A-03 (verfÃ¼gbar)",
+            "classification": {
+              "name": "BALCONY",
+              "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+            }
+          },
+          {
+            "key": "91e999f0-6507-49a8-b3e2-ddd4c441e2d8",
+            "url": "https://mms.immowelt.de/9/1/e/9/91e999f0-6507-49a8-b3e2-ddd4c441e2d8.png?ci_seal=aed9fdcddffe77113519e143540d4d59f4fb5855",
+            "description": "3-ZIMMER-WHG A-03 (verfÃ¼gbar)",
+            "title": "3-ZIMMER-WHG A-03 (verfÃ¼gbar)",
+            "ariaLabel": "3-ZIMMER-WHG A-03 (verfÃ¼gbar)",
+            "classification": {
+              "name": "LOGO",
+              "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+            }
+          },
+          {
+            "key": "b6762597-f776-41ae-a114-e6ccaf4517b9",
+            "url": "https://mms.immowelt.de/b/6/7/6/b6762597-f776-41ae-a114-e6ccaf4517b9.jpg?ci_seal=337e3e5b1643122703efa4f40a7886e351d8708b",
+            "description": "Ansicht Haus A (Nord-West)",
+            "title": "Ansicht Haus A (Nord-West)",
+            "ariaLabel": "Ansicht Haus A (Nord-West)",
+            "classification": {
+              "name": "HOUSE_FACADE",
+              "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+            }
+          },
+          {
+            "key": "4f8420a8-68a4-4ed0-81de-48abeabbf1c0",
+            "url": "https://mms.immowelt.de/4/f/8/4/4f8420a8-68a4-4ed0-81de-48abeabbf1c0.png?ci_seal=91a3077d455c2b9b51a854e83d83a6ec97e856e7",
+            "description": "1 x verfÃ¼gbar (Gartenwohnung / Haus B)",
+            "title": "1 x verfÃ¼gbar (Gartenwohnung / Haus B)",
+            "ariaLabel": "1 x verfÃ¼gbar (Gartenwohnung / Haus B)",
+            "classification": {
+              "name": "HOUSE_FACADE",
+              "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+            }
+          },
+          {
+            "key": "09ed2a8a-dde8-47fd-9d32-eca3040cf524",
+            "url": "https://mms.immowelt.de/0/9/e/d/09ed2a8a-dde8-47fd-9d32-eca3040cf524.jpg?ci_seal=ee5b18f567a26590076b202f602e4062607224ef",
+            "description": "1 x verfÃ¼gbar (Gartenwohnung / Haus B)",
+            "title": "1 x verfÃ¼gbar (Gartenwohnung / Haus B)",
+            "ariaLabel": "1 x verfÃ¼gbar (Gartenwohnung / Haus B)",
+            "classification": {
+              "name": "EMPTY_ROOM",
+              "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+            }
+          },
+          {
+            "key": "257f5a4b-ef94-4641-ae6d-98c32b197f59",
+            "url": "https://mms.immowelt.de/2/5/7/f/257f5a4b-ef94-4641-ae6d-98c32b197f59.jpg?ci_seal=1274ebb922d61751e5d726da971649247145dfa1",
+            "description": "1 x verfÃ¼gbar (Gartenwohnung / Haus B)",
+            "title": "1 x verfÃ¼gbar (Gartenwohnung / Haus B)",
+            "ariaLabel": "1 x verfÃ¼gbar (Gartenwohnung / Haus B)",
+            "classification": {
+              "name": "YARD",
+              "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+            }
+          },
+          {
+            "key": "2b7cbe1c-d271-4a6e-ae6e-d95760ca89c5",
+            "url": "https://mms.immowelt.de/2/b/7/c/2b7cbe1c-d271-4a6e-ae6e-d95760ca89c5.jpg?ci_seal=31b52654e91e9c2a349518d9316c23f24fff0ebc",
+            "description": "Lagekarte (Oberbrunner Str. 20 - Forstenried/Maxhof)",
+            "title": "Lagekarte (Oberbrunner Str. 20 - Forstenried/Maxhof)",
+            "ariaLabel": "Lagekarte (Oberbrunner Str. 20 - Forstenried/Maxhof)",
+            "classification": {
+              "name": "GMAP",
+              "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+            }
+          },
+          {
+            "key": "3838eeb6-5f67-46cd-b923-5f3eadacdc80",
+            "url": "https://mms.immowelt.de/3/8/3/8/3838eeb6-5f67-46cd-b923-5f3eadacdc80.png?ci_seal=c80171ed177591c6f4c2e18e4480829c2b4a4da7",
+            "description": "Auszug Referenzen (mehr unter www.rs-wohnbau.de)",
+            "title": "Auszug Referenzen (mehr unter www.rs-wohnbau.de)",
+            "ariaLabel": "Auszug Referenzen (mehr unter www.rs-wohnbau.de)",
+            "classification": {
+              "name": "BUILDING_FACADE",
+              "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+            }
+          }
+        ],
+        "floorplans": [
+          {
+            "key": "eb376328-3e80-41f4-84bb-2192d0208160",
+            "url": "https://mms.immowelt.de/e/b/3/7/eb376328-3e80-41f4-84bb-2192d0208160.jpg?ci_seal=298af605b75983587cb4c54a330b891bd4218dc7",
+            "description": "GrundstÃ¼cksÃ¼berblick (Lage der HÃ¤user A und B)",
+            "alt": "Neubauprojekt zum Kauf Oberbrunner StraÃe 20 Thalk.Obersendl.-Forsten-FÃ¼rstenr.-Solln MÃ¼nchen 81475",
+            "title": "GrundstÃ¼cksÃ¼berblick (Lage der HÃ¤user A und B)",
+            "ariaLabel": "GrundstÃ¼cksÃ¼berblick (Lage der HÃ¤user A und B)",
+            "classification": {
+              "name": "FLOORPLAN",
+              "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+            }
+          }
+        ]
+      },
+      "documents": {
+        "display": false,
+        "files": []
+      },
+      "enrichedMedia": {
+        "medias": []
+      },
+      "mortgage": {
+        "brand": "immowelt",
+        "id": "4553",
+        "federalStateGeoId": "AD04DE9",
+        "zip": "81475",
+        "city": "MÃ¼nchen",
+        "country": "DE",
+        "subType": "NEW_BUILD_PROJECT",
+        "region": "Bayern",
+        "showRentLabel": false,
+        "showMonthlyRateLabel": false,
+        "price": 0,
+        "prov": 0,
+        "monthlyAmount": 0
+      },
+      "partnerAd": {
+        "showPartnerAd": false
+      },
+      "sellerLeadLink": {},
+      "mainDescription": {
+        "headline": "Ãber dieses Projekt",
+        "description": "AKTUELL kÃ¶nnen wir Ihnen NOCH VIER WOHNUNGEN anbieten!\\n\\nHochwertig und mit viel FeingefÃ¼hl haben wir zwei attraktive MehrfamilienhÃ¤user mit Aufzug in einem sehr ruhigen Wohngebiet in Forstenried-Maxhof, der Oberbrunner StraÃe 20 errichtet. Die beiden HÃ¤user wurden nach dem energiesparenden Standard Effizienzhaus 55 gebaut und gliedern sich in Haus A mit 6 Parteien und in Haus B mit 5 Parteien auf. Die Wohneinheiten sind auf alle individuellen BedÃ¼rfnisse und WÃ¼nsche abgestimmt â fÃ¼r Singles, Paare und Familien - von ca. 69 mÂ² bis zur Wohnung mit ca. 110 mÂ² WohnflÃ¤che. Sie bestechen durch ihre gut durchdachte Raumaufteilung und anspruchsvolle Ausstattung, damit ein besonderes Ambiente und WohlfÃ¼hlen geschaffen wird. Die offen gestalteten Wohn-Ess-KÃ¼chenbereiche rufen eine entsprechende GroÃzÃ¼gigkeit hervor. Der Einbau der bodentiefen FenstertÃ¼r-Elemente und groÃen DachflÃ¤chenfenster gewÃ¤hrleisten ein Maximum an Lichteinfall. Unsere Gartenwohnungen erhielten jeweils eigene Gartenanteile. Drei der EG-Wohnungen umfassen zusÃ¤tzliche Souterrainbereiche, die taghell und in WohnraumqualitÃ¤t ausgebaut sind. Die Terrassen und Balkone sind sÃ¼dwestlich ausgerichtet und laden zum schÃ¶nen Ausklang des Tages ein. Eine Tiefgarage komplettiert unser Ã¼beraus ansprechendes Neubauobjekt. Die verwendeten Materialien wurden sogfÃ¤ltig ausgewÃ¤hlt und die Haustechnik entspricht modernsten Standards. Handwerklich erstklassig ausgefÃ¼hrte Arbeiten garantieren Ihnen eine besondere WohnqualitÃ¤t und eine hohe WertbestÃ¤ndigkeit der Immobilie. Zur Erreichung dieser Ziele pflegt die RS-Wohnbau Jahrzehnte wÃ¤hrende Beziehungen mit Handwerkern und Lieferanten aus der Region.",
+        "metadata": {
+          "language": "de"
+        }
+      },
+      "areaDescription": {
+        "headline": "Lage"
+      },
+      "extendedInfoDescription": {
+        "headline": "Weitere Informationen"
+      },
+      "statistics": {
+        "published": "seit Nov. 2022",
+        "views": "999+ gesehen",
+        "saves": "3 favorisiert"
+      }
+    },
+    "contactSections": {
+      "id": "246V2P5Z527M",
+      "legacyId": "4553",
+      "brand": "immowelt",
+      "agencyId": "2607276",
+      "static": {
+        "phoneNumbers": [
+          "+49 / 89 / 2903710"
+        ]
+      },
+      "sticky": {
+        "phoneNumbers": [
+          "+49 / 89 / 2903710"
+        ]
+      },
+      "contactCard": {
+        "title": "RS-Wohnbau GmbH",
+        "subtitle": "Gewerblicher Anbieter",
+        "phoneNumbers": [
+          "+49 / 89 / 2903710"
+        ],
+        "isPrivateOwner": false,
+        "agencyLogo": {
+          "logoUrl": "https://mms.immowelt.de/7/9/3/0/79309636-3ccc-41a6-bc07-f03d83caadfd.jpg?ci_seal=ce06ed5f9d448c48890256d9b6bbc85680ba3582",
+          "display": true
+        },
+        "contactLogo": {
+          "logoUrl": "//filestore.immowelt.de/ProfilBilder/150_62e9407b4e764b7ba872d7c9c1d2d4f7.jpg",
+          "display": false
+        }
+      },
+      "contactForm": {
+        "contactCard": {
+          "title": "RS-Wohnbau GmbH",
+          "subtitle": "Gewerblicher Anbieter",
+          "phoneNumbers": [
+            "+49 / 89 / 2903710"
+          ],
+          "isPrivateOwner": false,
+          "logoUrl": "https://mms.immowelt.de/7/9/3/0/79309636-3ccc-41a6-bc07-f03d83caadfd.jpg?ci_seal=ce06ed5f9d448c48890256d9b6bbc85680ba3582"
+        },
+        "displayOwnerFlag": false,
+        "subjectLabel": "Meine Nachricht",
+        "shouldSendLeadValue": false
+      },
+      "mobilePhones": {
+        "title": "RS-Wohnbau GmbH",
+        "subtitle": "Gewerblicher Anbieter",
+        "phoneNumbers": [
+          "+49 / 89 / 2903710"
+        ],
+        "logoUrl": "https://mms.immowelt.de/7/9/3/0/79309636-3ccc-41a6-bc07-f03d83caadfd.jpg?ci_seal=ce06ed5f9d448c48890256d9b6bbc85680ba3582",
+        "isPrivateOwner": false
+      },
+      "provider": {
+        "intermediaryCard": {
+          "title": "RS-Wohnbau GmbH",
+          "subtitle": "Gewerblicher Anbieter",
+          "display": true,
+          "logoUrl": "https://mms.immowelt.de/7/9/3/0/79309636-3ccc-41a6-bc07-f03d83caadfd.jpg?ci_seal=ce06ed5f9d448c48890256d9b6bbc85680ba3582",
+          "logoHref": "https://www.immowelt.de/profil/2607276"
+        },
+        "contactCard": {
+          "title": null,
+          "subtitle": "Dein Kontakt",
+          "display": false,
+          "logoUrl": "//filestore.immowelt.de/ProfilBilder/150_62e9407b4e764b7ba872d7c9c1d2d4f7.jpg"
+        },
+        "website": "http://www.rs-wohnbau.de",
+        "isPrivateOwner": false,
+        "profileUrl": "https://www.immowelt.de/profil/2607276",
+        "imprintUrl": "https://www.immowelt.de/profil/2607276#impressum",
+        "agencyLegalInformations": [],
+        "publisherType": "PARTNER",
+        "displayLinks": true,
+        "badges": [
+          {
+            "title": "Premium Partner",
+            "description": "Wer seit 6 Jahren immowelt Partner ist, wird als Branchenkenner mit dem immowelt Premium Partner Award ausgezeichnet.",
+            "imageUrl": "https://s.immowelt.org/shared/images/partner-badges/premium-partner.svg",
+            "duration": "6 Jahre Partnerschaft"
+          }
+        ],
+        "address": "Steinsdorfstr. 13, 80538 MÃ¼nchen",
+        "phoneNumbers": [
+          "+49 / 89 / 2903710"
+        ]
+      },
+      "confirmationPage": {
+        "isFinanceOfferButtonEnabled": true
+      }
+    },
+    "tags": {
+      "isExclusive": false,
+      "has3DVisit": false,
+      "hasBrokerageFee": false,
+      "isNew": false
+    }
+  }
+]

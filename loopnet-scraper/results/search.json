@@ -1,0 +1,1525 @@
+{
+  "total_pages": 5,
+  "data": [
+    {
+      "id": "30627850",
+      "name": "20ac Downtown Savannah, Zoned Mixed-Use",
+      "url": "https://www.loopnet.com/Listing/925-1303-E-President-St-Savannah-GA/30627850/",
+      "address": "925-1303 E President St, Savannah, GA 31404",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31404",
+      "price": null,
+      "property_type": "Land",
+      "listing_type": "LandForSale",
+      "image": "https://images1.loopnet.com/i2/5VHV-PSDlDg8dvjcRoAsB0sBF4C5MlrgjP6Gxiszzr0/115/image.jpg",
+      "data_points": [
+        "Commercial Land",
+        "Price Upon Request",
+        "19.77 AC",
+        "1 Lot"
+      ]
+    },
+    {
+      "id": "41166496",
+      "name": "Tapestry Park Commerical",
+      "url": "https://www.loopnet.com/Listing/1410-Dean-Forest-Rd-Savannah-GA/41166496/",
+      "address": "1410 Dean Forest Rd, Savannah, GA 31405",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31405",
+      "price": null,
+      "property_type": "Land",
+      "listing_type": "LandForSale",
+      "image": "https://images1.loopnet.com/i2/OteC7WxpcYHeIf39EJdyDGdrIgEFEM8DRQ2HKKbobFU/115/image.jpg",
+      "data_points": [
+        "Commercial Land",
+        "Price Upon Request",
+        "3 AC",
+        "1 Lot"
+      ]
+    },
+    {
+      "id": "39727678",
+      "name": "1440 Pooler Pky",
+      "url": "https://www.loopnet.com/Listing/1440-Pooler-Pky-Pooler-GA/39727678/",
+      "address": "Pooler, GA 31322",
+      "city": "Pooler",
+      "state": "GA",
+      "zip_code": "31322",
+      "price": null,
+      "property_type": "Land",
+      "listing_type": "LandForSale",
+      "image": "https://images1.loopnet.com/i2/_9yPntcNAlGMyin0ecn9QmpoIHUd-APWRPNQzJZZGzo/115/image.png",
+      "data_points": [
+        "Commercial Land",
+        "Price Upon Request",
+        "1.14 - 2.79 AC",
+        "4 Lots"
+      ]
+    },
+    {
+      "id": "42512706",
+      "name": "38 W Chatham Ct",
+      "url": "https://www.loopnet.com/Listing/38-W-Chatham-Ct-Garden-City-GA/42512706/",
+      "address": "Garden City, GA 31408",
+      "city": "Garden City",
+      "state": "GA",
+      "zip_code": "31408",
+      "price": "$4,500,000",
+      "property_type": "Industrial",
+      "listing_type": "PropertyForSale",
+      "image": "https://images1.loopnet.com/i2/4C013BCe0AQrY1D_drKyjjKrRDm6G2xKxf_MqHDqbc4/115/image.jpg",
+      "data_points": [
+        "Warehouse",
+        "$4,500,000",
+        "30,000 SF",
+        "Renovated in 2026"
+      ]
+    },
+    {
+      "id": "42472738",
+      "name": "112 Coleman Blvd",
+      "url": "https://www.loopnet.com/Listing/112-Coleman-Blvd-Savannah-GA/42472738/",
+      "address": "Savannah, GA 31408",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31408",
+      "price": "$5,500,000",
+      "property_type": "Industrial",
+      "listing_type": "PropertyForSale",
+      "image": "https://images1.loopnet.com/i2/reGF5j3GYgnDuhMpW_eaMNdSPfyNoHwddbKhkkCqop4/115/image.jpg",
+      "data_points": [
+        "Warehouse",
+        "$5,500,000",
+        "25,910 SF",
+        "Built in 1993"
+      ]
+    },
+    {
+      "id": "42417231",
+      "name": "6 Television Cir",
+      "url": "https://www.loopnet.com/Listing/6-Television-Cir-Savannah-GA/42417231/",
+      "address": "Savannah, GA 31406",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31406",
+      "price": "$1,950,000",
+      "property_type": "GeneralRetail",
+      "listing_type": "PropertyForSale",
+      "image": "https://images1.loopnet.com/i2/chiIOhKD2WNQM8xqgjq_66ezOQA9x0aNGoAS2Qe-vXo/115/image.jpg",
+      "data_points": [
+        "Freestanding",
+        "$1,950,000",
+        "9,474 SF",
+        "Built in 1980"
+      ]
+    },
+    {
+      "id": "42379310",
+      "name": "2811 W Bay St",
+      "url": "https://www.loopnet.com/Listing/2811-W-Bay-St-Savannah-GA/42379310/",
+      "address": "Savannah, GA 31408",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31408",
+      "price": "$3,375,000",
+      "property_type": "Industrial",
+      "listing_type": "PropertyForSale",
+      "image": "https://images1.loopnet.com/i2/oqHKp9iFlZL484mRrJN8eF2WbaqBw6sB05XSbu3gDw8/115/image.jpg",
+      "data_points": [
+        "Manufacturing",
+        "$3,375,000",
+        "28,126 SF",
+        "Renovated in 2007"
+      ]
+    },
+    {
+      "id": "42373004",
+      "name": "1601 Whitaker St",
+      "url": "https://www.loopnet.com/Listing/1601-Whitaker-St-Savannah-GA/42373004/",
+      "address": "Savannah, GA 31401",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31401",
+      "price": "$849,000",
+      "property_type": "Office",
+      "listing_type": "PropertyForSale",
+      "image": "https://images1.loopnet.com/i2/YB188911sS14H7rhhKQ_ZpmiY2ZCHuifm67bT8EY0dM/115/image.jpg",
+      "data_points": [
+        "Office",
+        "$849,000",
+        "4,125 SF",
+        "Built in 1959"
+      ]
+    },
+    {
+      "id": "42282098",
+      "name": "106",
+      "url": "https://www.loopnet.com/Listing/413-W-Montgomery-Cross-Rd-Savannah-GA/42282098/",
+      "address": "413 W Montgomery Cross Rd, Savannah, GA 31406",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31406",
+      "price": "$295,000",
+      "property_type": "Office",
+      "listing_type": "ConsolidatedCondosForSale",
+      "image": "https://images1.loopnet.com/i2/Ctx8eiv3yEMf9NPV0bs9wt8I2NjF1vLlqgUoQsoixDA/115/image.jpg",
+      "data_points": [
+        "Office Condo",
+        "$295,000",
+        "990 SF",
+        "1 Unit"
+      ]
+    },
+    {
+      "id": "42233444",
+      "name": "60 Mincey Blvd",
+      "url": "https://www.loopnet.com/Listing/60-Mincey-Blvd-Savannah-GA/42233444/",
+      "address": "Savannah, GA 31408",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31408",
+      "price": "$3,500,000",
+      "property_type": "Industrial",
+      "listing_type": "PropertyForSale",
+      "image": "https://images1.loopnet.com/i2/ZrzI_-P1gb7N7RCB1UvzHvSD5An-Dk1qqwBAJVe1Go4/115/image.png",
+      "data_points": [
+        "Warehouse",
+        "$3,500,000",
+        "21,161 SF",
+        "Built in 1997"
+      ]
+    },
+    {
+      "id": "42226942",
+      "name": "220 Dean Forest Rd",
+      "url": "https://www.loopnet.com/Listing/220-Dean-Forest-Rd-Garden-City-GA/42226942/",
+      "address": "Garden City, GA 31408",
+      "city": "Garden City",
+      "state": "GA",
+      "zip_code": "31408",
+      "price": "$9,500,000",
+      "property_type": "Land",
+      "listing_type": "LandForSale",
+      "image": "https://images1.loopnet.com/i2/rmXKr9pxBUxZC5-hK_GTw_RP5DN8l2-UELydULa18AM/115/image.jpg",
+      "data_points": [
+        "Industrial Land",
+        "$9,500,000",
+        "6.03 AC",
+        "1 Lot"
+      ]
+    },
+    {
+      "id": "42199422",
+      "name": "2.4 Acre Abercorn Tract - Former Wells Fargo",
+      "url": "https://www.loopnet.com/Listing/10408-Abercorn-St-Savannah-GA/42199422/",
+      "address": "10408 Abercorn St, Savannah, GA 31419",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31419",
+      "price": "$2,500,000",
+      "property_type": "GeneralRetail",
+      "listing_type": "PropertyForSale",
+      "image": "https://images1.loopnet.com/i2/DdRKCykP6LPeju8vjPHylzPOL4JP8TVHpLcnFqZ9uTo/115/image.jpg",
+      "data_points": [
+        "Restaurant",
+        "$2,500,000",
+        "7,703 SF",
+        "Built in 1986"
+      ]
+    },
+    {
+      "id": "42106071",
+      "name": "209 W Congress St",
+      "url": "https://www.loopnet.com/Listing/209-W-Congress-St-Savannah-GA/42106071/",
+      "address": "Savannah, GA 31401",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31401",
+      "price": "$5,800,000",
+      "property_type": "GeneralRetail",
+      "listing_type": "PropertyForSale",
+      "image": "https://images1.loopnet.com/i2/HLexPeT3ZPu9FwRcfogWJ8UfOSlZjxoB6WVF8vOIMTM/115/image.jpg",
+      "data_points": [
+        "Restaurant",
+        "$5,800,000",
+        "8,100 SF",
+        "Built in 1860"
+      ]
+    },
+    {
+      "id": "42087390",
+      "name": "5223 Paulsen St",
+      "url": "https://www.loopnet.com/Listing/5223-Paulsen-St-Savannah-GA/42087390/",
+      "address": "Savannah, GA 31405",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31405",
+      "price": "$1,825,000",
+      "property_type": "Office",
+      "listing_type": "PropertyForSale",
+      "image": "https://images1.loopnet.com/i2/gYQxENplv3vJN4bgK-1hZUf6rTEh1-s7Ow_o6eSqtyY/115/image.jpg",
+      "data_points": [
+        "Medical",
+        "$1,825,000",
+        "4,584 SF",
+        "Renovated in 1992"
+      ]
+    },
+    {
+      "id": "42082656",
+      "name": "38 W De Renne Ave",
+      "url": "https://www.loopnet.com/Listing/38-W-De-Renne-Ave-Savannah-GA/42082656/",
+      "address": "Savannah, GA 31405",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31405",
+      "price": "$2,550,000",
+      "property_type": "GeneralRetail",
+      "listing_type": "PropertyForSale",
+      "image": "https://images1.loopnet.com/i2/T2n0s9WHYVsewSGUCDFU1GZDxzMLDwCoTDxY01byx-I/115/image.jpg",
+      "data_points": [
+        "Storefront Retail/Office",
+        "$2,550,000",
+        "8,000 SF",
+        "Built in 1995"
+      ]
+    },
+    {
+      "id": "42022942",
+      "name": "505 W US-80 Hwy",
+      "url": "https://www.loopnet.com/Listing/505-W-US-80-Hwy-Pooler-GA/42022942/",
+      "address": "Pooler, GA 31322",
+      "city": "Pooler",
+      "state": "GA",
+      "zip_code": "31322",
+      "price": "$4,800,000",
+      "property_type": "Industrial",
+      "listing_type": "PropertyForSale",
+      "image": "https://images1.loopnet.com/i2/wbeTfQtELhfoK4H0rmukIOz6aSdv4Ew_TYcODQ28bqM/115/image.jpg",
+      "data_points": [
+        "Showroom",
+        "$4,800,000",
+        "21,385 SF",
+        "Built in 2000"
+      ]
+    },
+    {
+      "id": "42021030",
+      "name": "1902 US Hwy 80",
+      "url": "https://www.loopnet.com/Listing/1902-US-Hwy-80-Savannah-GA/42021030/",
+      "address": "Savannah, GA 31408",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31408",
+      "price": "$500,000",
+      "property_type": "Land",
+      "listing_type": "LandForSale",
+      "image": "https://images1.loopnet.com/i2/gBD9iYjAW2tFnMLlCIpSA06fs1GF3eMhbgR4VxOGrPQ/115/image.jpg",
+      "data_points": [
+        "Commercial Land",
+        "$500,000",
+        "2.21 AC",
+        "1 Lot"
+      ]
+    },
+    {
+      "id": "42020986",
+      "name": "Old River Road Commercial and Multifamily",
+      "url": "https://www.loopnet.com/Listing/605-Old-River-Rd-Bloomingdale-GA/42020986/",
+      "address": "605 Old River Rd, Bloomingdale, GA 31302",
+      "city": "Bloomingdale",
+      "state": "GA",
+      "zip_code": "31302",
+      "price": "$20,000,000",
+      "property_type": "Land",
+      "listing_type": "LandForSale",
+      "image": "https://images1.loopnet.com/i2/JSyoJruFq6unQCqjQxMXL6OwvMGLJgm0OsLvBSgy2hg/115/image.jpg",
+      "data_points": [
+        "Commercial Land",
+        "$20,000,000",
+        "159.70 AC",
+        "1 Lot"
+      ]
+    },
+    {
+      "id": "42013784",
+      "name": "224 Bourne Blvd",
+      "url": "https://www.loopnet.com/Listing/224-Bourne-Blvd-Savannah-GA/42013784/",
+      "address": "Savannah, GA 31408",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31408",
+      "price": "$10,850,000",
+      "property_type": "Industrial",
+      "listing_type": "PropertyForSale",
+      "image": "https://images1.loopnet.com/i2/ioeh_V-0Irf8mZdF9AztH1pDn8Zx62GBA5OXBUNcPYs/115/image.png",
+      "data_points": [
+        "Warehouse",
+        "$10,850,000",
+        "6.22% Cap Rate",
+        "42,000 SF"
+      ]
+    },
+    {
+      "id": "41945906",
+      "name": "0 McKenna Street",
+      "url": "https://www.loopnet.com/Listing/0-McKenna-Street-Savannah-GA/41945906/",
+      "address": "Savannah, GA 31415",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31415",
+      "price": "$127,400",
+      "property_type": "Land",
+      "listing_type": "LandForSale",
+      "image": "https://images1.loopnet.com/i2/30VV6CkuP9mZk_isS8BLE7oTaLgPiOXj6jtr9FQrQOU/115/image.jpg",
+      "data_points": [
+        "Industrial Land",
+        "$127,400",
+        "0.51 AC",
+        "1 Lot"
+      ]
+    },
+    {
+      "id": "41921753",
+      "name": "17 W Park Ave",
+      "url": "https://www.loopnet.com/Listing/17-W-Park-Ave-Savannah-GA/41921753/",
+      "address": "Savannah, GA 31401",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31401",
+      "price": "$3,750,000",
+      "property_type": "Multifamily",
+      "listing_type": "PropertyForSale",
+      "image": "https://images1.loopnet.com/i2/Q1fkQgSQUr3afj0zxqUPoRawOyVaU4LNRhwsg-05jNU/115/image.jpg",
+      "data_points": [
+        "Apartment",
+        "$3,750,000",
+        "5 Units",
+        "Renovated in 2020"
+      ]
+    },
+    {
+      "id": "41907999",
+      "name": "1.27± AC Paved IOS Yard | I-L",
+      "url": "https://www.loopnet.com/Listing/45-Ross-Rd-Savannah-GA/41907999/",
+      "address": "45 Ross Rd, Savannah, GA 31405",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31405",
+      "price": "$1,050,000",
+      "property_type": "Land",
+      "listing_type": "LandForSale",
+      "image": "https://images1.loopnet.com/i2/GOFE8C2FPQhWM_0weyrYhPJjaBZlDP2mBjdUN2eC2WM/115/image.png",
+      "data_points": [
+        "Industrial Land",
+        "$1,050,000",
+        "1.27 AC",
+        "1 Lot"
+      ]
+    },
+    {
+      "id": "41907940",
+      "name": ".78 AC Industrial Lot Ross Rd. and Hwy 17",
+      "url": "https://www.loopnet.com/Listing/6-Ross-Rd-Savannah-GA/41907940/",
+      "address": "6 Ross Rd, Savannah, GA 31405",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31405",
+      "price": "$1,000,000",
+      "property_type": "Industrial",
+      "listing_type": "PropertyForSale",
+      "image": "https://images1.loopnet.com/i2/2UbDofks3o6MF94osiNDntEW26XKJIXXGEVuqe_SsO8/115/image.jpg",
+      "data_points": [
+        "Warehouse",
+        "$1,000,000",
+        "3,125 SF",
+        "Built in 1970"
+      ]
+    },
+    {
+      "id": "41907709",
+      "name": "42-44 Ross Rd 83,0007 SF Industrial Warehouse",
+      "url": "https://www.loopnet.com/Listing/42-Ross-Rd-Savannah-GA/41907709/",
+      "address": "42 Ross Rd, Savannah, GA 31405",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31405",
+      "price": "$10,900,000",
+      "property_type": "Industrial",
+      "listing_type": "PropertyForSale",
+      "image": "https://images1.loopnet.com/i2/9UqIHyurmBf1hUJp0cE-sXMq3jYWCcGlcPQuWTkvlIw/115/image.png",
+      "data_points": [
+        "Warehouse",
+        "$10,900,000",
+        "83,007 SF",
+        "Built in 1966"
+      ]
+    },
+    {
+      "id": "41859403",
+      "name": "Unit 201",
+      "url": "https://www.loopnet.com/Listing/37-W-Fairmont-Ave-Savannah-GA/41859403/",
+      "address": "37 W Fairmont Ave, Savannah, GA 31406",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31406",
+      "price": "$289,000",
+      "property_type": "Office",
+      "listing_type": "ConsolidatedCondosForSale",
+      "image": "https://images1.loopnet.com/i2/9qcsBkAfSzeuEv-D2D4dj4QZwfbZLQRN-fnGazd_4E4/115/image.jpg",
+      "data_points": [
+        "Office Condo",
+        "$289,000",
+        "1,350 SF",
+        "1 Unit"
+      ]
+    },
+    {
+      "id": "41748124",
+      "name": "Anchor Park - Land for Development",
+      "url": "https://www.loopnet.com/Listing/Anchor-Park-Land-for-Development-Savannah-GA/41748124/",
+      "address": "Savannah, GA 31407",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31407",
+      "price": "$6,495,000",
+      "property_type": "Land",
+      "listing_type": "LandForSale",
+      "image": "https://images1.loopnet.com/i2/q4Fcqf9Zn-_6dWYIX3caVDjFuCQM2_tsToSeTXdJsTU/115/image.png",
+      "data_points": [
+        "Commercial Land",
+        "$6,495,000",
+        "21.97 AC",
+        "1 Lot"
+      ]
+    },
+    {
+      "id": "41707757",
+      "name": "New Hampstead @ I-16 | ±1.581 Acres",
+      "url": "https://www.loopnet.com/Listing/0-Little-Neck-Rd-Bloomingdale-GA/41707757/",
+      "address": "0 Little Neck Rd, Bloomingdale, GA 31302",
+      "city": "Bloomingdale",
+      "state": "GA",
+      "zip_code": "31302",
+      "price": "$1,739,100",
+      "property_type": "Land",
+      "listing_type": "LandForSale",
+      "image": "https://images1.loopnet.com/i2/eroxiui3rDjHRV93IamvtDA_npuMtn7QgWB0dj31dko/115/image.jpg",
+      "data_points": [
+        "Commercial Land",
+        "$1,739,100",
+        "1.58 AC",
+        "1 Lot"
+      ]
+    },
+    {
+      "id": "41596433",
+      "name": "HARRIS TRAIL Rd",
+      "url": "https://www.loopnet.com/Listing/HARRIS-TRAIL-Rd-Richmond-Hill-GA/41596433/",
+      "address": "Richmond Hill, GA 31324",
+      "city": "Richmond Hill",
+      "state": "GA",
+      "zip_code": "31324",
+      "price": "$899,900",
+      "property_type": "Land",
+      "listing_type": "LandForSale",
+      "image": "https://images1.loopnet.com/i2/Ya5D4bMXouEXcX_VmQBdn7fJ8LrDg36JHX_-9c0gVJ8/115/image.png",
+      "data_points": [
+        "Commercial Land",
+        "$899,900",
+        "8.35 AC",
+        "1 Lot"
+      ]
+    },
+    {
+      "id": "41576844",
+      "name": "300 Drayton St",
+      "url": "https://www.loopnet.com/Listing/300-Drayton-St-Savannah-GA/41576844/",
+      "address": "Savannah, GA 31401",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31401",
+      "price": "$10,250,000",
+      "property_type": "Office",
+      "listing_type": "PropertyForSale",
+      "image": "https://images1.loopnet.com/i2/bwtXxQVrswEFUesgoaFaCKjfgtDio2Z1ZD6c3QEcZ3c/115/image.jpg",
+      "data_points": [
+        "Office/Residential",
+        "$10,250,000",
+        "5.54% Cap Rate",
+        "24,141 SF"
+      ]
+    },
+    {
+      "id": "41550623",
+      "name": "Orchard Hill",
+      "url": "https://www.loopnet.com/Listing/4509-4511-Old-Louisville-Rd-Garden-City-GA/41550623/",
+      "address": "4509-4511 Old Louisville Rd, Garden City, GA 31408",
+      "city": "Garden City",
+      "state": "GA",
+      "zip_code": "31408",
+      "price": "$2,875,000",
+      "property_type": "Multifamily",
+      "listing_type": "PropertyForSale",
+      "image": "https://images1.loopnet.com/i2/wIO9Ob03B7inaC-WhGJTT3ksLznyIb7MEhXF3SgV1EY/115/image.jpg",
+      "data_points": [
+        "Apartment",
+        "$2,875,000",
+        "18 Units",
+        "Renovated in 2025"
+      ]
+    },
+    {
+      "id": "41458924",
+      "name": "1031 Bryan Woods Loop",
+      "url": "https://www.loopnet.com/Listing/1031-Bryan-Woods-Loop-Savannah-GA/41458924/",
+      "address": "Savannah, GA 31410",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31410",
+      "price": "$475,000",
+      "property_type": "Land",
+      "listing_type": "LandForSale",
+      "image": "https://images1.loopnet.com/i2/j24xGklQCN6IUarUlFY4jURBcDsCp0aHlsMYN_qwJtc/115/image.jpg",
+      "data_points": [
+        "Commercial Land",
+        "$475,000",
+        "1.30 AC",
+        "1 Lot"
+      ]
+    },
+    {
+      "id": "41445920",
+      "name": "Turn-Key Restaurant For Sale",
+      "url": "https://www.loopnet.com/Listing/3209-E-Victory-Dr-Savannah-GA/41445920/",
+      "address": "3209 E Victory Dr, Savannah, GA 31404",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31404",
+      "price": "$2,150,000",
+      "property_type": "GeneralRetail",
+      "listing_type": "PropertyForSale",
+      "image": "https://images1.loopnet.com/i2/2mfYbtvjMsCpeXtkisgXYekArha4XHxHydAZ9i_St2Y/115/image.jpg",
+      "data_points": [
+        "Freestanding",
+        "$2,150,000",
+        "1,798 SF",
+        "Built in 1969"
+      ]
+    },
+    {
+      "id": "41360235",
+      "name": "1313 Rogers St",
+      "url": "https://www.loopnet.com/Listing/1313-Rogers-St-Savannah-GA/41360235/",
+      "address": "Savannah, GA 31415",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31415",
+      "price": "$3,575,000",
+      "property_type": "Industrial",
+      "listing_type": "PropertyForSale",
+      "image": "https://images1.loopnet.com/i2/ZLPY3jAk5pFILctdmQ-icik-4Du-cW5qYJepBwOaEcU/115/image.jpg",
+      "data_points": [
+        "Service",
+        "$3,575,000",
+        "27,520 SF",
+        "Built in 1980"
+      ]
+    },
+    {
+      "id": "41337325",
+      "name": "Cleared Pad Site -Frontage Garden City, GA",
+      "url": "https://www.loopnet.com/Listing/4710-Augusta-Rd-Savannah-GA/41337325/",
+      "address": "4710 Augusta Rd, Savannah, GA 31408",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31408",
+      "price": "$375,000",
+      "property_type": "Land",
+      "listing_type": "LandForSale",
+      "image": "https://images1.loopnet.com/i2/ln3B5P7esDufMfWfYDcRBmod0R2TGv12J8iP66RTpDE/115/image.jpg",
+      "data_points": [
+        "Commercial Land",
+        "$375,000",
+        "0.64 AC",
+        "1 Lot"
+      ]
+    },
+    {
+      "id": "41267488",
+      "name": "7815 E US Hwy 80",
+      "url": "https://www.loopnet.com/Listing/7815-E-US-Hwy-80-Savannah-GA/41267488/",
+      "address": "Savannah, GA 31410",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31410",
+      "price": "$2,615,000",
+      "property_type": "Office",
+      "listing_type": "PropertyForSale",
+      "image": "https://images1.loopnet.com/i2/Gld5n4G92o1K35vPR64DL61l8dIzCVIFbgWnuTDBJyA/115/image.jpg",
+      "data_points": [
+        "Office",
+        "$2,615,000",
+        "5,337 SF",
+        "Renovated in 2026"
+      ]
+    },
+    {
+      "id": "41217887",
+      "name": "2312 Abercorn St",
+      "url": "https://www.loopnet.com/Listing/2312-Abercorn-St-Savannah-GA/41217887/",
+      "address": "Savannah, GA 31401",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31401",
+      "price": "$950,000",
+      "property_type": "GeneralRetail",
+      "listing_type": "PropertyForSale",
+      "image": "https://images1.loopnet.com/i2/hwICdxXlufqDXTkQAfj8FBT0zFLxSdAvYnGJF5M8jFg/115/image.jpg",
+      "data_points": [
+        "Storefront Retail/Residential",
+        "$950,000",
+        "4.95% Cap Rate",
+        "2,800 SF"
+      ]
+    },
+    {
+      "id": "41192832",
+      "name": "3125 Ogeechee Rd",
+      "url": "https://www.loopnet.com/Listing/3125-Ogeechee-Rd-Savannah-GA/41192832/",
+      "address": "Savannah, GA 31405",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31405",
+      "price": "$565,000",
+      "property_type": "Land",
+      "listing_type": "LandForSale",
+      "image": "https://images1.loopnet.com/i2/CC3GyNI-8Viu1uZP6-eeuEAI1oBE60VaLXpEu4nw6Dw/115/image.png",
+      "data_points": [
+        "Commercial Land",
+        "$565,000",
+        "1.37 AC",
+        "1 Lot"
+      ]
+    },
+    {
+      "id": "41096088",
+      "name": "31 W congress St",
+      "url": "https://www.loopnet.com/Listing/31-W-congress-St-Savannah-GA/41096088/",
+      "address": "Savannah, GA 31401",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31401",
+      "price": "$7,100,000",
+      "property_type": "Office",
+      "listing_type": "PropertyForSale",
+      "image": "https://images1.loopnet.com/i2/1LV23EdysUp3F7-PDjkJ8-gOBzwz7rbEccM3Zxvubkc/115/image.jpg",
+      "data_points": [
+        "Office/Residential",
+        "$7,100,000",
+        "15,228 SF",
+        "Renovated in 2020"
+      ]
+    },
+    {
+      "id": "41062484",
+      "name": "Indian Motorcycles Showroom",
+      "url": "https://www.loopnet.com/Listing/6-Gateway-Blvd-W-Savannah-GA/41062484/",
+      "address": "6 Gateway Blvd W, Savannah, GA 31419",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31419",
+      "price": "$4,950,000",
+      "property_type": "GeneralRetail",
+      "listing_type": "PropertyForSale",
+      "image": "https://images1.loopnet.com/i2/xamINX2dLDHPHbL8q8pkW9-e7ki6G3i3td5mTzIVfEw/115/image.png",
+      "data_points": [
+        "Auto Dealership",
+        "$4,950,000",
+        "27,605 SF",
+        "Renovated in 2002"
+      ]
+    },
+    {
+      "id": "41009028",
+      "name": "48 Artley Rd",
+      "url": "https://www.loopnet.com/Listing/48-Artley-Rd-Savannah-GA/41009028/",
+      "address": "Savannah, GA 31408",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31408",
+      "price": "$12,000,000",
+      "property_type": "Industrial",
+      "listing_type": "PropertyForSale",
+      "image": "https://images1.loopnet.com/i2/zukgtWxfgatSTeaOvHLbHMWQ0ACFDdCquEMQtGhzmxE/115/image.png",
+      "data_points": [
+        "Manufacturing",
+        "$12,000,000",
+        "64,372 SF",
+        "Built in 1991"
+      ]
+    },
+    {
+      "id": "40925006",
+      "name": "The Galloway House Inn",
+      "url": "https://www.loopnet.com/Listing/107-E-35th-St-Savannah-GA/40925006/",
+      "address": "107 E 35th St, Savannah, GA 31401",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31401",
+      "price": "$2,248,000",
+      "property_type": "Office",
+      "listing_type": "PropertyForSale",
+      "image": "https://images.loopnet.co.uk/i2/LBxdEq9pnosoHoB5O7AUqxiih4-aabnCgw8nCG8TSkM/115/image.jpg",
+      "data_points": [
+        "Office",
+        "$2,248,000",
+        "6,708 SF",
+        "Built in 1895"
+      ]
+    },
+    {
+      "id": "40923391",
+      "name": "High-Visibility Corner Redevelopment Site",
+      "url": "https://www.loopnet.com/Listing/1268-Kolic-Helmey-Rd-Guyton-GA/40923391/",
+      "address": "1268 Kolic Helmey Rd, Guyton, GA 31312",
+      "city": "Guyton",
+      "state": "GA",
+      "zip_code": "31312",
+      "price": "$1,995,000",
+      "property_type": "Land",
+      "listing_type": "LandForSale",
+      "image": "https://images.loopnet.co.uk/i2/VpZh9CsYQuWKTzNG-_grxOcbyPRioIa-DAG9OoGL2a4/115/image.jpg",
+      "data_points": [
+        "Commercial Land",
+        "$1,995,000",
+        "4.20 AC",
+        "1 Lot"
+      ]
+    },
+    {
+      "id": "40922283",
+      "name": "1040 E Us-80 Hwy",
+      "url": "https://www.loopnet.com/Listing/1040-E-Us-80-Hwy-Savannah-GA/40922283/",
+      "address": "Savannah, GA 31408",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31408",
+      "price": "$7,250,000",
+      "property_type": "SportsAndEntertainment",
+      "listing_type": "PropertyForSale",
+      "image": "https://images.loopnet.co.uk/i2/GoCuBnql9vpqHLiGek5nOq6onYEzpIDmEZLkm5saXmw/115/image.jpg",
+      "data_points": [
+        "Amusement Park",
+        "$7,250,000",
+        "16,100 SF",
+        "Built in 2004"
+      ]
+    },
+    {
+      "id": "40896309",
+      "name": "5659 Ogeechee Rd",
+      "url": "https://www.loopnet.com/Listing/5659-Ogeechee-Rd-Savannah-GA/40896309/",
+      "address": "Savannah, GA 31405",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31405",
+      "price": "$1,900,000",
+      "property_type": "Land",
+      "listing_type": "LandForSale",
+      "image": "https://images.loopnet.co.uk/i2/SGkgBXVSoWtWXgMDBDe1idU6AtJYP04bfBJ1IqWQvww/115/image.jpg",
+      "data_points": [
+        "Commercial Land",
+        "$1,900,000",
+        "0.73 - 2.14 AC",
+        "4 Lots"
+      ]
+    },
+    {
+      "id": "40887373",
+      "name": "1775 Dean Forest Rd & Old Louisville Rd/Hwy 8",
+      "url": "https://www.loopnet.com/Listing/1775-Dean-Forest-Rd-Savannah-GA/40887373/",
+      "address": "1775 Dean Forest Rd, Savannah, GA 31408",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31408",
+      "price": "$3,500,000",
+      "property_type": "Land",
+      "listing_type": "LandForSale",
+      "image": "https://images.loopnet.co.uk/i2/7-lIQka_OoPH5JOEnSFYLcgo32FJES4friH3Dcby4KQ/115/image.png",
+      "data_points": [
+        "Industrial Land",
+        "$3,500,000",
+        "3.17 AC",
+        "1 Lot"
+      ]
+    },
+    {
+      "id": "40867876",
+      "name": "104 Jim Benton Ct",
+      "url": "https://www.loopnet.com/Listing/104-Jim-Benton-Ct-Savannah-GA/40867876/",
+      "address": "Savannah, GA 31407",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31407",
+      "price": "$550,000",
+      "property_type": "Land",
+      "listing_type": "LandForSale",
+      "image": "https://images.loopnet.co.uk/i2/Rflb2llXa-wlJFJpmovRi6JKbyLapEDL0dkYSELxbbw/115/image.jpg",
+      "data_points": [
+        "Commercial Land",
+        "$550,000",
+        "1 AC",
+        "1 Lot"
+      ]
+    },
+    {
+      "id": "40853481",
+      "name": "570 E York St",
+      "url": "https://www.loopnet.com/Listing/570-E-York-St-Savannah-GA/40853481/",
+      "address": "Savannah, GA 31401",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31401",
+      "price": "$4,600,000",
+      "property_type": "Office",
+      "listing_type": "PropertyForSale",
+      "image": "https://images.loopnet.co.uk/i2/ONocmSODQLMrY7YKIx5fIsU4ILCTbuNHNJn5xvX3vnc/115/image.jpg",
+      "data_points": [
+        "Office",
+        "$4,600,000",
+        "6,948 SF",
+        "Renovated in 2016"
+      ]
+    },
+    {
+      "id": "40701472",
+      "name": "1511 Staley Ave Industrial lot- sale or lease",
+      "url": "https://www.loopnet.com/Listing/1511-Staley-Ave-Savannah-GA/40701472/",
+      "address": "1511 Staley Ave, Savannah, GA 31405",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31405",
+      "price": "$1,600,000",
+      "property_type": "Land",
+      "listing_type": "LandForSale",
+      "image": "https://images.loopnet.co.uk/i2/qAx26X2XvYwPQL9tnS5pQmOpl-ug9_T3ZBrfo4sQjng/115/image.jpg",
+      "data_points": [
+        "Commercial Land",
+        "$1,600,000",
+        "2.30 AC",
+        "1 Lot"
+      ]
+    },
+    {
+      "id": "40620118",
+      "name": "Mercer Plaza",
+      "url": "https://www.loopnet.com/Listing/140-Johnny-Mercer-Blvd-Savannah-GA/40620118/",
+      "address": "140 Johnny Mercer Blvd, Savannah, GA 31410",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31410",
+      "price": "$3,850,000",
+      "property_type": "GeneralRetail",
+      "listing_type": "PropertyForSale",
+      "image": "https://images.loopnet.co.uk/i2/E7-onSZhL8gC8K6jNYrRajCMgDP_DkkqdDAVZjAHI9g/115/image.jpg",
+      "data_points": [
+        "Restaurant",
+        "$3,850,000",
+        "24,064 SF",
+        "Renovated in 2003"
+      ]
+    },
+    {
+      "id": "40600808",
+      "name": "225 US-80",
+      "url": "https://www.loopnet.com/Listing/225-US-80-Pooler-GA/40600808/",
+      "address": "Pooler, GA 31322",
+      "city": "Pooler",
+      "state": "GA",
+      "zip_code": "31322",
+      "price": "$135,000",
+      "property_type": "Land",
+      "listing_type": "LandForSale",
+      "image": "https://images.loopnet.co.uk/i2/nuei5ucV6v0hF1Fark6zhuiaIDb-UrsYp0vy7yEzGoA/115/image.jpg",
+      "data_points": [
+        "Commercial Land",
+        "$135,000",
+        "0.13 AC",
+        "1 Lot"
+      ]
+    },
+    {
+      "id": "40582204",
+      "name": "14094 Abercorn St",
+      "url": "https://www.loopnet.com/Listing/14094-Abercorn-St-Savannah-GA/40582204/",
+      "address": "Savannah, GA 31419",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31419",
+      "price": "$1,725,000",
+      "property_type": "GeneralRetail",
+      "listing_type": "PropertyForSale",
+      "image": "https://images.loopnet.co.uk/i2/v9Zq0ta3nfpWSaLBv5eIP8vxKYJpPwWLms3jWemp0Vc/115/image.png",
+      "data_points": [
+        "Freestanding",
+        "$1,725,000",
+        "10,000 SF",
+        "Built in 2026"
+      ]
+    },
+    {
+      "id": "40535855",
+      "name": "221 Tanger Outlets Blvd",
+      "url": "https://www.loopnet.com/Listing/221-Tanger-Outlets-Blvd-Pooler-GA/40535855/",
+      "address": "Pooler, GA 31322",
+      "city": "Pooler",
+      "state": "GA",
+      "zip_code": "31322",
+      "price": "$6,100,000",
+      "property_type": "GeneralRetail",
+      "listing_type": "PropertyForSale",
+      "image": "https://images.loopnet.co.uk/i2/QdVldkOZiHhXDtiCqZpynHQbT-HeiFCvick3JY9hCCs/115/image.jpg",
+      "data_points": [
+        "Service Station",
+        "$6,100,000",
+        "6,000 SF",
+        "Built in 2018"
+      ]
+    },
+    {
+      "id": "40363098",
+      "name": "Fort Argyle Rd Holding Yard",
+      "url": "https://www.loopnet.com/Listing/390-Fort-Argyle-Rd-Savannah-GA/40363098/",
+      "address": "390 Fort Argyle Rd, Savannah, GA 31419",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31419",
+      "price": "$950,000",
+      "property_type": "Land",
+      "listing_type": "LandForSale",
+      "image": "https://images.loopnet.co.uk/i2/m3FSjX-CNAxxW5wx0zVUvmvezlDV8WgyLkTXyUe3aUk/115/image.jpg",
+      "data_points": [
+        "Industrial Land",
+        "$950,000",
+        "1.50 AC",
+        "1 Lot"
+      ]
+    },
+    {
+      "id": "40285783",
+      "name": "SHELL GAS STATION + C-STORE",
+      "url": "https://www.loopnet.com/Listing/4-Park-Of-Commerce-Way-Savannah-GA/40285783/",
+      "address": "4 Park Of Commerce Way, Savannah, GA 31405",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31405",
+      "price": "$4,100,000",
+      "property_type": "GeneralRetail",
+      "listing_type": "PropertyForSale",
+      "image": "https://images.loopnet.co.uk/i2/lS3YQi9QwaFb8zR2YVgcB4nCoovLJWKjixBfCTXRqMY/115/image.jpg",
+      "data_points": [
+        "Convenience",
+        "$4,100,000",
+        "2,500 SF",
+        "Built in 1998"
+      ]
+    },
+    {
+      "id": "40263545",
+      "name": "301-303 East Henry St",
+      "url": "https://www.loopnet.com/Listing/301-E-Henry-St-Savannah-GA/40263545/",
+      "address": "301 E Henry St, Savannah, GA 31401",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31401",
+      "price": "$995,000",
+      "property_type": "Multifamily",
+      "listing_type": "PropertyForSale",
+      "image": "https://images.loopnet.co.uk/i2/1HfBfzW0sJHWG8F4o-Q2riLStzPhZxDMWo-yy6YXadw/115/image.jpg",
+      "data_points": [
+        "Apartment",
+        "$995,000",
+        "6.88% Cap Rate",
+        "4 Units"
+      ]
+    },
+    {
+      "id": "40142952",
+      "name": "4119 Montgomery St",
+      "url": "https://www.loopnet.com/Listing/4119-Montgomery-St-Savannah-GA/40142952/",
+      "address": "Savannah, GA 31405",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31405",
+      "price": "$795,000",
+      "property_type": "GeneralRetail",
+      "listing_type": "PropertyForSale",
+      "image": "https://images.loopnet.co.uk/i2/HOuT5EcIAJIlX2Qg1zsXsMPDOWY7lC4bYB29jvUEKhs/115/image.jpg",
+      "data_points": [
+        "Fast Food",
+        "$795,000",
+        "1,763 SF",
+        "Built in 1983"
+      ]
+    },
+    {
+      "id": "40134003",
+      "name": "Victory Plaza West",
+      "url": "https://www.loopnet.com/Listing/302-W-Victory-Dr-Savannah-GA/40134003/",
+      "address": "302 W Victory Dr, Savannah, GA 31405",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31405",
+      "price": "$3,200,000",
+      "property_type": "GeneralRetail",
+      "listing_type": "PropertyForSale",
+      "image": "https://images.loopnet.co.uk/i2/Ntr7OEKdDe22S7g9YEonv2NMc_b_jWeqTBEi_kh5mTo/115/image.jpg",
+      "data_points": [
+        "Freestanding",
+        "$3,200,000",
+        "7.00% Cap Rate",
+        "11,439 SF"
+      ]
+    },
+    {
+      "id": "40104094",
+      "name": "301 Rowland Rd",
+      "url": "https://www.loopnet.com/Listing/301-Rowland-Rd-Savannah-GA/40104094/",
+      "address": "Savannah, GA 31406",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31406",
+      "price": "$205,000",
+      "property_type": "Land",
+      "listing_type": "LandForSale",
+      "image": "https://images.loopnet.co.uk/i2/-jpuzOuYFzWfPN--ZOR_t6lSj49au-HgsTEkFM1S5Xw/115/image.jpg",
+      "data_points": [
+        "Commercial Land",
+        "$205,000",
+        "0.17 AC",
+        "1 Lot"
+      ]
+    },
+    {
+      "id": "40093033",
+      "name": "217 E 38th St, Savannah, GA 31401",
+      "url": "https://www.loopnet.com/Listing/217-E-38th-St-Savannah-GA/40093033/",
+      "address": "217 E 38th St, Savannah, GA 31401",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31401",
+      "price": "$400,000",
+      "property_type": "Multifamily",
+      "listing_type": "PropertyForSale",
+      "image": "https://images.loopnet.co.uk/i2/Dx70RchDKnOeV3vHmEbhOfKBqYSEEDc82gj9N_n98Wk/115/image.jpg",
+      "data_points": [
+        "Apartment",
+        "$400,000",
+        "2 Units",
+        "Built in 1920"
+      ]
+    },
+    {
+      "id": "40042656",
+      "name": "2716 Mechanics Ave",
+      "url": "https://www.loopnet.com/Listing/2716-Mechanics-Ave-Savannah-GA/40042656/",
+      "address": "Savannah, GA 31404",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31404",
+      "price": "$1,400,000",
+      "property_type": "Specialty",
+      "listing_type": "PropertyForSale",
+      "image": "https://images.loopnet.co.uk/i2/68eEO49q3F2fHOx3VdG4a6-T31BXetYBk3R6lyC5X3o/115/image.jpg",
+      "data_points": [
+        "Religious Facility",
+        "$1,400,000",
+        "7,702 SF",
+        "Built in 1970"
+      ]
+    },
+    {
+      "id": "40010386",
+      "name": "423 W 42nd St",
+      "url": "https://www.loopnet.com/Listing/423-W-42nd-St-Savannah-GA/40010386/",
+      "address": "Savannah, GA 31401",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31401",
+      "price": "$450,000",
+      "property_type": "GeneralRetail",
+      "listing_type": "PropertyForSale",
+      "image": "https://images.loopnet.co.uk/i2/DNycEZn9ldWaDiILm7ZKD62SQEPIWKck5iAn0ZcHXJE/115/image.jpg",
+      "data_points": [
+        "Retail",
+        "$450,000",
+        "2,400 SF",
+        "Built in 1954"
+      ]
+    },
+    {
+      "id": "40009181",
+      "name": "309 W 41st St",
+      "url": "https://www.loopnet.com/Listing/309-W-41st-St-Savannah-GA/40009181/",
+      "address": "Savannah, GA 31401",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31401",
+      "price": "$995,000",
+      "property_type": "Multifamily",
+      "listing_type": "PropertyForSale",
+      "image": "https://images.loopnet.co.uk/i2/VPgAiQvDQKXQrQ_P0z792tNEFin7F-Vswp0QVoWMhpo/115/image.jpg",
+      "data_points": [
+        "Apartment",
+        "$995,000",
+        "6.57% Cap Rate",
+        "4 Units"
+      ]
+    },
+    {
+      "id": "39962047",
+      "name": "589 BUSH ROAD-CHATHAM COUNTY",
+      "url": "https://www.loopnet.com/Listing/589-Bush-Rd-Savannah-GA/39962047/",
+      "address": "589 Bush Rd, Savannah, GA 31419",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31419",
+      "price": "$575,000",
+      "property_type": "Land",
+      "listing_type": "LandForSale",
+      "image": "https://images.loopnet.co.uk/i2/LiKvl4oz5D01IfHTesb22iLEeK5nwvt8jUlcjzPx9yM/115/image.jpg",
+      "data_points": [
+        "Commercial Land",
+        "$575,000",
+        "5 AC",
+        "1 Lot"
+      ]
+    },
+    {
+      "id": "39958408",
+      "name": "White Bluff Land",
+      "url": "https://www.loopnet.com/Listing/12521-White-Bluff-Rd-Savannah-GA/39958408/",
+      "address": "12521 White Bluff Rd, Savannah, GA 31419",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31419",
+      "price": "$815,000",
+      "property_type": "Land",
+      "listing_type": "LandForSale",
+      "image": "https://images.loopnet.co.uk/i2/hclP65_Rrx0yWxqgR3u0uaKiLOUd0gEvbV9DZnfWhwY/115/image.png",
+      "data_points": [
+        "Commercial Land",
+        "$815,000",
+        "1.25 AC",
+        "1 Lot"
+      ]
+    },
+    {
+      "id": "39902007",
+      "name": "7-9 E Bay St",
+      "url": "https://www.loopnet.com/Listing/7-9-E-Bay-St-Savannah-GA/39902007/",
+      "address": "Savannah, GA 31401",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31401",
+      "price": "$3,810,000",
+      "property_type": "GeneralRetail",
+      "listing_type": "PropertyForSale",
+      "image": "https://images.loopnet.co.uk/i2/AtsP-E2nmmYYraq-jfUbwyzzB6GHlsKvZNGg-74MIfQ/115/image.jpg",
+      "data_points": [
+        "Bar",
+        "$3,810,000",
+        "7,984 SF",
+        "Renovated in 1985"
+      ]
+    },
+    {
+      "id": "39887055",
+      "name": "Hwy 144 & Port Royal Road",
+      "url": "https://www.loopnet.com/Listing/HWY-144-Port-Royal-Rd-Richmond-Hill-GA/39887055/",
+      "address": "HWY 144 & Port Royal Rd, Richmond Hill, GA 31324",
+      "city": "Richmond Hill",
+      "state": "GA",
+      "zip_code": "31324",
+      "price": "$1,250,000 - $9,075,000",
+      "property_type": "Land",
+      "listing_type": "LandForSale",
+      "image": "https://images.loopnet.co.uk/i2/6Dgrza2E_ThwlkCfDiPugDojrlHT-O_UDwHOFY6WwPE/115/image.jpg",
+      "data_points": [
+        "Commercial Land",
+        "$1,250,000 - $9,075,000",
+        "1.37 - 10.47 AC",
+        "5 Lots"
+      ]
+    },
+    {
+      "id": "39834018",
+      "name": "Walgreens",
+      "url": "https://www.loopnet.com/Listing/11509-Abercorn-St-Savannah-GA/39834018/",
+      "address": "11509 Abercorn St, Savannah, GA 31419",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31419",
+      "price": "$5,292,350",
+      "property_type": "GeneralRetail",
+      "listing_type": "PropertyForSale",
+      "image": "https://images.loopnet.co.uk/i2/EcDzgeqxeehO7cfzf5c6GueWU3GH_jT3ZZiydpeMNLk/115/image.jpg",
+      "data_points": [
+        "Drug Store",
+        "$5,292,350",
+        "6.00% Cap Rate",
+        "15,607 SF"
+      ]
+    },
+    {
+      "id": "39824520",
+      "name": "6803 Forest Park Dr",
+      "url": "https://www.loopnet.com/Listing/6803-Forest-Park-Dr-Savannah-GA/39824520/",
+      "address": "Savannah, GA 31406",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31406",
+      "price": "$475,000",
+      "property_type": "Land",
+      "listing_type": "LandForSale",
+      "image": "https://images.loopnet.co.uk/i2/AfHd-YCCljNQYSvDPlan-eicmrZ5qgrt8JjhPUE1ytg/115/image.png",
+      "data_points": [
+        "Commercial Land",
+        "$475,000",
+        "0.38 AC",
+        "1 Lot"
+      ]
+    },
+    {
+      "id": "39794288",
+      "name": "923 E Park Avenue",
+      "url": "https://www.loopnet.com/Listing/923-E-Park-Ave-Savannah-GA/39794288/",
+      "address": "923 E Park Ave, Savannah, GA 31401",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31401",
+      "price": "$1,400,000",
+      "property_type": "Multifamily",
+      "listing_type": "PropertyForSale",
+      "image": "https://images.loopnet.co.uk/i2/axp0AeGTubHYbl7UaaFw6YzZPP08ZqR-gLPp0L2zWQM/115/image.jpg",
+      "data_points": [
+        "Apartment",
+        "$1,400,000",
+        "4 Units",
+        "Built in 1915"
+      ]
+    },
+    {
+      "id": "39747455",
+      "name": "±16.9 Gross Acres at I-95 (Exit 109)",
+      "url": "https://www.loopnet.com/Listing/678-Newport-Blvd-Port-Wentworth-GA/39747455/",
+      "address": "678 Newport Blvd, Port Wentworth, GA 31407",
+      "city": "Port Wentworth",
+      "state": "GA",
+      "zip_code": "31407",
+      "price": "$7,995,000",
+      "property_type": "Land",
+      "listing_type": "LandForSale",
+      "image": "https://images.loopnet.co.uk/i2/FYhoYiw47Rs10ZfWvsBs_xfzpbO760XUuXnECT19AWQ/115/image.jpg",
+      "data_points": [
+        "Residential Land",
+        "$7,995,000",
+        "16.90 AC",
+        "1 Lot"
+      ]
+    },
+    {
+      "id": "39741306",
+      "name": "Downtown Savannah Redevelopment Opportunity",
+      "url": "https://www.loopnet.com/Listing/1215-Price-St-Savannah-GA/39741306/",
+      "address": "1215 Price St, Savannah, GA 31401",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31401",
+      "price": "$2,595,000",
+      "property_type": "GeneralRetail",
+      "listing_type": "PropertyForSale",
+      "image": "https://images.loopnet.co.uk/i2/5clSBCuM9lTNOoRC72ERD-U3nN0fjyxvMa8ebtShVJY/115/image.jpg",
+      "data_points": [
+        "Freestanding",
+        "$2,595,000",
+        "6,161 SF",
+        "Built in 1996"
+      ]
+    },
+    {
+      "id": "39738343",
+      "name": "2601 Bull St",
+      "url": "https://www.loopnet.com/Listing/2601-Bull-St-Savannah-GA/39738343/",
+      "address": "Savannah, GA 31401",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31401",
+      "price": "$4,500,000",
+      "property_type": "Land",
+      "listing_type": "LandForSale",
+      "image": "https://images.loopnet.co.uk/i2/BMGP7lqUE30e7s4VuVLYpCoRDYRgFvGl5Qj0zdOlNco/115/image.jpg",
+      "data_points": [
+        "Commercial Land",
+        "$4,500,000",
+        "0.60 AC",
+        "1 Lot"
+      ]
+    },
+    {
+      "id": "39723416",
+      "name": "Abercorn Building",
+      "url": "https://www.loopnet.com/Listing/8890-Abercorn-St-Savannah-GA/39723416/",
+      "address": "8890 Abercorn St, Savannah, GA 31406",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31406",
+      "price": "$1,325,000",
+      "property_type": "GeneralRetail",
+      "listing_type": "PropertyForSale",
+      "image": "https://images.loopnet.co.uk/i2/DPZNl1NZyfTm4vg6OqQJ_K_FdhZZgKKuGPW62OOBPJA/115/image.jpg",
+      "data_points": [
+        "Storefront Retail/Office",
+        "$1,325,000",
+        "7,500 SF",
+        "Renovated in 1995"
+      ]
+    },
+    {
+      "id": "39711938",
+      "name": "419 Montgomery Street",
+      "url": "https://www.loopnet.com/Listing/419-Montgomery-St-Savannah-GA/39711938/",
+      "address": "419 Montgomery St, Savannah, GA 31401",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31401",
+      "price": "$2,700,000",
+      "property_type": "Office",
+      "listing_type": "PropertyForSale",
+      "image": "https://images.loopnet.co.uk/i2/Ck_2fmdIVLZOqTxsiLl0j2chnOyC8vmfG2lDwEOm2tg/115/image.jpg",
+      "data_points": [
+        "Office",
+        "$2,700,000",
+        "4,620 SF",
+        "Built in 1860"
+      ]
+    },
+    {
+      "id": "39694254",
+      "name": "521 W. 37th Street",
+      "url": "https://www.loopnet.com/Listing/521-W-37th-St-Savannah-GA/39694254/",
+      "address": "521 W 37th St, Savannah, GA 31415",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31415",
+      "price": "$999,000",
+      "property_type": "Multifamily",
+      "listing_type": "PropertyForSale",
+      "image": "https://images.loopnet.co.uk/i2/z7r3J8BAAkc1cAMXKNy9eFGN53a9C1Ex-j6eqV0nw5s/115/image.jpg",
+      "data_points": [
+        "Apartment",
+        "$999,000",
+        "7.94% Cap Rate",
+        "5 Units"
+      ]
+    },
+    {
+      "id": "39680203",
+      "name": "8 W Victory Dr",
+      "url": "https://www.loopnet.com/Listing/8-W-Victory-Dr-Savannah-GA/39680203/",
+      "address": "Savannah, GA 31405",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31405",
+      "price": "$675,000",
+      "property_type": "Office",
+      "listing_type": "PropertyForSale",
+      "image": "https://images.loopnet.co.uk/i2/AtlUNYbL13qRl2E3ykF794YN3aXEDyEhkDcgbAK_0a4/115/image.jpg",
+      "data_points": [
+        "Office",
+        "$675,000",
+        "2,125 SF",
+        "Built in 1890"
+      ]
+    },
+    {
+      "id": "39666763",
+      "name": "630 Meinhard Rd",
+      "url": "https://www.loopnet.com/Listing/630-Meinhard-Rd-Port-Wentworth-GA/39666763/",
+      "address": "Port Wentworth, GA 31407",
+      "city": "Port Wentworth",
+      "state": "GA",
+      "zip_code": "31407",
+      "price": "$675,000",
+      "property_type": "Office",
+      "listing_type": "PropertyForSale",
+      "image": "https://images.loopnet.co.uk/i2/oC7jUyHE4Dv0vsSerjBExslv6kiumzHvwyXBiU-0hV8/115/image.jpg",
+      "data_points": [
+        "Office/Residential",
+        "$675,000",
+        "1,916 SF",
+        "Built in 1900"
+      ]
+    },
+    {
+      "id": "39647165",
+      "name": "114 Horizon Park Dr",
+      "url": "https://www.loopnet.com/Listing/114-Horizon-Park-Dr-Savannah-GA/39647165/",
+      "address": "Savannah, GA 31405",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31405",
+      "price": "$915,000",
+      "property_type": "GeneralRetail",
+      "listing_type": "PropertyForSale",
+      "image": "https://images.loopnet.co.uk/i2/Z5tbKflhIF2BahXv5kDVT-BRFQ5rc2mpCuqfewhjmIY/115/image.jpg",
+      "data_points": [
+        "Restaurant",
+        "$915,000",
+        "3,136 SF",
+        "Built in 2005"
+      ]
+    },
+    {
+      "id": "39628058",
+      "name": "Commercial + MultiFamily Development Site",
+      "url": "https://www.loopnet.com/Listing/307-Fort-Argyle-Rd-Savannah-GA/39628058/",
+      "address": "307 Fort Argyle Rd, Savannah, GA 31419",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31419",
+      "price": "$8,500,000",
+      "property_type": "Land",
+      "listing_type": "LandForSale",
+      "image": "https://images.loopnet.co.uk/i2/J-k1ofUPWwQtn7r1Al3Afk57vNB1PyMsDoe3a6jJzno/115/image.jpg",
+      "data_points": [
+        "Commercial Land",
+        "$8,500,000",
+        "33 AC",
+        "1 Lot"
+      ]
+    },
+    {
+      "id": "39601317",
+      "name": "123 Beasley Rd",
+      "url": "https://www.loopnet.com/Listing/123-Beasley-Rd-Savannah-GA/39601317/",
+      "address": "123 Beasley Rd, Savannah, GA 31408",
+      "city": "Savannah",
+      "state": "GA",
+      "zip_code": "31408",
+      "price": "$1,850,000",
+      "property_type": "Industrial",
+      "listing_type": "PropertyForSale",
+      "image": "https://images.loopnet.co.uk/i2/8blNizs4bwCO390iYMZ0K2Mxa5zejhxDxZM6FLtBh1w/115/image.jpg",
+      "data_points": [
+        "Industrial",
+        "$1,850,000",
+        "986 SF",
+        "Built in 1947"
+      ]
+    }
+  ]
+}

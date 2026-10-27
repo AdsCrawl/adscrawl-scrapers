@@ -1,0 +1,23 @@
+AdsCrawl Scrapers — Attribution Notice
+
+Adapted by AdsCrawl <support@adscrawl.net>, 2026.
+Original project: https://github.com/scrapfly/scrapfly-scrapers
+Source revision: f8db50104853ca8db0d1c4685c616e8107751fd4
+Original code and sample outputs: Scrapfly and the upstream contributors.
+Original project metadata, including author and license notices from each
+subproject, is preserved in docs/upstream-metadata.json. The original repository
+license is reproduced without modification in LICENSE.upstream (NPOSL-3.0).
+
+This modified work is distributed under the Open Software License 3.0
+(OSL-3.0), as permitted by section 17(d) of the upstream NPOSL-3.0 license.
+See LICENSE for the complete applicable license. The original notices are
+preserved as attribution, not as an endorsement by the original authors.
+
+Modifications include the AdsCrawl SDK transport, site request configuration,
+remote browser actions, response normalization, session lifecycle, dependency
+metadata, documentation and verification workflows. Google AI Mode uses
+structured DOM extraction instead of the upstream LLM prompt service.
+Historical results were copied from upstream and have not been regenerated.
+
+By using, modifying, or redistributing this work, you assent to the terms of
+the Open Software License 3.0. See LICENSE, including section 9.

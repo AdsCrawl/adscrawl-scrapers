@@ -1,0 +1,290 @@
+[
+  {
+    "profile": {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "US",
+        "addressLocality": "Seattle, Washington, United States"
+      },
+      "alumniOf": [
+        {
+          "@type": "EducationalOrganization",
+          "name": "Harvard University",
+          "url": "https://www.linkedin.com/school/harvard-university/",
+          "member": {
+            "@type": "OrganizationRole",
+            "startDate": 1973,
+            "endDate": 1975
+          }
+        }
+      ],
+      "awards": [],
+      "disambiguatingDescription": "Creator, Top Voice",
+      "image": {
+        "@type": "ImageObject",
+        "contentUrl": "https://media.licdn.com/dms/image/v2/D5603AQF-RYZP55jmXA/profile-displayphoto-shrink_200_200/B56ZRi8g.aGsAY-/0/1736826818802?e=2147483647&v=beta&t=bKWfN6UwwtiCqFWsG7rBELbd48qJOAMLdxhBzzkJV0k"
+      },
+      "jobTitle": [
+        "Co-chair",
+        "Founder",
+        "Co-founder"
+      ],
+      "knowsLanguage": [],
+      "memberOf": [],
+      "name": "Bill Gates",
+      "sameAs": "https://www.linkedin.com/in/williamhgates",
+      "url": "https://www.linkedin.com/in/williamhgates",
+      "worksFor": [
+        [
+          {
+            "@type": "Organization",
+            "name": "Gates Foundation",
+            "url": "https://www.linkedin.com/company/gates-foundation",
+            "member": {
+              "@type": "OrganizationRole",
+              "startDate": 2000
+            }
+          },
+          {
+            "@type": "Organization",
+            "name": "Breakthrough Energy ",
+            "url": "https://www.linkedin.com/company/breakthrough-energy",
+            "member": {
+              "@type": "OrganizationRole",
+              "startDate": 2015
+            }
+          },
+          {
+            "@type": "Organization",
+            "name": "Microsoft",
+            "url": "https://www.linkedin.com/company/microsoft",
+            "member": {
+              "@type": "OrganizationRole",
+              "startDate": 1975
+            }
+          }
+        ]
+      ],
+      "interactionStatistic": {
+        "@type": "InteractionCounter",
+        "interactionType": "https://schema.org/FollowAction",
+        "name": "Follows",
+        "userInteractionCount": 39714156
+      },
+      "description": "Chair of the Gates Foundation. Founder of Breakthrough Energy. Co-founder of Microsoft. Voracious reader. Avid traveler. Active blogger."
+    },
+    "posts": [
+      {
+        "@type": "Article",
+        "author": {
+          "@type": "Person",
+          "name": "Bill Gates",
+          "url": "https://www.linkedin.com/in/williamhgates"
+        },
+        "dateModified": "",
+        "datePublished": "2026-01-12T19:21:29.000+00:00",
+        "headline": "How to get the world back on track and enter a new era of unprecedented progress",
+        "image": {
+          "@type": "ImageObject"
+        },
+        "interactionStatistic": {
+          "@type": "InteractionCounter",
+          "interactionType": "http://schema.org/LikeAction",
+          "userInteractionCount": 4735
+        },
+        "url": "https://www.linkedin.com/pulse/how-get-world-back-track-enter-new-era-unprecedented-progress-gates-wzycc"
+      },
+      {
+        "@type": "Article",
+        "author": {
+          "@type": "Person",
+          "name": "Bill Gates",
+          "url": "https://www.linkedin.com/in/williamhgates"
+        },
+        "dateModified": "",
+        "datePublished": "2025-12-20T00:05:56.000+00:00",
+        "headline": "What the Gates Foundation hopes to accomplish over the next 20 years",
+        "image": {
+          "@type": "ImageObject",
+          "url": "https://media.licdn.com/dms/image/v2/D5612AQE-eZUAKTbmyQ/article-cover_image-shrink_720_1280/B56Zs5D6pMKIAI-/0/1766188887129?e=2147483647&v=beta&t=KUFGzvOCeBOeoGDNEwYbpS7AvFn0d-iQN-iKoHtXs9Q"
+        },
+        "interactionStatistic": {
+          "@type": "InteractionCounter",
+          "interactionType": "http://schema.org/LikeAction",
+          "userInteractionCount": 4749
+        },
+        "url": "https://www.linkedin.com/pulse/what-gates-foundation-hopes-accomplish-over-next-20-years-bill-gates-y0gic"
+      },
+      {
+        "@type": "Article",
+        "author": {
+          "@type": "Person",
+          "name": "Bill Gates",
+          "url": "https://www.linkedin.com/in/williamhgates"
+        },
+        "dateModified": "",
+        "datePublished": "2025-12-06T22:43:28.000+00:00",
+        "headline": "A generation of progress, a choice to make",
+        "image": {
+          "@type": "ImageObject",
+          "url": "https://media.licdn.com/dms/image/v2/D5612AQHXKV_XhT0W_A/article-cover_image-shrink_720_1280/B56Zr1w1eSK4AI-/0/1765059814903?e=2147483647&v=beta&t=gKhTu-PogMfQzIvtwIqoJOlm6-05kg63OSE_UosVrrM"
+        },
+        "interactionStatistic": {
+          "@type": "InteractionCounter",
+          "interactionType": "http://schema.org/LikeAction",
+          "userInteractionCount": 4705
+        },
+        "url": "https://www.linkedin.com/pulse/generation-progress-choice-make-bill-gates-rwlwc"
+      },
+      {
+        "@type": "Article",
+        "author": {
+          "@type": "Person",
+          "name": "Bill Gates",
+          "url": "https://www.linkedin.com/in/williamhgates"
+        },
+        "dateModified": "",
+        "datePublished": "2025-11-28T23:55:23.000+00:00",
+        "headline": "These were some of my favorite books from 2025",
+        "image": {
+          "@type": "ImageObject",
+          "url": "https://media.licdn.com/dms/image/v2/D5612AQF3roSl8yWbbA/article-cover_image-shrink_720_1280/B56ZrM3F4iI4AI-/0/1764373585939?e=2147483647&v=beta&t=Al-RzODRjgjn4Scq2btttevbmTpgMt62T_70X0nkMTA"
+        },
+        "interactionStatistic": {
+          "@type": "InteractionCounter",
+          "interactionType": "http://schema.org/LikeAction",
+          "userInteractionCount": 10726
+        },
+        "url": "https://www.linkedin.com/pulse/were-some-my-favorite-books-from-2025-bill-gates-zjugc"
+      },
+      {
+        "@type": "Article",
+        "author": {
+          "@type": "Person",
+          "name": "Bill Gates",
+          "url": "https://www.linkedin.com/in/williamhgates"
+        },
+        "dateModified": "",
+        "datePublished": "2025-10-29T02:45:20.000+00:00",
+        "headline": "Saving lives, cutting emissions, and staying resilient in a warming world",
+        "image": {
+          "@type": "ImageObject",
+          "url": "https://media.licdn.com/dms/image/v2/D5612AQHn1kRpjWsY7A/article-cover_image-shrink_720_1280/B56Zot1D3DG0AM-/0/1761705477503?e=2147483647&v=beta&t=wnrHrl7BgWHpsXAXFEOUbcmFE0tnxibZ-Ze5ESzbKMs"
+        },
+        "interactionStatistic": {
+          "@type": "InteractionCounter",
+          "interactionType": "http://schema.org/LikeAction",
+          "userInteractionCount": 5668
+        },
+        "url": "https://www.linkedin.com/pulse/saving-lives-cutting-emissions-staying-resilient-warming-bill-gates-jstyc"
+      },
+      {
+        "@type": "Article",
+        "author": {
+          "@type": "Person",
+          "name": "Bill Gates",
+          "url": "https://www.linkedin.com/in/williamhgates"
+        },
+        "dateModified": "",
+        "datePublished": "2025-10-18T04:37:30.000+00:00",
+        "headline": "We’re closer than ever to eradicating polio",
+        "image": {
+          "@type": "ImageObject",
+          "url": "https://media.licdn.com/dms/image/v2/D5612AQGf_atdnRMYRg/article-cover_image-shrink_720_1280/B56Zn1iMGnI8AI-/0/1760761005312?e=2147483647&v=beta&t=rQguZm9RiGr6y8tr5EmWKB1aOhGJAljEW-3Q1Hy9GqM"
+        },
+        "interactionStatistic": {
+          "@type": "InteractionCounter",
+          "interactionType": "http://schema.org/LikeAction",
+          "userInteractionCount": 5809
+        },
+        "url": "https://www.linkedin.com/pulse/were-closer-than-ever-eradicating-polio-bill-gates-wyhac"
+      },
+      {
+        "@type": "Article",
+        "author": {
+          "@type": "Person",
+          "name": "Bill Gates",
+          "url": "https://www.linkedin.com/in/williamhgates"
+        },
+        "dateModified": "",
+        "datePublished": "2025-10-11T01:20:32.000+00:00",
+        "headline": "Demystifying the science behind fission and fusion",
+        "image": {
+          "@type": "ImageObject",
+          "url": "https://media.licdn.com/dms/image/v2/D5612AQEIwKPgp_pazw/article-cover_image-shrink_720_1280/B56ZnQf.P7HQAI-/0/1760139666994?e=2147483647&v=beta&t=TaPc5cj2nwdUYcQsuadPxeQ8NLXEaue2UlnQ7_9i4tc"
+        },
+        "interactionStatistic": {
+          "@type": "InteractionCounter",
+          "interactionType": "http://schema.org/LikeAction",
+          "userInteractionCount": 5402
+        },
+        "url": "https://www.linkedin.com/pulse/demystifying-science-behind-fission-fusion-bill-gates-ylhic"
+      },
+      {
+        "@type": "Article",
+        "author": {
+          "@type": "Person",
+          "name": "Bill Gates",
+          "url": "https://www.linkedin.com/in/williamhgates"
+        },
+        "dateModified": "",
+        "datePublished": "2025-09-30T18:41:07.000+00:00",
+        "headline": "Utah’s hottest new power source is 15,000 feet below the ground",
+        "image": {
+          "@type": "ImageObject",
+          "url": "https://media.licdn.com/dms/image/v2/D5612AQFW83M4hV0ykA/article-cover_image-shrink_720_1280/B56Zmb4XOZJkAM-/0/1759256868252?e=2147483647&v=beta&t=E7zcm66Ra0AtvLBkz1GLd_J2OMwRrVVCo6bl14_rOeo"
+        },
+        "interactionStatistic": {
+          "@type": "InteractionCounter",
+          "interactionType": "http://schema.org/LikeAction",
+          "userInteractionCount": 5998
+        },
+        "url": "https://www.linkedin.com/pulse/utahs-hottest-new-power-source-15000-feet-below-ground-bill-gates-otlwc"
+      },
+      {
+        "@type": "Article",
+        "author": {
+          "@type": "Person",
+          "name": "Bill Gates",
+          "url": "https://www.linkedin.com/in/williamhgates"
+        },
+        "dateModified": "",
+        "datePublished": "2025-09-23T20:46:09.000+00:00",
+        "headline": "Why I’m Still Optimistic About Global Health",
+        "image": {
+          "@type": "ImageObject",
+          "url": "https://media.licdn.com/dms/image/v2/D5612AQERhpEhGMZuZw/article-cover_image-shrink_720_1280/B56Zl4NGNCH8AI-/0/1758658323770?e=2147483647&v=beta&t=f-k0MlxKJ4paNDtM8eF4Du0j_jBv8pWSGEouwY5dJdU"
+        },
+        "interactionStatistic": {
+          "@type": "InteractionCounter",
+          "interactionType": "http://schema.org/LikeAction",
+          "userInteractionCount": 4342
+        },
+        "url": "https://www.linkedin.com/pulse/why-im-still-optimistic-global-health-bill-gates-ji9xc"
+      },
+      {
+        "@type": "Article",
+        "author": {
+          "@type": "Person",
+          "name": "Bill Gates",
+          "url": "https://www.linkedin.com/in/williamhgates"
+        },
+        "dateModified": "",
+        "datePublished": "2025-08-26T22:32:16.000+00:00",
+        "headline": "This is how a parasite helped build the CDC and changed public health forever",
+        "image": {
+          "@type": "ImageObject",
+          "url": "https://media.licdn.com/dms/image/v2/D5612AQEHg300WtbBNw/article-cover_image-shrink_720_1280/B56ZjoGg77HUAM-/0/1756240679035?e=2147483647&v=beta&t=uHrvJ8EJs8HV_o5QO-bNQWv_CWwmpkv6iZQ6sNasKfU"
+        },
+        "interactionStatistic": {
+          "@type": "InteractionCounter",
+          "interactionType": "http://schema.org/LikeAction",
+          "userInteractionCount": 4106
+        },
+        "url": "https://www.linkedin.com/pulse/how-parasite-helped-build-cdc-changed-public-health-forever-gates-xvhlc"
+      }
+    ]
+  }
+]

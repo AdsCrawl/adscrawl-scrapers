@@ -1,0 +1,2718 @@
+[
+  {
+    "id": 1923,
+    "listingType": "project",
+    "listingModel": {
+      "promoType": "premium",
+      "url": "/project/1923/380-melbourne-melbourne-vic/",
+      "projectName": "380 Melbourne",
+      "displayAddress": "380 LONSDALE STREET, MELBOURNE, VIC 3000",
+      "images": [
+        "https://rimh2.domainstatic.com.au/qe20KN0m_pmG8w74ZyXHhHT5R9o=/1160x653/filters:format(jpeg):quality(70):no_upscale()/1923_17_13_210526_032601-w1442-h2160",
+        "https://rimh2.domainstatic.com.au/RclyFlLXD09li2NqaXl7GxyJVDk=/1160x653/filters:format(jpeg):quality(70):no_upscale()/1923_2_13_220215_115317-w3247-h2160",
+        "https://rimh2.domainstatic.com.au/bAtSeV2J4Pngv60Kmus0lZsMKX0=/1160x653/filters:format(jpeg):quality(70):no_upscale()/c1de9540-5fb4-4731-a88d-2bbea76cfd16-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/ou1eXXON8CJ2qywp6mWqeyuUNUw=/1160x653/filters:format(jpeg):quality(70):no_upscale()/1923_4_13_220215_115317-w3240-h2160",
+        "https://rimh2.domainstatic.com.au/QaYewkIF1A7kMEqiOW_IVhjAa4o=/1160x653/filters:format(jpeg):quality(70):no_upscale()/142e500a-df0e-4ce5-8046-e804457694a6-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/l1H7eQ6GW1azspzDsNsnNoy7jOA=/1160x653/filters:format(jpeg):quality(70):no_upscale()/b95a4dcf-4c34-458f-8256-c3cf44559b3e-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/Jx1EqeeGGNGkR_0Ck9-BTBkgRX0=/1160x653/filters:format(jpeg):quality(70):no_upscale()/1923_7_13_220215_115317-w3247-h2160",
+        "https://rimh2.domainstatic.com.au/lHqdHHbmeHsurzl2rVhiN0q5SB8=/1160x653/filters:format(jpeg):quality(70):no_upscale()/19d3f4e5-6763-4c25-8e30-ccb0596179ec-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/cv36wELS3uPOZ46tcX7bIg3cbjQ=/1160x653/filters:format(jpeg):quality(70):no_upscale()/9eeecd1b-5c79-4acf-ae82-73d13f606a18-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/iPCzmLdPgEEnJqjkfAy5Wc5F7Z4=/1160x653/filters:format(jpeg):quality(70):no_upscale()/2017477051_13_1_211216_041423-w3247-h2160",
+        "https://rimh2.domainstatic.com.au/VhFGTUsn2f6UJn5hTHEqeOXAV_M=/1160x653/filters:format(jpeg):quality(70):no_upscale()/33fb8361-2cf7-4a70-8eea-e16f72ba4f9f-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/b_PguU78u7rPYPJmhSKmOaFs-uE=/1160x653/filters:format(jpeg):quality(70):no_upscale()/2d3b717f-708a-454b-8a52-a9ea0e05d152-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/OPA9o3F_uH8YrvQRW6OSccY-EYo=/1160x653/filters:format(jpeg):quality(70):no_upscale()/3aa52488-d609-4132-a73b-6cef02a8ee89-w3000-h2000",
+        "https://rimh2.domainstatic.com.au/ZxfnP9mMjFuI3o8qstY2VOjz72I=/1160x653/filters:format(jpeg):quality(70):no_upscale()/45b359e9-a407-487f-8e04-478e99649bfa-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/2T1Bw4s-9su3kHbmXmeBOCX1q4E=/1160x653/filters:format(jpeg):quality(70):no_upscale()/1923_15_13_220215_115317-w3247-h2160",
+        "https://rimh2.domainstatic.com.au/CtBLCrAcEdCdXu1ssAM1Yf5ANqQ=/1160x653/filters:format(jpeg):quality(70):no_upscale()/1923_16_13_220215_115317-w3247-h2160",
+        "https://rimh2.domainstatic.com.au/xa9a8aPwXAhkYz3cQnaK44b0T6s=/1160x653/filters:format(jpeg):quality(70):no_upscale()/1923_17_13_220215_115317-w3247-h2160",
+        "https://rimh2.domainstatic.com.au/_X1cKX-jWbnkOrATn4goWQG3JKQ=/1160x653/filters:format(jpeg):quality(70):no_upscale()/305e5cb4-4f41-4cbc-bdb3-8acdb67a7c14-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/PLaOVVoZwzK0m5jwTF9WSz7_5s4=/1160x653/filters:format(jpeg):quality(70):no_upscale()/1923_19_13_220215_115317-w3240-h2160",
+        "https://rimh2.domainstatic.com.au/VUHNJ4zYV-QA_Y81fJoTPoSmaOY=/1160x653/filters:format(jpeg):quality(70):no_upscale()/1923_20_13_220215_115317-w3247-h2160",
+        "https://rimh2.domainstatic.com.au/GsdVK8ycCJbxjftMEadvBvc-Kmc=/1160x653/filters:format(jpeg):quality(70):no_upscale()/283b4d53-c5fc-4574-939f-890da04872b9-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/-OMW28vNMmXNS3AvST4hGoUfmMU=/1160x653/filters:format(jpeg):quality(70):no_upscale()/1923_18_13_210526_032601-w1939-h2160"
+      ],
+      "projectColor": "#540019",
+      "bannerUrl": "https://rimh2.domainstatic.com.au/4zjygZft8MLzsWI7DbBXny-BUE0=/800x55/filters:format(jpeg):quality(95):background_color(white):no_upscale()/https://images.domain.com.au/img/Agencys/devproject/banner_1923_250826_030631",
+      "branding": {
+        "agencyId": 28926,
+        "agents": [
+          {
+            "agentName": "Brady Group",
+            "agentPhoto": null
+          }
+        ],
+        "agentNames": "Brady Group",
+        "brandLogo": "https://rimh2.domainstatic.com.au/lFKkTdTLOBs7f7svRAlmEPzfPOU=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/28926/logo_28926.png?buster=2025-09-23",
+        "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/5-V3U0itA8uOir2qq6lwy-s8nJY=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/28926/logo_28926.png?buster=2025-09-23",
+        "brandName": "Brady Lonsdale Pty Ltd",
+        "brandColor": "#DDDDDD",
+        "agentPhoto": null,
+        "agentName": "Brady Group"
+      },
+      "childListingIds": [
+        2017031745,
+        2013206275,
+        2013206316,
+        2017766861
+      ],
+      "keywords": {
+        "keywords": [
+          "World-class resident amenities",
+          "Construction commenced",
+          "From experienced developers"
+        ]
+      },
+      "inspection": {
+        "openTime": null,
+        "closeTime": null
+      },
+      "tags": {
+        "tagText": "New",
+        "tagClassName": "is-new"
+      },
+      "address": {
+        "street": "6103/371 Little Lonsdale Street",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.8118,
+        "lng": 144.96106
+      }
+    }
+  },
+  {
+    "id": 4974,
+    "listingType": "project",
+    "listingModel": {
+      "promoType": "premium",
+      "url": "/project/4974/west-side-place-melbourne-vic/",
+      "projectName": "West Side Place",
+      "displayAddress": "250 SPENCER STREET, MELBOURNE, VIC 3000",
+      "images": [
+        "https://rimh2.domainstatic.com.au/Cw4_daHWq6ookzEhirBObCESdTc=/1160x653/filters:format(jpeg):quality(70):no_upscale()/66d6cffb-9842-4654-8c33-01b52e33382c-w1600-h1200",
+        "https://rimh2.domainstatic.com.au/X_q4zVIKJPZ2GEih569u969-miw=/1160x653/filters:format(jpeg):quality(70):no_upscale()/605ef05e-d6c8-48a9-85b9-2745f08ee366-w1600-h1200",
+        "https://rimh2.domainstatic.com.au/-j3m71R2r8R879NnFhZsJqLluPo=/1160x653/filters:format(jpeg):quality(70):no_upscale()/d106cb3b-5f48-4176-928b-7384feeba65a-w3000-h2000",
+        "https://rimh2.domainstatic.com.au/T0a19aRbOpg1PPJfhSFsenL8GcM=/1160x653/filters:format(jpeg):quality(70):no_upscale()/09a7e55d-7224-4c95-b249-97d0c211bd5e-w3000-h1941",
+        "https://rimh2.domainstatic.com.au/_i_KtModVaHZfhrTqJS3MhQH0rw=/1160x653/filters:format(jpeg):quality(70):no_upscale()/4cd602f9-b915-4862-8e48-56a298cb339f-w3000-h2000",
+        "https://rimh2.domainstatic.com.au/y0S7hl-8ouDt-y1cYQDwhu25Tx4=/1160x653/filters:format(jpeg):quality(70):no_upscale()/82842acb-60e5-4e55-becf-5e55c6d90fc9-w1600-h1200",
+        "https://rimh2.domainstatic.com.au/va4URpSyZzQlykJ6c95gbbcKSdY=/1160x653/filters:format(jpeg):quality(70):no_upscale()/3d0b0c89-7d2c-4f23-8a9d-8235361386e2-w1600-h1200",
+        "https://rimh2.domainstatic.com.au/gjVlXPpHPGtZ__p4ErHPK3s5MUo=/1160x653/filters:format(jpeg):quality(70):no_upscale()/eef315dd-ef1f-4c8f-b3d6-fdf15660b3c4-w3000-h1941",
+        "https://rimh2.domainstatic.com.au/oR4pFNTQOXs4yycu0V0HWodQmh8=/1160x653/filters:format(jpeg):quality(70):no_upscale()/d1bbd383-f401-4f4e-b54c-87f92542799b-w3000-h2000",
+        "https://rimh2.domainstatic.com.au/eM04rEQJ5F_L_q78wlFIDa26D2A=/1160x653/filters:format(jpeg):quality(70):no_upscale()/34b64aa3-d8cc-4721-8d3b-c025a6d66223-w3000-h2000",
+        "https://rimh2.domainstatic.com.au/OGjE-k8buyKrpOkaKuATzK3wN-w=/1160x653/filters:format(jpeg):quality(70):no_upscale()/4d4eb649-542c-48ae-9942-2cd2baeb89c3-w1600-h1200",
+        "https://rimh2.domainstatic.com.au/dpiZsubBQMAA672ayq3uS5E5Z3U=/1160x653/filters:format(jpeg):quality(70):no_upscale()/3bdc47ac-06cf-4345-9f99-b93cd18e8fa9-w1600-h1200",
+        "https://rimh2.domainstatic.com.au/Owy-LgQr1-okZMOz3qKTbzf3l7k=/1160x653/filters:format(jpeg):quality(70):no_upscale()/16708534_13_1_231020_055506-w3000-h2000",
+        "https://rimh2.domainstatic.com.au/EAN93nCiqQ0RRAIiZLJms9tCluM=/1160x653/filters:format(jpeg):quality(70):no_upscale()/b6a9e5c6-f9aa-408c-bff8-2da0ccc71466-w1600-h1200",
+        "https://rimh2.domainstatic.com.au/9qBMudUBIkX9Iyl5WydNaKibISI=/1160x653/filters:format(jpeg):quality(70):no_upscale()/32a4ad02-3507-4832-80d4-287f38d09e87-w1600-h1200",
+        "https://rimh2.domainstatic.com.au/tKxEMLzQzykcJz95Wd7FgZehJlE=/1160x653/filters:format(jpeg):quality(70):no_upscale()/7c6e9e4f-0076-4eac-8345-cc3e77e7bc63-w1600-h1200",
+        "https://rimh2.domainstatic.com.au/s69qy8z1qz2dyMOu7WUwb5hYqOE=/1160x653/filters:format(jpeg):quality(70):no_upscale()/b8642e0b-5f70-4023-9102-aa5fe5a826c9-w1600-h1200",
+        "https://rimh2.domainstatic.com.au/XXBq2ZVpH94wuXuAZK7DXizUo-A=/1160x653/filters:format(jpeg):quality(70):no_upscale()/42674883-a1ef-4d58-86c3-363986cf53c7-w1600-h1200",
+        "https://rimh2.domainstatic.com.au/awV9E_89mdEgl9Voh74a61QDIf4=/1160x653/filters:format(jpeg):quality(70):no_upscale()/8e3a9bb9-a9f3-4f60-be39-52a239ecfdc5-w1600-h1200",
+        "https://rimh2.domainstatic.com.au/94gQUWJPwIiWtl7WiG2S40IEieM=/1160x653/filters:format(jpeg):quality(70):no_upscale()/c321de45-c68e-4449-9f89-3dd381e40b63-w1600-h1200",
+        "https://rimh2.domainstatic.com.au/D__xyG0cdwDmk-TkdBtFYv7LkxA=/1160x653/filters:format(jpeg):quality(70):no_upscale()/016d065f-b1ed-44b7-9f6d-859849b68a8b-w1600-h1200",
+        "https://rimh2.domainstatic.com.au/mimv_b5yTaC5wMs6FRBPHrr3SVY=/1160x653/filters:format(jpeg):quality(70):no_upscale()/b9c60c14-f0bd-43f3-91a5-d2e3d3f910d8-w1600-h1200",
+        "https://rimh2.domainstatic.com.au/BEOEixQxQQFFIHEZaJxMBa5ROVM=/1160x653/filters:format(jpeg):quality(70):no_upscale()/2f5cbd1b-1a97-44ef-b857-a81c7195ef8d-w1600-h1200",
+        "https://rimh2.domainstatic.com.au/aE3cxxTbTSiUK9mIoYZ7StbsiZI=/1160x653/filters:format(jpeg):quality(70):no_upscale()/fd5a54f9-457c-4065-a336-ed10781edd7a-w1600-h1200",
+        "https://rimh2.domainstatic.com.au/8mHCLkJY57cjWNGtHTFAkXCEwoc=/1160x653/filters:format(jpeg):quality(70):no_upscale()/e6849697-fad2-4cf2-b0d8-1599402430c8-w1600-h1200",
+        "https://rimh2.domainstatic.com.au/b0qmn0vu18DeJURK6gDhNT_oWOg=/1160x653/filters:format(jpeg):quality(70):no_upscale()/ee422586-7a8f-4305-828b-785c334ad104-w1600-h1200",
+        "https://rimh2.domainstatic.com.au/mbSD0YNY0Ag-gsbx7m5---4XZik=/1160x653/filters:format(jpeg):quality(70):no_upscale()/e0783a7b-3a18-4805-9c12-877bdbb7ebe5-w1600-h1200"
+      ],
+      "projectColor": "#1A253B",
+      "bannerUrl": "https://rimh2.domainstatic.com.au/nlU-jX4cWVkCtvNOIKENounIy1c=/800x55/filters:format(jpeg):quality(95):background_color(white):no_upscale()/https://images.domain.com.au/img/Agencys/devproject/banner_4974_250825_034617",
+      "branding": {
+        "agencyId": 34927,
+        "agents": [
+          {
+            "agentName": "West Side Place Sales",
+            "agentPhoto": null
+          }
+        ],
+        "agentNames": "West Side Place Sales",
+        "brandLogo": "https://rimh2.domainstatic.com.au/Q9q60eGiqL8TNDmsBRS3alY3cec=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/34927/logo_34927.jpeg?buster=2025-09-23",
+        "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/yg_EmkVCftt63LmjmZk-Aap2Vd4=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/34927/logo_34927.jpeg?buster=2025-09-23",
+        "brandName": "Far East Consortium | West Side Place",
+        "brandColor": "#DDDDDD",
+        "agentPhoto": null,
+        "agentName": "West Side Place Sales"
+      },
+      "childListingIds": [
+        2018950519,
+        2018699768,
+        2017864827,
+        2017071593
+      ],
+      "keywords": {
+        "keywords": [
+          "Sky Gardens",
+          "Swimming Pools",
+          "Gyms",
+          "Cinema",
+          "Dining Room",
+          "Karaoke Lounges"
+        ]
+      },
+      "inspection": {
+        "openTime": null,
+        "closeTime": null
+      },
+      "tags": {
+        "tagText": "Updated",
+        "tagClassName": "is-updated"
+      },
+      "address": {
+        "street": "Type 10C/250 Spencer Street",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.814495,
+        "lng": 144.95227
+      },
+      "priceFrom": "$550,000"
+    }
+  },
+  {
+    "id": 6565,
+    "listingType": "project",
+    "listingModel": {
+      "promoType": "premium",
+      "url": "/project/6565/640-bourke-st-melbourne-vic/",
+      "projectName": "640 Bourke St",
+      "displayAddress": "640 BOURKE STREET, MELBOURNE, VIC 3000",
+      "images": [
+        "https://rimh2.domainstatic.com.au/xjTWFFr4DBpLVHW5Q2BEvH-XSGo=/1160x653/filters:format(jpeg):quality(70):no_upscale()/6565_1_13_250313_050931-w2880-h2160",
+        "https://rimh2.domainstatic.com.au/q2f_znIsuNQoxAiAz0jIlq4eSVM=/1160x653/filters:format(jpeg):quality(70):no_upscale()/6565_2_13_250313_050931-w2880-h2160",
+        "https://rimh2.domainstatic.com.au/BSqrCKPXV6xJWCxCPAAkjFfq0LY=/1160x653/filters:format(jpeg):quality(70):no_upscale()/6565_3_13_250313_050931-w2880-h2160",
+        "https://rimh2.domainstatic.com.au/Kl4HoJFOd4vYhTppyTE_CxuhpHQ=/1160x653/filters:format(jpeg):quality(70):no_upscale()/6565_4_13_250313_050931-w2880-h2160",
+        "https://rimh2.domainstatic.com.au/cYPTUS6GEZnxLhfoPrUNp9uon64=/1160x653/filters:format(jpeg):quality(70):no_upscale()/6565_5_13_250313_050931-w2880-h2160",
+        "https://rimh2.domainstatic.com.au/YSThsCm22TrpDILXPpHT8HW72NQ=/1160x653/filters:format(jpeg):quality(70):no_upscale()/6565_6_13_250313_050931-w2880-h2160",
+        "https://rimh2.domainstatic.com.au/TJ2lGj1y-qifmwE9Uk836uLEC8U=/1160x653/filters:format(jpeg):quality(70):no_upscale()/ac647358-33f9-43b9-80c0-ee4fd5a1ce14-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/1ZbaR1LWFTrFLSED2wdrZ2dp36A=/1160x653/filters:format(jpeg):quality(70):no_upscale()/6565_8_13_250313_050931-w2880-h2160",
+        "https://rimh2.domainstatic.com.au/edFuO9_8rfcJQFGKiLgAfx7M-1c=/1160x653/filters:format(jpeg):quality(70):no_upscale()/6565_9_13_250313_050931-w2880-h2160",
+        "https://rimh2.domainstatic.com.au/xrNjqZC8WRl9GzSqRIP5_1GfIkw=/1160x653/filters:format(jpeg):quality(70):no_upscale()/6565_10_13_250313_050931-w2880-h2160",
+        "https://rimh2.domainstatic.com.au/r8QoUwHMuaI_CgoN2Yp1QFaEhfs=/1160x653/filters:format(jpeg):quality(70):no_upscale()/022db828-1b13-4db5-94b1-c4b218f6f0d8-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/Pc-ccCUBzRe4hPpPw-Wcpsa6yXk=/1160x653/filters:format(jpeg):quality(70):no_upscale()/6565_12_13_250313_050931-w2880-h2160",
+        "https://rimh2.domainstatic.com.au/ypnyZ0fk_c6aV227bgoTHCe_SSI=/1160x653/filters:format(jpeg):quality(70):no_upscale()/6565_13_13_250506_114927-w3240-h2160",
+        "https://rimh2.domainstatic.com.au/sd8IRQpSOz-_ryA9QiZKn4pRpaA=/1160x653/filters:format(jpeg):quality(70):no_upscale()/64474558-b609-4de4-b71c-425e27abdd07-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/Shwai1BkSXZyWbIErdC1BQ5fqIQ=/1160x653/filters:format(jpeg):quality(70):no_upscale()/734a2d02-c930-420f-aa53-72b4459c8889-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/8T12M2AofTvv1vj8EAFZzQ0z3Gs=/1160x653/filters:format(jpeg):quality(70):no_upscale()/051be240-ed59-482a-a191-b2e187a7edd3-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/nvQV4hMq7tNoRdAMDN0F70emcRI=/1160x653/filters:format(jpeg):quality(70):no_upscale()/6565_16_13_250313_050931-w2880-h2160",
+        "https://rimh2.domainstatic.com.au/iYofLM48pK9b9yeHfG17Hl1wlsI=/1160x653/filters:format(jpeg):quality(70):no_upscale()/6565_17_13_250313_050931-w2880-h2160",
+        "https://rimh2.domainstatic.com.au/5mdrwuh8s-yhIWQ4jjcAXL6Hkm0=/1160x653/filters:format(jpeg):quality(70):no_upscale()/6565_18_13_250313_050931-w2880-h2160",
+        "https://rimh2.domainstatic.com.au/EvIrYNomRRFY8-gsM6lOy84XunM=/1160x653/filters:format(jpeg):quality(70):no_upscale()/b54e7375-dd48-49fd-9ad6-ac8f18e87cbd-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/MXlugsSO6XfQ0A1kr7mzMOzDy1g=/1160x653/filters:format(jpeg):quality(70):no_upscale()/6565_20_13_250313_050931-w2880-h2160",
+        "https://rimh2.domainstatic.com.au/NiFkNbOedQIIZ7O7XDkv3M4wXOg=/1160x653/filters:format(jpeg):quality(70):no_upscale()/6565_21_13_250313_050931-w2880-h2160",
+        "https://rimh2.domainstatic.com.au/1sg2PKiHVWaPorx02REMeu_BOg8=/1160x653/filters:format(jpeg):quality(70):no_upscale()/6565_26_13_250313_050931-w2880-h2160",
+        "https://rimh2.domainstatic.com.au/-LGgtTEc96tQ9DS4oitwoFdQXdg=/1160x653/filters:format(jpeg):quality(70):no_upscale()/6565_27_13_250313_050931-w2880-h2160",
+        "https://rimh2.domainstatic.com.au/nwboZZhHlbSYokSPOzHZSwmsH3Y=/1160x653/filters:format(jpeg):quality(70):no_upscale()/6565_29_13_250313_050931-w2880-h2160",
+        "https://rimh2.domainstatic.com.au/Awv9frg2wclUD0O5k_QKvICct8w=/1160x653/filters:format(jpeg):quality(70):no_upscale()/6565_30_13_250313_050931-w2880-h2160",
+        "https://rimh2.domainstatic.com.au/rIEPH-XEvKaEVt570lf72g-B00c=/1160x653/filters:format(jpeg):quality(70):no_upscale()/6565_28_13_250313_050931-w2880-h2160",
+        "https://rimh2.domainstatic.com.au/_a_E9cLqO9QMgL_I35bjU9lA6Mk=/1160x653/filters:format(jpeg):quality(70):no_upscale()/6565_31_13_250313_050931-w2880-h2160",
+        "https://rimh2.domainstatic.com.au/sj-XX4EaGucZPgSbnQjbOGp_NlE=/1160x653/filters:format(jpeg):quality(70):no_upscale()/a0006b1c-c1f3-4b0f-9dea-8b8dcacca959-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/NBGe2ed195qUTmH6yANi9Sr6RU4=/1160x653/filters:format(jpeg):quality(70):no_upscale()/dfc46223-724a-400e-9f56-c8d9a93ddeb2-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/mk4f9y8_DURys8CT9JsXWm17jo4=/1160x653/filters:format(jpeg):quality(70):no_upscale()/6565_24_13_250313_050931-w2880-h2160",
+        "https://rimh2.domainstatic.com.au/AF6P5EI_zN4hn-xKCpQiXIJrYhw=/1160x653/filters:format(jpeg):quality(70):no_upscale()/6565_25_13_250313_050931-w2880-h2160"
+      ],
+      "projectColor": "#D8D2C6",
+      "bannerUrl": "https://rimh2.domainstatic.com.au/7Z2E1dO437u20EsWELFhkTk8G3g=/800x55/filters:format(jpeg):quality(95):background_color(white):no_upscale()/https://images.domain.com.au/img/Agencys/devproject/banner_6565_250826_013814",
+      "branding": {
+        "agencyId": 38660,
+        "agents": [
+          {
+            "agentName": "640 Bourke St Sales Team",
+            "agentPhoto": null
+          }
+        ],
+        "agentNames": "640 Bourke St Sales Team",
+        "brandLogo": null,
+        "brandName": "Far East Consortium l 640 Bourke",
+        "brandColor": "#DDDDDD",
+        "agentPhoto": null,
+        "agentName": "640 Bourke St Sales Team"
+      },
+      "childListingIds": [
+        2019860205,
+        2019861276,
+        2019861540,
+        2019867775
+      ],
+      "keywords": {
+        "keywords": [
+          "In the Heart of Melbourne",
+          "Over 3000sqm Amenity",
+          "Stamp Duty Concessions Apply",
+          "No Short Stay Rentals"
+        ]
+      },
+      "inspection": {
+        "openTime": null,
+        "closeTime": null
+      },
+      "tags": {
+        "tagText": "New",
+        "tagClassName": "is-new"
+      },
+      "address": {
+        "street": "Type 04/640 Bourke St - Classic Collection",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.816414,
+        "lng": 144.95453
+      },
+      "priceFrom": "$640,000"
+    }
+  },
+  {
+    "id": 6781,
+    "listingType": "project",
+    "listingModel": {
+      "promoType": "premium",
+      "url": "/project/6781/623-collins-melbourne-vic/",
+      "projectName": "623 Collins",
+      "displayAddress": "623 COLLINS STREET, MELBOURNE, VIC 3000",
+      "images": [
+        "https://rimh2.domainstatic.com.au/zmL0VWackRi4WCGlVNy-6hf0LK0=/1160x653/filters:format(jpeg):quality(70):no_upscale()/2020263700_5_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/1sGsLmn6diW1F9kaXL_-xifaWLY=/1160x653/filters:format(jpeg):quality(70):no_upscale()/2020263700_1_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/IU6OPzT5cEG7T6fBHjaLhBjPpK8=/1160x653/filters:format(jpeg):quality(70):no_upscale()/2020263700_2_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/jEU_N1jmi0MdiQnkJZlRClaBID8=/1160x653/filters:format(jpeg):quality(70):no_upscale()/2020263700_3_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/K3VyOMrth77khm8T5WsjouvEUPw=/1160x653/filters:format(jpeg):quality(70):no_upscale()/2020263700_4_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/rqSVZL6x76us9g--kUxuJbTs53A=/1160x653/filters:format(jpeg):quality(70):no_upscale()/2020263700_6_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/tePOFXsl-iWA_vbCHNXgPPxPr6c=/1160x653/filters:format(jpeg):quality(70):no_upscale()/2020263700_7_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/4qpJJl8iR8l64ySFn3k-fbYymXc=/1160x653/filters:format(jpeg):quality(70):no_upscale()/2020263700_8_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/foX773VDKS0HaaX96IEYZeQkkGY=/1160x653/filters:format(jpeg):quality(70):no_upscale()/2020263700_9_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/d_SaN7HERA2m6gpXeG6J5zyMq1Q=/1160x653/filters:format(jpeg):quality(70):no_upscale()/2020263700_10_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/SdEBw8thQq0wPygARAX41bMzaQM=/1160x653/filters:format(jpeg):quality(70):no_upscale()/2020263700_11_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/-L7BhxUdDaUU66RPXrWcgC5BJKk=/1160x653/filters:format(jpeg):quality(70):no_upscale()/2020263700_12_1_250911_105702-w2000-h1500"
+      ],
+      "projectColor": "#EBE3D1",
+      "bannerUrl": "https://rimh2.domainstatic.com.au/d93-GF9XvxRGyZ6L30HMgH-2t2g=/800x55/filters:format(jpeg):quality(95):background_color(white):no_upscale()/https://images.domain.com.au/img/Agencys/devproject/banner_6781_250918_115039",
+      "branding": {
+        "agencyId": 39499,
+        "agents": [
+          {
+            "agentName": "Tegan Reincke",
+            "agentPhoto": "https://rimh2.domainstatic.com.au/gH1h26vKgjyrSjI_9amWuZrSUBA=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/39499/contact_2008483.png?mod=250919-124725"
+          },
+          {
+            "agentName": "Danny Ruan",
+            "agentPhoto": "https://rimh2.domainstatic.com.au/riLLE6uH41_-u-97l-IurSWJWgU=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/39499/contact_2008485.png?mod=250919-124726"
+          }
+        ],
+        "agentNames": "Tegan Reincke, Danny Ruan, Pannee Ng",
+        "brandLogo": null,
+        "brandName": "Sterling Global",
+        "brandColor": "#DDDDDD",
+        "agentPhoto": "https://rimh2.domainstatic.com.au/gH1h26vKgjyrSjI_9amWuZrSUBA=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/39499/contact_2008483.png?mod=250919-124725",
+        "agentName": "Tegan Reincke"
+      },
+      "childListingIds": [
+        2020262713,
+        2020262693,
+        2020263635,
+        2020262646
+      ],
+      "keywords": {
+        "keywords": [
+          "24/7 concierge service",
+          "Secure parking",
+          "Hotel-style wellness space",
+          "Private dining rooms",
+          "Communal resident spaces",
+          "Premium appliances & fittings",
+          "Club-style lounge",
+          "Home-sized floor plans"
+        ]
+      },
+      "inspection": {
+        "openTime": null,
+        "closeTime": null
+      },
+      "tags": {
+        "tagText": "Updated",
+        "tagClassName": "is-updated"
+      },
+      "address": {
+        "street": "2405/623 Collins Street",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.819225,
+        "lng": 144.95456
+      }
+    }
+  },
+  {
+    "id": 2013206275,
+    "listingType": "listing",
+    "listingModel": {
+      "url": "/371-little-lonsdale-melbourne-vic-3000-2013206275",
+      "price": "Contact Developer",
+      "images": [
+        "https://rimh2.domainstatic.com.au/Uh6RpZTW4DwZ9PhkST-efP35nvo=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206275_1_1_240625_045844-w3247-h2160",
+        "https://rimh2.domainstatic.com.au/b-pdMPM9Olck46HS9KttF3XMZUw=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206275_2_1_240625_045844-w3247-h2160",
+        "https://rimh2.domainstatic.com.au/JUAAWRn0dUxxVK4ZTNR9A8EIIFU=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206275_3_1_240625_045844-w3247-h2160",
+        "https://rimh2.domainstatic.com.au/X4ibeXZEqH6Ie7uYQMVXOhFQKwQ=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206275_4_1_240625_045844-w3247-h2160",
+        "https://rimh2.domainstatic.com.au/4KkjgFxPYjX17cUEiI9mxXJSUhg=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017767082_5_1_220428_080227-w3247-h2160",
+        "https://rimh2.domainstatic.com.au/jrBnA0PCyH3OygSt4WOsSXJl380=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206275_5_1_200801_031620-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/NAQBn9Nx55mlefWBqfXRK4dPQA8=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206275_10_1_211209_055350-w2000-h1331",
+        "https://rimh2.domainstatic.com.au/OK2R0rVgAYAJ7Xrs1_hzM5qvKJQ=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017767082_8_1_220428_080227-w3247-h2160",
+        "https://rimh2.domainstatic.com.au/xsNe6iajUHRVLPob5hPHEN-Rxn4=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206355_12_1_210310_013054-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/tC71ZJbmcZthq3Tmir32djgUUys=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017767082_10_1_220428_080158-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/fgPJeqYfEl26opC2loD06UVfvS0=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018761978_10_1_230912_015813-w3247-h2160",
+        "https://rimh2.domainstatic.com.au/4h04GOuDtHD88t1LvdnbQJnwPXo=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017767082_11_1_220428_080227-w3247-h2160",
+        "https://rimh2.domainstatic.com.au/X_sR-kCxAz0R-P_Ex6GPMNCEIJ0=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206316_14_1_210310_011647-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/KlPoqUk903s8F4_pYcZSPKsXd3o=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206355_17_1_210310_013054-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/AT_YXtAy4GaYSQy9UjfaDq34iLc=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206316_16_1_210310_011647-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/yCMH105M0bo--TF8XFiOoy0_m1I=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017767082_15_1_220428_080227-w3247-h2160",
+        "https://rimh2.domainstatic.com.au/xLwRdzU8L_WJYXHhh0SYEOrwB84=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206355_22_1_211209_010345-w2000-h1331",
+        "https://rimh2.domainstatic.com.au/mnIri3G_Lede6P2iVFzt3jaqpB4=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017034977_11_1_210527_043508-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/9vg5t4vQcZkCFudr07D8_eheRZ4=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206316_17_1_210310_011647-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/4ta57P8WpVYMWc9QPz4jJC_JyEE=/660x440/filters:format(jpeg):quality(80):no_upscale()/1923_4_13_220215_115317-w3240-h2160",
+        "https://rimh2.domainstatic.com.au/hqeo3E2XtF7B7UQAlaDLSrnSPGE=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017031745_18_1_211209_035242-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/5PpUsbbVRjCvZJ-hzd97MssWyTI=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017767082_21_1_220428_080227-w3240-h2160",
+        "https://rimh2.domainstatic.com.au/UlcGtW97xYRhKW25t6G2MT1Cq1M=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206316_19_1_210310_011647-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/fgqqZLSfA1r3le6uluOsDfzKUPA=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206325_21_1_211209_034650-w2000-h1331",
+        "https://rimh2.domainstatic.com.au/6k0kIXFm58EL1_Cjr-m308UV9aM=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206355_20_1_210310_013054-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/-fxahUJl9H0esaJI5krx4gT-i-E=/660x440/filters:format(jpeg):quality(80):no_upscale()/1923_17_13_210526_032601-w1442-h2160",
+        "https://rimh2.domainstatic.com.au/U8GihM3s_8gyAlQ7lMHBYE49s1U=/660x440/filters:format(jpeg):quality(80):no_upscale()/1923_18_13_210526_032601-w1939-h2160"
+      ],
+      "thumbnails": [
+        "https://rimh2.domainstatic.com.au/qMWeJSWw2FmeS4HA80lpLQLvFfU=/144x106/filters:format(jpeg):quality(80)/2013206275_1_1_240625_045844-w3247-h2160"
+      ],
+      "features": {
+        "beds": 1,
+        "baths": 1,
+        "propertyType": "NewApartments",
+        "propertyTypeFormatted": "New Apartments / Off the Plan",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": null,
+        "closeTime": null
+      },
+      "bannerUrl": "https://rimh2.domainstatic.com.au/4zjygZft8MLzsWI7DbBXny-BUE0=/800x55/filters:format(jpeg):quality(95):background_color(white):no_upscale()/https://images.domain.com.au/img/Agencys/devproject/banner_1923_250826_030631",
+      "projectName": "380 Melbourne",
+      "displayAddress": "371 Little Lonsdale, Melbourne",
+      "tags": {
+        "tagText": "New home",
+        "tagClassName": "is-new-homes"
+      },
+      "keywords": {
+        "keywords": [
+          "AirConditioning",
+          "BuiltInWardrobes",
+          "Floorboards",
+          "SwimmingPool",
+          "CityViews",
+          "IndoorSpa",
+          "Gym",
+          "Intercom",
+          "DoubleGlazedWindows"
+        ]
+      },
+      "address": {
+        "street": "371 Little Lonsdale",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.81177,
+        "lng": 144.96094
+      },
+      "projectId": 1923
+    }
+  },
+  {
+    "id": 2013206316,
+    "listingType": "listing",
+    "listingModel": {
+      "url": "/3904-28-timothy-lane-melbourne-vic-3000-2013206316",
+      "price": "Contact Developer",
+      "images": [
+        "https://rimh2.domainstatic.com.au/CiY_CdWuM4TaTF6xokc5HjD2Bdc=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206316_1_1_241206_060606-w6000-h3996",
+        "https://rimh2.domainstatic.com.au/ni7YtDDJT_rTS3iYk7YZj7gdDqc=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206316_2_1_241206_060606-w6000-h3997",
+        "https://rimh2.domainstatic.com.au/BsYX7-PQK1KcreJPc4BMlziQt4E=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206316_3_1_241206_060606-w6000-h3995",
+        "https://rimh2.domainstatic.com.au/PFxKYdqjkgrnrAr5mXKuw-tlbqk=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206316_4_1_241206_060606-w6000-h4001",
+        "https://rimh2.domainstatic.com.au/w7vIttuuaz-a9Sgz1oZT4WLeXdY=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206316_5_1_241206_060606-w6000-h4001",
+        "https://rimh2.domainstatic.com.au/n9rvAfdOCSzmaYGRX_50JXip1Mg=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206316_6_1_241206_060606-w6000-h4000",
+        "https://rimh2.domainstatic.com.au/kK8NVdj_EeMjhDu3SRMhuFSmAwM=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206316_7_1_241206_060606-w6000-h4001",
+        "https://rimh2.domainstatic.com.au/N9cpUWA4J_Bm_PbuALzhzF7UrPA=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206316_8_1_241206_060606-w6000-h4000",
+        "https://rimh2.domainstatic.com.au/bM6cRQifrgHZeJ_uiLLufN5Rqpo=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017477051_22_1_211208_114430-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/_w5Flvw5TYTc1K2l1F6rHCGQKeg=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206348_8_1_211209_033834-w2000-h1331",
+        "https://rimh2.domainstatic.com.au/hbWDH_-LG13cEnqMTxwUiPa09PE=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017031745_13_1_241206_055215-w6000-h4000",
+        "https://rimh2.domainstatic.com.au/yKs9Qz6f7aNO8VXBpnU_bzXJfXw=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017031745_14_1_241206_055215-w6000-h4000",
+        "https://rimh2.domainstatic.com.au/r7BQ5i3tqha2wePCDRaLeGxxQ7U=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017031745_22_1_211209_035242-w2000-h1331",
+        "https://rimh2.domainstatic.com.au/a0dKpPF8mJkKWhW0OqQaF4MqVP0=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206325_10_1_211209_034650-w2000-h1331",
+        "https://rimh2.domainstatic.com.au/G1eceacCeyWOmDNDVCenRWnAKSo=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206316_12_1_210310_011647-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/4ta57P8WpVYMWc9QPz4jJC_JyEE=/660x440/filters:format(jpeg):quality(80):no_upscale()/1923_4_13_220215_115317-w3240-h2160",
+        "https://rimh2.domainstatic.com.au/9vg5t4vQcZkCFudr07D8_eheRZ4=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206316_17_1_210310_011647-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/hqeo3E2XtF7B7UQAlaDLSrnSPGE=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017031745_18_1_211209_035242-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/u2juWTFFobWmUl72-AF38p5czAY=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017031745_24_1_241206_055215-w6000-h4000",
+        "https://rimh2.domainstatic.com.au/X_sR-kCxAz0R-P_Ex6GPMNCEIJ0=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206316_14_1_210310_011647-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/Id5zAF_cnbh_fhwOALgqOn9tt4I=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206316_15_1_210310_011647-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/x8xXHzvjdW8B7TlOaMnhYY-Kx4A=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017477051_19_1_211208_114430-w2000-h1331",
+        "https://rimh2.domainstatic.com.au/Z6NO4vqEKow1ZhlCfK8epJSX8WI=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017477051_20_1_211208_114430-w2000-h1331",
+        "https://rimh2.domainstatic.com.au/xLwRdzU8L_WJYXHhh0SYEOrwB84=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206355_22_1_211209_010345-w2000-h1331",
+        "https://rimh2.domainstatic.com.au/AT_YXtAy4GaYSQy9UjfaDq34iLc=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206316_16_1_210310_011647-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/iqfOVCLnghyN9tgQ0w5hZWq7OGE=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206316_11_1_210310_011647-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/rD9lIA8vZJ6RcGZNz2E6oWL3P00=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206316_18_1_210310_011647-w3000-h2000",
+        "https://rimh2.domainstatic.com.au/UlcGtW97xYRhKW25t6G2MT1Cq1M=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206316_19_1_210310_011647-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/6kZHodrZ0g93FBe795dazB7nTeA=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206316_20_1_210310_011647-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/-fxahUJl9H0esaJI5krx4gT-i-E=/660x440/filters:format(jpeg):quality(80):no_upscale()/1923_17_13_210526_032601-w1442-h2160",
+        "https://rimh2.domainstatic.com.au/U8GihM3s_8gyAlQ7lMHBYE49s1U=/660x440/filters:format(jpeg):quality(80):no_upscale()/1923_18_13_210526_032601-w1939-h2160",
+        "https://rimh2.domainstatic.com.au/RnH912gPfb-vOhFT3ANXauye47A=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017031745_36_1_241206_055215-w6000-h3375"
+      ],
+      "thumbnails": [
+        "https://rimh2.domainstatic.com.au/ss6ZBH7uSgdye3k0IRqxCkEBFA0=/144x106/filters:format(jpeg):quality(80)/2013206316_1_1_241206_060606-w6000-h3996"
+      ],
+      "features": {
+        "beds": 2,
+        "baths": 2,
+        "propertyType": "NewApartments",
+        "propertyTypeFormatted": "New Apartments / Off the Plan",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": null,
+        "closeTime": null
+      },
+      "bannerUrl": "https://rimh2.domainstatic.com.au/4zjygZft8MLzsWI7DbBXny-BUE0=/800x55/filters:format(jpeg):quality(95):background_color(white):no_upscale()/https://images.domain.com.au/img/Agencys/devproject/banner_1923_250826_030631",
+      "projectName": "380 Melbourne",
+      "displayAddress": "3904/28 Timothy Lane, Melbourne",
+      "tags": {
+        "tagText": "New home",
+        "tagClassName": "is-new-homes"
+      },
+      "keywords": {
+        "keywords": [
+          "AirConditioning",
+          "BuiltInWardrobes",
+          "Floorboards",
+          "SwimmingPool",
+          "CityViews",
+          "IndoorSpa",
+          "Gym",
+          "Intercom",
+          "DoubleGlazedWindows"
+        ]
+      },
+      "address": {
+        "street": "3904/28 Timothy Lane",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.812267,
+        "lng": 144.96114
+      },
+      "projectId": 1923
+    }
+  },
+  {
+    "id": 2017031745,
+    "listingType": "listing",
+    "listingModel": {
+      "url": "/6103-371-little-lonsdale-street-melbourne-vic-3000-2017031745",
+      "price": "Contact Developer",
+      "images": [
+        "https://rimh2.domainstatic.com.au/LJ1UFgRfxEtLyyjZQzpjTO_HsX4=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017031745_1_1_211216_040705-w2000-h1414",
+        "https://rimh2.domainstatic.com.au/IiwPB0yT4DrDRUKG7w8BJZWLWEQ=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017031745_4_1_210526_035651-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/vYHkWL15Tl87hcB4lqXmrAieBus=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017031745_3_1_240625_045524-w3247-h2160",
+        "https://rimh2.domainstatic.com.au/bmC6fUlD4K5OT83s3TWfPCl2mfU=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017031745_4_1_240625_045524-w3247-h2160",
+        "https://rimh2.domainstatic.com.au/IWlkQxlqs6TR2WUIpmnWCt0kEWE=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017031745_8_1_210526_035651-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/G6FmmmrxtKtuAEWX-GJfmrqRIGQ=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017031745_6_1_240625_045524-w3247-h2160",
+        "https://rimh2.domainstatic.com.au/9CkZcaHTZ6SWISv983CphJdC9vk=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017031745_10_1_210526_035651-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/yKgct2RPvmc3rrf926K0Qb-CKaA=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017031745_11_1_210526_035651-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/r6-EgNW8mlRSMJE9ILLN7gb-3Q0=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017031745_9_1_240625_045524-w3247-h2160",
+        "https://rimh2.domainstatic.com.au/fpcv2_TDNORd9i833odX0p08jx0=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017031745_10_1_240625_045524-w3247-h2160",
+        "https://rimh2.domainstatic.com.au/B-6sKmILrBDuZ3GrMUPEzx4VHgs=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017031745_13_1_210526_035651-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/b1qpG4VVKuOdEgxUxEKWiVr7ANI=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017031745_12_1_240625_045524-w3247-h2160",
+        "https://rimh2.domainstatic.com.au/hbWDH_-LG13cEnqMTxwUiPa09PE=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017031745_13_1_241206_055215-w6000-h4000",
+        "https://rimh2.domainstatic.com.au/yKs9Qz6f7aNO8VXBpnU_bzXJfXw=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017031745_14_1_241206_055215-w6000-h4000",
+        "https://rimh2.domainstatic.com.au/bM6cRQifrgHZeJ_uiLLufN5Rqpo=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017477051_22_1_211208_114430-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/x8xXHzvjdW8B7TlOaMnhYY-Kx4A=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017477051_19_1_211208_114430-w2000-h1331",
+        "https://rimh2.domainstatic.com.au/GQVZxEobMkhUxgdcjAL0279HFIU=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206348_17_1_211209_033834-w2000-h1331",
+        "https://rimh2.domainstatic.com.au/xsNe6iajUHRVLPob5hPHEN-Rxn4=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206355_12_1_210310_013054-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/UlcGtW97xYRhKW25t6G2MT1Cq1M=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206316_19_1_210310_011647-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/zxCna55GfTTltZ0me_CGlsT6_u0=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206355_14_1_210310_013054-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/4ta57P8WpVYMWc9QPz4jJC_JyEE=/660x440/filters:format(jpeg):quality(80):no_upscale()/1923_4_13_220215_115317-w3240-h2160",
+        "https://rimh2.domainstatic.com.au/hqeo3E2XtF7B7UQAlaDLSrnSPGE=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017031745_18_1_211209_035242-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/9vg5t4vQcZkCFudr07D8_eheRZ4=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206316_17_1_210310_011647-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/u2juWTFFobWmUl72-AF38p5czAY=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017031745_24_1_241206_055215-w6000-h4000",
+        "https://rimh2.domainstatic.com.au/QrQmMKJ9ayKvbyZk8pDiBMuT6wU=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017477051_14_1_211208_114430-w2000-h1331",
+        "https://rimh2.domainstatic.com.au/rD9lIA8vZJ6RcGZNz2E6oWL3P00=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206316_18_1_210310_011647-w3000-h2000",
+        "https://rimh2.domainstatic.com.au/r7BQ5i3tqha2wePCDRaLeGxxQ7U=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017031745_22_1_211209_035242-w2000-h1331",
+        "https://rimh2.domainstatic.com.au/KlPoqUk903s8F4_pYcZSPKsXd3o=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206355_17_1_210310_013054-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/X_sR-kCxAz0R-P_Ex6GPMNCEIJ0=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206316_14_1_210310_011647-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/xLwRdzU8L_WJYXHhh0SYEOrwB84=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206355_22_1_211209_010345-w2000-h1331",
+        "https://rimh2.domainstatic.com.au/AT_YXtAy4GaYSQy9UjfaDq34iLc=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206316_16_1_210310_011647-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/6k0kIXFm58EL1_Cjr-m308UV9aM=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206355_20_1_210310_013054-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/_w5Flvw5TYTc1K2l1F6rHCGQKeg=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206348_8_1_211209_033834-w2000-h1331",
+        "https://rimh2.domainstatic.com.au/-fxahUJl9H0esaJI5krx4gT-i-E=/660x440/filters:format(jpeg):quality(80):no_upscale()/1923_17_13_210526_032601-w1442-h2160",
+        "https://rimh2.domainstatic.com.au/U8GihM3s_8gyAlQ7lMHBYE49s1U=/660x440/filters:format(jpeg):quality(80):no_upscale()/1923_18_13_210526_032601-w1939-h2160",
+        "https://rimh2.domainstatic.com.au/RnH912gPfb-vOhFT3ANXauye47A=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017031745_36_1_241206_055215-w6000-h3375"
+      ],
+      "thumbnails": [
+        "https://rimh2.domainstatic.com.au/4QeS_8gJENo7Z7-s1hVM8UyTMXw=/144x106/filters:format(jpeg):quality(80)/2017031745_1_1_211216_040705-w2000-h1414"
+      ],
+      "features": {
+        "beds": 3,
+        "baths": 3,
+        "parking": 1,
+        "propertyType": "NewApartments",
+        "propertyTypeFormatted": "New Apartments / Off the Plan",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": null,
+        "closeTime": null
+      },
+      "bannerUrl": "https://rimh2.domainstatic.com.au/4zjygZft8MLzsWI7DbBXny-BUE0=/800x55/filters:format(jpeg):quality(95):background_color(white):no_upscale()/https://images.domain.com.au/img/Agencys/devproject/banner_1923_250826_030631",
+      "projectName": "380 Melbourne",
+      "displayAddress": "6103/371 Little Lonsdale Street, Melbourne",
+      "tags": {
+        "tagText": "New home",
+        "tagClassName": "is-new-homes"
+      },
+      "keywords": {
+        "keywords": [
+          "AirConditioning",
+          "BuiltInWardrobes",
+          "Floorboards",
+          "SwimmingPool",
+          "CityViews",
+          "IndoorSpa",
+          "Gym",
+          "Intercom",
+          "DoubleGlazedWindows"
+        ]
+      },
+      "address": {
+        "street": "6103/371 Little Lonsdale Street",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.8118,
+        "lng": 144.96106
+      },
+      "projectId": 1923
+    }
+  },
+  {
+    "id": 2017071593,
+    "listingType": "listing",
+    "listingModel": {
+      "url": "/03a-250-spencer-street-melbourne-vic-3000-2017071593",
+      "price": "Starting from $1,542,000",
+      "images": [
+        "https://rimh2.domainstatic.com.au/jlwo6XjVGvxme_oPx2eTVM5uooM=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017071593_1_1_230809_121756-w2048-h1192",
+        "https://rimh2.domainstatic.com.au/TxSC3R1Sjo1_QRsDX9yL96DztlI=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017071593_1_1_211020_035958-w2713-h1808",
+        "https://rimh2.domainstatic.com.au/pqle4TA34cOT2eWfOL4j6-1TywM=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017071593_2_1_210615_062301-w3000-h2001",
+        "https://rimh2.domainstatic.com.au/az8jNlYXbE6pJ1WHtLHuU9VNWmo=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017071593_4_1_240122_044153-w3240-h2160",
+        "https://rimh2.domainstatic.com.au/gVPnWfzbruDQbLSy0QiutKIba9o=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017071593_5_1_230809_121756-w2048-h1135",
+        "https://rimh2.domainstatic.com.au/kM30AI7_vCTrSEcDMyorr3f3Bjg=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017071593_6_1_230809_121756-w2048-h1216",
+        "https://rimh2.domainstatic.com.au/hRdjsFrbtfI__S3scQxhZ1M0oBs=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017071593_7_1_240122_044153-w3941-h2160",
+        "https://rimh2.domainstatic.com.au/BBSSM5uuJYxE-9VXxHXQGFv7ZiQ=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017071593_3_1_210615_062301-w3000-h2001",
+        "https://rimh2.domainstatic.com.au/DXQH9MPZYH3MYTd3rzDIBXpSnd8=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018950629_8_1_231211_123845-w1800-h1200",
+        "https://rimh2.domainstatic.com.au/Um3OUS5DN-JpXQPK1QIqXP7ZYVY=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018950629_6_1_231211_123845-w1800-h1200",
+        "https://rimh2.domainstatic.com.au/SKonDRhc64IL150NIk1VXAJ7Ghc=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018950629_5_1_231211_123845-w1800-h1200",
+        "https://rimh2.domainstatic.com.au/-ryhg5Tw2ry0re44gEjZLSyExRY=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017864827_7_1_230809_122505-w1800-h1200",
+        "https://rimh2.domainstatic.com.au/RY44CZSWohuAcNT9WkFTOp6CHGw=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017071593_11_1_231211_125415-w1800-h1200"
+      ],
+      "thumbnails": [
+        "https://rimh2.domainstatic.com.au/B_IKUCC9ZrSrW04w4bP2JuH2VKQ=/144x106/filters:format(jpeg):quality(80)/2017071593_1_1_230809_121756-w2048-h1192"
+      ],
+      "features": {
+        "beds": 3,
+        "baths": 2,
+        "parking": 1,
+        "propertyType": "ApartmentUnitFlat",
+        "propertyTypeFormatted": "Apartment / Unit / Flat",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": null,
+        "closeTime": null
+      },
+      "bannerUrl": "https://rimh2.domainstatic.com.au/nlU-jX4cWVkCtvNOIKENounIy1c=/800x55/filters:format(jpeg):quality(95):background_color(white):no_upscale()/https://images.domain.com.au/img/Agencys/devproject/banner_4974_250825_034617",
+      "projectName": "West Side Place",
+      "displayAddress": "03A/250 Spencer Street, Melbourne",
+      "tags": {
+        "tagText": "New home",
+        "tagClassName": "is-new-homes"
+      },
+      "keywords": {
+        "keywords": [
+          "AirConditioning",
+          "BuiltInWardrobes",
+          "Ensuite",
+          "Floorboards",
+          "Gas",
+          "SwimmingPool",
+          "WaterViews",
+          "CityViews",
+          "Gym",
+          "Intercom",
+          "BroadbandInternetAccess",
+          "Bath",
+          "Heating",
+          "Dishwasher",
+          "Study",
+          "DoubleGlazedWindows"
+        ]
+      },
+      "address": {
+        "street": "03A/250 Spencer Street",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.814495,
+        "lng": 144.95227
+      },
+      "projectId": 4974
+    }
+  },
+  {
+    "id": 2017766861,
+    "listingType": "listing",
+    "listingModel": {
+      "url": "/5109-371-little-lonsdale-street-melbourne-vic-3000-2017766861",
+      "price": "Contact Developer",
+      "images": [
+        "https://rimh2.domainstatic.com.au/ixuCNlUo8lHjxHTXJjOfppNZUZs=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017766861_1_1_230516_123314-w4509-h3000",
+        "https://rimh2.domainstatic.com.au/aGGdQSjhwoQxAVHGHS7dGRO5Lx0=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017766861_1_1_220906_010645-w4509-h3000",
+        "https://rimh2.domainstatic.com.au/EEkc-VahTqh-NJHXAsNESn1g7vI=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017766861_3_1_230516_123314-w4509-h3000",
+        "https://rimh2.domainstatic.com.au/5j8wWnZmGNLzPwmgN38aBzw4QU8=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017766861_2_1_220428_080226-w3247-h2160",
+        "https://rimh2.domainstatic.com.au/W0DeUw4o5wxv34GYh8X-Gc45wuc=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017766861_3_1_220428_080226-w3247-h2160",
+        "https://rimh2.domainstatic.com.au/7DYnPjGgBx2LfTvBNdEs6djbmAg=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017766861_6_1_230516_123314-w4510-h3000",
+        "https://rimh2.domainstatic.com.au/rhBYrKhpJRK0TlbiE0etNVHgq2I=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017766861_4_1_220428_080226-w3247-h2160",
+        "https://rimh2.domainstatic.com.au/WPkD9pJ-x5zp-622TYGz0soMa8o=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017766861_5_1_220428_080226-w3247-h2160",
+        "https://rimh2.domainstatic.com.au/a3yZJNFchFc7Ai5iE2olMUgdmmY=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017766861_6_1_220428_080226-w3247-h2160",
+        "https://rimh2.domainstatic.com.au/SWbdAATj1FzEW9KfkCBSr36MTUA=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017766861_7_1_220428_080226-w3247-h2160",
+        "https://rimh2.domainstatic.com.au/x8xXHzvjdW8B7TlOaMnhYY-Kx4A=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017477051_19_1_211208_114430-w2000-h1331",
+        "https://rimh2.domainstatic.com.au/xLwRdzU8L_WJYXHhh0SYEOrwB84=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206355_22_1_211209_010345-w2000-h1331",
+        "https://rimh2.domainstatic.com.au/xzBgqr2zCONRIs0rTzGbMi9HqPk=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017477051_23_1_211208_114430-w2000-h1331",
+        "https://rimh2.domainstatic.com.au/QWT_180jaHi_E8Kg23PU0TybaZ8=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017766861_11_1_220428_072204-w1920-h1280",
+        "https://rimh2.domainstatic.com.au/FWOhWuNWCBCfsh-EBPBjTcwjNZw=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017766861_12_1_220428_072204-w1920-h1280",
+        "https://rimh2.domainstatic.com.au/N9wOSdEtkKOOU-cOOVAKChAv19c=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017766861_13_1_220428_072204-w1920-h1280",
+        "https://rimh2.domainstatic.com.au/6-g9qjI76RCGBMTO-qbcCnunkKc=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017766861_14_1_220428_072204-w2000-h1334",
+        "https://rimh2.domainstatic.com.au/F2Ersf_iEaJHgU-Dd_SY_8_2OLU=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017766861_15_1_220428_072204-w1920-h1280",
+        "https://rimh2.domainstatic.com.au/skP9UNFUPFfpM7WIul8zJmlrW3U=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017766861_16_1_220428_072204-w1920-h1280",
+        "https://rimh2.domainstatic.com.au/U78hm2GlnF11iyr_5fmzPOIhyVU=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017766861_17_1_220428_072204-w1920-h1280",
+        "https://rimh2.domainstatic.com.au/AT_YXtAy4GaYSQy9UjfaDq34iLc=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206316_16_1_210310_011647-w3072-h2048",
+        "https://rimh2.domainstatic.com.au/rD9lIA8vZJ6RcGZNz2E6oWL3P00=/660x440/filters:format(jpeg):quality(80):no_upscale()/2013206316_18_1_210310_011647-w3000-h2000",
+        "https://rimh2.domainstatic.com.au/QrQmMKJ9ayKvbyZk8pDiBMuT6wU=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017477051_14_1_211208_114430-w2000-h1331",
+        "https://rimh2.domainstatic.com.au/Kc4YrKFZbJ7fgkwNWzO38GoIDeM=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017766861_21_1_220428_072204-w1920-h1280",
+        "https://rimh2.domainstatic.com.au/qg0mnv3ExqEp0WCrFhqe1alX2Gw=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017766861_22_1_220428_072204-w1920-h1280",
+        "https://rimh2.domainstatic.com.au/-fxahUJl9H0esaJI5krx4gT-i-E=/660x440/filters:format(jpeg):quality(80):no_upscale()/1923_17_13_210526_032601-w1442-h2160"
+      ],
+      "thumbnails": [
+        "https://rimh2.domainstatic.com.au/nmYM5Ce0S0Jxwxr1_OX48BOgpVw=/144x106/filters:format(jpeg):quality(80)/2017766861_1_1_230516_123314-w4509-h3000"
+      ],
+      "features": {
+        "beds": 2,
+        "baths": 2,
+        "propertyType": "NewApartments",
+        "propertyTypeFormatted": "New Apartments / Off the Plan",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": null,
+        "closeTime": null
+      },
+      "bannerUrl": "https://rimh2.domainstatic.com.au/4zjygZft8MLzsWI7DbBXny-BUE0=/800x55/filters:format(jpeg):quality(95):background_color(white):no_upscale()/https://images.domain.com.au/img/Agencys/devproject/banner_1923_250826_030631",
+      "projectName": "380 Melbourne",
+      "displayAddress": "5109/371 Little Lonsdale Street, Melbourne",
+      "tags": {
+        "tagText": "New home",
+        "tagClassName": "is-new-homes"
+      },
+      "keywords": {
+        "keywords": [
+          "AirConditioning",
+          "Floorboards",
+          "SwimmingPool",
+          "CityViews",
+          "IndoorSpa",
+          "Intercom",
+          "DoubleGlazedWindows"
+        ]
+      },
+      "address": {
+        "street": "5109/371 Little Lonsdale Street",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.81177,
+        "lng": 144.96094
+      },
+      "projectId": 1923
+    }
+  },
+  {
+    "id": 2017864827,
+    "listingType": "listing",
+    "listingModel": {
+      "url": "/type-10a-250-spencer-street-melbourne-vic-3000-2017864827",
+      "price": "Starting from $792,500",
+      "images": [
+        "https://rimh2.domainstatic.com.au/JV1raRHt8hREAk4R11W-juW5gLU=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017864827_1_1_240122_044155-w3240-h2160",
+        "https://rimh2.domainstatic.com.au/8c1FhU3DNpVMulewK9t6nmJZUJw=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017864827_2_1_240122_044155-w3240-h2160",
+        "https://rimh2.domainstatic.com.au/4zWjacwLFRKrGBkPgKZK9YznmW0=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017864827_3_1_240122_044155-w3240-h2160",
+        "https://rimh2.domainstatic.com.au/1nRRayvNeQlfMZu_UqgbrfrvJLQ=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017864827_4_1_240122_044155-w3240-h2160",
+        "https://rimh2.domainstatic.com.au/pOqdEsqtUJBIUMAWUsKQ8li27Cg=/660x440/filters:format(jpeg):quality(80):no_upscale()/2016566280_7_1_201020_060622-w1800-h1200",
+        "https://rimh2.domainstatic.com.au/fSaukl6jx8Vr_5XWVeL5V1B8jxg=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017864827_6_1_230809_122505-w1801-h1200",
+        "https://rimh2.domainstatic.com.au/-ryhg5Tw2ry0re44gEjZLSyExRY=/660x440/filters:format(jpeg):quality(80):no_upscale()/2017864827_7_1_230809_122505-w1800-h1200"
+      ],
+      "thumbnails": [
+        "https://rimh2.domainstatic.com.au/5Y2QrdTvPo332S7N3f1rFb7BMq0=/144x106/filters:format(jpeg):quality(80)/2017864827_1_1_240122_044155-w3240-h2160"
+      ],
+      "features": {
+        "beds": 2,
+        "baths": 2,
+        "propertyType": "ApartmentUnitFlat",
+        "propertyTypeFormatted": "Apartment / Unit / Flat",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": null,
+        "closeTime": null
+      },
+      "bannerUrl": "https://rimh2.domainstatic.com.au/nlU-jX4cWVkCtvNOIKENounIy1c=/800x55/filters:format(jpeg):quality(95):background_color(white):no_upscale()/https://images.domain.com.au/img/Agencys/devproject/banner_4974_250825_034617",
+      "projectName": "West Side Place",
+      "displayAddress": "Type 10A/250 Spencer Street, Melbourne",
+      "tags": {
+        "tagText": "New home",
+        "tagClassName": "is-new-homes"
+      },
+      "keywords": {
+        "keywords": [
+          "AirConditioning",
+          "BuiltInWardrobes",
+          "Ensuite",
+          "Floorboards",
+          "Gas",
+          "PetsAllowed",
+          "SwimmingPool",
+          "WaterViews",
+          "CityViews",
+          "Gym",
+          "Intercom",
+          "BroadbandInternetAccess",
+          "Heating",
+          "Dishwasher",
+          "DoubleGlazedWindows",
+          "BalconyDeck"
+        ]
+      },
+      "address": {
+        "street": "Type 10A/250 Spencer Street",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.814495,
+        "lng": 144.95227
+      },
+      "projectId": 4974
+    }
+  },
+  {
+    "id": 2018699768,
+    "listingType": "listing",
+    "listingModel": {
+      "url": "/05c-250-spencer-street-melbourne-vic-3000-2018699768",
+      "price": "Starting from $952750",
+      "images": [
+        "https://rimh2.domainstatic.com.au/Uzd09TKdwj94UvmXIkbrgyW4oYI=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018699768_1_1_250228_063500-w3231-h2160",
+        "https://rimh2.domainstatic.com.au/M1VpnO6ngu5esZt7dkGscz-v0m4=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018699768_2_1_250228_063500-w3238-h2160",
+        "https://rimh2.domainstatic.com.au/PKyGRBuh7zo_KlYQeQG-i42v-tY=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018699768_7_1_230811_012919-w2000-h1331",
+        "https://rimh2.domainstatic.com.au/twAVmI-huj-xjHwPWH_Q4z12QiU=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018699768_1_1_230811_012919-w2000-h1331",
+        "https://rimh2.domainstatic.com.au/EJGcUjNok4AI8EE3-0KanBpjV4U=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018699768_5_1_250228_063500-w3238-h2160",
+        "https://rimh2.domainstatic.com.au/DMcCtkgTSYEe1s5X_Gzm1XJ9LgE=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018699768_6_1_230811_012919-w2000-h1331",
+        "https://rimh2.domainstatic.com.au/i28TCRq7TtW4C5TjMH_50j6xARI=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018699768_7_1_250228_063500-w3241-h2160",
+        "https://rimh2.domainstatic.com.au/onIepa-_wPywfzGBYGgaDf5-SUI=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018699768_8_1_250228_063500-w3241-h2160",
+        "https://rimh2.domainstatic.com.au/UnTor4sOpTD9gIg95hytQ2TXbNE=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018699768_9_1_250228_063500-w3238-h2160",
+        "https://rimh2.domainstatic.com.au/n9xgSbdTHMm9xtisbaUi-d3cwXQ=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018699768_10_1_250228_063500-w3241-h2160",
+        "https://rimh2.domainstatic.com.au/CR1ytYAJSRX7PvFuCEBigsbnDIU=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018699768_11_1_250228_063500-w3248-h2160",
+        "https://rimh2.domainstatic.com.au/eaMqgmO0U73G8H6cKmp92yYPUuM=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018699768_12_1_250228_063500-w3236-h2160",
+        "https://rimh2.domainstatic.com.au/lsqSa0LvvP854AtjqBkNqBgtoD0=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018699768_10_1_230811_012919-w3000-h2000",
+        "https://rimh2.domainstatic.com.au/c9uQcnpLCCbB1yHWjvgwU1t4rjI=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018699768_11_1_230811_012919-w3000-h2000",
+        "https://rimh2.domainstatic.com.au/c4jTUhO-Ce4G7i0z0VJSsKVzlpc=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018699768_9_1_230811_012919-w3000-h2000"
+      ],
+      "thumbnails": [
+        "https://rimh2.domainstatic.com.au/CUipVJ5zTAFXnGdQ35S7vvpENE8=/144x106/filters:format(jpeg):quality(80)/2018699768_1_1_250228_063500-w3231-h2160"
+      ],
+      "features": {
+        "beds": 2,
+        "baths": 2,
+        "propertyType": "ApartmentUnitFlat",
+        "propertyTypeFormatted": "Apartment / Unit / Flat",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": null,
+        "closeTime": null
+      },
+      "bannerUrl": "https://rimh2.domainstatic.com.au/nlU-jX4cWVkCtvNOIKENounIy1c=/800x55/filters:format(jpeg):quality(95):background_color(white):no_upscale()/https://images.domain.com.au/img/Agencys/devproject/banner_4974_250825_034617",
+      "projectName": "West Side Place",
+      "displayAddress": "05C/250 Spencer Street, Melbourne",
+      "tags": {
+        "tagText": "New home",
+        "tagClassName": "is-new-homes"
+      },
+      "keywords": {
+        "keywords": [
+          "AirConditioning",
+          "BuiltInWardrobes",
+          "Ensuite",
+          "Floorboards",
+          "Gas",
+          "InternalLaundry",
+          "PetsAllowed",
+          "SwimmingPool",
+          "NorthFacing",
+          "Gym",
+          "Intercom",
+          "BroadbandInternetAccess",
+          "Bath",
+          "Dishwasher",
+          "Study",
+          "DoubleGlazedWindows",
+          "GardenCourtyard"
+        ]
+      },
+      "address": {
+        "street": "05C/250 Spencer Street",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.814495,
+        "lng": 144.95227
+      },
+      "projectId": 4974
+    }
+  },
+  {
+    "id": 2018950519,
+    "listingType": "listing",
+    "listingModel": {
+      "url": "/type-10c-250-spencer-street-melbourne-vic-3000-2018950519",
+      "price": "Starting from $694,000",
+      "images": [
+        "https://rimh2.domainstatic.com.au/AQglKsqWSzzE61sq9u-oAIIVEBY=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018950519_1_1_250228_063500-w3238-h2160",
+        "https://rimh2.domainstatic.com.au/HsiximIOVC7NV_ZVdw4T8qMturY=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018950519_1_1_231210_115844-w1000-h667",
+        "https://rimh2.domainstatic.com.au/F3CKpnaBBaUzMim2-G3WhFqpBug=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018950519_2_1_231210_115844-w1000-h667",
+        "https://rimh2.domainstatic.com.au/gW5N2hJf1Mte3b0c9DjpDYWBvFI=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018950519_4_1_250228_063500-w3244-h2160",
+        "https://rimh2.domainstatic.com.au/bkUCEPgA54xTPKiL3uTzh7KDsTs=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018950519_5_1_250228_063500-w3242-h2160",
+        "https://rimh2.domainstatic.com.au/8iBqubQacC5TUGWfR_wCWdiCmgc=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018950519_6_1_250228_063500-w3243-h2160",
+        "https://rimh2.domainstatic.com.au/fa1LxwURZxPa5i1MgmyXUoC0VDA=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018950519_7_1_250228_063500-w3241-h2160",
+        "https://rimh2.domainstatic.com.au/BRpIWJq1P3rx9oVECTb4fpz5ZLw=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018950519_8_1_250228_063500-w3236-h2160",
+        "https://rimh2.domainstatic.com.au/Yb94YBIh44huqK-wSbUFy5_aHyA=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018950519_4_1_231210_115844-w3000-h2000",
+        "https://rimh2.domainstatic.com.au/s0vT7ldr5Lf8LJlQxwTjFQAXYo0=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018950519_3_1_231210_115844-w3000-h2000",
+        "https://rimh2.domainstatic.com.au/c9uQcnpLCCbB1yHWjvgwU1t4rjI=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018699768_11_1_230811_012919-w3000-h2000",
+        "https://rimh2.domainstatic.com.au/c4jTUhO-Ce4G7i0z0VJSsKVzlpc=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018699768_9_1_230811_012919-w3000-h2000",
+        "https://rimh2.domainstatic.com.au/lsqSa0LvvP854AtjqBkNqBgtoD0=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018699768_10_1_230811_012919-w3000-h2000",
+        "https://rimh2.domainstatic.com.au/_4Ny4rvdqszp5GlVmYPP3eV8_oQ=/660x440/filters:format(jpeg):quality(80):no_upscale()/2018699813_9_1_230811_013953-w3000-h2000"
+      ],
+      "thumbnails": [
+        "https://rimh2.domainstatic.com.au/DpIpB7c9j6_Ir6_nVTJo3cg8TsA=/144x106/filters:format(jpeg):quality(80)/2018950519_1_1_250228_063500-w3238-h2160"
+      ],
+      "features": {
+        "beds": 2,
+        "baths": 1,
+        "propertyType": "NewApartments",
+        "propertyTypeFormatted": "New Apartments / Off the Plan",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": null,
+        "closeTime": null
+      },
+      "bannerUrl": "https://rimh2.domainstatic.com.au/nlU-jX4cWVkCtvNOIKENounIy1c=/800x55/filters:format(jpeg):quality(95):background_color(white):no_upscale()/https://images.domain.com.au/img/Agencys/devproject/banner_4974_250825_034617",
+      "projectName": "West Side Place",
+      "displayAddress": "Type 10C/250 Spencer Street, Melbourne",
+      "tags": {
+        "tagText": "New home",
+        "tagClassName": "is-new-homes"
+      },
+      "keywords": {
+        "keywords": [
+          "AirConditioning",
+          "BuiltInWardrobes",
+          "Floorboards",
+          "Gas",
+          "InternalLaundry",
+          "PetsAllowed",
+          "SwimmingPool",
+          "CityViews",
+          "Gym",
+          "Intercom",
+          "BroadbandInternetAccess",
+          "Heating",
+          "Dishwasher",
+          "Study",
+          "DoubleGlazedWindows",
+          "GardenCourtyard"
+        ]
+      },
+      "address": {
+        "street": "Type 10C/250 Spencer Street",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.814495,
+        "lng": 144.95227
+      },
+      "projectId": 4974
+    }
+  },
+  {
+    "id": 2019499011,
+    "listingType": "listing",
+    "listingModel": {
+      "promoType": "premiumplus",
+      "url": "/1601-82-flinders-street-melbourne-vic-3000-2019499011",
+      "images": [
+        "https://rimh2.domainstatic.com.au/dTTj6nZdA9cAyGmh_9fqemk-QvU=/1160x774/filters:format(jpeg):quality(70)/2019499011_3_1_240917_063235-w4240-h2832",
+        "https://rimh2.domainstatic.com.au/olpIew6y3XBQ3wqPYK2SkVSZBDA=/1160x774/filters:format(jpeg):quality(70)/2019499011_2_1_240917_063235-w4240-h2832",
+        "https://rimh2.domainstatic.com.au/ONSxCX1LtqvsotMeFM-buJ_11Io=/1160x774/filters:format(jpeg):quality(70)/2019499011_4_1_240917_063235-w2100-h1400",
+        "https://rimh2.domainstatic.com.au/g90dP7YCX4xrIXKHK7zMQiGhRkk=/1160x774/filters:format(jpeg):quality(70)/2019499011_5_1_240917_063235-w4240-h2832",
+        "https://rimh2.domainstatic.com.au/om_1_A6KYamHGsm-iQ8x9NboAbQ=/1160x774/filters:format(jpeg):quality(70)/2019499011_6_1_240917_063235-w4240-h2832",
+        "https://rimh2.domainstatic.com.au/d6rKat3MMyxEvGxO5pZAqWiuNso=/1160x774/filters:format(jpeg):quality(70)/2019499011_7_1_240917_063235-w2832-h4240",
+        "https://rimh2.domainstatic.com.au/VT3cS--CmKL9ziLAATEHGpQn2mk=/1160x774/filters:format(jpeg):quality(70)/2019499011_8_1_240917_063235-w4240-h2832",
+        "https://rimh2.domainstatic.com.au/9nCZAHLgkETbUWVXCiTfc5wOmfg=/1160x774/filters:format(jpeg):quality(70)/2019499011_9_1_240917_063235-w2832-h4240",
+        "https://rimh2.domainstatic.com.au/k8T_o0j7G-dabcxBQNQba93aci4=/1160x774/filters:format(jpeg):quality(70)/2019499011_10_1_240917_063235-w4240-h2832",
+        "https://rimh2.domainstatic.com.au/vCYJ0wyaH-L10mTLY3Klt3I7GPQ=/1160x774/filters:format(jpeg):quality(70)/2019499011_11_1_240917_063235-w4240-h2832",
+        "https://rimh2.domainstatic.com.au/lRaZqwS84o57pDmu1Nw5l18NEqQ=/1160x774/filters:format(jpeg):quality(70)/2019499011_1_1_240917_063235-w4240-h2832",
+        "https://rimh2.domainstatic.com.au/2_EBfHZVn2Pg_2rAybVW9zSComY=/1160x774/filters:format(jpeg):quality(70)/2019499011_12_1_240917_063235-w4240-h2832",
+        "https://rimh2.domainstatic.com.au/dnyC6DnDu14E364FDSnZrWxD6Jg=/1160x774/filters:format(jpeg):quality(70)/2019499011_13_1_240917_063235-w4240-h2832",
+        "https://rimh2.domainstatic.com.au/rDjuNCdIyos3aOKqKBzZbgAJSKc=/1160x774/filters:format(jpeg):quality(70)/2019499011_14_1_240917_063235-w4240-h2832",
+        "https://rimh2.domainstatic.com.au/YPOhCWjzflDMlrBBxZXbZCVDURY=/1160x774/filters:format(jpeg):quality(70)/2019499011_15_1_240917_063235-w4240-h2832",
+        "https://rimh2.domainstatic.com.au/cQJpZHdotsqCnO-Gl9otKLOXs0I=/1160x774/filters:format(jpeg):quality(70)/2019499011_16_1_240917_063235-w4240-h2832",
+        "https://rimh2.domainstatic.com.au/TWgQ2Y3X0wRo_iE0Z7zCJmUNg3c=/1160x774/filters:format(jpeg):quality(70)/2019499011_17_1_240917_063235-w2832-h4240",
+        "https://rimh2.domainstatic.com.au/ucPMQorY_5q7OmN3Bz_eOGLZ7Dk=/1160x774/filters:format(jpeg):quality(70)/2019499011_18_1_240917_063235-w4500-h2998",
+        "https://rimh2.domainstatic.com.au/P5pnhdHKR_AJfQc4O9Vcvx6SCsY=/1160x774/filters:format(jpeg):quality(70)/2016604128_11_1_201105_113524-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/99OSI5yKqSo5UG809V4gojLx3uI=/1160x774/filters:format(jpeg):quality(70)/2018489487_10_1_230614_105227-w4500-h3000"
+      ],
+      "brandingAppearance": "dark",
+      "price": "$1,845,000",
+      "hasVideo": false,
+      "branding": {
+        "agencyId": 24322,
+        "agents": [
+          {
+            "agentName": "Scott McElroy",
+            "agentPhoto": "https://rimh2.domainstatic.com.au/pMeHHYM7KG89bfypEA8gVSXUcnM=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/24322/contact_1199396.jpeg?mod=250922-170037"
+          },
+          {
+            "agentName": "Sam Fenna",
+            "agentPhoto": "https://rimh2.domainstatic.com.au/MDs26xXb8bv_CebWghuD0LpmL8I=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/24322/contact_1728691.jpeg?mod=250923-131003"
+          }
+        ],
+        "agentNames": "Scott McElroy, Sam Fenna",
+        "brandLogo": "https://rimh2.domainstatic.com.au/NaaShF97j9hZeFQzcLrCLyPFHA4=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/24322/logo_24322.png?buster=2025-09-23",
+        "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/YNbhaoeJvHZltskb-BqW-NinMPI=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/24322/logo_24322.png?buster=2025-09-23",
+        "brandName": "Belle Property Carlton | Melbourne | North Melbourne",
+        "brandColor": "#386351",
+        "agentPhoto": "https://rimh2.domainstatic.com.au/pMeHHYM7KG89bfypEA8gVSXUcnM=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/24322/contact_1199396.jpeg?mod=250922-170037",
+        "agentName": "Scott McElroy"
+      },
+      "address": {
+        "street": "1601/82 Flinders Street",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.815918,
+        "lng": 144.97194
+      },
+      "features": {
+        "beds": 3,
+        "baths": 2,
+        "parking": 1,
+        "propertyType": "ApartmentUnitFlat",
+        "propertyTypeFormatted": "Apartment / Unit / Flat",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": null,
+        "closeTime": null
+      },
+      "auction": null,
+      "tags": {
+        "tagText": null,
+        "tagClassName": null
+      },
+      "displaySearchPriceRange": null,
+      "enableSingleLineAddress": false
+    }
+  },
+  {
+    "id": 2019836865,
+    "listingType": "listing",
+    "listingModel": {
+      "promoType": "premiumplus",
+      "url": "/1403-141-latrobe-street-melbourne-vic-3000-2019836865",
+      "images": [
+        "https://rimh2.domainstatic.com.au/2czfY83nK2JbqL6OUW5DMs-xWPI=/1160x774/filters:format(jpeg):quality(70)/2019836865_1_1_250304_062422-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/YivmY4g7StmmWUNdtnDllYQgApc=/1160x774/filters:format(jpeg):quality(70)/2019836865_2_1_250304_062422-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/pXg2qILmJkzMnFNnO7dcD6lsXzs=/1160x774/filters:format(jpeg):quality(70)/2019836865_3_1_250304_062422-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/xBW4qRFaTgvQILMSXn0adMShibI=/1160x774/filters:format(jpeg):quality(70)/2019836865_4_1_250304_062422-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/FDatVqbsaI9ugGpze9gTO4QZs5c=/1160x774/filters:format(jpeg):quality(70)/2019836865_5_1_250304_062422-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/n1X42BWbxPN34pbBT4jDCt6CXyc=/1160x774/filters:format(jpeg):quality(70)/2019836865_6_1_250304_062422-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/sYcQeCzCPqyk4krwezFxcRT6NUQ=/1160x774/filters:format(jpeg):quality(70)/2019836865_7_1_250304_062422-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/TcBX5vbq1FLtl-oaB3Lfe8ziKUI=/1160x774/filters:format(jpeg):quality(70)/2019836865_8_1_250304_062422-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/1k5mOqn8p3byUEA73TSF6hKYMTo=/1160x774/filters:format(jpeg):quality(70)/2019836865_9_1_250304_062422-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/2gmshpAitigecqZRATo6h0oxWFQ=/1160x774/filters:format(jpeg):quality(70)/2019836865_10_1_250304_062422-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/o_FUBbJftEE_rE6M-qm5sJFDA8M=/1160x774/filters:format(jpeg):quality(70)/2019836865_11_1_250304_062422-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/xb4-6pENuOKZrqbNTH_b3vlpIv8=/1160x774/filters:format(jpeg):quality(70)/2019836865_12_1_250304_062422-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/Bkuk5gPGv25ELzCkvT7z4YdSu_Y=/1160x774/filters:format(jpeg):quality(70)/2019836865_13_1_250304_062422-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/kGhz_Wht502mWdFLznDt4sENRjg=/1160x774/filters:format(jpeg):quality(70)/2019836865_14_1_250304_062422-w2000-h1333"
+      ],
+      "brandingAppearance": "dark",
+      "price": "$399,000 - $425,000",
+      "hasVideo": false,
+      "branding": {
+        "agencyId": 37657,
+        "agents": [
+          {
+            "agentName": "Sai Allamneni",
+            "agentPhoto": "https://rimh2.domainstatic.com.au/1ALUdPZ_RvhP7YL5OAR6jDM0GFA=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/37657/contact_1927809.png?mod=250922-120040"
+          },
+          {
+            "agentName": "Deepak Devaraj",
+            "agentPhoto": "https://rimh2.domainstatic.com.au/oMH-ild4oLkF9TDFKAyVvDNdQDg=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/37657/contact_1928034.jpeg?mod=250922-120040"
+          }
+        ],
+        "agentNames": "Sai Allamneni, Deepak Devaraj",
+        "brandLogo": "https://rimh2.domainstatic.com.au/rX53BLswA2MPRC8RJ5FugOV-7mc=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/37657/logo_37657.jpeg?buster=2025-09-23",
+        "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/iqA1aMYXy-Y2YuxyTZb49-OvlMw=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/37657/logo_37657.jpeg?buster=2025-09-23",
+        "brandName": "AGENCY HQ Melbourne West",
+        "brandColor": "#000000",
+        "agentPhoto": "https://rimh2.domainstatic.com.au/1ALUdPZ_RvhP7YL5OAR6jDM0GFA=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/37657/contact_1927809.png?mod=250922-120040",
+        "agentName": "Sai Allamneni"
+      },
+      "address": {
+        "street": "1403/141 Latrobe Street",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.808758,
+        "lng": 144.96747
+      },
+      "features": {
+        "beds": 1,
+        "baths": 1,
+        "propertyType": "ApartmentUnitFlat",
+        "propertyTypeFormatted": "Apartment / Unit / Flat",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": null,
+        "closeTime": null
+      },
+      "auction": null,
+      "tags": {
+        "tagText": null,
+        "tagClassName": null
+      },
+      "displaySearchPriceRange": null,
+      "enableSingleLineAddress": false
+    }
+  },
+  {
+    "id": 2019853815,
+    "listingType": "listing",
+    "listingModel": {
+      "promoType": "premiumplus",
+      "url": "/501-394-collins-street-melbourne-vic-3000-2019853815",
+      "images": [
+        "https://rimh2.domainstatic.com.au/A6Ag_qS0bnXPDnQ2wWrFRIEJmyY=/1160x774/filters:format(jpeg):quality(70)/2019853815_2_1_250311_100159-w2000-h1334",
+        "https://rimh2.domainstatic.com.au/RUAoHJ2WfVaOLGaxTb-mVN-8VOY=/1160x774/filters:format(jpeg):quality(70)/2019853815_3_1_250311_100159-w2000-h1334",
+        "https://rimh2.domainstatic.com.au/XbjJfPPWJ_HlPAAnchicUDPJAO4=/1160x774/filters:format(jpeg):quality(70)/2019853815_4_1_250311_100159-w2000-h1334",
+        "https://rimh2.domainstatic.com.au/Ma-6croV02lJu09cZpIpcH81Goc=/1160x774/filters:format(jpeg):quality(70)/2019853815_5_1_250311_100159-w2000-h1334",
+        "https://rimh2.domainstatic.com.au/8wIawwjTu2kHa0PXYDdqFlOFG9k=/1160x774/filters:format(jpeg):quality(70)/2019853815_6_1_250311_100159-w2000-h1334",
+        "https://rimh2.domainstatic.com.au/ROAWBunq1DXTqM8maOtXGeV80oA=/1160x774/filters:format(jpeg):quality(70)/2019853815_7_1_250311_100159-w2000-h1334",
+        "https://rimh2.domainstatic.com.au/yIrfkKflAzxYEN2AM3nGJO3_KH4=/1160x774/filters:format(jpeg):quality(70)/2019853815_8_1_250311_100159-w2000-h1334",
+        "https://rimh2.domainstatic.com.au/5brKVPsn7QtIA-CQGEoHl2ne2c4=/1160x774/filters:format(jpeg):quality(70)/2019853815_9_1_250311_100159-w2000-h1334",
+        "https://rimh2.domainstatic.com.au/NGbcS9p6Z_z_svCR9mXgaeg6kdA=/1160x774/filters:format(jpeg):quality(70)/2019853815_10_1_250311_100159-w2000-h1334",
+        "https://rimh2.domainstatic.com.au/C-17aDPbFckUeNgPi7tZvzspfG8=/1160x774/filters:format(jpeg):quality(70)/2018363967_9_1_230220_124112-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/S5eoM5qOYgtmCXsuR_HPMbXXFBw=/1160x774/filters:format(jpeg):quality(70)/2018363967_1_1_230220_124112-w2000-h1333"
+      ],
+      "brandingAppearance": "light",
+      "price": "$420,000 - $460,000",
+      "hasVideo": false,
+      "branding": {
+        "agencyId": 32563,
+        "agents": [
+          {
+            "agentName": "Alexander Subotsch",
+            "agentPhoto": "https://rimh2.domainstatic.com.au/TdH8qPu4LVrHEV-tvtnkhhrKthk=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/32563/contact_1632761.jpeg?mod=250916-162713"
+          },
+          {
+            "agentName": "Luka Cordedda",
+            "agentPhoto": "https://rimh2.domainstatic.com.au/AmKlQrh4Cl4zR377u_129LLunjY=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/32563/contact_1971846.jpeg?mod=250916-162713"
+          }
+        ],
+        "agentNames": "Alexander Subotsch, Luka Cordedda",
+        "brandLogo": "https://rimh2.domainstatic.com.au/bwuFFjkan8VnynHae7n1MbTQ6EI=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/32563/logo_32563.png?buster=2025-09-23",
+        "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/YcHFybBQqQsi8WFqj0L1R5wnIGs=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/32563/logo_32563.png?buster=2025-09-23",
+        "brandName": "Gotham Property",
+        "brandColor": "#ffffff",
+        "agentPhoto": "https://rimh2.domainstatic.com.au/TdH8qPu4LVrHEV-tvtnkhhrKthk=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/32563/contact_1632761.jpeg?mod=250916-162713",
+        "agentName": "Alexander Subotsch"
+      },
+      "address": {
+        "street": "501/394 Collins Street",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.81682,
+        "lng": 144.96118
+      },
+      "features": {
+        "beds": 1,
+        "baths": 1,
+        "propertyType": "ApartmentUnitFlat",
+        "propertyTypeFormatted": "Apartment / Unit / Flat",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": null,
+        "closeTime": null
+      },
+      "auction": null,
+      "tags": {
+        "tagText": null,
+        "tagClassName": null
+      },
+      "displaySearchPriceRange": null,
+      "enableSingleLineAddress": false
+    }
+  },
+  {
+    "id": 2019860205,
+    "listingType": "listing",
+    "listingModel": {
+      "url": "/type-04-640-bourke-st-classic-collection-melbourne-vic-3000-2019860205",
+      "price": "Prices Starting from $677500",
+      "images": [
+        "https://rimh2.domainstatic.com.au/bVZF-I6p9QzIC2nmMzgPhZle6og=/660x440/filters:format(jpeg):quality(80):no_upscale()/6565_26_13_250313_050931-w2880-h2160",
+        "https://rimh2.domainstatic.com.au/HlXkMLrKrLDmlZP2K4Y1hXwKIqs=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019860205_2_1_250314_060731-w4000-h3000",
+        "https://rimh2.domainstatic.com.au/TkvjXHjg9_t8388Nsc_1WXG7cmI=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861276_4_1_250402_022547-w6000-h3600",
+        "https://rimh2.domainstatic.com.au/fvUKn9YgCfnurer4Q82vxya9Lxk=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861276_5_1_250402_022547-w6000-h4000",
+        "https://rimh2.domainstatic.com.au/EeRNvjs5KVZil7jvIzo0KHFjhy4=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861276_6_1_250402_022547-w6000-h4000",
+        "https://rimh2.domainstatic.com.au/e7xgQFP7-_h3pIFL7fh316EQ22g=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861276_7_1_250402_022547-w6000-h4000",
+        "https://rimh2.domainstatic.com.au/3njjXquSojDGxYHgIQ_AJIgxxs0=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861276_8_1_250402_022547-w6000-h4000",
+        "https://rimh2.domainstatic.com.au/62P2lsyS6N-6minHlrkiNwpXmQs=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861276_9_1_250402_022547-w6000-h4000",
+        "https://rimh2.domainstatic.com.au/6Sr4UHCMk2E4otSxfH-uRLoI4ws=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019860205_9_1_250402_024057-w6000-h3000"
+      ],
+      "thumbnails": [
+        "https://rimh2.domainstatic.com.au/uHcfwWGIl5kz_W4Dzwct7JVn4Bs=/144x106/filters:format(jpeg):quality(80)/6565_26_13_250313_050931-w2880-h2160"
+      ],
+      "features": {
+        "beds": 1,
+        "baths": 1,
+        "propertyType": "ApartmentUnitFlat",
+        "propertyTypeFormatted": "Apartment / Unit / Flat",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": null,
+        "closeTime": null
+      },
+      "bannerUrl": "https://rimh2.domainstatic.com.au/7Z2E1dO437u20EsWELFhkTk8G3g=/800x55/filters:format(jpeg):quality(95):background_color(white):no_upscale()/https://images.domain.com.au/img/Agencys/devproject/banner_6565_250826_013814",
+      "projectName": "640 Bourke St",
+      "displayAddress": "Type 04/640 Bourke St - Classic Collection, Melbourne",
+      "tags": {
+        "tagText": "New home",
+        "tagClassName": "is-new-homes"
+      },
+      "keywords": {
+        "keywords": [
+          "AirConditioning",
+          "BuiltInWardrobes",
+          "Floorboards",
+          "InternalLaundry",
+          "PetsAllowed",
+          "SwimmingPool",
+          "Gym",
+          "Intercom",
+          "BroadbandInternetAccess",
+          "Heating",
+          "Dishwasher",
+          "Study",
+          "DoubleGlazedWindows",
+          "EnergyEfficientAppliances"
+        ]
+      },
+      "address": {
+        "street": "Type 04/640 Bourke St - Classic Collection",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.816414,
+        "lng": 144.95453
+      },
+      "projectId": 6565
+    }
+  },
+  {
+    "id": 2019861276,
+    "listingType": "listing",
+    "listingModel": {
+      "url": "/type-11-640-bourke-st-melbourne-collection-melbourne-vic-3000-2019861276",
+      "price": "Starting from $1480000",
+      "images": [
+        "https://rimh2.domainstatic.com.au/4qO-y9s0_NtOlX_jYdfROkpZa1E=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861276_1_1_250314_054630-w800-h600",
+        "https://rimh2.domainstatic.com.au/vbOODQn73ZGmbjDjONl1C7qK0oM=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861276_2_1_250317_113722-w6000-h4600",
+        "https://rimh2.domainstatic.com.au/F7RzP6qNVX61dCw27-fLeqPFp_g=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861276_3_1_250402_022547-w6000-h4000",
+        "https://rimh2.domainstatic.com.au/TkvjXHjg9_t8388Nsc_1WXG7cmI=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861276_4_1_250402_022547-w6000-h3600",
+        "https://rimh2.domainstatic.com.au/fvUKn9YgCfnurer4Q82vxya9Lxk=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861276_5_1_250402_022547-w6000-h4000",
+        "https://rimh2.domainstatic.com.au/EeRNvjs5KVZil7jvIzo0KHFjhy4=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861276_6_1_250402_022547-w6000-h4000",
+        "https://rimh2.domainstatic.com.au/e7xgQFP7-_h3pIFL7fh316EQ22g=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861276_7_1_250402_022547-w6000-h4000",
+        "https://rimh2.domainstatic.com.au/3njjXquSojDGxYHgIQ_AJIgxxs0=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861276_8_1_250402_022547-w6000-h4000",
+        "https://rimh2.domainstatic.com.au/62P2lsyS6N-6minHlrkiNwpXmQs=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861276_9_1_250402_022547-w6000-h4000"
+      ],
+      "thumbnails": [
+        "https://rimh2.domainstatic.com.au/P3EWblRYYBYZB-N39TB0v0XqvvE=/144x106/filters:format(jpeg):quality(80)/2019861276_1_1_250314_054630-w800-h600"
+      ],
+      "features": {
+        "beds": 2,
+        "baths": 2,
+        "parking": 1,
+        "propertyType": "ApartmentUnitFlat",
+        "propertyTypeFormatted": "Apartment / Unit / Flat",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": null,
+        "closeTime": null
+      },
+      "bannerUrl": "https://rimh2.domainstatic.com.au/7Z2E1dO437u20EsWELFhkTk8G3g=/800x55/filters:format(jpeg):quality(95):background_color(white):no_upscale()/https://images.domain.com.au/img/Agencys/devproject/banner_6565_250826_013814",
+      "projectName": "640 Bourke St",
+      "displayAddress": "Type 11/640 Bourke St - Melbourne Collection, Melbourne",
+      "tags": {
+        "tagText": "New home",
+        "tagClassName": "is-new-homes"
+      },
+      "keywords": {
+        "keywords": [
+          "AirConditioning",
+          "BuiltInWardrobes",
+          "Ensuite",
+          "Floorboards",
+          "InternalLaundry",
+          "PetsAllowed",
+          "SwimmingPool",
+          "Gym",
+          "Intercom",
+          "BroadbandInternetAccess",
+          "Heating",
+          "Dishwasher",
+          "DoubleGlazedWindows",
+          "EnergyEfficientAppliances"
+        ]
+      },
+      "address": {
+        "street": "Type 11/640 Bourke St - Melbourne Collection",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.816414,
+        "lng": 144.95453
+      },
+      "projectId": 6565
+    }
+  },
+  {
+    "id": 2019861540,
+    "listingType": "listing",
+    "listingModel": {
+      "url": "/type-03-640-bourke-st-eliza-collection-melbourne-vic-3000-2019861540",
+      "price": "Prices starting from $2,455,000",
+      "images": [
+        "https://rimh2.domainstatic.com.au/ldtYlsTDvbJoZod1LKJNeCTWF3I=/660x440/filters:format(jpeg):quality(80):no_upscale()/6565_27_13_250313_050931-w2880-h2160",
+        "https://rimh2.domainstatic.com.au/WUTuEZ9xo9K7v5k2G19N192WTeo=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861540_2_1_250317_114440-w4000-h3000",
+        "https://rimh2.domainstatic.com.au/YJrOj8nIvsvc-cP1KRfvbYJ8NJI=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861540_2_1_250314_120457-w2818-h2160",
+        "https://rimh2.domainstatic.com.au/SuaPzwlSqZ4O5bELbw1UyxB2LuY=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861540_4_1_250317_114440-w4000-h3000",
+        "https://rimh2.domainstatic.com.au/bCktkKNfvNBOmC9fF-gJSZ2_l2Y=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861540_5_1_250402_023049-w6000-h4000",
+        "https://rimh2.domainstatic.com.au/uHV_o5-8NTeS7C5Kq-mOVSFGS1g=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861540_6_1_250402_023049-w6000-h4000",
+        "https://rimh2.domainstatic.com.au/073xgACa6hc6NqFcpvOLKVBLS1g=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861540_7_1_250402_023049-w6000-h4000",
+        "https://rimh2.domainstatic.com.au/TkvjXHjg9_t8388Nsc_1WXG7cmI=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861276_4_1_250402_022547-w6000-h3600",
+        "https://rimh2.domainstatic.com.au/fvUKn9YgCfnurer4Q82vxya9Lxk=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861276_5_1_250402_022547-w6000-h4000",
+        "https://rimh2.domainstatic.com.au/EeRNvjs5KVZil7jvIzo0KHFjhy4=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861276_6_1_250402_022547-w6000-h4000",
+        "https://rimh2.domainstatic.com.au/e7xgQFP7-_h3pIFL7fh316EQ22g=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861276_7_1_250402_022547-w6000-h4000"
+      ],
+      "thumbnails": [
+        "https://rimh2.domainstatic.com.au/mtiWbZV28poo5lrxf5QtUXS-DSc=/144x106/filters:format(jpeg):quality(80)/6565_27_13_250313_050931-w2880-h2160"
+      ],
+      "features": {
+        "beds": 3,
+        "baths": 2,
+        "parking": 1,
+        "propertyType": "ApartmentUnitFlat",
+        "propertyTypeFormatted": "Apartment / Unit / Flat",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": null,
+        "closeTime": null
+      },
+      "bannerUrl": "https://rimh2.domainstatic.com.au/7Z2E1dO437u20EsWELFhkTk8G3g=/800x55/filters:format(jpeg):quality(95):background_color(white):no_upscale()/https://images.domain.com.au/img/Agencys/devproject/banner_6565_250826_013814",
+      "projectName": "640 Bourke St",
+      "displayAddress": "Type 03/640 Bourke St - Eliza Collection, Melbourne",
+      "tags": {
+        "tagText": "New home",
+        "tagClassName": "is-new-homes"
+      },
+      "keywords": {
+        "keywords": [
+          "AirConditioning",
+          "BuiltInWardrobes",
+          "Ensuite",
+          "Floorboards",
+          "InternalLaundry",
+          "SwimmingPool",
+          "Gym",
+          "Intercom",
+          "BroadbandInternetAccess",
+          "Bath",
+          "Heating",
+          "Dishwasher",
+          "DoubleGlazedWindows",
+          "EnergyEfficientAppliances"
+        ]
+      },
+      "address": {
+        "street": "Type 03/640 Bourke St - Eliza Collection",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.816414,
+        "lng": 144.95453
+      },
+      "projectId": 6565
+    }
+  },
+  {
+    "id": 2019867775,
+    "listingType": "listing",
+    "listingModel": {
+      "url": "/type-05-640-bourke-st-classic-collection-melbourne-vic-3000-2019867775",
+      "price": "Starting from $662,500",
+      "images": [
+        "https://rimh2.domainstatic.com.au/v2J13GSAsEQ1LroIOrJCfnGr4wI=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019867775_1_1_250317_112724-w2880-h2160",
+        "https://rimh2.domainstatic.com.au/_-rl6xW8oL1kgpogHli3m9rQPV0=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019867775_2_1_250317_112724-w2880-h2160",
+        "https://rimh2.domainstatic.com.au/TkvjXHjg9_t8388Nsc_1WXG7cmI=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861276_4_1_250402_022547-w6000-h3600",
+        "https://rimh2.domainstatic.com.au/fvUKn9YgCfnurer4Q82vxya9Lxk=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861276_5_1_250402_022547-w6000-h4000",
+        "https://rimh2.domainstatic.com.au/EeRNvjs5KVZil7jvIzo0KHFjhy4=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861276_6_1_250402_022547-w6000-h4000",
+        "https://rimh2.domainstatic.com.au/e7xgQFP7-_h3pIFL7fh316EQ22g=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861276_7_1_250402_022547-w6000-h4000",
+        "https://rimh2.domainstatic.com.au/3njjXquSojDGxYHgIQ_AJIgxxs0=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861276_8_1_250402_022547-w6000-h4000",
+        "https://rimh2.domainstatic.com.au/62P2lsyS6N-6minHlrkiNwpXmQs=/660x440/filters:format(jpeg):quality(80):no_upscale()/2019861276_9_1_250402_022547-w6000-h4000"
+      ],
+      "thumbnails": [
+        "https://rimh2.domainstatic.com.au/mBTauhfwipvzjbnd4Fc1l20EPsE=/144x106/filters:format(jpeg):quality(80)/2019867775_1_1_250317_112724-w2880-h2160"
+      ],
+      "features": {
+        "beds": 1,
+        "baths": 1,
+        "propertyType": "ApartmentUnitFlat",
+        "propertyTypeFormatted": "Apartment / Unit / Flat",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": null,
+        "closeTime": null
+      },
+      "bannerUrl": "https://rimh2.domainstatic.com.au/7Z2E1dO437u20EsWELFhkTk8G3g=/800x55/filters:format(jpeg):quality(95):background_color(white):no_upscale()/https://images.domain.com.au/img/Agencys/devproject/banner_6565_250826_013814",
+      "projectName": "640 Bourke St",
+      "displayAddress": "Type 05/640 Bourke St - Classic Collection, Melbourne",
+      "tags": {
+        "tagText": "New home",
+        "tagClassName": "is-new-homes"
+      },
+      "keywords": {
+        "keywords": [
+          "AirConditioning",
+          "BuiltInWardrobes",
+          "Floorboards",
+          "InternalLaundry",
+          "SwimmingPool",
+          "Gym",
+          "Intercom",
+          "BroadbandInternetAccess",
+          "Heating",
+          "Dishwasher",
+          "DoubleGlazedWindows",
+          "EnergyEfficientAppliances"
+        ]
+      },
+      "address": {
+        "street": "Type 05/640 Bourke St - Classic Collection",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.816414,
+        "lng": 144.95453
+      },
+      "projectId": 6565
+    }
+  },
+  {
+    "id": 2019956916,
+    "listingType": "listing",
+    "listingModel": {
+      "promoType": "premiumplus",
+      "url": "/1004-201-collins-street-melbourne-vic-3000-2019956916",
+      "images": [
+        "https://rimh2.domainstatic.com.au/v2WQxidAsOUWixTzLKEDhpeE9Og=/1160x774/filters:format(jpeg):quality(70)/2019956916_1_1_250429_063044-w2000-h1334",
+        "https://rimh2.domainstatic.com.au/oGKvlSsLBHH4Q5r6hyqZcl4DZHQ=/1160x774/filters:format(jpeg):quality(70)/2019956916_2_1_250429_063044-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/ZOB7umU9rjiDDAkwbaZuygavnpw=/1160x774/filters:format(jpeg):quality(70)/2019956916_3_1_250429_063044-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/F5efftmUYuysiMMKziJOpcHqf00=/1160x774/filters:format(jpeg):quality(70)/2019956916_5_1_250429_063131-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/EFcwZY0gPtJEvYYg2OmfCqnkU7s=/1160x774/filters:format(jpeg):quality(70)/2019956916_6_1_250429_063131-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/IIrevpdGdb-w4TdQQoNEGXXtOto=/1160x774/filters:format(jpeg):quality(70)/2019956916_7_1_250429_063131-w2000-h1334",
+        "https://rimh2.domainstatic.com.au/JgULYIAgQK9sKyDNzu5sZ4A2Me4=/1160x774/filters:format(jpeg):quality(70)/2019956916_8_1_250429_063131-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/yU_NBxI9cFCG2AysXM2lJ_h2iZk=/1160x774/filters:format(jpeg):quality(70)/2019956916_9_1_250429_063131-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/j1CWhIbd_rlIRzWqDuoK7emyD04=/1160x774/filters:format(jpeg):quality(70)/2019956916_10_1_250429_063131-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/80X6aIBzDVc-3G67CdZwf-iHm3Y=/1160x774/filters:format(jpeg):quality(70)/2019956916_11_1_250429_063131-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/7rT0C3LhhIoPlqXJgu5FY7uoDVc=/1160x774/filters:format(jpeg):quality(70)/2019956916_12_1_250429_063131-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/rDmQlg3h40GR7NG5SfcHKeC0OpU=/1160x774/filters:format(jpeg):quality(70)/2019956916_13_1_250429_063131-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/MYR6T1vTmC2UvycOs3b_dvqz5fI=/1160x774/filters:format(jpeg):quality(70)/2019956916_14_1_250429_063131-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/lpEJ1SQLkb6pQqQERuXt8KW7KOk=/1160x774/filters:format(jpeg):quality(70)/2019956916_15_1_250429_063131-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/VUG0QunES8RtcBv6_p4NvUEex5M=/1160x774/filters:format(jpeg):quality(70)/2019956916_15_1_250714_021222-w1414-h2000"
+      ],
+      "brandingAppearance": "light",
+      "price": "Expressions of interest",
+      "hasVideo": true,
+      "branding": {
+        "agencyId": 88,
+        "agents": [
+          {
+            "agentName": "Monique Depierre",
+            "agentPhoto": "https://rimh2.domainstatic.com.au/UGY-wWqmLcXPmGmAoaa1vo5GdAs=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/88/contact_1039459.jpeg?mod=250923-170721"
+          },
+          {
+            "agentName": "Peter Kudelka",
+            "agentPhoto": "https://rimh2.domainstatic.com.au/5Nb-NjiLdcWZA_58VUe2qiLvIDw=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/88/contact_638611.jpeg?mod=250922-092021"
+          }
+        ],
+        "agentNames": "Monique Depierre, Peter Kudelka, Arabella Houghton",
+        "brandLogo": "https://rimh2.domainstatic.com.au/I7EFRfawwtPfcodNFiQVZtHzFi0=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/88/logo_88.jpeg?buster=2025-09-23",
+        "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/0Hi41VfIHi-UMMSkDsoe1wPivd8=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/88/logo_88.jpeg?buster=2025-09-23",
+        "brandName": "Kay & Burton Stonnington",
+        "brandColor": "#989795",
+        "agentPhoto": "https://rimh2.domainstatic.com.au/UGY-wWqmLcXPmGmAoaa1vo5GdAs=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/88/contact_1039459.jpeg?mod=250923-170721",
+        "agentName": "Monique Depierre"
+      },
+      "address": {
+        "street": "1004/201 Collins Street",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.815475,
+        "lng": 144.96729
+      },
+      "features": {
+        "beds": 2,
+        "baths": 2,
+        "parking": 2,
+        "propertyType": "ApartmentUnitFlat",
+        "propertyTypeFormatted": "Apartment / Unit / Flat",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": null,
+        "closeTime": null
+      },
+      "auction": null,
+      "tags": {
+        "tagText": null,
+        "tagClassName": null
+      },
+      "displaySearchPriceRange": null,
+      "enableSingleLineAddress": false
+    }
+  },
+  {
+    "id": 2020171436,
+    "listingType": "listing",
+    "listingModel": {
+      "promoType": "premiumplus",
+      "url": "/5-108-flinders-street-melbourne-vic-3000-2020171436",
+      "images": [
+        "https://rimh2.domainstatic.com.au/U8nDwsy9H5xc9w5mGUaaI7kkyOs=/1160x774/filters:format(jpeg):quality(70)/2020171436_1_1_250804_124145-w1294-h864",
+        "https://rimh2.domainstatic.com.au/aClKAhFntlZqdOS_gGnmcIiMHak=/1160x774/filters:format(jpeg):quality(70)/2020171436_2_1_250804_124145-w1291-h864",
+        "https://rimh2.domainstatic.com.au/_4mM0r7zU4563jFwPDRSSKgCbmg=/1160x774/filters:format(jpeg):quality(70)/2020171436_3_1_250804_124145-w1294-h864",
+        "https://rimh2.domainstatic.com.au/lDUOeWLUNgsXGoMGW4JbJ42V9ms=/1160x774/filters:format(jpeg):quality(70)/2020171436_4_1_250804_124146-w1289-h864",
+        "https://rimh2.domainstatic.com.au/qglf9XZf0rHYzDcglesLYj-A4OI=/1160x774/filters:format(jpeg):quality(70)/2020171436_7_1_250804_124146-w1298-h864",
+        "https://rimh2.domainstatic.com.au/IcC-ciuOuSpMrvDx_r5Kizpc-w8=/1160x774/filters:format(jpeg):quality(70)/2020171436_5_1_250804_124146-w1292-h864",
+        "https://rimh2.domainstatic.com.au/OIl3GjX1x03iKSpiNjkCrw9YH7E=/1160x774/filters:format(jpeg):quality(70)/2020171436_6_1_250804_124146-w1282-h864",
+        "https://rimh2.domainstatic.com.au/j5eMx14HaDOLeOYYcHNTpNrElF4=/1160x774/filters:format(jpeg):quality(70)/2019575831_17_1_241020_113511-w2100-h1400",
+        "https://rimh2.domainstatic.com.au/KjKArfA0NoNZjcgGM-r729jHBrM=/1160x774/filters:format(jpeg):quality(70)/2019575831_15_1_241020_113511-w2100-h1400",
+        "https://rimh2.domainstatic.com.au/GU8X-87QpNdzPFmRiHI5fuoxaCw=/1160x774/filters:format(jpeg):quality(70)/2019575831_16_1_241020_113511-w2100-h1400",
+        "https://rimh2.domainstatic.com.au/RMQ7QFzkeYNzj8EafyrRzH0TKAU=/1160x774/filters:format(jpeg):quality(70)/2020171436_11_1_250804_124146-w1298-h864",
+        "https://rimh2.domainstatic.com.au/7Enra6KV7Hn2DNXGU03qBu1_gsI=/1160x774/filters:format(jpeg):quality(70)/13687418_9_1_191030_075632-w2100-h1400",
+        "https://rimh2.domainstatic.com.au/NtxrbX_mEVydomFb8OYgnMQ8SSw=/1160x774/filters:format(jpeg):quality(70)/2020171436_13_1_250826_123132-w964-h600",
+        "https://rimh2.domainstatic.com.au/G2be362dwcux02qABGxUFn20c-Q=/1160x774/filters:format(jpeg):quality(70)/2019575831_19_1_241020_113511-w2100-h1400",
+        "https://rimh2.domainstatic.com.au/Je5uvSDXTLm8Kl6RxCM0DrxtqWA=/1160x774/filters:format(jpeg):quality(70)/13687418_4_1_191030_075632-w2100-h1400",
+        "https://rimh2.domainstatic.com.au/RrdrkMuxDBjKo1Q-P-760_Os-aw=/1160x774/filters:format(jpeg):quality(70)/2019575831_20_1_250306_112951-w3898-h2598"
+      ],
+      "brandingAppearance": "dark",
+      "price": "Private Sale - $565,000",
+      "hasVideo": true,
+      "branding": {
+        "agencyId": 24322,
+        "agents": [
+          {
+            "agentName": "Sam Fenna",
+            "agentPhoto": "https://rimh2.domainstatic.com.au/VD-EDdpbZIiz7ili9xGNQSS2-fs=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/24322/contact_1728691.jpeg?mod=250922-113055"
+          },
+          {
+            "agentName": "Alex White",
+            "agentPhoto": "https://rimh2.domainstatic.com.au/1C-tuuN1wfniQARzmqmV6tmxF0g=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/24322/contact_1989976.jpeg?mod=250922-092946"
+          }
+        ],
+        "agentNames": "Sam Fenna, Alex White",
+        "brandLogo": "https://rimh2.domainstatic.com.au/NaaShF97j9hZeFQzcLrCLyPFHA4=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/24322/logo_24322.png?buster=2025-09-23",
+        "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/YNbhaoeJvHZltskb-BqW-NinMPI=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/24322/logo_24322.png?buster=2025-09-23",
+        "brandName": "Belle Property Carlton | Melbourne | North Melbourne",
+        "brandColor": "#386351",
+        "agentPhoto": "https://rimh2.domainstatic.com.au/VD-EDdpbZIiz7ili9xGNQSS2-fs=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/24322/contact_1728691.jpeg?mod=250922-113055",
+        "agentName": "Sam Fenna"
+      },
+      "address": {
+        "street": "5/108 Flinders Street",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.816147,
+        "lng": 144.97113
+      },
+      "features": {
+        "beds": 2,
+        "baths": 1,
+        "propertyType": "ApartmentUnitFlat",
+        "propertyTypeFormatted": "Apartment / Unit / Flat",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": null,
+        "closeTime": null
+      },
+      "auction": null,
+      "tags": {
+        "tagText": null,
+        "tagClassName": null
+      },
+      "displaySearchPriceRange": null,
+      "enableSingleLineAddress": false
+    }
+  },
+  {
+    "id": 2020201309,
+    "listingType": "listing",
+    "listingModel": {
+      "promoType": "premiumplus",
+      "url": "/609-155-bourke-street-melbourne-vic-3000-2020201309",
+      "images": [
+        "https://rimh2.domainstatic.com.au/hzV2kYq6KRhV7A01AD6KmEg1Mfw=/1160x774/filters:format(jpeg):quality(70)/2020201309_1_1_250815_062022-w1600-h1067",
+        "https://rimh2.domainstatic.com.au/-bYIgEwfG1XSkdURdEJA-HycIuc=/1160x774/filters:format(jpeg):quality(70)/2020201309_2_1_250815_062022-w1600-h1067",
+        "https://rimh2.domainstatic.com.au/DWRh7LiTEEok-DRo76cJdGkbOeA=/1160x774/filters:format(jpeg):quality(70)/2020201309_3_1_250815_062022-w1600-h1067",
+        "https://rimh2.domainstatic.com.au/_5RSq1M-5gpZ9CjzzPiYTHKEKrk=/1160x774/filters:format(jpeg):quality(70)/2020201309_4_1_250815_062022-w1600-h1067",
+        "https://rimh2.domainstatic.com.au/xqflzhZ6E1p8L3Gp-uEJJYgZdrg=/1160x774/filters:format(jpeg):quality(70)/2020201309_5_1_250815_062022-w1600-h1067",
+        "https://rimh2.domainstatic.com.au/yk8F9J-XMC-0h2ZxdiCPG31jnYw=/1160x774/filters:format(jpeg):quality(70)/2020201309_6_1_250815_062022-w1600-h1067",
+        "https://rimh2.domainstatic.com.au/Gu8xDew4EsnV2mz5pB4lUW_cBKg=/1160x774/filters:format(jpeg):quality(70)/2020201309_7_1_250815_062022-w1600-h1067",
+        "https://rimh2.domainstatic.com.au/RI8fve78G1Rdxq9W5-HjHyufYtY=/1160x774/filters:format(jpeg):quality(70)/2020201309_8_1_250815_062022-w1600-h1067",
+        "https://rimh2.domainstatic.com.au/OUGOYsZVe8-wOfBGaZgH6jQY1Sk=/1160x774/filters:format(jpeg):quality(70)/2020201309_9_1_250815_062022-w1600-h1067",
+        "https://rimh2.domainstatic.com.au/XU6kFe7Jvt1GIc6eMfyNGrjtIxA=/1160x774/filters:format(jpeg):quality(70)/2020201309_10_1_250815_062022-w1600-h1067"
+      ],
+      "brandingAppearance": "dark",
+      "price": "Contact Agent",
+      "hasVideo": false,
+      "branding": {
+        "agencyId": 4719,
+        "agents": [
+          {
+            "agentName": "Rick Daniel",
+            "agentPhoto": "https://rimh2.domainstatic.com.au/HBzo418YNLlL7bHHkqvLgfhMWbM=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/4719/contact_981980.jpeg?mod=250923-084018"
+          },
+          {
+            "agentName": "James McCulloch",
+            "agentPhoto": "https://rimh2.domainstatic.com.au/kaWqyJL7gBCNtyDp0hX3hJssTPg=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/4719/contact_1801628.jpeg?mod=250923-084018"
+          }
+        ],
+        "agentNames": "Rick Daniel, James McCulloch",
+        "brandLogo": "https://rimh2.domainstatic.com.au/UPq2KiuAlfRiC2MfcNXIuqZgXh4=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/4719/logo_4719.jpeg?buster=2025-09-23",
+        "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/2Ta1c1NpADsNzi6QFVCMUEbM68o=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/4719/logo_4719.jpeg?buster=2025-09-23",
+        "brandName": "Nelson Alexander | Carlton",
+        "brandColor": "#1e0f14",
+        "agentPhoto": "https://rimh2.domainstatic.com.au/HBzo418YNLlL7bHHkqvLgfhMWbM=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/4719/contact_981980.jpeg?mod=250923-084018",
+        "agentName": "Rick Daniel"
+      },
+      "address": {
+        "street": "609/155 Bourke Street",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.812805,
+        "lng": 144.96881
+      },
+      "features": {
+        "beds": 2,
+        "baths": 1,
+        "propertyType": "ApartmentUnitFlat",
+        "propertyTypeFormatted": "Apartment / Unit / Flat",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": null,
+        "closeTime": null
+      },
+      "auction": null,
+      "tags": {
+        "tagText": "Under offer",
+        "tagClassName": "is-under-offer"
+      },
+      "displaySearchPriceRange": null,
+      "enableSingleLineAddress": false
+    }
+  },
+  {
+    "id": 2020201539,
+    "listingType": "listing",
+    "listingModel": {
+      "promoType": "premiumplus",
+      "url": "/2508-285-la-trobe-street-melbourne-vic-3000-2020201539",
+      "images": [
+        "https://rimh2.domainstatic.com.au/7FrpuCFJOBmVlirjjdQuQB9n404=/1160x774/filters:format(jpeg):quality(70)/2020201539_1_1_250815_070522-w1080-h720",
+        "https://rimh2.domainstatic.com.au/vuuJeh84m62U6dJEPPq14zWWnOQ=/1160x774/filters:format(jpeg):quality(70)/17121560_2_1_240719_043704-w1500-h998",
+        "https://rimh2.domainstatic.com.au/5310gli5FDkJYRI4spKH6U-GdoI=/1160x774/filters:format(jpeg):quality(70)/17121560_3_1_240719_043704-w1500-h998",
+        "https://rimh2.domainstatic.com.au/H7-frHOTAN4we9xmqoS-Qa1M8tI=/1160x774/filters:format(jpeg):quality(70)/17121560_4_1_240719_043704-w1500-h998",
+        "https://rimh2.domainstatic.com.au/rHDnpyvOv0ONhApdOf84gKbV6-w=/1160x774/filters:format(jpeg):quality(70)/17121560_5_1_240719_043704-w1500-h998",
+        "https://rimh2.domainstatic.com.au/tu4FBZ9HmfrPTSGA-_a4VXiMITE=/1160x774/filters:format(jpeg):quality(70)/17121560_6_1_240719_043704-w1500-h998",
+        "https://rimh2.domainstatic.com.au/3ARxeg7GT4Lh0LjilDig2YnQPBA=/1160x774/filters:format(jpeg):quality(70)/2020201539_7_1_250815_070523-w1619-h1080",
+        "https://rimh2.domainstatic.com.au/Esc6osPf3EtG4MXakMgMJpERiTw=/1160x774/filters:format(jpeg):quality(70)/2020201539_8_1_250815_070523-w1620-h1080",
+        "https://rimh2.domainstatic.com.au/PFOwX0Bwun-KnTH2KN0FzKFBraA=/1160x774/filters:format(jpeg):quality(70)/2020201539_9_1_250815_070523-w1620-h1080"
+      ],
+      "brandingAppearance": "light",
+      "price": "$370,000 - $400,000",
+      "hasVideo": false,
+      "branding": {
+        "agencyId": 37858,
+        "agents": [
+          {
+            "agentName": "Jeremy Morris",
+            "agentPhoto": null
+          },
+          {
+            "agentName": "Zara-Jane Hayes",
+            "agentPhoto": null
+          }
+        ],
+        "agentNames": "Jeremy Morris, Zara-Jane Hayes",
+        "brandLogo": "https://rimh2.domainstatic.com.au/yHZncfd0Cwl0HEIGYbmpFXw3iiU=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/37858/logo_37858.png?buster=2025-09-23",
+        "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/KHaSga2QcEzW6MEZADIegbbvjWo=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/37858/logo_37858.png?buster=2025-09-23",
+        "brandName": "ASK Property Partners Pty Ltd",
+        "brandColor": "#DDDDDD",
+        "agentPhoto": null,
+        "agentName": "Jeremy Morris"
+      },
+      "address": {
+        "street": "2508/285 La Trobe Street",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.810734,
+        "lng": 144.96082
+      },
+      "features": {
+        "beds": 1,
+        "baths": 1,
+        "propertyType": "ApartmentUnitFlat",
+        "propertyTypeFormatted": "Apartment / Unit / Flat",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": null,
+        "closeTime": null
+      },
+      "auction": null,
+      "tags": {
+        "tagText": "Under offer",
+        "tagClassName": "is-under-offer"
+      },
+      "displaySearchPriceRange": null,
+      "enableSingleLineAddress": false
+    }
+  },
+  {
+    "id": 2020207438,
+    "listingType": "listing",
+    "listingModel": {
+      "promoType": "premiumplus",
+      "url": "/4-2-exhibition-street-melbourne-vic-3000-2020207438",
+      "images": [
+        "https://rimh2.domainstatic.com.au/cZc7REuWY5twfMkQdbQjAyLeCLo=/1160x774/filters:format(jpeg):quality(70)/2019530409_1_1_241001_053131-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/bTCF1AKZ8fZsCT_8VSpMhqixmlE=/1160x774/filters:format(jpeg):quality(70)/2020207438_2_1_250819_055036-w2000-h1334",
+        "https://rimh2.domainstatic.com.au/W3EkaWJN-55Fu2FV7tdtVTvWJ94=/1160x774/filters:format(jpeg):quality(70)/2020207438_3_1_250819_055036-w2000-h1334",
+        "https://rimh2.domainstatic.com.au/_sbjLF9RCMsn8WSCRdmHRD_HPqU=/1160x774/filters:format(jpeg):quality(70)/2020207438_4_1_250819_055102-w2000-h1335",
+        "https://rimh2.domainstatic.com.au/jZLUY_Jpp0895Tvy-c7vwdxk74g=/1160x774/filters:format(jpeg):quality(70)/2020207438_5_1_250819_055102-w2000-h1331",
+        "https://rimh2.domainstatic.com.au/u_DyJjEXBqU3WniQ_NRYFRGOjwM=/1160x774/filters:format(jpeg):quality(70)/2020207438_6_1_250819_055102-w2000-h1335",
+        "https://rimh2.domainstatic.com.au/rOnKlt-hlOtv2m3lG4n4Pp7WLuk=/1160x774/filters:format(jpeg):quality(70)/2020207438_7_1_250819_055102-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/LqmdK_qj4aXfAII0q7cLDfWe1nw=/1160x774/filters:format(jpeg):quality(70)/2020207438_8_1_250819_055102-w2000-h1333"
+      ],
+      "brandingAppearance": "light",
+      "price": "Private Sale: $650,000 - $700,000",
+      "hasVideo": false,
+      "branding": {
+        "agencyId": 88,
+        "agents": [
+          {
+            "agentName": "Tom Staughton",
+            "agentPhoto": "https://rimh2.domainstatic.com.au/EwCqmka8Ro0FbiZ0Z435gvOusoU=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/88/contact_853772.jpeg?mod=250922-121903"
+          },
+          {
+            "agentName": "Tim Blackett",
+            "agentPhoto": "https://rimh2.domainstatic.com.au/LLL5EbfZv8b25J2lkxdKmHCARyM=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/88/contact_820028.jpeg?mod=250922-121903"
+          }
+        ],
+        "agentNames": "Tom Staughton, Tim Blackett",
+        "brandLogo": "https://rimh2.domainstatic.com.au/I7EFRfawwtPfcodNFiQVZtHzFi0=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/88/logo_88.jpeg?buster=2025-09-23",
+        "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/0Hi41VfIHi-UMMSkDsoe1wPivd8=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/88/logo_88.jpeg?buster=2025-09-23",
+        "brandName": "Kay & Burton Stonnington",
+        "brandColor": "#989795",
+        "agentPhoto": "https://rimh2.domainstatic.com.au/EwCqmka8Ro0FbiZ0Z435gvOusoU=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/88/contact_853772.jpeg?mod=250922-121903",
+        "agentName": "Tom Staughton"
+      },
+      "address": {
+        "street": "4/2 Exhibition Street",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.815693,
+        "lng": 144.97266
+      },
+      "features": {
+        "beds": 1,
+        "baths": 1,
+        "parking": 1,
+        "propertyType": "ApartmentUnitFlat",
+        "propertyTypeFormatted": "Apartment / Unit / Flat",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": "2025-09-27T09:15:00",
+        "closeTime": "2025-09-27T09:45:00"
+      },
+      "auction": null,
+      "tags": {
+        "tagText": null,
+        "tagClassName": null
+      },
+      "displaySearchPriceRange": null,
+      "enableSingleLineAddress": false
+    }
+  },
+  {
+    "id": 2020232264,
+    "listingType": "listing",
+    "listingModel": {
+      "promoType": "premiumplus",
+      "url": "/908-22-24-jane-bell-lane-melbourne-vic-3000-2020232264",
+      "images": [
+        "https://rimh2.domainstatic.com.au/pdZ1OMP_kWi8BpcmAaOyuBENq0o=/1160x774/filters:format(jpeg):quality(70)/2020232264_1_1_250829_121130-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/YQltPWTdQbzJZLD4JCgeZw4rvM0=/1160x774/filters:format(jpeg):quality(70)/2020232264_2_1_250829_121130-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/p7i16Xutqz5b97Hr7cvFfq57Uu4=/1160x774/filters:format(jpeg):quality(70)/2020232264_4_1_250829_121132-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/TnslJh8VLu8cwQD7hSjtCAzBMUc=/1160x774/filters:format(jpeg):quality(70)/2020232264_5_1_250829_121132-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/UBwA5M9vwjawDEb2tqc4HetPLxs=/1160x774/filters:format(jpeg):quality(70)/2020232264_6_1_250829_121132-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/UnmMGCimkTFcqjKGHADGPUC1Z5s=/1160x774/filters:format(jpeg):quality(70)/2020232264_13_1_250829_121132-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/AOR2yYQwpox2dW2PB2CN3_M0O0c=/1160x774/filters:format(jpeg):quality(70)/2020232264_3_1_250829_121130-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/h-FINWO-S_d5rtAJB6R58OCoTug=/1160x774/filters:format(jpeg):quality(70)/2020232264_7_1_250829_121132-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/jUKV-ydYDPxkGAoeb_I-ZVlx5fc=/1160x774/filters:format(jpeg):quality(70)/2020232264_8_1_250829_121132-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/4OG4wTgGnNyAJCwykHAVPkz4zRI=/1160x774/filters:format(jpeg):quality(70)/2020232264_9_1_250829_121132-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/iQljfzh4Us8xs5oADIsSyTyiCOQ=/1160x774/filters:format(jpeg):quality(70)/2020232264_10_1_250829_121132-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/JT93MdtF198gejIk8YIgLkrK72k=/1160x774/filters:format(jpeg):quality(70)/2020232264_11_1_250829_121132-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/2z3mnk5y7Xz4LU0rsVrmB1YOuls=/1160x774/filters:format(jpeg):quality(70)/2020232264_12_1_250829_121132-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/9Pu4uiQZ5gNE_zTWLreKomQ4O5c=/1160x774/filters:format(jpeg):quality(70)/2020232264_14_1_250829_121132-w3000-h4500",
+        "https://rimh2.domainstatic.com.au/w1BJQMT1Jh4orzfkgcorfdtpfWU=/1160x774/filters:format(jpeg):quality(70)/2016130194_7_1_200304_081704-w1500-h998",
+        "https://rimh2.domainstatic.com.au/ovApP3zvzBBNwxEQCComBpIkg_M=/1160x774/filters:format(jpeg):quality(70)/2016130194_8_1_200304_081704-w1500-h998",
+        "https://rimh2.domainstatic.com.au/ptkoGG-UZPNdrIMRdg_mukFkS8g=/1160x774/filters:format(jpeg):quality(70)/2020232264_17_1_250829_121132-w2100-h1400",
+        "https://rimh2.domainstatic.com.au/WE8AHVtEzAjka51-ij4CmXl7GVY=/1160x774/filters:format(jpeg):quality(70)/2020232264_18_1_250829_121132-w2100-h1400",
+        "https://rimh2.domainstatic.com.au/1TXtWOTzynRJ5ZwQ21Af5XWMqto=/1160x774/filters:format(jpeg):quality(70)/2020232264_19_1_250829_121132-w2100-h1400",
+        "https://rimh2.domainstatic.com.au/nJQUJy4tsRWKOcB-7ZU9f8Kb4Qk=/1160x774/filters:format(jpeg):quality(70)/2017599358_15_1_220216_042309-w2641-h1760"
+      ],
+      "brandingAppearance": "dark",
+      "price": "$780,000 - $820,000",
+      "hasVideo": false,
+      "branding": {
+        "agencyId": 24322,
+        "agents": [
+          {
+            "agentName": "Sam Fenna",
+            "agentPhoto": "https://rimh2.domainstatic.com.au/MDs26xXb8bv_CebWghuD0LpmL8I=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/24322/contact_1728691.jpeg?mod=250923-131003"
+          }
+        ],
+        "agentNames": "Sam Fenna",
+        "brandLogo": "https://rimh2.domainstatic.com.au/NaaShF97j9hZeFQzcLrCLyPFHA4=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/24322/logo_24322.png?buster=2025-09-23",
+        "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/YNbhaoeJvHZltskb-BqW-NinMPI=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/24322/logo_24322.png?buster=2025-09-23",
+        "brandName": "Belle Property Carlton | Melbourne | North Melbourne",
+        "brandColor": "#386351",
+        "agentPhoto": "https://rimh2.domainstatic.com.au/MDs26xXb8bv_CebWghuD0LpmL8I=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/24322/contact_1728691.jpeg?mod=250923-131003",
+        "agentName": "Sam Fenna"
+      },
+      "address": {
+        "street": "908/22-24 Jane Bell Lane",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.81022,
+        "lng": 144.96626
+      },
+      "features": {
+        "beds": 2,
+        "baths": 1,
+        "parking": 1,
+        "propertyType": "ApartmentUnitFlat",
+        "propertyTypeFormatted": "Apartment / Unit / Flat",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": "2025-09-24T13:00:00",
+        "closeTime": "2025-09-24T13:30:00"
+      },
+      "auction": null,
+      "tags": {
+        "tagText": null,
+        "tagClassName": null
+      },
+      "displaySearchPriceRange": null,
+      "enableSingleLineAddress": false
+    }
+  },
+  {
+    "id": 2020239180,
+    "listingType": "listing",
+    "listingModel": {
+      "promoType": "premiumplus",
+      "url": "/51-73-flinders-lane-melbourne-vic-3000-2020239180",
+      "images": [
+        "https://rimh2.domainstatic.com.au/F2NaxbLmjOvQ4Yvedw7FGZCbK0o=/1160x774/filters:format(jpeg):quality(70)/2020239180_1_1_250902_013040-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/eWr0j6vhyq5gUtSf33ZkGuAhxsw=/1160x774/filters:format(jpeg):quality(70)/2020239180_2_1_250902_013040-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/zkxuH0rxadiWyWxUG9uzYJrA81I=/1160x774/filters:format(jpeg):quality(70)/2020239180_3_1_250902_013040-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/ZBrpXO6HwAzf3LQsaWyoGsitv_g=/1160x774/filters:format(jpeg):quality(70)/2020239180_4_1_250902_013039-w2000-h1336",
+        "https://rimh2.domainstatic.com.au/30ljGhCb5SxuoiZieV8kBT4Ss9A=/1160x774/filters:format(jpeg):quality(70)/2020239180_5_1_250902_013039-w1333-h2000",
+        "https://rimh2.domainstatic.com.au/-B-AKSa3Vz3hJdLf-Ya0o7v4fvk=/1160x774/filters:format(jpeg):quality(70)/2020239180_6_1_250902_013039-w2000-h1336",
+        "https://rimh2.domainstatic.com.au/5-2-4Xn0vH8Q_B0mJ1R8p399zng=/1160x774/filters:format(jpeg):quality(70)/2020239180_7_1_250902_013039-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/xAWAQmT-Y8SWqHkSTlSD8tjGmqw=/1160x774/filters:format(jpeg):quality(70)/2020239180_8_1_250902_013039-w2000-h1336",
+        "https://rimh2.domainstatic.com.au/gsjZel-AUGViEc6v-Ycm-jVr_WM=/1160x774/filters:format(jpeg):quality(70)/2020239180_9_1_250902_013039-w1333-h2000",
+        "https://rimh2.domainstatic.com.au/p4ze6mpoNmgyRdeo8asC3OOKRak=/1160x774/filters:format(jpeg):quality(70)/2020239180_10_1_250902_013039-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/PA04jeQtrnRClzosnsiNoltRTkg=/1160x774/filters:format(jpeg):quality(70)/2020239180_11_1_250902_013039-w1333-h2000",
+        "https://rimh2.domainstatic.com.au/WD-WUeSUb_mG2aaCicmiNq1hXs8=/1160x774/filters:format(jpeg):quality(70)/2020239180_12_1_250902_013039-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/X9dJOBp6swH5wySN4o8KQtr0vSM=/1160x774/filters:format(jpeg):quality(70)/2020239180_13_1_250902_013039-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/gCx8guCN4z4XuYiTg8Omh-TZDkU=/1160x774/filters:format(jpeg):quality(70)/2020239180_14_1_250902_013039-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/r6gu2fe8tr0uF6Bc8oj8i6cgD6o=/1160x774/filters:format(jpeg):quality(70)/2020239180_15_1_250902_013039-w2000-h1336"
+      ],
+      "brandingAppearance": "dark",
+      "price": "EOI Closing Tues. 14th Oct at 5:00pm",
+      "hasVideo": true,
+      "branding": {
+        "agencyId": 3935,
+        "agents": [
+          {
+            "agentName": "Mark Earle",
+            "agentPhoto": "https://rimh2.domainstatic.com.au/st7X31Xpgnzhb8Ddd_9hUWVwYsY=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/3935/contact_795034.jpeg?mod=250922-141039"
+          },
+          {
+            "agentName": "Nancy Yang",
+            "agentPhoto": "https://rimh2.domainstatic.com.au/0A5IvGSS3PB5AjPDQqjolPF1QFo=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/3935/contact_2007292.jpeg?mod=250922-141039"
+          }
+        ],
+        "agentNames": "Mark Earle, Nancy Yang",
+        "brandLogo": "https://rimh2.domainstatic.com.au/-urjAuNtHSVMOiMuhtRbaeRTsFA=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/3935/logo_3935.GIF?buster=2025-09-23",
+        "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/s0ODlP99R7DvJ8jLuWj9rqW0Uag=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/3935/logo_3935.GIF?buster=2025-09-23",
+        "brandName": "Buxton Real Estate Sandringham",
+        "brandColor": "#000000",
+        "agentPhoto": "https://rimh2.domainstatic.com.au/st7X31Xpgnzhb8Ddd_9hUWVwYsY=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/3935/contact_795034.jpeg?mod=250922-141039",
+        "agentName": "Mark Earle"
+      },
+      "address": {
+        "street": "51/73 Flinders Lane",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.814987,
+        "lng": 144.9725
+      },
+      "features": {
+        "beds": 3,
+        "baths": 2,
+        "parking": 1,
+        "propertyType": "ApartmentUnitFlat",
+        "propertyTypeFormatted": "Apartment / Unit / Flat",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": "2025-09-25T13:30:00",
+        "closeTime": "2025-09-25T14:00:00"
+      },
+      "auction": null,
+      "tags": {
+        "tagText": null,
+        "tagClassName": null
+      },
+      "displaySearchPriceRange": null,
+      "enableSingleLineAddress": false
+    }
+  },
+  {
+    "id": 2020240616,
+    "listingType": "listing",
+    "listingModel": {
+      "promoType": "premiumplus",
+      "url": "/11-180-little-collins-street-melbourne-vic-3000-2020240616",
+      "images": [
+        "https://rimh2.domainstatic.com.au/K1Bui43XFWWYvjqpxdxY5EFOPpw=/1160x774/filters:format(jpeg):quality(70)/2020240616_1_1_250902_054625-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/I7kYgaRB-T5nRRNvKvrdyh_V8Ig=/1160x774/filters:format(jpeg):quality(70)/2020240616_2_1_250902_054625-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/wBXdU9-ZXtb2nQposhEsZjr3YnM=/1160x774/filters:format(jpeg):quality(70)/2020240616_3_1_250902_054625-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/wJZM4H7eNGhjJKiNi2l_7z-HgQ4=/1160x774/filters:format(jpeg):quality(70)/2020240616_4_1_250902_054625-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/6L8_OyK3WvwfBU5lDGSimeP6FQs=/1160x774/filters:format(jpeg):quality(70)/2020240616_5_1_250902_054625-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/yGss2s8xYtv0qVu3za9CWOWFm8o=/1160x774/filters:format(jpeg):quality(70)/2020240616_6_1_250902_054625-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/fcnhtNtapSzZfdImXvS-_RNGK4g=/1160x774/filters:format(jpeg):quality(70)/2020240616_7_1_250902_054625-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/xVR8gfhg4qOoQjsvX6Cuzvq2oek=/1160x774/filters:format(jpeg):quality(70)/2020240616_8_1_250902_054625-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/2mEsXxPVonBYdTS7TkhrwPAPySk=/1160x774/filters:format(jpeg):quality(70)/2020240616_9_1_250902_054625-w2000-h1334",
+        "https://rimh2.domainstatic.com.au/g74brBqaFZKoN_Hktu_eFPAZUQg=/1160x774/filters:format(jpeg):quality(70)/2020240616_10_1_250902_054625-w1333-h2000",
+        "https://rimh2.domainstatic.com.au/O72_lY3AhaRiCfteujeFty_WPao=/1160x774/filters:format(jpeg):quality(70)/2020240616_11_1_250902_054625-w2000-h1333"
+      ],
+      "brandingAppearance": "light",
+      "price": "Expressions of interest close 30 September at 5pm",
+      "hasVideo": false,
+      "branding": {
+        "agencyId": 88,
+        "agents": [
+          {
+            "agentName": "Tim Blackett",
+            "agentPhoto": "https://rimh2.domainstatic.com.au/LLL5EbfZv8b25J2lkxdKmHCARyM=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/88/contact_820028.jpeg?mod=250922-121903"
+          },
+          {
+            "agentName": "Tom Staughton",
+            "agentPhoto": "https://rimh2.domainstatic.com.au/EwCqmka8Ro0FbiZ0Z435gvOusoU=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/88/contact_853772.jpeg?mod=250922-121903"
+          }
+        ],
+        "agentNames": "Tim Blackett, Tom Staughton",
+        "brandLogo": "https://rimh2.domainstatic.com.au/I7EFRfawwtPfcodNFiQVZtHzFi0=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/88/logo_88.jpeg?buster=2025-09-23",
+        "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/0Hi41VfIHi-UMMSkDsoe1wPivd8=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/88/logo_88.jpeg?buster=2025-09-23",
+        "brandName": "Kay & Burton Stonnington",
+        "brandColor": "#989795",
+        "agentPhoto": "https://rimh2.domainstatic.com.au/LLL5EbfZv8b25J2lkxdKmHCARyM=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/88/contact_820028.jpeg?mod=250922-121903",
+        "agentName": "Tim Blackett"
+      },
+      "address": {
+        "street": "11/180 Little Collins Street",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.813847,
+        "lng": 144.96791
+      },
+      "features": {
+        "beds": 3,
+        "baths": 2,
+        "parking": 1,
+        "propertyType": "ApartmentUnitFlat",
+        "propertyTypeFormatted": "Apartment / Unit / Flat",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": null,
+        "closeTime": null
+      },
+      "auction": null,
+      "tags": {
+        "tagText": null,
+        "tagClassName": null
+      },
+      "displaySearchPriceRange": null,
+      "enableSingleLineAddress": false
+    }
+  },
+  {
+    "id": 2020262646,
+    "listingType": "listing",
+    "listingModel": {
+      "url": "/808-623-collins-street-melbourne-vic-3000-2020262646",
+      "price": "Price on application",
+      "images": [
+        "https://rimh2.domainstatic.com.au/D69QLe6Dp0Voqz6o3flgcbU8ALY=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_4_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/kNz_W2ti8JJnej87wNVaJLeeCaQ=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_3_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/K8-ZRsUj7c-HNYJI28X0IXK4toA=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_2_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/1rPD8mo9iYUN8UgJjbYiFHavtAw=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_5_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/FJOPKXiOUwK2ommqQNqBdqLwGbY=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_7_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/eGJyBC6ckpYp9OBSocBjFlC3j9o=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_8_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/2fC69qm9rkU4NtgcLLpbDInar8g=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_9_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/7r5AnbvZXrL-4E0ICaJFYVyEftI=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_11_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/Bn2dtwPU7eYCV-CKUr3KWxCoCCk=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_12_1_250911_105702-w2000-h1500"
+      ],
+      "thumbnails": [
+        "https://rimh2.domainstatic.com.au/IgbXDge3pNSJJk8LtsNpiQ68EKg=/144x106/filters:format(jpeg):quality(80)/2020263700_4_1_250911_105702-w2000-h1500"
+      ],
+      "features": {
+        "beds": 1,
+        "baths": 1,
+        "propertyType": "NewApartments",
+        "propertyTypeFormatted": "New Apartments / Off the Plan",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": null,
+        "closeTime": null
+      },
+      "bannerUrl": "https://rimh2.domainstatic.com.au/d93-GF9XvxRGyZ6L30HMgH-2t2g=/800x55/filters:format(jpeg):quality(95):background_color(white):no_upscale()/https://images.domain.com.au/img/Agencys/devproject/banner_6781_250918_115039",
+      "projectName": "623 Collins",
+      "displayAddress": "808/623 Collins Street, Melbourne",
+      "tags": {
+        "tagText": "New home",
+        "tagClassName": "is-new-homes"
+      },
+      "keywords": {
+        "keywords": []
+      },
+      "address": {
+        "street": "808/623 Collins Street",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.819225,
+        "lng": 144.95456
+      },
+      "projectId": 6781
+    }
+  },
+  {
+    "id": 2020262693,
+    "listingType": "listing",
+    "listingModel": {
+      "url": "/303-623-collins-street-melbourne-vic-3000-2020262693",
+      "price": "Price on application",
+      "images": [
+        "https://rimh2.domainstatic.com.au/zVBAP6RH5RNEkDuamWQUiYwWzMY=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_6_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/7r5AnbvZXrL-4E0ICaJFYVyEftI=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_11_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/K8-ZRsUj7c-HNYJI28X0IXK4toA=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_2_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/kNz_W2ti8JJnej87wNVaJLeeCaQ=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_3_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/D69QLe6Dp0Voqz6o3flgcbU8ALY=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_4_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/1rPD8mo9iYUN8UgJjbYiFHavtAw=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_5_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/FJOPKXiOUwK2ommqQNqBdqLwGbY=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_7_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/eGJyBC6ckpYp9OBSocBjFlC3j9o=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_8_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/2fC69qm9rkU4NtgcLLpbDInar8g=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_9_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/Bn2dtwPU7eYCV-CKUr3KWxCoCCk=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_12_1_250911_105702-w2000-h1500"
+      ],
+      "thumbnails": [
+        "https://rimh2.domainstatic.com.au/B1ebC6ns0r7oifx3kV7vkVIeC7Y=/144x106/filters:format(jpeg):quality(80)/2020263700_6_1_250911_105702-w2000-h1500"
+      ],
+      "features": {
+        "beds": 2,
+        "baths": 2,
+        "propertyType": "NewApartments",
+        "propertyTypeFormatted": "New Apartments / Off the Plan",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": null,
+        "closeTime": null
+      },
+      "bannerUrl": "https://rimh2.domainstatic.com.au/d93-GF9XvxRGyZ6L30HMgH-2t2g=/800x55/filters:format(jpeg):quality(95):background_color(white):no_upscale()/https://images.domain.com.au/img/Agencys/devproject/banner_6781_250918_115039",
+      "projectName": "623 Collins",
+      "displayAddress": "303/623 Collins Street, Melbourne",
+      "tags": {
+        "tagText": "New home",
+        "tagClassName": "is-new-homes"
+      },
+      "keywords": {
+        "keywords": []
+      },
+      "address": {
+        "street": "303/623 Collins Street",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.819225,
+        "lng": 144.95456
+      },
+      "projectId": 6781
+    }
+  },
+  {
+    "id": 2020262713,
+    "listingType": "listing",
+    "listingModel": {
+      "url": "/2405-623-collins-street-melbourne-vic-3000-2020262713",
+      "price": "Price on application",
+      "images": [
+        "https://rimh2.domainstatic.com.au/1rPD8mo9iYUN8UgJjbYiFHavtAw=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_5_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/FJOPKXiOUwK2ommqQNqBdqLwGbY=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_7_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/etqBySeifPIC3UlBpWfbHji9I1M=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_1_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/K8-ZRsUj7c-HNYJI28X0IXK4toA=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_2_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/kNz_W2ti8JJnej87wNVaJLeeCaQ=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_3_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/D69QLe6Dp0Voqz6o3flgcbU8ALY=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_4_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/eGJyBC6ckpYp9OBSocBjFlC3j9o=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_8_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/2fC69qm9rkU4NtgcLLpbDInar8g=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_9_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/7r5AnbvZXrL-4E0ICaJFYVyEftI=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_11_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/Bn2dtwPU7eYCV-CKUr3KWxCoCCk=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_12_1_250911_105702-w2000-h1500"
+      ],
+      "thumbnails": [
+        "https://rimh2.domainstatic.com.au/6wiP1hpGnHQvgkj_myTAc9DTelc=/144x106/filters:format(jpeg):quality(80)/2020263700_5_1_250911_105702-w2000-h1500"
+      ],
+      "features": {
+        "beds": 2,
+        "baths": 2,
+        "propertyType": "NewApartments",
+        "propertyTypeFormatted": "New Apartments / Off the Plan",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": null,
+        "closeTime": null
+      },
+      "bannerUrl": "https://rimh2.domainstatic.com.au/d93-GF9XvxRGyZ6L30HMgH-2t2g=/800x55/filters:format(jpeg):quality(95):background_color(white):no_upscale()/https://images.domain.com.au/img/Agencys/devproject/banner_6781_250918_115039",
+      "projectName": "623 Collins",
+      "displayAddress": "2405/623 Collins Street, Melbourne",
+      "tags": {
+        "tagText": "New home",
+        "tagClassName": "is-new-homes"
+      },
+      "keywords": {
+        "keywords": []
+      },
+      "address": {
+        "street": "2405/623 Collins Street",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.819225,
+        "lng": 144.95456
+      },
+      "projectId": 6781
+    }
+  },
+  {
+    "id": 2020263635,
+    "listingType": "listing",
+    "listingModel": {
+      "url": "/2208-623-collins-street-melbourne-vic-3000-2020263635",
+      "price": "Price on application",
+      "images": [
+        "https://rimh2.domainstatic.com.au/2fC69qm9rkU4NtgcLLpbDInar8g=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_9_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/D69QLe6Dp0Voqz6o3flgcbU8ALY=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_4_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/1rPD8mo9iYUN8UgJjbYiFHavtAw=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_5_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/FJOPKXiOUwK2ommqQNqBdqLwGbY=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_7_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/eGJyBC6ckpYp9OBSocBjFlC3j9o=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_8_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/7r5AnbvZXrL-4E0ICaJFYVyEftI=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_11_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/Bn2dtwPU7eYCV-CKUr3KWxCoCCk=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_12_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/K8-ZRsUj7c-HNYJI28X0IXK4toA=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_2_1_250911_105702-w2000-h1500",
+        "https://rimh2.domainstatic.com.au/kNz_W2ti8JJnej87wNVaJLeeCaQ=/660x440/filters:format(jpeg):quality(80):no_upscale()/2020263700_3_1_250911_105702-w2000-h1500"
+      ],
+      "thumbnails": [
+        "https://rimh2.domainstatic.com.au/AIqB12ggCVbln9vLxuTVNQyfZ74=/144x106/filters:format(jpeg):quality(80)/2020263700_9_1_250911_105702-w2000-h1500"
+      ],
+      "features": {
+        "beds": 2,
+        "baths": 2,
+        "propertyType": "NewApartments",
+        "propertyTypeFormatted": "New Apartments / Off the Plan",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": null,
+        "closeTime": null
+      },
+      "bannerUrl": "https://rimh2.domainstatic.com.au/d93-GF9XvxRGyZ6L30HMgH-2t2g=/800x55/filters:format(jpeg):quality(95):background_color(white):no_upscale()/https://images.domain.com.au/img/Agencys/devproject/banner_6781_250918_115039",
+      "projectName": "623 Collins",
+      "displayAddress": "2208/623 Collins Street, Melbourne",
+      "tags": {
+        "tagText": "New home",
+        "tagClassName": "is-new-homes"
+      },
+      "keywords": {
+        "keywords": []
+      },
+      "address": {
+        "street": "2208/623 Collins Street",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.819225,
+        "lng": 144.95456
+      },
+      "projectId": 6781
+    }
+  },
+  {
+    "id": 2020264378,
+    "listingType": "listing",
+    "listingModel": {
+      "promoType": "premiumplus",
+      "url": "/410-11-rose-lane-melbourne-vic-3000-2020264378",
+      "images": [
+        "https://rimh2.domainstatic.com.au/FJ-H_ZQEld0hJC7szb8BNK49JcU=/1160x774/filters:format(jpeg):quality(70)/2020264378_1_1_250911_073142-w1200-h800",
+        "https://rimh2.domainstatic.com.au/Eq7KgV1a14rHLjeocPYjWuPPo6c=/1160x774/filters:format(jpeg):quality(70)/2020264378_2_1_250911_073142-w1200-h800",
+        "https://rimh2.domainstatic.com.au/JmjQ3yyLe_zJCTgrHIn6m3wKxQ0=/1160x774/filters:format(jpeg):quality(70)/2020264378_3_1_250911_073142-w1200-h800",
+        "https://rimh2.domainstatic.com.au/9Z6DWDVovH2qrZoLkiovCSHxufk=/1160x774/filters:format(jpeg):quality(70)/2020264378_4_1_250911_073142-w1200-h800",
+        "https://rimh2.domainstatic.com.au/0WJZJ4VbUMtmId7s0H_E-ILabQs=/1160x774/filters:format(jpeg):quality(70)/2020264378_5_1_250911_073142-w1200-h800",
+        "https://rimh2.domainstatic.com.au/a46d6Kyo8855YK8FsWey8eFzJ0E=/1160x774/filters:format(jpeg):quality(70)/2020264378_6_1_250911_073142-w600-h900",
+        "https://rimh2.domainstatic.com.au/kzPaEaRjR1ZzfAbEApoq2xgSTBQ=/1160x774/filters:format(jpeg):quality(70)/2020264378_7_1_250911_073142-w1200-h800",
+        "https://rimh2.domainstatic.com.au/VKviF6vHUXCqcaQXDURWGuVBSb8=/1160x774/filters:format(jpeg):quality(70)/2020264378_8_1_250911_073142-w1200-h800",
+        "https://rimh2.domainstatic.com.au/roRDK5MIxmnfl6nj2_sJ91ULPAk=/1160x774/filters:format(jpeg):quality(70)/2020264378_9_1_250911_073142-w1200-h800",
+        "https://rimh2.domainstatic.com.au/M1Jxo1th1zyOw1b4r-WfGRL4IWU=/1160x774/filters:format(jpeg):quality(70)/2020264378_10_1_250911_073142-w1200-h800",
+        "https://rimh2.domainstatic.com.au/oBRAvaiTxM-e3dDK_tip-C2VcgE=/1160x774/filters:format(jpeg):quality(70)/2020264378_11_1_250911_073142-w1200-h800",
+        "https://rimh2.domainstatic.com.au/sALK_oW2Tz3SGtz6qCYKOUKLOeQ=/1160x774/filters:format(jpeg):quality(70)/2020264378_12_1_250911_073142-w1200-h800",
+        "https://rimh2.domainstatic.com.au/rLs9cfadXj3PYF4HmbvAtBJv7R4=/1160x774/filters:format(jpeg):quality(70)/2020264378_13_1_250911_073142-w1200-h800",
+        "https://rimh2.domainstatic.com.au/RObhYamVmKC_fI_yYe9_PlfaB7Y=/1160x774/filters:format(jpeg):quality(70)/2020264378_14_1_250911_073142-w1200-h800",
+        "https://rimh2.domainstatic.com.au/Qj6gd8AZ7uKcBLTiAzPYGrcgW3I=/1160x774/filters:format(jpeg):quality(70)/2020264378_15_1_250911_073142-w1200-h832",
+        "https://rimh2.domainstatic.com.au/kNamMUXPmWF3FWgDiIO8Hjs6evU=/1160x774/filters:format(jpeg):quality(70)/2020264378_16_1_250911_073142-w1200-h800",
+        "https://rimh2.domainstatic.com.au/yeQsmbeT3A0ot_717tR18jMEh-Q=/1160x774/filters:format(jpeg):quality(70)/2020264378_17_1_250911_073142-w1200-h800",
+        "https://rimh2.domainstatic.com.au/JK_KSvRuPBRYua5469AGYKlDsqg=/1160x774/filters:format(jpeg):quality(70)/2020264378_18_1_250911_073142-w1200-h800"
+      ],
+      "brandingAppearance": "light",
+      "price": "$460,000 - $480,000",
+      "hasVideo": false,
+      "branding": {
+        "agencyId": 29733,
+        "agents": [
+          {
+            "agentName": "F.R. Chee",
+            "agentPhoto": "https://rimh2.domainstatic.com.au/h4p8vSNgypdI_oBom1rElnP88eU=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/29733/contact_1442402.jpeg?mod=250919-114411"
+          }
+        ],
+        "agentNames": "F.R. Chee",
+        "brandLogo": "https://rimh2.domainstatic.com.au/ZnkYjWt28kibxBWysvTzFIvlIGg=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/29733/logo_29733.jpeg?buster=2025-09-23",
+        "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/DiRJGbV0LmlkrPF0A0stwNhIh-Q=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/29733/logo_29733.jpeg?buster=2025-09-23",
+        "brandName": "CT Real Estate",
+        "brandColor": "#DDDDDD",
+        "agentPhoto": "https://rimh2.domainstatic.com.au/h4p8vSNgypdI_oBom1rElnP88eU=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/29733/contact_1442402.jpeg?mod=250919-114411",
+        "agentName": "F.R. Chee"
+      },
+      "address": {
+        "street": "410/11 Rose Lane",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.815586,
+        "lng": 144.95439
+      },
+      "features": {
+        "beds": 2,
+        "baths": 1,
+        "parking": 1,
+        "propertyType": "ApartmentUnitFlat",
+        "propertyTypeFormatted": "Apartment / Unit / Flat",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": null,
+        "closeTime": null
+      },
+      "auction": null,
+      "tags": {
+        "tagText": "Under offer",
+        "tagClassName": "is-under-offer"
+      },
+      "displaySearchPriceRange": null,
+      "enableSingleLineAddress": false
+    }
+  },
+  {
+    "id": 2020266401,
+    "listingType": "listing",
+    "listingModel": {
+      "promoType": "premiumplus",
+      "url": "/116-118-little-lonsdale-street-melbourne-vic-3000-2020266401",
+      "images": [
+        "https://rimh2.domainstatic.com.au/rUfzCHK9tWXN5UHE7juyP950acA=/1160x774/filters:format(jpeg):quality(70)/2020266401_1_1_250916_020309-w2000-h1725",
+        "https://rimh2.domainstatic.com.au/8uku1cuRqk7AerdONlQ4Al1HcOE=/1160x774/filters:format(jpeg):quality(70)/2020266401_2_1_250916_020309-w2000-h1800",
+        "https://rimh2.domainstatic.com.au/hhSPsgaILwOBpmcuR4sDLmIggLE=/1160x774/filters:format(jpeg):quality(70)/2020266401_3_1_250912_044536-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/z9Mj2Bq6Ga_aAlzrFJ8jbe0MoSk=/1160x774/filters:format(jpeg):quality(70)/2020266401_4_1_250912_044537-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/wScprVFHFl1EDwmwszugf29QCTo=/1160x774/filters:format(jpeg):quality(70)/2020266401_5_1_250912_044537-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/mBPXRXVI7iTHMCUzDcDLshnWgb4=/1160x774/filters:format(jpeg):quality(70)/2020266401_6_1_250912_044537-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/3CH7GOz-uhu_PsCaFbe1i_ELnQc=/1160x774/filters:format(jpeg):quality(70)/2020266401_7_1_250912_044537-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/hqS6WZ29iegON58zX-dam0bV5h4=/1160x774/filters:format(jpeg):quality(70)/2020266401_8_1_250912_044537-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/aSXB7jpEZxyWxv8yqQrEqd8B1fI=/1160x774/filters:format(jpeg):quality(70)/2020266401_9_1_250912_044537-w1333-h2000",
+        "https://rimh2.domainstatic.com.au/CB0cqlnYvQJltn9lJlWVzNmSx-U=/1160x774/filters:format(jpeg):quality(70)/2020266401_10_1_250912_044537-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/gxKXhA_4x47-x5GBwFWLePWZ-eM=/1160x774/filters:format(jpeg):quality(70)/2020266401_11_1_250912_044537-w2000-h1334",
+        "https://rimh2.domainstatic.com.au/vd0mLLMs2JgP-Uq2q7lku8SPRq0=/1160x774/filters:format(jpeg):quality(70)/2020266401_12_1_250912_044537-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/gI3_SlXPPsOfGbv_ROtmy7cUTC8=/1160x774/filters:format(jpeg):quality(70)/2020266401_13_1_250912_044537-w2000-h1334",
+        "https://rimh2.domainstatic.com.au/GaSoMu9YSRYe3GFJxf5560ylErU=/1160x774/filters:format(jpeg):quality(70)/2020266401_14_1_250912_044537-w2000-h1334",
+        "https://rimh2.domainstatic.com.au/3z0OqA21p4n6f-GbUtJtRBBzN3U=/1160x774/filters:format(jpeg):quality(70)/2020266401_15_1_250912_044537-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/fXoHsGcdXqji555ShAUA_Pywm-Y=/1160x774/filters:format(jpeg):quality(70)/2020266401_16_1_250912_044537-w2000-h1333",
+        "https://rimh2.domainstatic.com.au/S3HPVyYcrb2S-1H1EtMfGn5Ym-8=/1160x774/filters:format(jpeg):quality(70)/2020266401_17_1_250912_044537-w2000-h1333"
+      ],
+      "brandingAppearance": "light",
+      "price": "Expressions of interest 15 October at 12pm",
+      "hasVideo": true,
+      "branding": {
+        "agencyId": 88,
+        "agents": [
+          {
+            "agentName": "Monique Depierre",
+            "agentPhoto": "https://rimh2.domainstatic.com.au/UGY-wWqmLcXPmGmAoaa1vo5GdAs=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/88/contact_1039459.jpeg?mod=250923-170721"
+          },
+          {
+            "agentName": "Arabella Houghton",
+            "agentPhoto": "https://rimh2.domainstatic.com.au/3P3QZsIa6w3eVrZy-aOTLumlGyQ=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/88/contact_1942409.jpeg?mod=250923-170722"
+          }
+        ],
+        "agentNames": "Monique Depierre, Arabella Houghton",
+        "brandLogo": "https://rimh2.domainstatic.com.au/I7EFRfawwtPfcodNFiQVZtHzFi0=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/88/logo_88.jpeg?buster=2025-09-23",
+        "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/0Hi41VfIHi-UMMSkDsoe1wPivd8=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/88/logo_88.jpeg?buster=2025-09-23",
+        "brandName": "Kay & Burton Stonnington",
+        "brandColor": "#989795",
+        "agentPhoto": "https://rimh2.domainstatic.com.au/UGY-wWqmLcXPmGmAoaa1vo5GdAs=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/88/contact_1039459.jpeg?mod=250923-170721",
+        "agentName": "Monique Depierre"
+      },
+      "address": {
+        "street": "116-118 Little Lonsdale Street",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.809277,
+        "lng": 144.96828
+      },
+      "features": {
+        "beds": 3,
+        "baths": 2,
+        "parking": 1,
+        "propertyType": "House",
+        "propertyTypeFormatted": "House",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": "2025-09-25T11:00:00",
+        "closeTime": "2025-09-25T11:30:00"
+      },
+      "auction": null,
+      "tags": {
+        "tagText": null,
+        "tagClassName": null
+      },
+      "displaySearchPriceRange": null,
+      "enableSingleLineAddress": false
+    }
+  },
+  {
+    "id": 2020280651,
+    "listingType": "listing",
+    "listingModel": {
+      "promoType": "premiumplus",
+      "url": "/418-422-collins-street-melbourne-vic-3000-2020280651",
+      "images": [
+        "https://rimh2.domainstatic.com.au/Uja7Mgh_jAGmVbqczeb3QuK_5gw=/1160x774/filters:format(jpeg):quality(70)/2020280651_1_1_250918_070749-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/zynbNWAU8xhLi7lNOxtlMYlk63E=/1160x774/filters:format(jpeg):quality(70)/2020280651_2_1_250918_070749-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/aJVIGl4Owmz09UNMXB4Pkk0qdBw=/1160x774/filters:format(jpeg):quality(70)/2020280651_3_1_250918_070749-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/M5quEI_Smv_yy0Vkrk4NHvZWL1w=/1160x774/filters:format(jpeg):quality(70)/2020280651_4_1_250918_070748-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/_scGOCEu6usAy4PE1atqgX8gvaU=/1160x774/filters:format(jpeg):quality(70)/2020280651_5_1_250918_070748-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/27Bk6vfu21f5zylTZ8WkUtCZ51w=/1160x774/filters:format(jpeg):quality(70)/2020280651_6_1_250918_070748-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/nijQYK5_ZlgU-wBo4Eb6zy3bL3U=/1160x774/filters:format(jpeg):quality(70)/2020280651_7_1_250918_070748-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/JvQXM8uo13bw042cOoXdRYARGqA=/1160x774/filters:format(jpeg):quality(70)/2020280651_8_1_250918_070748-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/HvHOHB4Qi56DcZcGxNrm1isA2Oo=/1160x774/filters:format(jpeg):quality(70)/2020280651_9_1_250918_070748-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/tx2Zav4dCGZ_qVMlbmmRHHsDYLA=/1160x774/filters:format(jpeg):quality(70)/2020280651_10_1_250918_070748-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/CwQMKc50Cb0euGYQ8QqcFQvUDmg=/1160x774/filters:format(jpeg):quality(70)/2020280651_11_1_250918_070748-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/EXkneG7ULF_TzQf1sZu_Z1Nht3c=/1160x774/filters:format(jpeg):quality(70)/2020280651_12_1_250918_070748-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/gyVq9lMk7ll31NDVkjc4Wz029ow=/1160x774/filters:format(jpeg):quality(70)/2020280651_13_1_250918_070748-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/KoDJCrp0XkABEqD0PW9bHWFndGg=/1160x774/filters:format(jpeg):quality(70)/2020280651_14_1_250918_070748-w3000-h2000",
+        "https://rimh2.domainstatic.com.au/CsowF6Tq5SIj9G3MCQ9nhIQSM_k=/1160x774/filters:format(jpeg):quality(70)/2019138699_6_1_240325_013428-w3543-h2564",
+        "https://rimh2.domainstatic.com.au/HPZyViRuzN0A0WeU9An99G9hW6s=/1160x774/filters:format(jpeg):quality(70)/2020280651_16_1_250918_070748-w1536-h1024",
+        "https://rimh2.domainstatic.com.au/cadhRYaRQeg08jiuU7y6UzxCfqI=/1160x774/filters:format(jpeg):quality(70)/2019138699_11_1_240325_013428-w2100-h1400",
+        "https://rimh2.domainstatic.com.au/ohf3Gw_VvS5Wpw6pW2ifzX0njxw=/1160x774/filters:format(jpeg):quality(70)/2017626346_15_1_220228_030650-w4500-h3000"
+      ],
+      "brandingAppearance": "dark",
+      "price": "EOI - $840,000 - $880,000",
+      "hasVideo": false,
+      "branding": {
+        "agencyId": 24322,
+        "agents": [
+          {
+            "agentName": "Sam Fenna",
+            "agentPhoto": "https://rimh2.domainstatic.com.au/MDs26xXb8bv_CebWghuD0LpmL8I=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/24322/contact_1728691.jpeg?mod=250923-131003"
+          }
+        ],
+        "agentNames": "Sam Fenna",
+        "brandLogo": "https://rimh2.domainstatic.com.au/NaaShF97j9hZeFQzcLrCLyPFHA4=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/24322/logo_24322.png?buster=2025-09-23",
+        "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/YNbhaoeJvHZltskb-BqW-NinMPI=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/24322/logo_24322.png?buster=2025-09-23",
+        "brandName": "Belle Property Carlton | Melbourne | North Melbourne",
+        "brandColor": "#386351",
+        "agentPhoto": "https://rimh2.domainstatic.com.au/MDs26xXb8bv_CebWghuD0LpmL8I=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/24322/contact_1728691.jpeg?mod=250923-131003",
+        "agentName": "Sam Fenna"
+      },
+      "address": {
+        "street": "418/422 Collins Street",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.817097,
+        "lng": 144.96014
+      },
+      "features": {
+        "beds": 2,
+        "baths": 1,
+        "propertyType": "ApartmentUnitFlat",
+        "propertyTypeFormatted": "Apartment / Unit / Flat",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": "2025-09-27T11:00:00",
+        "closeTime": "2025-09-27T11:30:00"
+      },
+      "auction": null,
+      "tags": {
+        "tagText": "New",
+        "tagClassName": "is-new"
+      },
+      "displaySearchPriceRange": null,
+      "enableSingleLineAddress": false
+    }
+  },
+  {
+    "id": 2020281617,
+    "listingType": "listing",
+    "listingModel": {
+      "promoType": "premiumplus",
+      "url": "/303-9-degraves-street-melbourne-vic-3000-2020281617",
+      "images": [
+        "https://rimh2.domainstatic.com.au/mMQ7vlner3XU4IZ9I4ifo69KcpY=/1160x774/filters:format(jpeg):quality(70)/2018622666_8_1_230704_125548-w4134-h2756",
+        "https://rimh2.domainstatic.com.au/QQICe806q2rBbkJQslnsLmjRQ10=/1160x774/filters:format(jpeg):quality(70)/2020281617_2_1_250919_122124-w4134-h2756",
+        "https://rimh2.domainstatic.com.au/Bhw3mCj3BODR8q9z-_HWmjKDSmE=/1160x774/filters:format(jpeg):quality(70)/2020281617_3_1_250919_122124-w4134-h2756",
+        "https://rimh2.domainstatic.com.au/XI9cb5-feVWezSd49fkYL3CTNaw=/1160x774/filters:format(jpeg):quality(70)/2020281617_4_1_250919_122124-w4134-h2756",
+        "https://rimh2.domainstatic.com.au/HUSZ_WC35ZE7pP-wPJ2P45Y_3cs=/1160x774/filters:format(jpeg):quality(70)/2020281617_5_1_250919_122124-w4134-h2756",
+        "https://rimh2.domainstatic.com.au/_20ZYIBPGa1w5Rfoui4yCgRuk_o=/1160x774/filters:format(jpeg):quality(70)/2020281617_6_1_250919_122124-w4134-h2756",
+        "https://rimh2.domainstatic.com.au/7-HP9ikdgKOH3RiR-Jjw-hQK9dA=/1160x774/filters:format(jpeg):quality(70)/2020281617_7_1_250919_122124-w4134-h2756",
+        "https://rimh2.domainstatic.com.au/bnt3GGGHJUbh-QuVlL3MEYYbWEQ=/1160x774/filters:format(jpeg):quality(70)/2020281617_8_1_250919_122124-w4134-h2756",
+        "https://rimh2.domainstatic.com.au/35f5yIi0ODHujpLcH4Y3EVmcO90=/1160x774/filters:format(jpeg):quality(70)/2020281617_9_1_250919_122124-w4134-h2756",
+        "https://rimh2.domainstatic.com.au/0o7L7aTejTH8veHwA1KKjB0bCxU=/1160x774/filters:format(jpeg):quality(70)/2020281617_10_1_250919_122124-w4134-h2756",
+        "https://rimh2.domainstatic.com.au/JBLA_TJnYUvnjvnYQd0R4EjO0sg=/1160x774/filters:format(jpeg):quality(70)/2018622666_6_1_230704_125548-w4134-h2756",
+        "https://rimh2.domainstatic.com.au/WXISYzfz545MN48ujic-osFu_f8=/1160x774/filters:format(jpeg):quality(70)/2018622666_7_1_230704_125548-w4134-h2756",
+        "https://rimh2.domainstatic.com.au/r_zalScPBwcPsBeNyM8NUyPmUtw=/1160x774/filters:format(jpeg):quality(70)/2018622666_9_1_230704_125548-w4134-h2756",
+        "https://rimh2.domainstatic.com.au/osKjLuVZ3bANmhqxpHuK5KIAXII=/1160x774/filters:format(jpeg):quality(70)/2019005711_13_1_240123_083437-w2067-h1378",
+        "https://rimh2.domainstatic.com.au/XIsHA8MbzkiupXioBSnmB9ENyUw=/1160x774/filters:format(jpeg):quality(70)/2016895171_10_1_210326_013050-w4134-h2756"
+      ],
+      "brandingAppearance": "dark",
+      "price": "Deadline Sale | $690,000 - $750,000",
+      "hasVideo": true,
+      "branding": {
+        "agencyId": 16216,
+        "agents": [
+          {
+            "agentName": "Dionne Wilson",
+            "agentPhoto": "https://rimh2.domainstatic.com.au/LLsBC_lDZqhxLJGqkVt4z86S_XI=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/16216/contact_1880249.jpeg?mod=250923-130118"
+          },
+          {
+            "agentName": "Stephanie Mackay",
+            "agentPhoto": "https://rimh2.domainstatic.com.au/bSdHRgsunbK9VVxyE1xfTnC8vt8=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/16216/contact_1934993.jpeg?mod=250922-153912"
+          }
+        ],
+        "agentNames": "Dionne Wilson, Stephanie Mackay",
+        "brandLogo": "https://rimh2.domainstatic.com.au/yzpnJpueRqLegJuKZRkiAtInr-k=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/16216/logo_16216.png?buster=2025-09-23",
+        "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/Gibn67VhxoVx3quqZNCrRJQwL4o=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/16216/logo_16216.png?buster=2025-09-23",
+        "brandName": "Harcourts Melbourne City",
+        "brandColor": "#001f49",
+        "agentPhoto": "https://rimh2.domainstatic.com.au/LLsBC_lDZqhxLJGqkVt4z86S_XI=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/16216/contact_1880249.jpeg?mod=250923-130118",
+        "agentName": "Dionne Wilson"
+      },
+      "address": {
+        "street": "303/9 Degraves Street",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.817554,
+        "lng": 144.96574
+      },
+      "features": {
+        "beds": 3,
+        "baths": 2,
+        "parking": 1,
+        "propertyType": "ApartmentUnitFlat",
+        "propertyTypeFormatted": "Apartment / Unit / Flat",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": "2025-09-27T11:20:00",
+        "closeTime": "2025-09-27T11:50:00"
+      },
+      "auction": null,
+      "tags": {
+        "tagText": "New",
+        "tagClassName": "is-new"
+      },
+      "displaySearchPriceRange": null,
+      "enableSingleLineAddress": false
+    }
+  },
+  {
+    "id": 2020288970,
+    "listingType": "listing",
+    "listingModel": {
+      "promoType": "premiumplus",
+      "url": "/502-166-flinders-street-melbourne-vic-3000-2020288970",
+      "images": [
+        "https://rimh2.domainstatic.com.au/9nZLw6LRS7muwexiutQ_KP6eyN8=/1160x774/filters:format(jpeg):quality(70)/2020288970_1_1_250923_031003-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/sdVZnTNW_lnGHZK03bdTt1scRGc=/1160x774/filters:format(jpeg):quality(70)/2020288970_2_1_250923_031003-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/AVWpoJpLBQiEa6gJFzj8RscOvEI=/1160x774/filters:format(jpeg):quality(70)/2020288970_3_1_250923_031003-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/WPX488TATpcKtgDKDZyp8Emag9Q=/1160x774/filters:format(jpeg):quality(70)/2020288970_4_1_250923_031003-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/wCftUkDoI9BpD4mcZKd3klFMwfg=/1160x774/filters:format(jpeg):quality(70)/2020288970_5_1_250923_031003-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/781juyjPP5g3MWBOQghMuDoZ_Vo=/1160x774/filters:format(jpeg):quality(70)/2020288970_6_1_250923_031003-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/yOFNZdcBodjFJjfUUNzFs1RUTLQ=/1160x774/filters:format(jpeg):quality(70)/2020288970_7_1_250923_031003-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/84wd2Uagyl2FPT20NIGTflL5iwU=/1160x774/filters:format(jpeg):quality(70)/2020288970_8_1_250923_031003-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/bV2DH3aYFjhXwbSCd-Y4-QNNeqk=/1160x774/filters:format(jpeg):quality(70)/2020288970_9_1_250923_031003-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/cja6RXTqY_o37-5h-iFG_mpxXDY=/1160x774/filters:format(jpeg):quality(70)/2020288970_10_1_250923_031003-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/US3Ao8Qry6N_KFVWkS9O97KKCyA=/1160x774/filters:format(jpeg):quality(70)/2020288970_11_1_250923_031003-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/lvoMM7xnMKkg9m5Si6gek1lDoqw=/1160x774/filters:format(jpeg):quality(70)/2020288970_12_1_250923_031003-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/GcMmqUhxYv9RGxAD-feqRyl9DE8=/1160x774/filters:format(jpeg):quality(70)/2020288970_13_1_250923_031003-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/wPKl5J_FKcUPHPeWV8RAxeYNPJk=/1160x774/filters:format(jpeg):quality(70)/2020288970_14_1_250923_031003-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/4TA3FTnB4mt66sf4tAiZRdz2yak=/1160x774/filters:format(jpeg):quality(70)/2020288970_15_1_250923_031003-w1608-h1081",
+        "https://rimh2.domainstatic.com.au/Sjg8LNimISPnWgGVVnZtLztV-2A=/1160x774/filters:format(jpeg):quality(70)/2019315327_1_1_240619_040626-w2100-h1400",
+        "https://rimh2.domainstatic.com.au/L6uKGa-Kt7qTgP9u4S82nXGWrko=/1160x774/filters:format(jpeg):quality(70)/2017170523_10_1_210803_051833-w4500-h3000",
+        "https://rimh2.domainstatic.com.au/99OSI5yKqSo5UG809V4gojLx3uI=/1160x774/filters:format(jpeg):quality(70)/2018489487_10_1_230614_105227-w4500-h3000"
+      ],
+      "brandingAppearance": "dark",
+      "price": "EOI - $580,000 - $630,000",
+      "hasVideo": false,
+      "branding": {
+        "agencyId": 24322,
+        "agents": [
+          {
+            "agentName": "Sam Fenna",
+            "agentPhoto": "https://rimh2.domainstatic.com.au/MDs26xXb8bv_CebWghuD0LpmL8I=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/24322/contact_1728691.jpeg?mod=250923-131003"
+          },
+          {
+            "agentName": "Alex White",
+            "agentPhoto": "https://rimh2.domainstatic.com.au/zQqKPI71aFs-hoy0AMmRpUteRgo=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/24322/contact_1989976.jpeg?mod=250923-131003"
+          }
+        ],
+        "agentNames": "Sam Fenna, Alex White",
+        "brandLogo": "https://rimh2.domainstatic.com.au/NaaShF97j9hZeFQzcLrCLyPFHA4=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/24322/logo_24322.png?buster=2025-09-23",
+        "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/YNbhaoeJvHZltskb-BqW-NinMPI=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/24322/logo_24322.png?buster=2025-09-23",
+        "brandName": "Belle Property Carlton | Melbourne | North Melbourne",
+        "brandColor": "#386351",
+        "agentPhoto": "https://rimh2.domainstatic.com.au/MDs26xXb8bv_CebWghuD0LpmL8I=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/24322/contact_1728691.jpeg?mod=250923-131003",
+        "agentName": "Sam Fenna"
+      },
+      "address": {
+        "street": "502/166 Flinders Street",
+        "suburb": "MELBOURNE",
+        "state": "VIC",
+        "postcode": "3000",
+        "lat": -37.8168,
+        "lng": 144.969
+      },
+      "features": {
+        "beds": 2,
+        "baths": 1,
+        "propertyType": "ApartmentUnitFlat",
+        "propertyTypeFormatted": "Apartment / Unit / Flat",
+        "isRural": false,
+        "landSize": 0,
+        "landUnit": "m²",
+        "isRetirement": false
+      },
+      "inspection": {
+        "openTime": "2025-09-25T12:30:00",
+        "closeTime": "2025-09-25T13:00:00"
+      },
+      "auction": null,
+      "tags": {
+        "tagText": "New",
+        "tagClassName": "is-new"
+      },
+      "displaySearchPriceRange": null,
+      "enableSingleLineAddress": false
+    }
+  }
+]

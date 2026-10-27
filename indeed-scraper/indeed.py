@@ -1,0 +1,109 @@
+# Adapted by AdsCrawl from scrapfly/scrapfly-scrapers. See NOTICE.
+"""
+This is an example web scraper for indeed.com adapted from the upstream Scrapfly example:
+https://scrapfly.io/blog/how-to-scrape-indeedcom/
+
+To run this scraper set env variable $ADSCRAWL_API_KEY with your AdsCrawl API key:
+$ export ADSCRAWL_API_KEY="your key from https://app.adscrawl.net/dashboard/keys/"
+"""
+from adscrawl_scrapers import managed
+import json
+import math
+import os
+import re
+from typing import Dict, List
+import urllib
+
+from loguru import logger as log
+from adscrawl_scrapers import Response, Request, ScraperClient, ScrapeError
+
+CLIENT = ScraperClient()
+BASE_CONFIG = {
+
+    'countryCode': "US",
+}
+
+
+def parse_search_page(result):
+    """Find hidden web data of search results in Indeed.com search page HTML"""
+    regex_pattern = (
+        r'window\.mosaic\.providerData\["mosaic-provider-jobcards"\]=((\[[^\}]+)?\{s*[^\}\{]{3,}?:.*\}([^\{]+\])?);'
+    )
+    match = re.findall(regex_pattern, result.content)
+    if match:
+        json_string = match[0][0]
+        data = json.loads(json_string)
+        return {
+            "results": data["metaData"]["mosaicProviderJobCardsModel"]["results"],
+            "meta": data["metaData"]["mosaicProviderJobCardsModel"]["tierSummaries"],
+        }
+    else:
+        return {"results": [], "meta": []}
+
+
+def _add_url_parameter(url, **kwargs):
+    """Add or replace GET parameters in a URL"""
+    url_parts = list(urllib.parse.urlparse(url))
+    query = dict(urllib.parse.parse_qsl(url_parts[4]))
+    query.update(kwargs)
+    url_parts[4] = urllib.parse.urlencode(query)
+    return urllib.parse.urlunparse(url_parts)
+
+
+@managed
+async def scrape_search(url: str, max_results: int = 1000) -> List[Dict]:
+    """Scrape Indeed.com search for job listing previews"""
+    log.info(f"scraping search: {url}")
+    result_first_page = await CLIENT.fetch(Request(url, **BASE_CONFIG))
+    data_first_page = parse_search_page(result_first_page)
+
+    results = data_first_page["results"]
+    total_results = sum(category["jobCount"] for category in data_first_page["meta"])
+    # there's a page limit on indeed.com of 1000 results per search
+    if total_results > max_results:
+        total_results = max_results
+
+    remaining_pages = (total_results - 10) / 10
+    if not remaining_pages:
+        return results
+
+    other_pages = [
+        Request(_add_url_parameter(url, start=offset), **BASE_CONFIG)
+        for offset in range(10, total_results + 10, 10)
+    ]
+    log.info(f"scraping remaining {remaining_pages} pages")
+
+    async for result in CLIENT.fetch_many(other_pages):
+        if not isinstance(result, ScrapeError):
+            data = parse_search_page(result)
+            results.extend(data["results"])
+        else:
+            log.error(f"failed to scrape {result.response.request_url}, got: {result.message}")
+    return results
+
+
+def parse_job_page(result: Response):
+    """parse job data from job listing page"""
+    match = re.search(r"window\._rootProps\s*=\s*", result.content)
+    if not match:
+        raise ValueError("could not find job data in page")
+    root_props, _ = json.JSONDecoder().raw_decode(result.content, match.end())
+    data = root_props["preloadedVJData"]["jobInfoWrapperModel"]["jobInfoModel"]
+    return {
+        "description": data["sanitizedJobDescription"],
+        **data["jobMetadataHeaderModel"],
+        **(data["jobTagModel"] or {}),
+        **data["jobInfoHeaderModel"],
+    }
+
+
+@managed
+async def scrape_jobs(job_keys: List[str]):
+    """scrape job page"""
+    log.info(f"scraping {len(job_keys)} job listings")
+    results = []
+    urls = [f"https://www.indeed.com/viewjob?jk={job_key}" for job_key in job_keys]
+    to_scrape = [Request(url, render=True, **BASE_CONFIG) for url in urls]
+    async for result in CLIENT.fetch_many(to_scrape):
+        results.append(parse_job_page(result))
+    return results

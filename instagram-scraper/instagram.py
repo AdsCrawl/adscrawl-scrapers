@@ -1,0 +1,374 @@
+# Adapted by AdsCrawl from scrapfly/scrapfly-scrapers. See NOTICE.
+"""
+This is an example web scraper for Instagram.com adapted from the upstream Scrapfly example:
+https://scrapfly.io/blog/how-to-scrape-instagram/
+
+To run this scraper set env variable $ADSCRAWL_API_KEY with your AdsCrawl API key:
+$ export ADSCRAWL_API_KEY="your key from https://app.adscrawl.net/dashboard/keys/"
+"""
+from adscrawl_scrapers import managed
+import json
+import os
+from typing import Dict, Optional
+from urllib.parse import quote, urlencode
+import jmespath
+import re
+from nested_lookup import nested_lookup
+from loguru import logger as log
+from adscrawl_scrapers import Request, ScraperClient
+
+
+CLIENT = ScraperClient()
+BASE_CONFIG = {
+
+
+    'countryCode': "CA",  # change country for relevant results
+}
+INSTAGRAM_APP_ID = "936619743392459"  # this is the public app id for instagram.com
+INSTAGRAM_DOCUMENT_ID = "8845758582119845" # constant id for post documents instagram.com
+INSTAGRAM_ACCOUNT_DOCUMENT_ID = "9310670392322965"
+
+# scroll down the comments section to load them
+COMMENTS_JS_SCENARIO = [
+    {"type": "wait", "milliseconds": 2000},
+    {"type": 'waitForSelector', 'selector': '//*[local-name()="svg" and @*[local-name()="aria-label"]="Comment"]'},
+    {"type": 'click', 'selector': '//*[local-name()="svg" and @*[local-name()="aria-label"]="Close"]', "optional": True},
+    {"type": 'evaluate', 'script': "function scrollComments(pct, intervalMs, times) {\n  pct = pct || 0.3;\n  intervalMs = intervalMs || 500;\n  times = times || 20;\n  return new Promise(function(resolve) {\n    var el = document.querySelector('div.x5yr21d.xw2csxc.x1odjw0f.x1n2onr6');\n    if (!el) { resolve(); return; }\n    var count = 0;\n    var timer = setInterval(function() {\n      var delta = el.scrollHeight * pct;\n      el.scrollTop += delta;\n      count++;\n      if (count >= times) {\n        clearInterval(timer);\n        resolve();\n      }\n    }, intervalMs);\n  });\n}\nreturn scrollComments(0.3, 500, 20);\n", 'timeoutMs': 20000},
+]
+
+def parse_user(data: Dict) -> Dict:
+    """Reduce the user data to the relevant fields"""
+    log.debug("parsing user data {}", data["username"])
+    result = jmespath.search(
+        """{
+        name: full_name,
+        username: username,
+        id: pk,
+        bio: biography,
+        bio_links: bio_links[].url,
+        followers: follower_count,
+        follows: following_count,
+        facebook_id: id,
+        is_private: is_private,
+        is_verified: is_verified,
+        is_memorialized: is_memorialized,
+        pronouns: pronouns,
+        account_badges: account_badges,
+        threads_handle: text_post_app_badge_label,
+        profile_image: profile_pic_url,
+        highlights: lox_highlights_connection.edges[].node.{
+            id: id,
+            title: title,
+            cover_image: cover_media_cropped_thumbnail_url
+        }
+    }""",
+        data,
+    )
+    return result
+
+
+@managed
+async def scrape_user(username: str) -> Dict:
+    """Scrape instagram user's data"""
+    log.info("scraping instagram user {}", username)
+    # note: the `web_profile_info` API endpoint now returns HTTP 400 ("make sure
+    # you are logged in") for a growing, per-account subset of public profiles
+    # even without any session. The profile page's inline data-sjs payload isn't
+    # gated the same way, so we parse the embedded `xig_user_by_username` object.
+    result = await CLIENT.fetch(
+        Request(
+            url=f"https://www.instagram.com/{username}/",
+            **BASE_CONFIG,
+        )
+    )
+    hidden_datasets = result.selector.css('script[type="application/json"][data-sjs]::text').getall()
+    user_hidden_data = [d for d in hidden_datasets if "xig_user_by_username" in d and "follower_count" in d]
+    if not user_hidden_data:
+        raise ValueError(f"Could not find user data in page: {username}")
+    data = nested_lookup("xig_user_by_username", json.loads(user_hidden_data[0]))[0]
+    return parse_user(data)
+
+def parse_comments(data: Dict) -> Dict:
+    """Parse the comments data from the post dataset"""
+    if "edge_media_to_comment" in data:
+        return jmespath.search(
+            """{
+                comments_count: edge_media_to_comment.count,
+                comments_disabled: comments_disabled,
+                comments_next_page: edge_media_to_comment.page_info.end_cursor,
+                comments: edge_media_to_comment.edges[].node.{
+                    id: id,
+                    text: text,
+                    created_at: created_at,
+                    owner_id: owner.id,
+                    owner: owner.username,
+                    owner_verified: owner.is_verified,
+                    viewer_has_liked: viewer_has_liked
+                }
+            }""",
+            data,
+        )
+    else:
+        return jmespath.search(
+            """{
+                comments_count: edge_media_to_parent_comment.count,
+                comments_disabled: comments_disabled,
+                comments_next_page: edge_media_to_parent_comment.page_info.end_cursor,
+                comments: edge_media_to_parent_comment.edges[].node.{
+                    id: id,
+                    text: text,
+                    created_at: created_at,
+                    owner: owner.username,
+                    owner_verified: owner.is_verified,
+                    viewer_has_liked: viewer_has_liked,
+                    likes: edge_liked_by.count
+                }
+            }""",
+            data,
+        )
+
+
+def _extract_xig_polaris_media(html: str) -> Optional[Dict]:
+    scripts = re.findall(
+        r'<script[^>]*data-sjs[^>]*>(.*?)</script>', html, re.DOTALL
+    )
+    for script in scripts:
+        if "xig_polaris_media" not in script:
+            continue
+        try:
+            payload = json.loads(script)
+            modules = payload["require"][0][3][0]["__bbox"]["require"]
+        except (KeyError, IndexError, TypeError, json.JSONDecodeError):
+            continue
+        for module in modules:
+            if not isinstance(module, list) or len(module) <= 3:
+                continue
+            for entry in module[3]:
+                if not isinstance(entry, dict):
+                    continue
+                media = (
+                    entry.get("__bbox", {})
+                    .get("result", {})
+                    .get("data", {})
+                    .get("xig_polaris_media")
+                )
+                if media:
+                    return media
+    return None
+
+
+def parse_post(data: Dict) -> Dict:
+    """Parse post data from the xig_polaris_media HTML-embedded structure"""
+    post = data.get("if_not_gated_logged_out") or data
+    caption_text = (post.get("caption") or {}).get("text")
+
+    comments = []
+    for edge in (data.get("comments_connection") or {}).get("edges") or []:
+        node = edge.get("node")
+        if not node:
+            continue
+        user = node.get("user") or {}
+        comments.append({
+            "id": str(node.get("pk", "")),
+            "text": node.get("text", ""),
+            "created_at": node.get("created_at"),
+            "owner": user.get("username", ""),
+            "owner_id": str(user.get("pk", "")),
+            "owner_verified": user.get("is_verified", False),
+            "likes": node.get("comment_like_count", 0),
+        })
+
+    return {
+        "id": str(post.get("pk", "")),
+        "shortcode": post.get("code", ""),
+        "src": post.get("display_uri", ""),
+        "src_attached": [
+            m["display_uri"]
+            for m in post.get("carousel_media") or []
+            if m.get("display_uri")
+        ],
+        "likes": post.get("like_count"),
+        "taken_at": post.get("taken_at"),
+        "location": (post.get("location") or {}).get("name"),
+        "captions": [caption_text] if caption_text else [],
+        "comments_count": post.get("comment_count"),
+        "comments": comments,
+    }
+
+
+@managed
+async def scrape_post(url_or_shortcode: str) -> Dict:
+    """Scrape single Instagram post data by parsing the HTML page"""
+    if "http" not in url_or_shortcode:
+        url = f"https://www.instagram.com/p/{url_or_shortcode}/"
+    else:
+        url = url_or_shortcode
+
+    log.info("scraping instagram post: {}", url)
+    result = await CLIENT.fetch(Request(url=url, **BASE_CONFIG))
+    media = _extract_xig_polaris_media(result.content)
+    if not media:
+        raise ValueError(f"Could not find post data in page: {url}")
+    return parse_post(media)
+
+
+
+def parse_user_posts(data: Dict) -> Dict:
+    """Reduce users posts' dataset to the most important fields"""
+    result = jmespath.search(
+        """{
+        id: id,
+        shortcode: code,
+        caption: caption,
+        taken_at: taken_at,
+        video_versions: video_versions,
+        image_versions2: image_versions2,
+        original_height: original_height,
+        original_width: original_width,
+        link: link,
+        title: title,
+        comment_count: comment_count,
+        top_likers: top_likers,
+        like_count: like_count,
+        usertags: usertags,
+        clips_metadata: clips_metadata,
+        comments: comments
+    }""",
+        data,
+    )
+
+    return result
+
+
+@managed
+async def scrape_user_posts(username: str, page_size=12, max_pages: Optional[int] = None):
+    """Scrape all posts of an instagram user of given the username"""
+    base_url = "https://www.instagram.com/graphql/query/"
+    variables = {
+        "after": None,
+        "before": None,
+        "data": {
+            "count": page_size,
+            "include_reel_media_seen_timestamp": True,
+            "include_relationship_info": True,
+            "latest_besties_reel_media": True,
+            "latest_reel_media": True
+        },
+        "first": page_size,
+        "last": None,
+        "username": f"{username}",
+        "__relay_internal__pv__PolarisIsLoggedInrelayprovider": True,
+        "__relay_internal__pv__PolarisShareSheetV3relayprovider": True
+    }
+
+    prev_cursor = None
+    _page_number = 1
+
+    while True:
+        body = f"variables={json.dumps(variables, separators=(',', ':'))}&doc_id={INSTAGRAM_ACCOUNT_DOCUMENT_ID}"
+        params = {
+            "doc_id": INSTAGRAM_ACCOUNT_DOCUMENT_ID,  # e.g., "7950326061742207"
+            "variables": json.dumps(variables, separators=(",", ":"))
+        }
+
+        # Build the final URL by appending the query string to the base URL
+        final_url = f"{base_url}?{urlencode(params)}"
+        result = await CLIENT.fetch(Request(
+            final_url, **BASE_CONFIG, method="GET",
+            headers={"content-type": "application/x-www-form-urlencoded"},
+        ))
+
+        data = json.loads(result.content)
+
+        posts = data["data"]["xdt_api__v1__feed__user_timeline_graphql_connection"]
+        for post in posts["edges"]:
+            yield parse_user_posts(post["node"])
+
+        page_info = posts["page_info"]
+        if not page_info["has_next_page"]:
+            log.info(f"scraping posts page {_page_number}")
+            break
+
+        if page_info["end_cursor"] == prev_cursor:
+            log.warning("found no new posts, breaking")
+            break
+
+        prev_cursor = page_info["end_cursor"]
+        variables["after"] = page_info["end_cursor"]
+        _page_number += 1
+
+        if max_pages and _page_number > max_pages:
+            break
+
+def parse_post_comment(data: Dict) -> Dict:
+    """refine the comment dataset"""
+    return jmespath.search(
+        """{
+        id: pk,
+        text: text,
+        created_at: created_at,
+        owner: user.username,
+        owner_id: user.id,
+        owner_verified: user.is_verified,
+        owner_profile_pic: user.profile_pic_url,
+        likes: comment_like_count
+    }""",
+        data,
+    )
+
+
+@managed
+async def scrape_post_comments(url: str):
+    """Scrape comments from an Instagram post"""
+    log.info("scraping instagram post comments: {}", url)
+
+    result = await CLIENT.fetch(
+        Request(
+            url=url,
+            render=True,
+            actions=COMMENTS_JS_SCENARIO,
+            **BASE_CONFIG,
+        )
+    )
+
+    comments = []
+    seen_ids = set()
+
+    # the first comments are embedded in the page itself, the next ones are loaded while scrolling
+    has_more = None
+    page_data = result.selector.xpath("//script[contains(text(),'comments_connection')]/text()").get()
+    if page_data:
+        connections = nested_lookup("comments_connection", json.loads(page_data))
+        if connections:
+            has_more = (connections[0].get("page_info") or {}).get("has_next_page")
+            for edge in connections[0].get("edges") or []:
+                comment = parse_post_comment(edge["node"])
+                if comment["id"] not in seen_ids:
+                    seen_ids.add(comment["id"])
+                    comments.append(comment)
+
+    xhr_calls = result.network or []
+    for xhr in xhr_calls:
+        body = (xhr.get("response") or {}).get("body")
+        if not body or "comments_connection" not in body:
+            continue
+        try:
+            data = json.loads(body)
+        except json.JSONDecodeError:
+            log.warning("no JSON comments found, skipping")
+            continue
+
+        edges = jmespath.search(
+            "data.xig_polaris_media.comments_connection.edges[].node", data
+        ) or []
+        for node in edges:
+            if node["id"] in seen_ids:
+                continue
+            seen_ids.add(node["id"])
+            comments.append(parse_post_comment(node))
+
+    if has_more is False:
+        # instagram sometimes marks the first comments as the only ones, so the page loads no more
+        log.warning("instagram.com returned only {} comments and no more to load for {}", len(comments), url)
+    log.success("scraped {} comments", len(comments))
+    return comments

@@ -1,0 +1,6 @@
+include LICENSE LICENSE.upstream NOTICE README.zh-CN.md llms.txt .env.example
+recursive-include docs *.md *.json
+recursive-include scripts *.py
+recursive-include tests *.py
+recursive-include *-scraper *.py *.toml *.md *.json *.csv *.txt
+global-exclude *.py[cod] .DS_Store
