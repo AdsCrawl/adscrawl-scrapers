@@ -13,6 +13,7 @@ from typing import Dict, List
 from pathlib import Path
 from loguru import logger as log
 import re
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 from adscrawl_scrapers import Request, ScraperClient
 
 CLIENT = ScraperClient()
@@ -152,11 +153,15 @@ async def scrape_search(url: str, max_pages: int = 10) -> List[Dict]:
         log.info(f"scraping pagination ({total_pages-1} more pages)")
 
         # Build URLs for remaining pages
-        base_url = url.split('?')[0]
+        # Use the site's canonical collection URL after redirects, including
+        # its sorting/filter parameters. Legacy /shop/ URLs can lose pagination.
+        parts = urlsplit(pagination_href or result_first_page.url)
+        query = dict(parse_qsl(parts.query, keep_blank_values=True))
         to_scrape = []
         for page in range(2, total_pages + 1):
-            page_url = f"{base_url}?page={page}"
-            to_scrape.append(Request(page_url, **BASE_CONFIG))
+            query['page'] = str(page)
+            page_url = urlunsplit(parts._replace(query=urlencode(query)))
+            to_scrape.append(Request(page_url, **BASE_CONFIG, waitForSelector='.fp-algolia-product-card'))
 
         # Scrape concurrently
         async for result in CLIENT.fetch_many(to_scrape):

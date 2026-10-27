@@ -80,3 +80,20 @@ def test_dhl_empty_feed_is_explicit_and_never_claims_success():
     result = module._parse_tracking_api_response({'shipments': []}, 'EXAMPLE')
     assert result['classification'] == 'empty'
     assert result['tracking_number'] == 'EXAMPLE' and result['events'] == []
+
+
+async def test_fashionphile_pagination_uses_canonical_url_and_sort_order(monkeypatch):
+    from unittest.mock import AsyncMock
+    module = audit.load_module(ROOT/'fashionphile-scraper/fashionphile.py')
+    canonical = 'https://www.fashionphile.com/collections/discounted-all'
+    html = '<li class="ais-Pagination-item--lastPage"><a href="'+canonical+'?sortBy=price_desc&amp;page=42">42</a></li>'
+    monkeypatch.setattr(module.CLIENT, 'fetch', AsyncMock(return_value=Response(canonical, html)))
+    requests = []
+    async def pages(items):
+        requests.extend(items)
+        for item in items:
+            yield Response(item.url, '')
+    monkeypatch.setattr(module.CLIENT, 'fetch_many', pages)
+    await module.scrape_search('https://www.fashionphile.com/shop/discounted/all', max_pages=3)
+    assert [r.url for r in requests] == [canonical+'?sortBy=price_desc&page=2', canonical+'?sortBy=price_desc&page=3']
+    assert all(r.waitForSelector == '.fp-algolia-product-card' for r in requests)

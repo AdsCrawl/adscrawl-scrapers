@@ -20,9 +20,11 @@ def validate_or_fail(item, validator):
 
 
 product_schema = {
-    "id": {"type": "integer"},
+    "id": {"type": "integer", "required": True, "min": 1},
     "sku": {"type": "string"},
-    "title": {"type": "string"},
+    "title": {"type": "string", "required": True, "empty": False},
+    "vendor": {"type": "string", "required": True, "empty": False},
+    "variants": {"type": "list", "required": True, "minlength": 1},
     "slug": {"type": "string"},
     "price": {"type": "integer"},
     "renewDays": {"type": "integer"},
@@ -52,8 +54,8 @@ product_schema = {
 }
 
 search_schema = {
-    "brands": {"type": "string"},
-    "product_name": {"type": "string"},
+    "brand_name": {"type": "string", "required": True, "empty": False},
+    "product_name": {"type": "string", "required": True, "empty": False},
     "condition": {"type": "string"},
     "discounted_price": {"type": "integer"},
     "price": {"type": "integer"},

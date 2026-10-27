@@ -378,3 +378,16 @@ async def test_navigation_error_reports_safe_network_code_without_secret_url():
     assert caught.value.code == 'ERR_TUNNEL_CONNECTION_FAILED'
     assert caught.value.response.status_code == 0
     assert 'secret' not in str(caught.value) and page.closed
+
+
+async def test_stalled_tab_close_does_not_hold_a_completed_request(monkeypatch):
+    from adscrawl_scrapers import runtime
+    page = FakePage()
+    async def stalled_close():
+        await asyncio.Event().wait()
+    page.close = stalled_close
+    monkeypatch.setattr(runtime, '_DISCONNECT_TIMEOUT_SECONDS', 0.01)
+    context = SimpleNamespace(new_page=AsyncMock(return_value=page), cookies=AsyncMock(return_value=[]))
+    response = await asyncio.wait_for(ScraperClient(sdk=object())._fetch_page(
+        SimpleNamespace(context=context), Request('https://example.com/api')), 1)
+    assert response.json() == {'rows': [1]}

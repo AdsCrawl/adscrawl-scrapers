@@ -459,7 +459,12 @@ class ScraperClient:
                     task.cancel()
             if collectors:
                 await asyncio.gather(*collectors, return_exceptions=True)
-            await page.close()
+            # A disconnected tab can stop answering even Page.close(). Let the
+            # enclosing session's SDK DELETE release it after a bounded wait.
+            try:
+                await asyncio.wait_for(page.close(), _DISCONNECT_TIMEOUT_SECONDS)
+            except (BrowserError, asyncio.TimeoutError):
+                pass
 
 
     async def _fetch_binary(self, session, page, request, headers):
