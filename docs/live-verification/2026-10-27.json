@@ -5,10 +5,10 @@
   "method": "Existing live pytest suites, sequential by site; stop at first failure per site; 300-second site deadline; no test retries; non-empty output review. Fixes are applied and retested separately.",
   "counts": {
     "passed": 2,
-    "partial": 4,
-    "failed": 13,
+    "partial": 8,
+    "failed": 19,
     "empty_output": 1,
-    "not_run": 61
+    "not_run": 51
   },
   "sites": [
     {
@@ -559,83 +559,335 @@
     },
     {
       "site": "facebook-scraper",
-      "status": "not_run",
-      "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "status": "partial",
+      "passed": 2,
+      "collected": 4,
+      "tests": [
+        {
+          "test": "test_page_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 89.775
+        },
+        {
+          "test": "test_marketplace_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 28.115
+        },
+        {
+          "test": "test_events_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 149.63,
+          "error_type": "ScrapeError",
+          "code": "SCRAPE_FAILED",
+          "status": null
+        }
+      ],
+      "outputs": [
+        {
+          "function": "scrape_facebook_page",
+          "type": "list",
+          "count": 3
+        },
+        {
+          "function": "scrape_marketplace_listings",
+          "type": "list",
+          "count": 12
+        }
+      ],
+      "duration_seconds": 268.76,
+      "requests": 12,
+      "notes": "SCRAPE_FAILED",
+      "finished_at": "2026-10-27T14:21:00+08:00"
     },
     {
       "site": "fashionphile-scraper",
-      "status": "not_run",
-      "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "status": "partial",
+      "passed": 1,
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_product_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 13.113
+        },
+        {
+          "test": "test_search_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 280.338,
+          "error_type": "ScrapeError",
+          "code": "SCRAPE_FAILED",
+          "status": null
+        }
+      ],
+      "outputs": [
+        {
+          "function": "scrape_products",
+          "type": "list",
+          "count": 3
+        }
+      ],
+      "duration_seconds": 303.5,
+      "requests": 6,
+      "notes": "SCRAPE_FAILED",
+      "finished_at": "2026-10-27T14:26:03+08:00"
     },
     {
       "site": "g2-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 3,
+      "tests": [
+        {
+          "test": "test_review_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 94.397,
+          "error_type": "ScrapeError",
+          "code": "TIMEOUT",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 95.75,
+      "requests": 1,
+      "notes": "TIMEOUT",
+      "finished_at": "2026-10-27T14:27:39+08:00"
     },
     {
       "site": "glassdoor-scraper",
-      "status": "not_run",
-      "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "status": "partial",
+      "passed": 3,
+      "collected": 6,
+      "tests": [
+        {
+          "test": "test_glassdoor_url",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 0.0
+        },
+        {
+          "test": "test_salary_range_parsing",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 0.0
+        },
+        {
+          "test": "test_find_companies",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 7.363
+        },
+        {
+          "test": "test_job_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 8.187,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [
+        {
+          "function": "find_companies",
+          "type": "list",
+          "count": 10
+        }
+      ],
+      "duration_seconds": 16.97,
+      "requests": 2,
+      "notes": "HTTP 403",
+      "finished_at": "2026-10-27T14:27:56+08:00"
     },
     {
       "site": "goat-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_product_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 94.053,
+          "error_type": "ScrapeError",
+          "code": "ERR_TUNNEL_CONNECTION_FAILED",
+          "status": null
+        }
+      ],
+      "outputs": [
+        {
+          "function": "scrape_search",
+          "type": "list",
+          "count": 12
+        }
+      ],
+      "duration_seconds": 95.38,
+      "requests": 3,
+      "notes": "ERR_TUNNEL_CONNECTION_FAILED",
+      "finished_at": "2026-10-27T14:29:32+08:00"
     },
     {
       "site": "goibibo-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_hotel_search_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 75.825,
+          "error_type": "JSONDecodeError",
+          "code": null,
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 77.29,
+      "requests": 2,
+      "notes": "JSONDecodeError",
+      "finished_at": "2026-10-27T14:30:49+08:00"
     },
     {
       "site": "goodreads-scraper",
-      "status": "not_run",
-      "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "status": "partial",
+      "passed": 1,
+      "collected": 4,
+      "tests": [
+        {
+          "test": "test_book_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 48.831
+        },
+        {
+          "test": "test_review_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 15.729,
+          "error_type": "ScrapeError",
+          "code": "ERR_TUNNEL_CONNECTION_FAILED",
+          "status": null
+        }
+      ],
+      "outputs": [
+        {
+          "function": "scrape_book",
+          "type": "dict",
+          "count": 13,
+          "fields": [
+            "author",
+            "awards",
+            "description",
+            "first_published",
+            "format",
+            "genres",
+            "image_url",
+            "isbn",
+            "language",
+            "num_pages",
+            "rating",
+            "title",
+            "url"
+          ],
+          "collection_counts": {
+            "genres": 7,
+            "awards": 3
+          }
+        }
+      ],
+      "duration_seconds": 65.92,
+      "requests": 2,
+      "notes": "ERR_TUNNEL_CONNECTION_FAILED",
+      "finished_at": "2026-10-27T14:31:55+08:00"
     },
     {
       "site": "google-flights-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_scrape_flights",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 29.239,
+          "error_type": "AssertionError",
+          "code": null,
+          "status": null
+        }
+      ],
+      "outputs": [
+        {
+          "function": "scrape_flights",
+          "type": "dict",
+          "count": 5,
+          "fields": [
+            "departure_date",
+            "flights",
+            "return_date",
+            "route",
+            "search_date"
+          ],
+          "collection_counts": {
+            "flights": 0
+          }
+        }
+      ],
+      "duration_seconds": 30.39,
+      "requests": 1,
+      "notes": "AssertionError",
+      "finished_at": "2026-10-27T14:32:25+08:00"
     },
     {
       "site": "google-jobs-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 1,
+      "tests": [
+        {
+          "test": "test_search_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 112.387,
+          "error_type": "ScrapeError",
+          "code": "TIMEOUT",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 113.53,
+      "requests": 1,
+      "notes": "TIMEOUT",
+      "finished_at": "2026-10-27T14:34:19+08:00"
     },
     {
       "site": "google-play-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 3,
+      "tests": [
+        {
+          "test": "test_app_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 18.777,
+          "error_type": "ScrapeError",
+          "code": "ERR_TUNNEL_CONNECTION_FAILED",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 20.07,
+      "requests": 2,
+      "notes": "ERR_TUNNEL_CONNECTION_FAILED",
+      "finished_at": "2026-10-27T14:34:39+08:00"
     },
     {
       "site": "google-scraper",

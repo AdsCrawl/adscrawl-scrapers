@@ -31,9 +31,18 @@ return (async () => {
         );
         return !!result.singleNodeValue;
     };
-    while (!isEnd()) {
+    // Google does not always render an end marker. Stop when results have
+    // stopped growing, and cap the work even if the page keeps changing.
+    let unchanged = 0;
+    for (let scrolls = 0; scrolls < 20 && !isEnd(); scrolls++) {
+        const count = document.querySelectorAll('.EimVGf').length;
+        const height = document.body.scrollHeight;
         window.scrollTo(0, document.body.scrollHeight);
         await new Promise(r => setTimeout(r, 1000));
+        const grew = document.querySelectorAll('.EimVGf').length > count
+            || document.body.scrollHeight > height;
+        unchanged = grew ? 0 : unchanged + 1;
+        if (unchanged >= 5) break;
     }
 })()
 """

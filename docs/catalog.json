@@ -237,7 +237,7 @@
       "scrape_group_posts"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "partial",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -248,7 +248,7 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "partial",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -260,7 +260,7 @@
       "scrape_alternatives"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "failed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -273,7 +273,7 @@
       "find_companies"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "partial",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -285,7 +285,7 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "failed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -296,7 +296,7 @@
       "scrape_flight_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "failed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -309,7 +309,7 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "partial",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -320,7 +320,7 @@
       "scrape_price_insights"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "failed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -330,7 +330,7 @@
       "scrape_jobs"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "failed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -342,7 +342,7 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "failed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
