@@ -54,9 +54,13 @@ python run.py
 | [chatgpt](chatgpt-scraper/) | 1/1 |
 | [idealo](idealo-scraper/) | 4/4 |
 | [imovelweb](imovelweb-scraper/) | 2/2 |
+| [rightmove](rightmove-scraper/) | 2/2 |
 | [shopify](shopify-scraper/) | 5/5 |
 | [similarweb](similarweb-scraper/) | 4/4 |
 | [ticketmaster](ticketmaster-scraper/) | 2/2 |
+| [twitter](twitter-scraper/) | 2/2 |
+| [vestiairecollective](vestiairecollective-scraper/) | 2/2 |
+| [zillow](zillow-scraper/) | 2/2 |
 
 [查看验证范围、输出数量和限制](docs/live-verification/2026-10-27.md)
 

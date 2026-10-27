@@ -1,14 +1,14 @@
 {
   "date": "2026-10-27",
-  "state": "in_progress",
+  "state": "initial_pass_complete",
   "timezone": "Asia/Shanghai",
-  "method": "Existing live pytest suites, sequential by site; stop at first failure per site; 300-second site deadline; no test retries; non-empty output review. Fixes are applied and retested separately.",
+  "method": "Existing live pytest suites; initial run sequential by site. Follow-up runs use two groups with one browser per group. Stop at first failure per site; 300-second site deadline; no pytest retries; non-empty output review. All attempts are retained.",
   "counts": {
-    "passed": 7,
-    "partial": 12,
-    "failed": 47,
+    "passed": 11,
+    "partial": 14,
+    "failed": 55,
     "empty_output": 1,
-    "not_run": 14
+    "not_run": 0
   },
   "sites": [
     {
@@ -21,21 +21,67 @@
           "test": "test_search_scraping",
           "outcome": "failed",
           "phase": "call",
-          "duration": 40.373,
-          "error_type": "UnicodeDecodeError",
-          "code": null,
+          "duration": 10.368,
+          "error_type": "ScrapeError",
+          "code": "ERR_TUNNEL_CONNECTION_FAILED",
           "status": null
         }
       ],
       "outputs": [],
-      "duration_seconds": 40.98,
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 40.98,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_search_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 40.373,
+              "error_type": "UnicodeDecodeError",
+              "code": null,
+              "status": null
+            }
+          ],
+          "outputs": []
+        },
+        {
+          "phase": "retest-1",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 11.72,
+          "countries": {
+            "US": 1
+          },
+          "tests": [
+            {
+              "test": "test_search_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 10.368,
+              "error_type": "ScrapeError",
+              "code": "ERR_TUNNEL_CONNECTION_FAILED",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "retest-1",
+      "duration_seconds": 11.72,
       "requests": 1,
+      "sessions_created": 1,
       "observed_http_statuses": [],
-      "countries": null,
-      "revision": null,
-      "working_tree_dirty": null,
-      "notes": "UnicodeDecodeError",
-      "finished_at": "2026-10-27T13:49:12+08:00"
+      "countries": {
+        "US": 1
+      },
+      "revision": "a77f10f71a6962c5c6026ba67b4ab9b92e4a5c50",
+      "working_tree_dirty": true,
+      "notes": "ERR_TUNNEL_CONNECTION_FAILED",
+      "finished_at": "2026-10-27T15:23:38+08:00"
     },
     {
       "site": "airfrance-scraper",
@@ -47,21 +93,67 @@
           "test": "test_scrape_flights",
           "outcome": "failed",
           "phase": "call",
-          "duration": 191.416,
+          "duration": 79.463,
           "error_type": "RuntimeError",
           "code": null,
           "status": null
         }
       ],
       "outputs": [],
-      "duration_seconds": 191.81,
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 0,
+          "duration_seconds": 191.81,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_scrape_flights",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 191.416,
+              "error_type": "RuntimeError",
+              "code": null,
+              "status": null
+            }
+          ],
+          "outputs": []
+        },
+        {
+          "phase": "retest-1",
+          "return_code": 1,
+          "requests": 0,
+          "duration_seconds": 80.69,
+          "countries": {
+            "US": 1
+          },
+          "tests": [
+            {
+              "test": "test_scrape_flights",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 79.463,
+              "error_type": "RuntimeError",
+              "code": null,
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "retest-1",
+      "duration_seconds": 80.69,
       "requests": 0,
+      "sessions_created": 1,
       "observed_http_statuses": [],
-      "countries": null,
-      "revision": null,
-      "working_tree_dirty": null,
-      "notes": "RuntimeError",
-      "finished_at": "2026-10-27T13:52:24+08:00"
+      "countries": {
+        "US": 1
+      },
+      "revision": "a77f10f71a6962c5c6026ba67b4ab9b92e4a5c50",
+      "working_tree_dirty": false,
+      "notes": "US 线路下页面显示无法连接 reCAPTCHA 服务；未返回航班结果。；RuntimeError",
+      "finished_at": "2026-10-27T15:20:06+08:00"
     },
     {
       "site": "aliexpress-scraper",
@@ -86,8 +178,37 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 2,
+          "duration_seconds": 180.15,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_product_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 56.308
+            },
+            {
+              "test": "test_search_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 123.387,
+              "error_type": "ScrapeError",
+              "code": "SCRAPE_FAILED",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 180.15,
       "requests": 2,
+      "sessions_created": 2,
       "observed_http_statuses": [],
       "countries": null,
       "revision": null,
@@ -112,8 +233,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 2,
+          "duration_seconds": 97.58,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_product_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 96.159,
+              "error_type": "ScrapeError",
+              "code": "SCRAPE_FAILED",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 97.58,
       "requests": 2,
+      "sessions_created": 2,
       "observed_http_statuses": [],
       "countries": null,
       "revision": null,
@@ -138,8 +282,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 2,
+          "requests": 2,
+          "duration_seconds": 301.11,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_product_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 10.042,
+              "error_type": "ScrapeError",
+              "code": "SCRAPE_FAILED",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 301.11,
       "requests": 2,
+      "sessions_created": 3,
       "observed_http_statuses": [],
       "countries": null,
       "revision": null,
@@ -215,8 +382,82 @@
           ]
         }
       ],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 2,
+          "duration_seconds": 14.66,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_app_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 4.03
+            },
+            {
+              "test": "test_reviews_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 9.101,
+              "error_type": "ScrapeError",
+              "code": "SCRAPE_FAILED",
+              "status": null
+            }
+          ],
+          "outputs": [
+            {
+              "function": "scrape_app_metadata",
+              "type": "dict",
+              "count": 37,
+              "fields": [
+                "advisories",
+                "appId",
+                "appletvScreenshots",
+                "bundleId",
+                "contentRating",
+                "country",
+                "currency",
+                "description",
+                "developer",
+                "developerId",
+                "developerUrl",
+                "features",
+                "fileSizeBytes",
+                "formattedPrice",
+                "free",
+                "genre",
+                "genreIds",
+                "genres",
+                "icon",
+                "ipadScreenshots",
+                "languages",
+                "minimumOsVersion",
+                "price",
+                "ratings",
+                "ratingsCurrentVersion",
+                "released",
+                "score",
+                "scoreCurrentVersion",
+                "screenshots",
+                "seller",
+                "sellerUrl",
+                "summary",
+                "supportedDevices",
+                "title",
+                "updated",
+                "url",
+                "version"
+              ]
+            }
+          ]
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 14.66,
       "requests": 2,
+      "sessions_created": 2,
       "observed_http_statuses": [
         200
       ],
@@ -255,8 +496,43 @@
           "count": 20
         }
       ],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 2,
+          "duration_seconds": 25.22,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_page_url",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 0.0
+            },
+            {
+              "test": "test_listings_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 23.929,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": [
+            {
+              "function": "scrape_listings",
+              "type": "list",
+              "count": 20
+            }
+          ]
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 25.22,
       "requests": 2,
+      "sessions_created": 2,
       "observed_http_statuses": [
         200,
         403
@@ -284,8 +560,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 2,
+          "duration_seconds": 143.39,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_product_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 142.101,
+              "error_type": "ScrapeError",
+              "code": "SCRAPE_FAILED",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 143.39,
       "requests": 2,
+      "sessions_created": 2,
       "observed_http_statuses": [
         200
       ],
@@ -326,8 +625,45 @@
           "count": 8
         }
       ],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 0,
+          "requests": 4,
+          "duration_seconds": 39.47,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_serp_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 26.416
+            },
+            {
+              "test": "test_keyword_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 11.903
+            }
+          ],
+          "outputs": [
+            {
+              "function": "scrape_search",
+              "type": "list",
+              "count": 30
+            },
+            {
+              "function": "scrape_keywords",
+              "type": "list",
+              "count": 8
+            }
+          ]
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 39.47,
       "requests": 4,
+      "sessions_created": 4,
       "observed_http_statuses": [
         200
       ],
@@ -354,8 +690,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 2,
+          "duration_seconds": 77.67,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_search_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 76.426,
+              "error_type": "ScrapeError",
+              "code": "SCRAPE_FAILED",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 77.67,
       "requests": 2,
+      "sessions_created": 2,
       "observed_http_statuses": [
         202
       ],
@@ -398,8 +757,47 @@
           ]
         }
       ],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 3,
+          "duration_seconds": 49.85,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_category_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 39.311
+            },
+            {
+              "test": "test_review_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 9.243,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": [
+            {
+              "function": "scrape_category",
+              "type": "dict",
+              "count": 2,
+              "fields": [
+                "products",
+                "total_pages"
+              ]
+            }
+          ]
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 49.85,
       "requests": 3,
+      "sessions_created": 3,
       "observed_http_statuses": [
         200,
         403
@@ -430,8 +828,34 @@
           "count": 151
         }
       ],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 0,
+          "requests": 1,
+          "duration_seconds": 39.07,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_scrape_conversation",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 37.884
+            }
+          ],
+          "outputs": [
+            {
+              "function": "scrape_conversation",
+              "type": "str",
+              "count": 151
+            }
+          ]
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 39.07,
       "requests": 1,
+      "sessions_created": 1,
       "observed_http_statuses": [
         200
       ],
@@ -458,8 +882,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 4,
+          "duration_seconds": 23.29,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_company_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 21.998,
+              "error_type": "UnboundLocalError",
+              "code": null,
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 23.29,
       "requests": 4,
+      "sessions_created": 4,
       "observed_http_statuses": [
         403
       ],
@@ -490,8 +937,35 @@
           "fields": []
         }
       ],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 0,
+          "requests": 2,
+          "duration_seconds": 18.05,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_scrape_tracking",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 16.926
+            }
+          ],
+          "outputs": [
+            {
+              "function": "scrape_tracking",
+              "type": "dict",
+              "count": 0,
+              "fields": []
+            }
+          ]
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 18.05,
       "requests": 2,
+      "sessions_created": 2,
       "observed_http_statuses": [
         200,
         403
@@ -499,7 +973,7 @@
       "countries": null,
       "revision": null,
       "working_tree_dirty": null,
-      "notes": "目标导航 HTTP 403；原测试接受空输出，验收不通过",
+      "notes": "示例运单没有返回轨迹；已加强测试，空数据不计为通过。；目标导航 HTTP 403；测试返回空输出，验收不通过",
       "finished_at": "2026-10-27T14:09:14+08:00"
     },
     {
@@ -519,8 +993,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 2,
+          "duration_seconds": 8.16,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_product_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 6.873,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 8.16,
       "requests": 2,
+      "sessions_created": 2,
       "observed_http_statuses": [
         403
       ],
@@ -547,8 +1044,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 2,
+          "requests": 2,
+          "duration_seconds": 306.29,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_properties_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 6.213,
+              "error_type": "ValueError",
+              "code": null,
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 306.29,
       "requests": 2,
+      "sessions_created": 2,
       "observed_http_statuses": [
         200
       ],
@@ -575,8 +1095,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 8.67,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_product_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 7.195,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 8.67,
       "requests": 1,
+      "sessions_created": 1,
       "observed_http_statuses": [
         403
       ],
@@ -603,8 +1146,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 102.98,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_scrape_flights",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 101.647,
+              "error_type": "ScrapeError",
+              "code": "SCRAPE_FAILED",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 102.98,
       "requests": 1,
+      "sessions_created": 1,
       "observed_http_statuses": [],
       "countries": null,
       "revision": null,
@@ -629,8 +1195,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 2,
+          "duration_seconds": 10.19,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_product_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 8.908,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 10.19,
       "requests": 2,
+      "sessions_created": 2,
       "observed_http_statuses": [
         403
       ],
@@ -657,8 +1246,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 0,
+          "duration_seconds": 1.21,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_scrape_hotel_search",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 0.0,
+              "error_type": "TypeError",
+              "code": null,
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 1.21,
       "requests": 0,
+      "sessions_created": 0,
       "observed_http_statuses": [],
       "countries": null,
       "revision": null,
@@ -706,8 +1318,54 @@
           "count": 12
         }
       ],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 12,
+          "duration_seconds": 268.76,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_page_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 89.775
+            },
+            {
+              "test": "test_marketplace_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 28.115
+            },
+            {
+              "test": "test_events_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 149.63,
+              "error_type": "ScrapeError",
+              "code": "SCRAPE_FAILED",
+              "status": null
+            }
+          ],
+          "outputs": [
+            {
+              "function": "scrape_facebook_page",
+              "type": "list",
+              "count": 3
+            },
+            {
+              "function": "scrape_marketplace_listings",
+              "type": "list",
+              "count": 12
+            }
+          ]
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 268.76,
       "requests": 12,
+      "sessions_created": 12,
       "observed_http_statuses": [
         200
       ],
@@ -746,8 +1404,43 @@
           "count": 3
         }
       ],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 6,
+          "duration_seconds": 303.5,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_product_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 13.113
+            },
+            {
+              "test": "test_search_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 280.338,
+              "error_type": "ScrapeError",
+              "code": "SCRAPE_FAILED",
+              "status": null
+            }
+          ],
+          "outputs": [
+            {
+              "function": "scrape_products",
+              "type": "list",
+              "count": 3
+            }
+          ]
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 303.5,
       "requests": 6,
+      "sessions_created": 6,
       "observed_http_statuses": [
         200
       ],
@@ -774,8 +1467,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 95.75,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_review_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 94.397,
+              "error_type": "ScrapeError",
+              "code": "TIMEOUT",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 95.75,
       "requests": 1,
+      "sessions_created": 1,
       "observed_http_statuses": [
         403
       ],
@@ -826,8 +1542,55 @@
           "count": 10
         }
       ],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 2,
+          "duration_seconds": 16.97,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_glassdoor_url",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 0.0
+            },
+            {
+              "test": "test_salary_range_parsing",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 0.0
+            },
+            {
+              "test": "test_find_companies",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 7.363
+            },
+            {
+              "test": "test_job_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 8.187,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": [
+            {
+              "function": "find_companies",
+              "type": "list",
+              "count": 10
+            }
+          ]
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 16.97,
       "requests": 2,
+      "sessions_created": 2,
       "observed_http_statuses": [
         200,
         403
@@ -861,8 +1624,37 @@
           "count": 12
         }
       ],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 3,
+          "duration_seconds": 95.38,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_product_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 94.053,
+              "error_type": "ScrapeError",
+              "code": "ERR_TUNNEL_CONNECTION_FAILED",
+              "status": null
+            }
+          ],
+          "outputs": [
+            {
+              "function": "scrape_search",
+              "type": "list",
+              "count": 12
+            }
+          ]
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 95.38,
       "requests": 3,
+      "sessions_created": 3,
       "observed_http_statuses": [
         200
       ],
@@ -889,15 +1681,38 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 2,
+          "duration_seconds": 77.29,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_hotel_search_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 75.825,
+              "error_type": "JSONDecodeError",
+              "code": null,
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 77.29,
       "requests": 2,
+      "sessions_created": 1,
       "observed_http_statuses": [
         200
       ],
       "countries": null,
       "revision": null,
       "working_tree_dirty": null,
-      "notes": "JSONDecodeError",
+      "notes": "首屏捕获到酒店 JSON；分页接口返回 HTTP 200 的非 JSON 文本，整套用例未通过。；JSONDecodeError",
       "finished_at": "2026-10-27T14:30:49+08:00"
     },
     {
@@ -948,8 +1763,62 @@
           }
         }
       ],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 2,
+          "duration_seconds": 65.92,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_book_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 48.831
+            },
+            {
+              "test": "test_review_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 15.729,
+              "error_type": "ScrapeError",
+              "code": "ERR_TUNNEL_CONNECTION_FAILED",
+              "status": null
+            }
+          ],
+          "outputs": [
+            {
+              "function": "scrape_book",
+              "type": "dict",
+              "count": 13,
+              "fields": [
+                "author",
+                "awards",
+                "description",
+                "first_published",
+                "format",
+                "genres",
+                "image_url",
+                "isbn",
+                "language",
+                "num_pages",
+                "rating",
+                "title",
+                "url"
+              ],
+              "collection_counts": {
+                "genres": 7,
+                "awards": 3
+              }
+            }
+          ]
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 65.92,
       "requests": 2,
+      "sessions_created": 2,
       "observed_http_statuses": [
         200
       ],
@@ -992,15 +1861,54 @@
           }
         }
       ],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 30.39,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_scrape_flights",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 29.239,
+              "error_type": "AssertionError",
+              "code": null,
+              "status": null
+            }
+          ],
+          "outputs": [
+            {
+              "function": "scrape_flights",
+              "type": "dict",
+              "count": 5,
+              "fields": [
+                "departure_date",
+                "flights",
+                "return_date",
+                "route",
+                "search_date"
+              ],
+              "collection_counts": {
+                "flights": 0
+              }
+            }
+          ]
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 30.39,
       "requests": 1,
+      "sessions_created": 1,
       "observed_http_statuses": [
         200
       ],
       "countries": null,
       "revision": null,
       "working_tree_dirty": null,
-      "notes": "AssertionError",
+      "notes": "页面显示 No results returned / Oops, something went wrong；未获得航班记录。；AssertionError",
       "finished_at": "2026-10-27T14:32:25+08:00"
     },
     {
@@ -1013,23 +1921,99 @@
           "test": "test_search_scraping",
           "outcome": "failed",
           "phase": "call",
-          "duration": 112.387,
-          "error_type": "ScrapeError",
-          "code": "TIMEOUT",
+          "duration": 19.378,
+          "error_type": "AssertionError",
+          "code": null,
           "status": null
         }
       ],
-      "outputs": [],
-      "duration_seconds": 113.53,
+      "outputs": [
+        {
+          "function": "scrape_jobs",
+          "type": "dict",
+          "count": 4,
+          "fields": [
+            "jobs",
+            "location",
+            "query",
+            "search_date"
+          ],
+          "collection_counts": {
+            "jobs": 0
+          }
+        }
+      ],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 113.53,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_search_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 112.387,
+              "error_type": "ScrapeError",
+              "code": "TIMEOUT",
+              "status": null
+            }
+          ],
+          "outputs": []
+        },
+        {
+          "phase": "retest-1",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 20.7,
+          "countries": {
+            "US": 1
+          },
+          "tests": [
+            {
+              "test": "test_search_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 19.378,
+              "error_type": "AssertionError",
+              "code": null,
+              "status": null
+            }
+          ],
+          "outputs": [
+            {
+              "function": "scrape_jobs",
+              "type": "dict",
+              "count": 4,
+              "fields": [
+                "jobs",
+                "location",
+                "query",
+                "search_date"
+              ],
+              "collection_counts": {
+                "jobs": 0
+              }
+            }
+          ]
+        }
+      ],
+      "latest_phase": "retest-1",
+      "duration_seconds": 20.7,
       "requests": 1,
+      "sessions_created": 1,
       "observed_http_statuses": [
         200
       ],
-      "countries": null,
-      "revision": null,
-      "working_tree_dirty": null,
-      "notes": "TIMEOUT",
-      "finished_at": "2026-10-27T14:34:19+08:00"
+      "countries": {
+        "US": 1
+      },
+      "revision": "a77f10f71a6962c5c6026ba67b4ab9b92e4a5c50",
+      "working_tree_dirty": true,
+      "notes": "AssertionError",
+      "finished_at": "2026-10-27T15:23:26+08:00"
     },
     {
       "site": "google-play-scraper",
@@ -1048,8 +2032,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 2,
+          "duration_seconds": 20.07,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_app_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 18.777,
+              "error_type": "ScrapeError",
+              "code": "ERR_TUNNEL_CONNECTION_FAILED",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 20.07,
       "requests": 2,
+      "sessions_created": 2,
       "observed_http_statuses": [
         200
       ],
@@ -1076,8 +2083,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 4,
+          "duration_seconds": 21.04,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_serp_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 19.702,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 21.04,
       "requests": 4,
+      "sessions_created": 4,
       "observed_http_statuses": [
         200,
         429
@@ -1105,8 +2135,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 9.13,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_properties_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 7.753,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 9.13,
       "requests": 1,
+      "sessions_created": 1,
       "observed_http_statuses": [
         403
       ],
@@ -1133,8 +2186,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 8.52,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_idealista_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 7.223,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 8.52,
       "requests": 1,
+      "sessions_created": 1,
       "observed_http_statuses": [
         403
       ],
@@ -1249,8 +2325,119 @@
           }
         }
       ],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 0,
+          "requests": 5,
+          "duration_seconds": 84.11,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_product_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 13.635
+            },
+            {
+              "test": "test_search_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 27.574
+            },
+            {
+              "test": "test_manufacturer_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 26.982
+            },
+            {
+              "test": "test_price_history_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 14.722
+            }
+          ],
+          "outputs": [
+            {
+              "function": "scrape_products",
+              "type": "list",
+              "count": 1,
+              "item_fields": [
+                "brand",
+                "currency",
+                "description",
+                "high_price",
+                "image",
+                "low_price",
+                "name",
+                "offer_count",
+                "offers",
+                "product_id",
+                "rating",
+                "rating_count",
+                "url"
+              ],
+              "nonempty_items": 1
+            },
+            {
+              "function": "scrape_search",
+              "type": "list",
+              "count": 60,
+              "item_fields": [
+                "currency",
+                "image",
+                "name",
+                "offer_count",
+                "price",
+                "product_id",
+                "shop_name",
+                "url"
+              ],
+              "nonempty_items": 60
+            },
+            {
+              "function": "scrape_manufacturer",
+              "type": "dict",
+              "count": 5,
+              "fields": [
+                "description",
+                "name",
+                "products",
+                "result_count",
+                "url"
+              ],
+              "collection_counts": {
+                "products": 36
+              }
+            },
+            {
+              "function": "scrape_price_history",
+              "type": "dict",
+              "count": 10,
+              "fields": [
+                "avg_price",
+                "currency",
+                "highest_price",
+                "highest_price_days",
+                "lowest_price",
+                "lowest_price_days",
+                "period",
+                "points",
+                "product_id",
+                "start_date"
+              ],
+              "collection_counts": {
+                "points": 92
+              }
+            }
+          ]
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 84.11,
       "requests": 5,
+      "sessions_created": 5,
       "observed_http_statuses": [
         200
       ],
@@ -1283,15 +2470,44 @@
           "count": 0
         }
       ],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 7.17,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_title_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 6.006,
+              "error_type": "AssertionError",
+              "code": null,
+              "status": null
+            }
+          ],
+          "outputs": [
+            {
+              "function": "scrape_titles",
+              "type": "list",
+              "count": 0
+            }
+          ]
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 7.17,
       "requests": 1,
+      "sessions_created": 1,
       "observed_http_statuses": [
         202
       ],
       "countries": null,
       "revision": null,
       "working_tree_dirty": null,
-      "notes": "AssertionError；原测试接受空输出，验收不通过",
+      "notes": "返回 HTTP 202 验证页面；首轮未获得影片结构化数据，等待数据就绪的修复待复测。；AssertionError；未返回可验收的数据",
       "finished_at": "2026-10-27T14:36:49+08:00"
     },
     {
@@ -1311,8 +2527,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 11.18,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_properties_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 9.857,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 11.18,
       "requests": 1,
+      "sessions_created": 1,
       "observed_http_statuses": [
         401
       ],
@@ -1339,8 +2578,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 11.67,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_properties_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 10.304,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 11.67,
       "requests": 1,
+      "sessions_created": 1,
       "observed_http_statuses": [
         403
       ],
@@ -1367,8 +2629,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 2,
+          "duration_seconds": 10.46,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_properties_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 9.103,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 10.46,
       "requests": 2,
+      "sessions_created": 2,
       "observed_http_statuses": [
         403
       ],
@@ -1448,8 +2733,84 @@
           "nonempty_items": 3
         }
       ],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 0,
+          "requests": 5,
+          "duration_seconds": 92.33,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_search_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 22.076
+            },
+            {
+              "test": "test_property_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 68.939
+            }
+          ],
+          "outputs": [
+            {
+              "function": "scrape_search",
+              "type": "dict",
+              "count": 3,
+              "fields": [
+                "search_properties",
+                "total_pages",
+                "total_properties"
+              ],
+              "collection_counts": {
+                "search_properties": 30
+              }
+            },
+            {
+              "function": "scrape_search",
+              "type": "dict",
+              "count": 3,
+              "fields": [
+                "search_properties",
+                "total_pages",
+                "total_properties"
+              ],
+              "collection_counts": {
+                "search_properties": 30
+              }
+            },
+            {
+              "function": "scrape_properties",
+              "type": "list",
+              "count": 3,
+              "item_fields": [
+                "area_m2",
+                "bathrooms",
+                "bedrooms",
+                "city",
+                "currency",
+                "description",
+                "images",
+                "neighborhood",
+                "phone",
+                "price",
+                "price_display",
+                "state",
+                "street",
+                "title",
+                "url"
+              ],
+              "nonempty_items": 3
+            }
+          ]
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 92.33,
       "requests": 5,
+      "sessions_created": 5,
       "observed_http_statuses": [
         200
       ],
@@ -1476,8 +2837,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 8.02,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_search_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 6.66,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 8.02,
       "requests": 1,
+      "sessions_created": 1,
       "observed_http_statuses": [
         403
       ],
@@ -1568,8 +2952,95 @@
           }
         }
       ],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 3,
+          "duration_seconds": 44.89,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_user_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 25.05
+            },
+            {
+              "test": "test_post_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 12.364
+            },
+            {
+              "test": "test_user_post_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 6.134,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": [
+            {
+              "function": "scrape_user",
+              "type": "dict",
+              "count": 16,
+              "fields": [
+                "account_badges",
+                "bio",
+                "bio_links",
+                "facebook_id",
+                "followers",
+                "follows",
+                "highlights",
+                "id",
+                "is_memorialized",
+                "is_private",
+                "is_verified",
+                "name",
+                "profile_image",
+                "pronouns",
+                "threads_handle",
+                "username"
+              ],
+              "collection_counts": {
+                "bio_links": 1,
+                "pronouns": 0,
+                "account_badges": 0,
+                "highlights": 1
+              }
+            },
+            {
+              "function": "scrape_post",
+              "type": "dict",
+              "count": 10,
+              "fields": [
+                "captions",
+                "comments",
+                "comments_count",
+                "id",
+                "likes",
+                "location",
+                "shortcode",
+                "src",
+                "src_attached",
+                "taken_at"
+              ],
+              "collection_counts": {
+                "src_attached": 4,
+                "captions": 1,
+                "comments": 9
+              }
+            }
+          ]
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 44.89,
       "requests": 3,
+      "sessions_created": 3,
       "observed_http_statuses": [
         200,
         401
@@ -1597,8 +3068,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 99.39,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_scrape_roundtrip",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 97.833,
+              "error_type": "ScrapeError",
+              "code": "TIMEOUT",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 99.39,
       "requests": 1,
+      "sessions_created": 1,
       "observed_http_statuses": [
         200
       ],
@@ -1625,8 +3119,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 2,
+          "duration_seconds": 70.44,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_search_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 68.795,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 70.44,
       "requests": 2,
+      "sessions_created": 2,
       "observed_http_statuses": [
         200,
         403
@@ -1671,8 +3188,48 @@
           "nonempty_items": 1
         }
       ],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 6,
+          "duration_seconds": 43.73,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_profile_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 8.494
+            },
+            {
+              "test": "test_company_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 33.813,
+              "error_type": "ScrapeError",
+              "code": "ERR_TUNNEL_CONNECTION_FAILED",
+              "status": null
+            }
+          ],
+          "outputs": [
+            {
+              "function": "scrape_profile",
+              "type": "list",
+              "count": 1,
+              "item_fields": [
+                "posts",
+                "profile"
+              ],
+              "nonempty_items": 1
+            }
+          ]
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 43.73,
       "requests": 6,
+      "sessions_created": 6,
       "observed_http_statuses": [
         200
       ],
@@ -1699,8 +3256,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 2,
+          "duration_seconds": 10.44,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_listing_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 9.044,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 10.44,
       "requests": 2,
+      "sessions_created": 2,
       "observed_http_statuses": [
         403
       ],
@@ -1727,8 +3307,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 2,
+          "duration_seconds": 8.13,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_product_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 6.756,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 8.13,
       "requests": 2,
+      "sessions_created": 2,
       "observed_http_statuses": [
         403
       ],
@@ -1755,8 +3358,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 21.99,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_scrape_tracking",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 20.519,
+              "error_type": "ValueError",
+              "code": null,
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 21.99,
       "requests": 1,
+      "sessions_created": 1,
       "observed_http_statuses": [
         200
       ],
@@ -1783,8 +3409,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 9.02,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_search_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 7.371,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 9.02,
       "requests": 1,
+      "sessions_created": 1,
       "observed_http_statuses": [
         403
       ],
@@ -1811,8 +3460,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 9.26,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_product_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 7.838,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 9.26,
       "requests": 1,
+      "sessions_created": 1,
       "observed_http_statuses": [
         403
       ],
@@ -1839,8 +3511,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 3,
+          "duration_seconds": 17.16,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_web_search_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 15.705,
+              "error_type": "ScrapeError",
+              "code": "ERR_CERT_AUTHORITY_INVALID",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 17.16,
       "requests": 3,
+      "sessions_created": 3,
       "observed_http_statuses": [
         200
       ],
@@ -1867,15 +3562,38 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 2,
+          "duration_seconds": 9.17,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_product_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 7.845,
+              "error_type": "AttributeError",
+              "code": null,
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 9.17,
       "requests": 2,
+      "sessions_created": 2,
       "observed_http_statuses": [
         200
       ],
       "countries": null,
       "revision": "b8a7bc16347ce66e753aa5243eb418dd48ab57fc",
       "working_tree_dirty": false,
-      "notes": "AttributeError",
+      "notes": "返回的文档没有商品配置数据；已增加数据就绪检查，待复测。；AttributeError",
       "finished_at": "2026-10-27T14:44:46+08:00"
     },
     {
@@ -1895,8 +3613,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 10.61,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_scrape_answer",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 9.297,
+              "error_type": "ScrapeError",
+              "code": "ERR_TUNNEL_CONNECTION_FAILED",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 10.61,
       "requests": 1,
+      "sessions_created": 1,
       "observed_http_statuses": [],
       "countries": null,
       "revision": "b8a7bc16347ce66e753aa5243eb418dd48ab57fc",
@@ -1965,8 +3706,75 @@
           }
         }
       ],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 8,
+          "duration_seconds": 100.7,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_search_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 29.393
+            },
+            {
+              "test": "test_board_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 31.523
+            },
+            {
+              "test": "test_profile_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 38.356,
+              "error_type": "ScrapeError",
+              "code": "BROWSER_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": [
+            {
+              "function": "scrape_search",
+              "type": "dict",
+              "count": 3,
+              "fields": [
+                "pins",
+                "query",
+                "search_date"
+              ],
+              "collection_counts": {
+                "pins": 44
+              }
+            },
+            {
+              "function": "scrape_board",
+              "type": "dict",
+              "count": 8,
+              "fields": [
+                "board_name",
+                "board_slug",
+                "description",
+                "follower_count",
+                "pin_count",
+                "pins",
+                "url",
+                "username"
+              ],
+              "collection_counts": {
+                "pins": 49
+              }
+            }
+          ]
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 100.7,
       "requests": 8,
+      "sessions_created": 3,
       "observed_http_statuses": [
         200
       ],
@@ -1993,8 +3801,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 19.68,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_properties_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 18.308,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 19.68,
       "requests": 1,
+      "sessions_created": 1,
       "observed_http_statuses": [
         429
       ],
@@ -2021,8 +3852,31 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 11.21,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_property_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 9.805,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 11.21,
       "requests": 1,
+      "sessions_created": 1,
       "observed_http_statuses": [
         429
       ],
@@ -2086,8 +3940,68 @@
           }
         }
       ],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 8,
+          "duration_seconds": 153.23,
+          "countries": null,
+          "tests": [
+            {
+              "test": "test_subreddit_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 80.804
+            },
+            {
+              "test": "test_post_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 71.04
+            },
+            {
+              "test": "test_user_post_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 0.0,
+              "error_type": "TypeError",
+              "code": null,
+              "status": null
+            }
+          ],
+          "outputs": [
+            {
+              "function": "scrape_subreddit",
+              "type": "dict",
+              "count": 2,
+              "fields": [
+                "info",
+                "posts"
+              ],
+              "collection_counts": {
+                "posts": 75
+              }
+            },
+            {
+              "function": "scrape_post",
+              "type": "dict",
+              "count": 2,
+              "fields": [
+                "comments",
+                "info"
+              ],
+              "collection_counts": {
+                "comments": 57
+              }
+            }
+          ]
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 153.23,
       "requests": 8,
+      "sessions_created": 8,
       "observed_http_statuses": [
         200
       ],
@@ -2114,8 +4028,33 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 2,
+          "duration_seconds": 10.3,
+          "countries": {
+            "US": 2
+          },
+          "tests": [
+            {
+              "test": "test_properties_for_sale_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 8.707,
+              "error_type": "ValueError",
+              "code": null,
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 10.3,
       "requests": 2,
+      "sessions_created": 2,
       "observed_http_statuses": [
         202
       ],
@@ -2129,33 +4068,457 @@
     },
     {
       "site": "rightmove-scraper",
-      "status": "failed",
-      "passed": 0,
+      "status": "passed",
+      "passed": 2,
       "collected": 2,
       "tests": [
         {
           "test": "test_search_scraping",
-          "outcome": "failed",
+          "outcome": "passed",
           "phase": "call",
-          "duration": 7.034,
-          "error_type": "JSONDecodeError",
-          "code": null,
-          "status": null
+          "duration": 100.76
+        },
+        {
+          "test": "test_properties_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 161.659
         }
       ],
-      "outputs": [],
-      "duration_seconds": 8.41,
-      "requests": 1,
+      "outputs": [
+        {
+          "function": "find_locations",
+          "type": "list",
+          "count": 10
+        },
+        {
+          "function": "scrape_search",
+          "type": "list",
+          "count": 75,
+          "item_fields": [
+            "addedOrReduced",
+            "auction",
+            "bathrooms",
+            "bedrooms",
+            "channel",
+            "commercial",
+            "commercialSearchProminenceSelected",
+            "contactUrl",
+            "countryCode",
+            "customer",
+            "development",
+            "displayAddress",
+            "displaySize",
+            "displayStatus",
+            "distance",
+            "enhancedListing",
+            "enquiredTimestamp",
+            "enquiryAddedTimestamp",
+            "enquiryCalledTimestamp",
+            "featuredProperty",
+            "feesApply",
+            "feesApplyText",
+            "firstVisibleDate",
+            "formattedBranchName",
+            "formattedDistance",
+            "hasBrandPlus",
+            "heading",
+            "hidden",
+            "id",
+            "images",
+            "isRecent",
+            "keyFeatures",
+            "keywordMatchType",
+            "keywords",
+            "letAvailableDate",
+            "listingUpdate",
+            "location",
+            "lozengeModel",
+            "numberOfFloorplans",
+            "numberOfImages",
+            "numberOfVirtualTours",
+            "onlineViewingsAvailable",
+            "premiumListing",
+            "price",
+            "productLabel",
+            "propertyImages",
+            "propertySubType",
+            "propertyTypeFullDescription",
+            "propertyUrl",
+            "residential",
+            "reviews",
+            "saved",
+            "showOnMap",
+            "staticMapUrl",
+            "streetView",
+            "students",
+            "summary",
+            "tags",
+            "tenure",
+            "transactionType",
+            "updateDate",
+            "virtualTours"
+          ],
+          "nonempty_items": 75
+        },
+        {
+          "function": "find_locations",
+          "type": "list",
+          "count": 10
+        },
+        {
+          "function": "scrape_search",
+          "type": "list",
+          "count": 50,
+          "item_fields": [
+            "addedOrReduced",
+            "auction",
+            "bathrooms",
+            "bedrooms",
+            "channel",
+            "commercial",
+            "commercialSearchProminenceSelected",
+            "contactUrl",
+            "countryCode",
+            "customer",
+            "development",
+            "displayAddress",
+            "displaySize",
+            "displayStatus",
+            "distance",
+            "enhancedListing",
+            "enquiredTimestamp",
+            "enquiryAddedTimestamp",
+            "enquiryCalledTimestamp",
+            "featuredProperty",
+            "feesApply",
+            "feesApplyText",
+            "firstVisibleDate",
+            "formattedBranchName",
+            "formattedDistance",
+            "hasBrandPlus",
+            "heading",
+            "hidden",
+            "id",
+            "images",
+            "isRecent",
+            "keyFeatures",
+            "keywordMatchType",
+            "keywords",
+            "letAvailableDate",
+            "listingUpdate",
+            "location",
+            "lozengeModel",
+            "numberOfFloorplans",
+            "numberOfImages",
+            "numberOfVirtualTours",
+            "onlineViewingsAvailable",
+            "premiumListing",
+            "price",
+            "productLabel",
+            "propertyImages",
+            "propertySubType",
+            "propertyTypeFullDescription",
+            "propertyUrl",
+            "residential",
+            "reviews",
+            "saved",
+            "showOnMap",
+            "staticMapUrl",
+            "streetView",
+            "students",
+            "summary",
+            "tags",
+            "tenure",
+            "transactionType",
+            "updateDate",
+            "virtualTours"
+          ],
+          "nonempty_items": 50
+        },
+        {
+          "function": "scrape_properties",
+          "type": "list",
+          "count": 5,
+          "item_fields": [
+            "address",
+            "agency",
+            "archived",
+            "available",
+            "bathrooms",
+            "bedrooms",
+            "brochures",
+            "description",
+            "features",
+            "floorplans",
+            "history",
+            "id",
+            "industryAffiliations",
+            "latitude",
+            "longitude",
+            "nearest_airports",
+            "nearest_stations",
+            "phone",
+            "photos",
+            "price",
+            "price_sqft",
+            "property_type",
+            "sizings",
+            "subtitle",
+            "tags",
+            "title",
+            "type"
+          ],
+          "nonempty_items": 5
+        }
+      ],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 8.41,
+          "countries": {
+            "GB": 1
+          },
+          "tests": [
+            {
+              "test": "test_search_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 7.034,
+              "error_type": "JSONDecodeError",
+              "code": null,
+              "status": null
+            }
+          ],
+          "outputs": []
+        },
+        {
+          "phase": "retest-1",
+          "return_code": 0,
+          "requests": 12,
+          "duration_seconds": 263.67,
+          "countries": {
+            "GB": 12
+          },
+          "tests": [
+            {
+              "test": "test_search_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 100.76
+            },
+            {
+              "test": "test_properties_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 161.659
+            }
+          ],
+          "outputs": [
+            {
+              "function": "find_locations",
+              "type": "list",
+              "count": 10
+            },
+            {
+              "function": "scrape_search",
+              "type": "list",
+              "count": 75,
+              "item_fields": [
+                "addedOrReduced",
+                "auction",
+                "bathrooms",
+                "bedrooms",
+                "channel",
+                "commercial",
+                "commercialSearchProminenceSelected",
+                "contactUrl",
+                "countryCode",
+                "customer",
+                "development",
+                "displayAddress",
+                "displaySize",
+                "displayStatus",
+                "distance",
+                "enhancedListing",
+                "enquiredTimestamp",
+                "enquiryAddedTimestamp",
+                "enquiryCalledTimestamp",
+                "featuredProperty",
+                "feesApply",
+                "feesApplyText",
+                "firstVisibleDate",
+                "formattedBranchName",
+                "formattedDistance",
+                "hasBrandPlus",
+                "heading",
+                "hidden",
+                "id",
+                "images",
+                "isRecent",
+                "keyFeatures",
+                "keywordMatchType",
+                "keywords",
+                "letAvailableDate",
+                "listingUpdate",
+                "location",
+                "lozengeModel",
+                "numberOfFloorplans",
+                "numberOfImages",
+                "numberOfVirtualTours",
+                "onlineViewingsAvailable",
+                "premiumListing",
+                "price",
+                "productLabel",
+                "propertyImages",
+                "propertySubType",
+                "propertyTypeFullDescription",
+                "propertyUrl",
+                "residential",
+                "reviews",
+                "saved",
+                "showOnMap",
+                "staticMapUrl",
+                "streetView",
+                "students",
+                "summary",
+                "tags",
+                "tenure",
+                "transactionType",
+                "updateDate",
+                "virtualTours"
+              ],
+              "nonempty_items": 75
+            },
+            {
+              "function": "find_locations",
+              "type": "list",
+              "count": 10
+            },
+            {
+              "function": "scrape_search",
+              "type": "list",
+              "count": 50,
+              "item_fields": [
+                "addedOrReduced",
+                "auction",
+                "bathrooms",
+                "bedrooms",
+                "channel",
+                "commercial",
+                "commercialSearchProminenceSelected",
+                "contactUrl",
+                "countryCode",
+                "customer",
+                "development",
+                "displayAddress",
+                "displaySize",
+                "displayStatus",
+                "distance",
+                "enhancedListing",
+                "enquiredTimestamp",
+                "enquiryAddedTimestamp",
+                "enquiryCalledTimestamp",
+                "featuredProperty",
+                "feesApply",
+                "feesApplyText",
+                "firstVisibleDate",
+                "formattedBranchName",
+                "formattedDistance",
+                "hasBrandPlus",
+                "heading",
+                "hidden",
+                "id",
+                "images",
+                "isRecent",
+                "keyFeatures",
+                "keywordMatchType",
+                "keywords",
+                "letAvailableDate",
+                "listingUpdate",
+                "location",
+                "lozengeModel",
+                "numberOfFloorplans",
+                "numberOfImages",
+                "numberOfVirtualTours",
+                "onlineViewingsAvailable",
+                "premiumListing",
+                "price",
+                "productLabel",
+                "propertyImages",
+                "propertySubType",
+                "propertyTypeFullDescription",
+                "propertyUrl",
+                "residential",
+                "reviews",
+                "saved",
+                "showOnMap",
+                "staticMapUrl",
+                "streetView",
+                "students",
+                "summary",
+                "tags",
+                "tenure",
+                "transactionType",
+                "updateDate",
+                "virtualTours"
+              ],
+              "nonempty_items": 50
+            },
+            {
+              "function": "scrape_properties",
+              "type": "list",
+              "count": 5,
+              "item_fields": [
+                "address",
+                "agency",
+                "archived",
+                "available",
+                "bathrooms",
+                "bedrooms",
+                "brochures",
+                "description",
+                "features",
+                "floorplans",
+                "history",
+                "id",
+                "industryAffiliations",
+                "latitude",
+                "longitude",
+                "nearest_airports",
+                "nearest_stations",
+                "phone",
+                "photos",
+                "price",
+                "price_sqft",
+                "property_type",
+                "sizings",
+                "subtitle",
+                "tags",
+                "title",
+                "type"
+              ],
+              "nonempty_items": 5
+            }
+          ]
+        }
+      ],
+      "latest_phase": "retest-1",
+      "duration_seconds": 263.67,
+      "requests": 12,
+      "sessions_created": 12,
       "observed_http_statuses": [
         200
       ],
       "countries": {
-        "GB": 1
+        "GB": 12
       },
-      "revision": "4da49dccf365a9c572ff89a0cd4dd2c75592446d",
+      "revision": "a77f10f71a6962c5c6026ba67b4ab9b92e4a5c50",
       "working_tree_dirty": false,
-      "notes": "JSONDecodeError",
-      "finished_at": "2026-10-27T14:50:00+08:00"
+      "notes": "",
+      "finished_at": "2026-10-27T15:23:05+08:00"
     },
     {
       "site": "rs-online-scraper",
@@ -2174,8 +4537,33 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 2,
+          "duration_seconds": 9.2,
+          "countries": {
+            "US": 2
+          },
+          "tests": [
+            {
+              "test": "test_product_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 7.766,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 9.2,
       "requests": 2,
+      "sessions_created": 2,
       "observed_http_statuses": [
         403
       ],
@@ -2204,8 +4592,33 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 23.26,
+          "countries": {
+            "FR": 1
+          },
+          "tests": [
+            {
+              "test": "test_search_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 21.641,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 23.26,
       "requests": 1,
+      "sessions_created": 1,
       "observed_http_statuses": [
         403
       ],
@@ -2328,8 +4741,127 @@
           "count": 357
         }
       ],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 0,
+          "requests": 9,
+          "duration_seconds": 116.14,
+          "countries": {
+            "US": 9
+          },
+          "tests": [
+            {
+              "test": "test_preflight_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 16.593
+            },
+            {
+              "test": "test_catalog_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 14.377
+            },
+            {
+              "test": "test_collection_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 7.505
+            },
+            {
+              "test": "test_product_page_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 59.222
+            },
+            {
+              "test": "test_product_urls_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 17.193
+            }
+          ],
+          "outputs": [
+            {
+              "function": "scrape_catalog",
+              "type": "list",
+              "count": 40,
+              "item_fields": [
+                "description",
+                "handle",
+                "images",
+                "options",
+                "price_max",
+                "price_min",
+                "product_id",
+                "product_type",
+                "published_at",
+                "tags",
+                "title",
+                "updated_at",
+                "url",
+                "variants",
+                "vendor"
+              ],
+              "nonempty_items": 40
+            },
+            {
+              "function": "scrape_collection",
+              "type": "list",
+              "count": 20,
+              "item_fields": [
+                "description",
+                "handle",
+                "images",
+                "options",
+                "price_max",
+                "price_min",
+                "product_id",
+                "product_type",
+                "published_at",
+                "tags",
+                "title",
+                "updated_at",
+                "url",
+                "variants",
+                "vendor"
+              ],
+              "nonempty_items": 20
+            },
+            {
+              "function": "scrape_product_pages",
+              "type": "list",
+              "count": 2,
+              "item_fields": [
+                "availability",
+                "brand",
+                "currency",
+                "description",
+                "images",
+                "name",
+                "offers",
+                "price",
+                "product_id",
+                "schema_type",
+                "sku",
+                "url",
+                "variant_urls"
+              ],
+              "nonempty_items": 2
+            },
+            {
+              "function": "scrape_product_urls",
+              "type": "list",
+              "count": 357
+            }
+          ]
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 116.14,
       "requests": 9,
+      "sessions_created": 9,
       "observed_http_statuses": [
         200,
         404
@@ -2435,8 +4967,109 @@
           "count": 907
         }
       ],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 0,
+          "requests": 8,
+          "duration_seconds": 167.3,
+          "countries": {
+            "US": 8
+          },
+          "tests": [
+            {
+              "test": "test_website_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 97.64
+            },
+            {
+              "test": "test_website_compare_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 38.783
+            },
+            {
+              "test": "test_trend_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 21.288
+            },
+            {
+              "test": "test_sitemap_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 8.342
+            }
+          ],
+          "outputs": [
+            {
+              "function": "scrape_website",
+              "type": "list",
+              "count": 3,
+              "item_fields": [
+                "adsSource",
+                "categoryId",
+                "compareCompetitor",
+                "competitors",
+                "demographics",
+                "domain",
+                "domainGaStatus",
+                "geography",
+                "icon",
+                "incomingReferrals",
+                "interests",
+                "isDataFromGa",
+                "isDataFromGaHighlyDiscrepant",
+                "isInvalidTrafficData",
+                "outgoingReferrals",
+                "overview",
+                "previewDesktop",
+                "previewMobile",
+                "ranking",
+                "recentAds",
+                "searchesSource",
+                "snapshotDate",
+                "socialNetworksSource",
+                "technologies",
+                "traffic",
+                "trafficSources"
+              ],
+              "nonempty_items": 3
+            },
+            {
+              "function": "scrape_website_compare",
+              "type": "dict",
+              "count": 2,
+              "fields": [
+                "instagram.com",
+                "twitter.com"
+              ],
+              "collection_counts": {}
+            },
+            {
+              "function": "scrape_trendings",
+              "type": "list",
+              "count": 3,
+              "item_fields": [
+                "list",
+                "name",
+                "url"
+              ],
+              "nonempty_items": 3
+            },
+            {
+              "function": "scrape_sitemaps",
+              "type": "list",
+              "count": 907
+            }
+          ]
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 167.3,
       "requests": 8,
+      "sessions_created": 8,
       "observed_http_statuses": [
         200,
         202
@@ -2466,8 +5099,33 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 94.53,
+          "countries": {
+            "US": 1
+          },
+          "tests": [
+            {
+              "test": "test_scrape_flights_oneway",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 93.149,
+              "error_type": "ScrapeError",
+              "code": "TIMEOUT",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 94.53,
       "requests": 1,
+      "sessions_created": 1,
       "observed_http_statuses": [
         200
       ],
@@ -2496,8 +5154,33 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 7.68,
+          "countries": {
+            "US": 1
+          },
+          "tests": [
+            {
+              "test": "test_product_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 6.29,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 7.68,
       "requests": 1,
+      "sessions_created": 1,
       "observed_http_statuses": [
         403
       ],
@@ -2526,8 +5209,33 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 25.12,
+          "countries": {
+            "US": 1
+          },
+          "tests": [
+            {
+              "test": "test_product_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 23.733,
+              "error_type": "ValueError",
+              "code": null,
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 25.12,
       "requests": 1,
+      "sessions_created": 1,
       "observed_http_statuses": [
         200
       ],
@@ -2536,7 +5244,7 @@
       },
       "revision": "e76976570a9ffffdc259f5f3a9bc233b16a44b55",
       "working_tree_dirty": false,
-      "notes": "ValueError",
+      "notes": "商品页面可打开，但 deferred_enrichment 数据接口返回 HTTP 435。；ValueError",
       "finished_at": "2026-10-27T14:57:23+08:00"
     },
     {
@@ -2556,8 +5264,33 @@
         }
       ],
       "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 2,
+          "requests": 2,
+          "duration_seconds": 300.59,
+          "countries": {
+            "US": 2
+          },
+          "tests": [
+            {
+              "test": "test_thread_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 8.841,
+              "error_type": "ScrapeError",
+              "code": "ERR_TUNNEL_CONNECTION_FAILED",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 300.59,
       "requests": 2,
+      "sessions_created": 2,
       "observed_http_statuses": [
         200
       ],
@@ -2619,8 +5352,66 @@
           }
         }
       ],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 0,
+          "requests": 3,
+          "duration_seconds": 93.08,
+          "countries": {
+            "US": 3
+          },
+          "tests": [
+            {
+              "test": "test_artist_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 73.913
+            },
+            {
+              "test": "test_discovery_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 17.768
+            }
+          ],
+          "outputs": [
+            {
+              "function": "scrape_artist",
+              "type": "list",
+              "count": 2,
+              "item_fields": [
+                "artist_name",
+                "bestRating",
+                "events",
+                "events_count",
+                "genre",
+                "ratingCount",
+                "ratingValue",
+                "reviews"
+              ],
+              "nonempty_items": 2
+            },
+            {
+              "function": "scrape_discovery",
+              "type": "dict",
+              "count": 3,
+              "fields": [
+                "events",
+                "events_count",
+                "total_count"
+              ],
+              "collection_counts": {
+                "events": 20
+              }
+            }
+          ]
+        }
+      ],
+      "latest_phase": "initial",
       "duration_seconds": 93.08,
       "requests": 3,
+      "sessions_created": 3,
       "observed_http_statuses": [
         200
       ],
@@ -2634,115 +5425,1667 @@
     },
     {
       "site": "tiktok-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 5,
+      "tests": [
+        {
+          "test": "test_comment_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 107.71,
+          "error_type": "ScrapeError",
+          "code": "TIMEOUT",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 109.16,
+          "countries": {
+            "AU": 1
+          },
+          "tests": [
+            {
+              "test": "test_comment_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 107.71,
+              "error_type": "ScrapeError",
+              "code": "TIMEOUT",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
+      "duration_seconds": 109.16,
+      "requests": 1,
+      "sessions_created": 1,
+      "observed_http_statuses": [
+        200
+      ],
+      "countries": {
+        "AU": 1
+      },
+      "revision": "dbdd85e3f0867ba5390d4c063d279d82521d9a70",
+      "working_tree_dirty": true,
+      "notes": "TIMEOUT",
+      "finished_at": "2026-10-27T15:05:46+08:00"
     },
     {
       "site": "tripadvisor-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 3,
+      "tests": [
+        {
+          "test": "test_hotel_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 29.472,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 30.86,
+          "countries": {
+            "US": 1
+          },
+          "tests": [
+            {
+              "test": "test_hotel_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 29.472,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
+      "duration_seconds": 30.86,
+      "requests": 1,
+      "sessions_created": 1,
+      "observed_http_statuses": [
+        403
+      ],
+      "countries": {
+        "US": 1
+      },
+      "revision": "df4ae48106e87d73ada5a8cafeb8b962386fd1cb",
+      "working_tree_dirty": false,
+      "notes": "HTTP 403；目标导航 HTTP 403",
+      "finished_at": "2026-10-27T15:06:17+08:00"
     },
     {
       "site": "trustpilot-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 3,
+      "tests": [
+        {
+          "test": "test_company_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 28.696,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 2,
+          "duration_seconds": 30.01,
+          "countries": {
+            "US": 2
+          },
+          "tests": [
+            {
+              "test": "test_company_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 28.696,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
+      "duration_seconds": 30.01,
+      "requests": 2,
+      "sessions_created": 2,
+      "observed_http_statuses": [
+        403
+      ],
+      "countries": {
+        "US": 2
+      },
+      "revision": "df4ae48106e87d73ada5a8cafeb8b962386fd1cb",
+      "working_tree_dirty": false,
+      "notes": "HTTP 403；目标导航 HTTP 403",
+      "finished_at": "2026-10-27T15:06:47+08:00"
     },
     {
       "site": "twitter-scraper",
-      "status": "not_run",
-      "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "status": "passed",
+      "passed": 2,
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_tweet_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 65.138
+        },
+        {
+          "test": "test_user_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 27.408
+        }
+      ],
+      "outputs": [
+        {
+          "function": "scrape_tweet",
+          "type": "dict",
+          "count": 16,
+          "fields": [
+            "attached_media",
+            "attached_urls",
+            "bookmark_count",
+            "conversation_id",
+            "created_at",
+            "favorite_count",
+            "id",
+            "language",
+            "reply_count",
+            "retweet_count",
+            "tagged_hashtags",
+            "tagged_users",
+            "text",
+            "url",
+            "user",
+            "views"
+          ],
+          "collection_counts": {
+            "attached_urls": 0,
+            "attached_media": 1,
+            "tagged_users": 0,
+            "tagged_hashtags": 0
+          }
+        },
+        {
+          "function": "scrape_profile",
+          "type": "dict",
+          "count": 16,
+          "fields": [
+            "description",
+            "entities",
+            "fast_followers_count",
+            "followers_count",
+            "friends_count",
+            "id",
+            "joined",
+            "location",
+            "name",
+            "profile_banner_url",
+            "profile_image_url",
+            "rest_id",
+            "screen_name",
+            "statuses_count",
+            "url",
+            "verified"
+          ],
+          "collection_counts": {}
+        }
+      ],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 0,
+          "requests": 2,
+          "duration_seconds": 93.81,
+          "countries": {
+            "US": 2
+          },
+          "tests": [
+            {
+              "test": "test_tweet_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 65.138
+            },
+            {
+              "test": "test_user_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 27.408
+            }
+          ],
+          "outputs": [
+            {
+              "function": "scrape_tweet",
+              "type": "dict",
+              "count": 16,
+              "fields": [
+                "attached_media",
+                "attached_urls",
+                "bookmark_count",
+                "conversation_id",
+                "created_at",
+                "favorite_count",
+                "id",
+                "language",
+                "reply_count",
+                "retweet_count",
+                "tagged_hashtags",
+                "tagged_users",
+                "text",
+                "url",
+                "user",
+                "views"
+              ],
+              "collection_counts": {
+                "attached_urls": 0,
+                "attached_media": 1,
+                "tagged_users": 0,
+                "tagged_hashtags": 0
+              }
+            },
+            {
+              "function": "scrape_profile",
+              "type": "dict",
+              "count": 16,
+              "fields": [
+                "description",
+                "entities",
+                "fast_followers_count",
+                "followers_count",
+                "friends_count",
+                "id",
+                "joined",
+                "location",
+                "name",
+                "profile_banner_url",
+                "profile_image_url",
+                "rest_id",
+                "screen_name",
+                "statuses_count",
+                "url",
+                "verified"
+              ],
+              "collection_counts": {}
+            }
+          ]
+        }
+      ],
+      "latest_phase": "initial",
+      "duration_seconds": 93.81,
+      "requests": 2,
+      "sessions_created": 2,
+      "observed_http_statuses": [
+        200
+      ],
+      "countries": {
+        "US": 2
+      },
+      "revision": "df4ae48106e87d73ada5a8cafeb8b962386fd1cb",
+      "working_tree_dirty": false,
+      "notes": "",
+      "finished_at": "2026-10-27T15:08:21+08:00"
     },
     {
       "site": "vestiairecollective-scraper",
-      "status": "not_run",
-      "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "status": "passed",
+      "passed": 2,
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_product_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 99.952
+        },
+        {
+          "test": "test_search_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 49.796
+        }
+      ],
+      "outputs": [
+        {
+          "function": "scrape_search",
+          "type": "list",
+          "count": 180,
+          "item_fields": [
+            "brand",
+            "colors",
+            "country",
+            "createdAt",
+            "description",
+            "directShippingEligible",
+            "discount",
+            "dutyFree",
+            "editorPicks",
+            "id",
+            "likes",
+            "link",
+            "localEligible",
+            "model",
+            "name",
+            "personalizationType",
+            "pictures",
+            "price",
+            "seller",
+            "shouldBeGone",
+            "size",
+            "sold",
+            "stock",
+            "universeId"
+          ],
+          "nonempty_items": 180
+        },
+        {
+          "function": "scrape_products",
+          "type": "list",
+          "count": 3,
+          "item_fields": [
+            "alternateVersions",
+            "available",
+            "brand",
+            "buyerFees",
+            "category",
+            "color",
+            "condition",
+            "consignment",
+            "creationDate",
+            "description",
+            "descriptionTranslationProvider",
+            "dutyAndTax",
+            "flags",
+            "id",
+            "inStock",
+            "indexation",
+            "isLocal",
+            "likeCount",
+            "localizedDescription",
+            "material",
+            "measurementFormatted",
+            "meshLinks",
+            "metadata",
+            "model",
+            "name",
+            "negotiable",
+            "originalDescription",
+            "originalDescriptionLanguage",
+            "path",
+            "pictures",
+            "price",
+            "pricingBreakdown",
+            "prohibited",
+            "receipt",
+            "regularPrice",
+            "reserved",
+            "seller",
+            "sellerRegularPrice",
+            "shouldBeGone",
+            "size",
+            "sold",
+            "subcategory",
+            "type",
+            "universe",
+            "warehouse"
+          ],
+          "nonempty_items": 3
+        },
+        {
+          "function": "scrape_search",
+          "type": "list",
+          "count": 180,
+          "item_fields": [
+            "brand",
+            "colors",
+            "country",
+            "createdAt",
+            "description",
+            "directShippingEligible",
+            "discount",
+            "dutyFree",
+            "editorPicks",
+            "id",
+            "likes",
+            "link",
+            "localEligible",
+            "model",
+            "name",
+            "personalizationType",
+            "pictures",
+            "price",
+            "seller",
+            "shouldBeGone",
+            "size",
+            "sold",
+            "stock",
+            "universeId"
+          ],
+          "nonempty_items": 180
+        }
+      ],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 0,
+          "requests": 10,
+          "duration_seconds": 151.03,
+          "countries": {
+            "US": 10
+          },
+          "tests": [
+            {
+              "test": "test_product_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 99.952
+            },
+            {
+              "test": "test_search_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 49.796
+            }
+          ],
+          "outputs": [
+            {
+              "function": "scrape_search",
+              "type": "list",
+              "count": 180,
+              "item_fields": [
+                "brand",
+                "colors",
+                "country",
+                "createdAt",
+                "description",
+                "directShippingEligible",
+                "discount",
+                "dutyFree",
+                "editorPicks",
+                "id",
+                "likes",
+                "link",
+                "localEligible",
+                "model",
+                "name",
+                "personalizationType",
+                "pictures",
+                "price",
+                "seller",
+                "shouldBeGone",
+                "size",
+                "sold",
+                "stock",
+                "universeId"
+              ],
+              "nonempty_items": 180
+            },
+            {
+              "function": "scrape_products",
+              "type": "list",
+              "count": 3,
+              "item_fields": [
+                "alternateVersions",
+                "available",
+                "brand",
+                "buyerFees",
+                "category",
+                "color",
+                "condition",
+                "consignment",
+                "creationDate",
+                "description",
+                "descriptionTranslationProvider",
+                "dutyAndTax",
+                "flags",
+                "id",
+                "inStock",
+                "indexation",
+                "isLocal",
+                "likeCount",
+                "localizedDescription",
+                "material",
+                "measurementFormatted",
+                "meshLinks",
+                "metadata",
+                "model",
+                "name",
+                "negotiable",
+                "originalDescription",
+                "originalDescriptionLanguage",
+                "path",
+                "pictures",
+                "price",
+                "pricingBreakdown",
+                "prohibited",
+                "receipt",
+                "regularPrice",
+                "reserved",
+                "seller",
+                "sellerRegularPrice",
+                "shouldBeGone",
+                "size",
+                "sold",
+                "subcategory",
+                "type",
+                "universe",
+                "warehouse"
+              ],
+              "nonempty_items": 3
+            },
+            {
+              "function": "scrape_search",
+              "type": "list",
+              "count": 180,
+              "item_fields": [
+                "brand",
+                "colors",
+                "country",
+                "createdAt",
+                "description",
+                "directShippingEligible",
+                "discount",
+                "dutyFree",
+                "editorPicks",
+                "id",
+                "likes",
+                "link",
+                "localEligible",
+                "model",
+                "name",
+                "personalizationType",
+                "pictures",
+                "price",
+                "seller",
+                "shouldBeGone",
+                "size",
+                "sold",
+                "stock",
+                "universeId"
+              ],
+              "nonempty_items": 180
+            }
+          ]
+        }
+      ],
+      "latest_phase": "initial",
+      "duration_seconds": 151.03,
+      "requests": 10,
+      "sessions_created": 10,
+      "observed_http_statuses": [
+        200,
+        403
+      ],
+      "countries": {
+        "US": 10
+      },
+      "revision": "df4ae48106e87d73ada5a8cafeb8b962386fd1cb",
+      "working_tree_dirty": false,
+      "notes": "",
+      "finished_at": "2026-10-27T15:10:52+08:00"
     },
     {
       "site": "walmart-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_product_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 10.147,
+          "error_type": "ScrapeError",
+          "code": "ERR_CONNECTION_CLOSED",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 2,
+          "duration_seconds": 11.54,
+          "countries": {
+            "US": 2
+          },
+          "tests": [
+            {
+              "test": "test_product_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 10.147,
+              "error_type": "ScrapeError",
+              "code": "ERR_CONNECTION_CLOSED",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
+      "duration_seconds": 11.54,
+      "requests": 2,
+      "sessions_created": 2,
+      "observed_http_statuses": [],
+      "countries": {
+        "US": 2
+      },
+      "revision": "df4ae48106e87d73ada5a8cafeb8b962386fd1cb",
+      "working_tree_dirty": false,
+      "notes": "ERR_CONNECTION_CLOSED",
+      "finished_at": "2026-10-27T15:11:03+08:00"
     },
     {
       "site": "wellfound-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_company_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 10.044,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 11.43,
+          "countries": {
+            "US": 1
+          },
+          "tests": [
+            {
+              "test": "test_company_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 10.044,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
+      "duration_seconds": 11.43,
+      "requests": 1,
+      "sessions_created": 1,
+      "observed_http_statuses": [
+        403
+      ],
+      "countries": {
+        "US": 1
+      },
+      "revision": "df4ae48106e87d73ada5a8cafeb8b962386fd1cb",
+      "working_tree_dirty": false,
+      "notes": "HTTP 403；目标导航 HTTP 403",
+      "finished_at": "2026-10-27T15:11:15+08:00"
     },
     {
       "site": "yellowpages-scraper",
-      "status": "not_run",
-      "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "status": "partial",
+      "passed": 1,
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_page_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 28.469
+        },
+        {
+          "test": "test_search_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 21.336,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [
+        {
+          "function": "scrape_pages",
+          "type": "list",
+          "count": 3,
+          "item_fields": [
+            "address",
+            "categories",
+            "name",
+            "phone",
+            "rating",
+            "ratingCount",
+            "website",
+            "workingHours"
+          ],
+          "nonempty_items": 3
+        }
+      ],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 6,
+          "duration_seconds": 51.22,
+          "countries": {
+            "US": 6
+          },
+          "tests": [
+            {
+              "test": "test_page_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 28.469
+            },
+            {
+              "test": "test_search_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 21.336,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": [
+            {
+              "function": "scrape_pages",
+              "type": "list",
+              "count": 3,
+              "item_fields": [
+                "address",
+                "categories",
+                "name",
+                "phone",
+                "rating",
+                "ratingCount",
+                "website",
+                "workingHours"
+              ],
+              "nonempty_items": 3
+            }
+          ]
+        }
+      ],
+      "latest_phase": "initial",
+      "duration_seconds": 51.22,
+      "requests": 6,
+      "sessions_created": 6,
+      "observed_http_statuses": [
+        200,
+        403
+      ],
+      "countries": {
+        "US": 6
+      },
+      "revision": "df4ae48106e87d73ada5a8cafeb8b962386fd1cb",
+      "working_tree_dirty": false,
+      "notes": "HTTP 403；目标导航 HTTP 403",
+      "finished_at": "2026-10-27T15:12:06+08:00"
     },
     {
       "site": "yelp-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 3,
+      "tests": [
+        {
+          "test": "test_review_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 11.168,
+          "error_type": "ScrapeError",
+          "code": "ERR_TUNNEL_CONNECTION_FAILED",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 12.59,
+          "countries": {
+            "US": 1
+          },
+          "tests": [
+            {
+              "test": "test_review_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 11.168,
+              "error_type": "ScrapeError",
+              "code": "ERR_TUNNEL_CONNECTION_FAILED",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
+      "duration_seconds": 12.59,
+      "requests": 1,
+      "sessions_created": 1,
+      "observed_http_statuses": [],
+      "countries": {
+        "US": 1
+      },
+      "revision": "df4ae48106e87d73ada5a8cafeb8b962386fd1cb",
+      "working_tree_dirty": false,
+      "notes": "ERR_TUNNEL_CONNECTION_FAILED",
+      "finished_at": "2026-10-27T15:12:19+08:00"
     },
     {
       "site": "youtube-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 7,
+      "tests": [
+        {
+          "test": "test_video_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 90.439,
+          "error_type": "Exception",
+          "code": null,
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 4,
+          "duration_seconds": 91.84,
+          "countries": {
+            "US": 4
+          },
+          "tests": [
+            {
+              "test": "test_video_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 90.439,
+              "error_type": "Exception",
+              "code": null,
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
+      "duration_seconds": 91.84,
+      "requests": 4,
+      "sessions_created": 4,
+      "observed_http_statuses": [
+        200
+      ],
+      "countries": {
+        "US": 4
+      },
+      "revision": "df4ae48106e87d73ada5a8cafeb8b962386fd1cb",
+      "working_tree_dirty": false,
+      "notes": "目标要求登录以确认并非机器人，未取得可验证的视频数据。；Exception",
+      "finished_at": "2026-10-27T15:13:51+08:00"
     },
     {
       "site": "zillow-scraper",
-      "status": "not_run",
-      "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "status": "passed",
+      "passed": 2,
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_search_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 112.512
+        },
+        {
+          "test": "test_property_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 9.561
+        }
+      ],
+      "outputs": [
+        {
+          "function": "scrape_search",
+          "type": "list",
+          "count": 123,
+          "item_fields": [
+            "address",
+            "addressCity",
+            "addressState",
+            "addressStreet",
+            "addressZipcode",
+            "area",
+            "baths",
+            "beds",
+            "brokerName",
+            "carouselPhotosComposable",
+            "contentType",
+            "countryCurrency",
+            "detailUrl",
+            "flexFieldText",
+            "has3DModel",
+            "hasAdditionalAttributions",
+            "hasImage",
+            "hasOpenHouse",
+            "hasVideo",
+            "hdpData",
+            "id",
+            "imgSrc",
+            "info6String",
+            "isFeaturedListing",
+            "isHomeRec",
+            "isPaidBuilderNewConstruction",
+            "isShowcaseListing",
+            "isUndisclosedAddress",
+            "isUserClaimingOwner",
+            "isUserConfirmedClaim",
+            "isZillowOwned",
+            "latLong",
+            "list",
+            "lotAreaString",
+            "marketingStatusSimplifiedCd",
+            "openHouseDescription",
+            "openHouseEndDate",
+            "openHouseStartDate",
+            "palsId",
+            "pgapt",
+            "price",
+            "providerListingId",
+            "rawHomeStatusCd",
+            "relaxed",
+            "sgapt",
+            "shouldShowRequestOnPrice",
+            "shouldShowZestimateAsPrice",
+            "statusText",
+            "statusType",
+            "unformattedPrice",
+            "zestimate",
+            "zpid"
+          ],
+          "nonempty_items": 123
+        },
+        {
+          "function": "scrape_properties",
+          "type": "list",
+          "count": 1,
+          "item_fields": [
+            "OmpV2WebOMHDPCombo",
+            "address",
+            "attributionInfo",
+            "bathrooms",
+            "bedrooms",
+            "boroughId",
+            "brokerId",
+            "brokerIdDimension",
+            "brokerageName",
+            "buildingId",
+            "city",
+            "cityId",
+            "comingSoonOnMarketDate",
+            "contactAgentFormVariant",
+            "contingentListingType",
+            "country",
+            "county",
+            "countyId",
+            "currency",
+            "daysOnZillow",
+            "description",
+            "editPropertyHistorylink",
+            "featuredListingTypeDimension",
+            "foreclosureTypes",
+            "formattedChip",
+            "hasApprovedThirdPartyVirtualTourUrl",
+            "hasPublicVideo",
+            "hdpTypeDimension",
+            "hdpUrl",
+            "homeStatus",
+            "homeType",
+            "isCurrentSignedInAgentResponsible",
+            "isCurrentSignedInUserVerifiedOwner",
+            "isFeatured",
+            "isHousingConnector",
+            "isListingClaimedByCurrentSignedInUser",
+            "isNonOwnerOccupied",
+            "isPaidMultiFamilyBrokerId",
+            "isPreforeclosureAuction",
+            "isPremierBuilder",
+            "isRecentStatusChange",
+            "isRentalsLeadCapMet",
+            "isShowcaseListing",
+            "isUndisclosedAddress",
+            "isVerifiedClaimedByCurrentSignedInUser",
+            "isZillowOwned",
+            "keystoneHomeStatus",
+            "lastSoldListing",
+            "lastSoldPrice",
+            "latitude",
+            "lfaViewPropertyPageUrl",
+            "listedBy",
+            "listingAccount",
+            "listingAccountUserId",
+            "listingFeedID",
+            "listingMetadata",
+            "listingOwnerConfigIDs",
+            "listingProvider",
+            "listingSource",
+            "listingSubType",
+            "listingTypeDimension",
+            "listing_sub_type",
+            "livingArea",
+            "livingAreaUnits",
+            "livingAreaUnitsShort",
+            "livingAreaValue",
+            "longitude",
+            "lotAreaUnits",
+            "lotAreaValue",
+            "lotSize",
+            "maloneId",
+            "monthlyHoaFee",
+            "mortgageZHLRates",
+            "moveHomeMapLocationLink",
+            "neighborhoodMapThumb",
+            "newConstructionType",
+            "originalPhotos",
+            "ownerAccount",
+            "pageUrlFragment",
+            "palsId",
+            "photoCount",
+            "postingPresentationTypes",
+            "postingUrl",
+            "price",
+            "priceChange",
+            "priceChangeDate",
+            "priceChangeDateString",
+            "primaryPublicVideo",
+            "propertyEventLogLink",
+            "propertyHasLasViolation",
+            "propertyTaxRate",
+            "propertyTypeDimension",
+            "propertyUpdatePageLink",
+            "providerListingID",
+            "rentZestimate",
+            "rentalApplicationsAcceptedType",
+            "rentalMarketingTreatments",
+            "resoFacts",
+            "responsivePhotos",
+            "responsivePhotosOriginalRatio",
+            "richMedia",
+            "richMediaVideos",
+            "ssid",
+            "state",
+            "stateId",
+            "staticMap",
+            "streetAddress",
+            "streetViewMetadataUrlMapLightboxAddress",
+            "streetViewTileImageUrlMediumAddress",
+            "streetViewTileImageUrlMediumLatLong",
+            "taxAssessedValue",
+            "thirdPartyVirtualTour",
+            "thumb",
+            "timeZone",
+            "topNavJson",
+            "tourViewCount",
+            "virtualTourUrl",
+            "yearBuilt",
+            "zestimate",
+            "zestimateHighPercent",
+            "zestimateLowPercent",
+            "zipcode",
+            "zpid"
+          ],
+          "nonempty_items": 1
+        }
+      ],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 0,
+          "requests": 5,
+          "duration_seconds": 123.47,
+          "countries": {
+            "US": 5
+          },
+          "tests": [
+            {
+              "test": "test_search_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 112.512
+            },
+            {
+              "test": "test_property_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 9.561
+            }
+          ],
+          "outputs": [
+            {
+              "function": "scrape_search",
+              "type": "list",
+              "count": 123,
+              "item_fields": [
+                "address",
+                "addressCity",
+                "addressState",
+                "addressStreet",
+                "addressZipcode",
+                "area",
+                "baths",
+                "beds",
+                "brokerName",
+                "carouselPhotosComposable",
+                "contentType",
+                "countryCurrency",
+                "detailUrl",
+                "flexFieldText",
+                "has3DModel",
+                "hasAdditionalAttributions",
+                "hasImage",
+                "hasOpenHouse",
+                "hasVideo",
+                "hdpData",
+                "id",
+                "imgSrc",
+                "info6String",
+                "isFeaturedListing",
+                "isHomeRec",
+                "isPaidBuilderNewConstruction",
+                "isShowcaseListing",
+                "isUndisclosedAddress",
+                "isUserClaimingOwner",
+                "isUserConfirmedClaim",
+                "isZillowOwned",
+                "latLong",
+                "list",
+                "lotAreaString",
+                "marketingStatusSimplifiedCd",
+                "openHouseDescription",
+                "openHouseEndDate",
+                "openHouseStartDate",
+                "palsId",
+                "pgapt",
+                "price",
+                "providerListingId",
+                "rawHomeStatusCd",
+                "relaxed",
+                "sgapt",
+                "shouldShowRequestOnPrice",
+                "shouldShowZestimateAsPrice",
+                "statusText",
+                "statusType",
+                "unformattedPrice",
+                "zestimate",
+                "zpid"
+              ],
+              "nonempty_items": 123
+            },
+            {
+              "function": "scrape_properties",
+              "type": "list",
+              "count": 1,
+              "item_fields": [
+                "OmpV2WebOMHDPCombo",
+                "address",
+                "attributionInfo",
+                "bathrooms",
+                "bedrooms",
+                "boroughId",
+                "brokerId",
+                "brokerIdDimension",
+                "brokerageName",
+                "buildingId",
+                "city",
+                "cityId",
+                "comingSoonOnMarketDate",
+                "contactAgentFormVariant",
+                "contingentListingType",
+                "country",
+                "county",
+                "countyId",
+                "currency",
+                "daysOnZillow",
+                "description",
+                "editPropertyHistorylink",
+                "featuredListingTypeDimension",
+                "foreclosureTypes",
+                "formattedChip",
+                "hasApprovedThirdPartyVirtualTourUrl",
+                "hasPublicVideo",
+                "hdpTypeDimension",
+                "hdpUrl",
+                "homeStatus",
+                "homeType",
+                "isCurrentSignedInAgentResponsible",
+                "isCurrentSignedInUserVerifiedOwner",
+                "isFeatured",
+                "isHousingConnector",
+                "isListingClaimedByCurrentSignedInUser",
+                "isNonOwnerOccupied",
+                "isPaidMultiFamilyBrokerId",
+                "isPreforeclosureAuction",
+                "isPremierBuilder",
+                "isRecentStatusChange",
+                "isRentalsLeadCapMet",
+                "isShowcaseListing",
+                "isUndisclosedAddress",
+                "isVerifiedClaimedByCurrentSignedInUser",
+                "isZillowOwned",
+                "keystoneHomeStatus",
+                "lastSoldListing",
+                "lastSoldPrice",
+                "latitude",
+                "lfaViewPropertyPageUrl",
+                "listedBy",
+                "listingAccount",
+                "listingAccountUserId",
+                "listingFeedID",
+                "listingMetadata",
+                "listingOwnerConfigIDs",
+                "listingProvider",
+                "listingSource",
+                "listingSubType",
+                "listingTypeDimension",
+                "listing_sub_type",
+                "livingArea",
+                "livingAreaUnits",
+                "livingAreaUnitsShort",
+                "livingAreaValue",
+                "longitude",
+                "lotAreaUnits",
+                "lotAreaValue",
+                "lotSize",
+                "maloneId",
+                "monthlyHoaFee",
+                "mortgageZHLRates",
+                "moveHomeMapLocationLink",
+                "neighborhoodMapThumb",
+                "newConstructionType",
+                "originalPhotos",
+                "ownerAccount",
+                "pageUrlFragment",
+                "palsId",
+                "photoCount",
+                "postingPresentationTypes",
+                "postingUrl",
+                "price",
+                "priceChange",
+                "priceChangeDate",
+                "priceChangeDateString",
+                "primaryPublicVideo",
+                "propertyEventLogLink",
+                "propertyHasLasViolation",
+                "propertyTaxRate",
+                "propertyTypeDimension",
+                "propertyUpdatePageLink",
+                "providerListingID",
+                "rentZestimate",
+                "rentalApplicationsAcceptedType",
+                "rentalMarketingTreatments",
+                "resoFacts",
+                "responsivePhotos",
+                "responsivePhotosOriginalRatio",
+                "richMedia",
+                "richMediaVideos",
+                "ssid",
+                "state",
+                "stateId",
+                "staticMap",
+                "streetAddress",
+                "streetViewMetadataUrlMapLightboxAddress",
+                "streetViewTileImageUrlMediumAddress",
+                "streetViewTileImageUrlMediumLatLong",
+                "taxAssessedValue",
+                "thirdPartyVirtualTour",
+                "thumb",
+                "timeZone",
+                "topNavJson",
+                "tourViewCount",
+                "virtualTourUrl",
+                "yearBuilt",
+                "zestimate",
+                "zestimateHighPercent",
+                "zestimateLowPercent",
+                "zipcode",
+                "zpid"
+              ],
+              "nonempty_items": 1
+            }
+          ]
+        }
+      ],
+      "latest_phase": "initial",
+      "duration_seconds": 123.47,
+      "requests": 5,
+      "sessions_created": 5,
+      "observed_http_statuses": [
+        200
+      ],
+      "countries": {
+        "US": 5
+      },
+      "revision": "df4ae48106e87d73ada5a8cafeb8b962386fd1cb",
+      "working_tree_dirty": false,
+      "notes": "",
+      "finished_at": "2026-10-27T15:15:54+08:00"
     },
     {
       "site": "zoominfo-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 3,
+      "tests": [
+        {
+          "test": "test_company_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 7.027,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 2,
+          "duration_seconds": 8.52,
+          "countries": {
+            "CA": 2
+          },
+          "tests": [
+            {
+              "test": "test_company_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 7.027,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
+      "duration_seconds": 8.52,
+      "requests": 2,
+      "sessions_created": 2,
+      "observed_http_statuses": [
+        403
+      ],
+      "countries": {
+        "CA": 2
+      },
+      "revision": "a77f10f71a6962c5c6026ba67b4ab9b92e4a5c50",
+      "working_tree_dirty": false,
+      "notes": "HTTP 403；目标导航 HTTP 403",
+      "finished_at": "2026-10-27T15:16:03+08:00"
     },
     {
       "site": "zoopla-scraper",
-      "status": "not_run",
-      "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "status": "partial",
+      "passed": 1,
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_search_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 51.774
+        },
+        {
+          "test": "test_properties_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 29.903,
+          "error_type": "Failed",
+          "code": null,
+          "status": null
+        }
+      ],
+      "outputs": [
+        {
+          "function": "scrape_search",
+          "type": "list",
+          "count": 58,
+          "item_fields": [
+            "address",
+            "agency",
+            "description",
+            "image",
+            "justAdded",
+            "numBathrooms",
+            "numBedrooms",
+            "numLivingRoom",
+            "price",
+            "priceCurrency",
+            "squareFt",
+            "url"
+          ],
+          "nonempty_items": 58
+        },
+        {
+          "function": "scrape_properties",
+          "type": "list",
+          "count": 3,
+          "item_fields": [
+            "address",
+            "agent",
+            "coordinates",
+            "epcRating",
+            "floorArea",
+            "gallery",
+            "id",
+            "nearby",
+            "numOfBathrooms",
+            "numOfBedrooms",
+            "numOfReceptions",
+            "price",
+            "propertyDescription",
+            "propertyInfo",
+            "propertyTags",
+            "title",
+            "url"
+          ],
+          "nonempty_items": 3
+        }
+      ],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 5,
+          "duration_seconds": 83.01,
+          "countries": {
+            "GB": 5
+          },
+          "tests": [
+            {
+              "test": "test_search_scraping",
+              "outcome": "passed",
+              "phase": "call",
+              "duration": 51.774
+            },
+            {
+              "test": "test_properties_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 29.903,
+              "error_type": "Failed",
+              "code": null,
+              "status": null
+            }
+          ],
+          "outputs": [
+            {
+              "function": "scrape_search",
+              "type": "list",
+              "count": 58,
+              "item_fields": [
+                "address",
+                "agency",
+                "description",
+                "image",
+                "justAdded",
+                "numBathrooms",
+                "numBedrooms",
+                "numLivingRoom",
+                "price",
+                "priceCurrency",
+                "squareFt",
+                "url"
+              ],
+              "nonempty_items": 58
+            },
+            {
+              "function": "scrape_properties",
+              "type": "list",
+              "count": 3,
+              "item_fields": [
+                "address",
+                "agent",
+                "coordinates",
+                "epcRating",
+                "floorArea",
+                "gallery",
+                "id",
+                "nearby",
+                "numOfBathrooms",
+                "numOfBedrooms",
+                "numOfReceptions",
+                "price",
+                "propertyDescription",
+                "propertyInfo",
+                "propertyTags",
+                "title",
+                "url"
+              ],
+              "nonempty_items": 3
+            }
+          ]
+        }
+      ],
+      "latest_phase": "initial",
+      "duration_seconds": 83.01,
+      "requests": 5,
+      "sessions_created": 5,
+      "observed_http_statuses": [
+        200
+      ],
+      "countries": {
+        "GB": 5
+      },
+      "revision": "a77f10f71a6962c5c6026ba67b4ab9b92e4a5c50",
+      "working_tree_dirty": false,
+      "notes": "Failed",
+      "finished_at": "2026-10-27T15:17:26+08:00"
     },
     {
       "site": "zoro-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_product_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 6.75,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "attempts": [
+        {
+          "phase": "initial",
+          "return_code": 1,
+          "requests": 1,
+          "duration_seconds": 8.37,
+          "countries": {
+            "US": 1
+          },
+          "tests": [
+            {
+              "test": "test_product_scraping",
+              "outcome": "failed",
+              "phase": "call",
+              "duration": 6.75,
+              "error_type": "ScrapeError",
+              "code": "HTTP_ERROR",
+              "status": null
+            }
+          ],
+          "outputs": []
+        }
+      ],
+      "latest_phase": "initial",
+      "duration_seconds": 8.37,
+      "requests": 1,
+      "sessions_created": 1,
+      "observed_http_statuses": [
+        403
+      ],
+      "countries": {
+        "US": 1
+      },
+      "revision": "a77f10f71a6962c5c6026ba67b4ab9b92e4a5c50",
+      "working_tree_dirty": false,
+      "notes": "HTTP 403；目标导航 HTTP 403",
+      "finished_at": "2026-10-27T15:17:34+08:00"
     }
   ]
 }

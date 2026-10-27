@@ -32,9 +32,13 @@ Current fully passed live suites (2026-10-27)：
 | [chatgpt](chatgpt-scraper/) | 1/1 |
 | [idealo](idealo-scraper/) | 4/4 |
 | [imovelweb](imovelweb-scraper/) | 2/2 |
+| [rightmove](rightmove-scraper/) | 2/2 |
 | [shopify](shopify-scraper/) | 5/5 |
 | [similarweb](similarweb-scraper/) | 4/4 |
 | [ticketmaster](ticketmaster-scraper/) | 2/2 |
+| [twitter](twitter-scraper/) | 2/2 |
+| [vestiairecollective](vestiairecollective-scraper/) | 2/2 |
+| [zillow](zillow-scraper/) | 2/2 |
 
 [Scope, output counts and limitations](docs/live-verification/2026-10-27.md)
 
