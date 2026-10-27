@@ -7,7 +7,8 @@
       "scrape_properties"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "failed",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "airfrance-scraper",
@@ -16,7 +17,8 @@
       "scrape_flights"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "failed",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "aliexpress-scraper",
@@ -28,7 +30,8 @@
       "find_aliexpress_products"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "partial",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "allegro-scraper",
@@ -38,7 +41,8 @@
       "scrape_product"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "failed",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "amazon-scraper",
@@ -49,7 +53,8 @@
       "scrape_product"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "failed",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "app-store-scraper",
@@ -59,14 +64,8 @@
       "scrape_reviews"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "metadata_smoke_passed_2026-10-27",
-    "live_verification_details": {
-      "function": "scrape_app_metadata",
-      "app_id": "6448311069",
-      "country": "us",
-      "title": "ChatGPT",
-      "full_live_suite": "not_run"
-    }
+    "live_verification": "partial",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "autoscout24-scraper",
@@ -76,7 +75,8 @@
       "scrape_car_details"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "partial",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "bestbuy-scraper",
@@ -89,7 +89,8 @@
       "scrape_reviews"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "failed",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "bing-scraper",
@@ -99,7 +100,8 @@
       "scrape_keywords"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "passed",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "bookingcom-scraper",
@@ -111,7 +113,8 @@
       "scrape_hotel_reviews"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "failed",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "capterra-scraper",
@@ -121,7 +124,8 @@
       "scrape_reviews"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "partial",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "chatgpt-scraper",
@@ -130,7 +134,8 @@
       "scrape_conversation"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "passed",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "crunchbase-scraper",
@@ -141,7 +146,8 @@
       "discover_target"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "failed",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "dhl-scraper",
@@ -150,7 +156,8 @@
       "scrape_tracking"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "empty_output",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "digikey-scraper",
@@ -161,7 +168,8 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "failed",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "domaincom-scraper",
@@ -171,7 +179,8 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "failed",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "ebay-scraper",
@@ -182,7 +191,8 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "failed",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "emirates-scraper",
@@ -191,7 +201,8 @@
       "scrape_flights"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "failed",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "etsy-scraper",
@@ -202,7 +213,8 @@
       "scrape_shop"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "failed",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "expedia-scraper",
@@ -212,7 +224,8 @@
       "scrape_flight_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "failed",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "facebook-scraper",
@@ -224,7 +237,8 @@
       "scrape_group_posts"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "fashionphile-scraper",
@@ -234,7 +248,8 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "g2-scraper",
@@ -245,7 +260,8 @@
       "scrape_alternatives"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "glassdoor-scraper",
@@ -257,7 +273,8 @@
       "find_companies"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "goat-scraper",
@@ -268,7 +285,8 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "goibibo-scraper",
@@ -278,7 +296,8 @@
       "scrape_flight_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "goodreads-scraper",
@@ -290,7 +309,8 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "google-flights-scraper",
@@ -300,7 +320,8 @@
       "scrape_price_insights"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "google-jobs-scraper",
@@ -309,7 +330,8 @@
       "scrape_jobs"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "google-play-scraper",
@@ -320,7 +342,8 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "google-scraper",
@@ -333,7 +356,8 @@
       "scrape_ai_mode"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "homegate-scraper",
@@ -343,7 +367,8 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "idealista-scraper",
@@ -355,7 +380,8 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "idealo-scraper",
@@ -368,7 +394,8 @@
       "scrape_price_history"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "imdb-scraper",
@@ -381,7 +408,8 @@
       "scrape_person"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "immobilienscout24-scraper",
@@ -392,7 +420,8 @@
       "scrape_properties"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "immoscout24-scraper",
@@ -402,7 +431,8 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "immowelt-scraper",
@@ -413,7 +443,8 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "imovelweb-scraper",
@@ -423,7 +454,8 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "indeed-scraper",
@@ -433,7 +465,8 @@
       "scrape_jobs"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "instagram-scraper",
@@ -445,7 +478,8 @@
       "scrape_post_comments"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "kayak-scraper",
@@ -454,7 +488,8 @@
       "scrape_flights"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "leboncoin-scraper",
@@ -464,7 +499,8 @@
       "scrape_ad"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "linkedin-scraper",
@@ -477,7 +513,8 @@
       "scrape_articles"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "loopnet-scraper",
@@ -487,7 +524,8 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "lowes-scraper",
@@ -498,7 +536,8 @@
       "scrape_store_locations"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "maersk-scraper",
@@ -508,7 +547,8 @@
       "scrape_tracking"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "marriott-scraper",
@@ -518,7 +558,8 @@
       "scrape_hotels"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "mouser-scraper",
@@ -528,7 +569,8 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "naver-scraper",
@@ -540,7 +582,8 @@
       "scrape_news_article"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "nordstorm-scraper",
@@ -551,7 +594,8 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "perplexity-scraper",
@@ -560,7 +604,8 @@
       "scrape_answer"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "pinterest-scraper",
@@ -572,7 +617,8 @@
       "scrape_pin"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "realestatecom-scraper",
@@ -582,7 +628,8 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "realtorcom-scraper",
@@ -593,7 +640,8 @@
       "scrape_feed"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "reddit-scraper",
@@ -607,7 +655,8 @@
       "scrape_user_comments"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "redfin-scraper",
@@ -618,7 +667,8 @@
       "scrape_property_for_rent"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "rightmove-scraper",
@@ -630,7 +680,8 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "rs-online-scraper",
@@ -641,7 +692,8 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "seloger-scraper",
@@ -651,7 +703,8 @@
       "scrape_property"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "shopify-scraper",
@@ -664,7 +717,8 @@
       "scrape_product_urls"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "similarweb-scraper",
@@ -676,7 +730,8 @@
       "scrape_trendings"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "skyscanner-scraper",
@@ -685,7 +740,8 @@
       "scrape_flights"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "stockx-scraper",
@@ -695,7 +751,8 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "target-scraper",
@@ -708,7 +765,8 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "threads-scraper",
@@ -718,7 +776,8 @@
       "scrape_profile"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "ticketmaster-scraper",
@@ -728,7 +787,8 @@
       "scrape_discovery"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "tiktok-scraper",
@@ -741,7 +801,8 @@
       "scrape_channel"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "tripadvisor-scraper",
@@ -752,7 +813,8 @@
       "scrape_hotel"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "trustpilot-scraper",
@@ -763,7 +825,8 @@
       "scrape_reviews"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "twitter-scraper",
@@ -773,7 +836,8 @@
       "scrape_profile"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "vestiairecollective-scraper",
@@ -784,7 +848,8 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "walmart-scraper",
@@ -794,7 +859,8 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "wellfound-scraper",
@@ -804,7 +870,8 @@
       "scrape_companies"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "yellowpages-scraper",
@@ -814,7 +881,8 @@
       "scrape_pages"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "yelp-scraper",
@@ -825,7 +893,8 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "youtube-scraper",
@@ -842,7 +911,8 @@
       "scrape_transcript"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "zillow-scraper",
@@ -852,7 +922,8 @@
       "scrape_properties"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "zoominfo-scraper",
@@ -863,7 +934,8 @@
       "scrape_faqs"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "zoopla-scraper",
@@ -873,7 +945,8 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
     "directory": "zoro-scraper",
@@ -883,6 +956,7 @@
       "scrape_search_listing"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run"
+    "live_verification": "not_run",
+    "live_verification_report": "docs/live-verification/2026-10-27.md"
   }
 ]

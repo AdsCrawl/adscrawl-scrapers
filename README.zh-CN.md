@@ -32,11 +32,18 @@ python run.py
 
 ## 验证状态
 
-81 个站点已完成源码迁移，**尚未逐站验证真实网站的运行成功率**。
+81 个站点已完成源码迁移，**正在逐站进行真实请求验证和修复**。
+查看[逐站实测报告与截图](docs/live-verification/2026-10-27.md)及[JSON 记录](docs/live-verification/2026-10-27.json)。
+通过、部分通过、失败和待测会分别标注；空结果不算验证成功。
+
+已核验示例：Bing 返回 30 条搜索结果和 8 条关键词建议；ChatGPT 实测回答包含正确答案 Paris。
+
+![ChatGPT 真实验证截图](docs/live-verification/evidence/chatgpt-answer.png)
+
 `results/` 是上游历史示例，不是本次 AdsCrawl 实测输出。
 默认 CI 只做离线验证；真实测试需手动触发并配置密钥。
-本次已通过 20 项离线测试、81 个模块检查，以及共享传输与 App Store 的有限实测。
-详见[验证记录](docs/VERIFICATION.md)。
+初次迁移的离线与烟雾测试见[初始验证记录](docs/VERIFICATION.md)；
+当前逐站结果以实测报告为准。
 
 ```bash
 python -m pytest tests -q

@@ -1,0 +1,1049 @@
+{
+  "date": "2026-10-27",
+  "state": "in_progress",
+  "timezone": "Asia/Shanghai",
+  "method": "Existing live pytest suites, sequential by site; stop at first failure per site; 300-second site deadline; no test retries; non-empty output review. Fixes are applied and retested separately.",
+  "counts": {
+    "passed": 2,
+    "partial": 4,
+    "failed": 13,
+    "empty_output": 1,
+    "not_run": 61
+  },
+  "sites": [
+    {
+      "site": "airbnb-scraper",
+      "status": "failed",
+      "passed": 0,
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_search_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 40.373,
+          "error_type": "UnicodeDecodeError",
+          "code": null,
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 40.98,
+      "requests": 1,
+      "notes": "UnicodeDecodeError",
+      "finished_at": "2026-10-27T13:49:12+08:00"
+    },
+    {
+      "site": "airfrance-scraper",
+      "status": "failed",
+      "passed": 0,
+      "collected": 1,
+      "tests": [
+        {
+          "test": "test_scrape_flights",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 191.416,
+          "error_type": "RuntimeError",
+          "code": null,
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 191.81,
+      "requests": 0,
+      "notes": "RuntimeError",
+      "finished_at": "2026-10-27T13:52:24+08:00"
+    },
+    {
+      "site": "aliexpress-scraper",
+      "status": "partial",
+      "passed": 1,
+      "collected": 4,
+      "tests": [
+        {
+          "test": "test_product_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 56.308
+        },
+        {
+          "test": "test_search_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 123.387,
+          "error_type": "ScrapeError",
+          "code": "SCRAPE_FAILED",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 180.15,
+      "requests": 2,
+      "notes": "SCRAPE_FAILED",
+      "finished_at": "2026-10-27T13:55:24+08:00"
+    },
+    {
+      "site": "allegro-scraper",
+      "status": "failed",
+      "passed": 0,
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_product_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 96.159,
+          "error_type": "ScrapeError",
+          "code": "SCRAPE_FAILED",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 97.58,
+      "requests": 2,
+      "notes": "SCRAPE_FAILED",
+      "finished_at": "2026-10-27T13:57:02+08:00"
+    },
+    {
+      "site": "amazon-scraper",
+      "status": "failed",
+      "passed": 0,
+      "collected": 3,
+      "tests": [
+        {
+          "test": "test_product_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 10.042,
+          "error_type": "ScrapeError",
+          "code": "SCRAPE_FAILED",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 301.11,
+      "requests": 2,
+      "notes": "SCRAPE_FAILED；超过 300 秒限时",
+      "finished_at": "2026-10-27T14:02:03+08:00"
+    },
+    {
+      "site": "app-store-scraper",
+      "status": "partial",
+      "passed": 1,
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_app_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 4.03
+        },
+        {
+          "test": "test_reviews_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 9.101,
+          "error_type": "ScrapeError",
+          "code": "SCRAPE_FAILED",
+          "status": null
+        }
+      ],
+      "outputs": [
+        {
+          "function": "scrape_app_metadata",
+          "type": "dict",
+          "count": 37,
+          "fields": [
+            "advisories",
+            "appId",
+            "appletvScreenshots",
+            "bundleId",
+            "contentRating",
+            "country",
+            "currency",
+            "description",
+            "developer",
+            "developerId",
+            "developerUrl",
+            "features",
+            "fileSizeBytes",
+            "formattedPrice",
+            "free",
+            "genre",
+            "genreIds",
+            "genres",
+            "icon",
+            "ipadScreenshots",
+            "languages",
+            "minimumOsVersion",
+            "price",
+            "ratings",
+            "ratingsCurrentVersion",
+            "released",
+            "score",
+            "scoreCurrentVersion",
+            "screenshots",
+            "seller",
+            "sellerUrl",
+            "summary",
+            "supportedDevices",
+            "title",
+            "updated",
+            "url",
+            "version"
+          ]
+        }
+      ],
+      "duration_seconds": 14.66,
+      "requests": 2,
+      "notes": "SCRAPE_FAILED",
+      "finished_at": "2026-10-27T14:02:18+08:00"
+    },
+    {
+      "site": "autoscout24-scraper",
+      "status": "partial",
+      "passed": 1,
+      "collected": 3,
+      "tests": [
+        {
+          "test": "test_page_url",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 0.0
+        },
+        {
+          "test": "test_listings_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 23.929,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [
+        {
+          "function": "scrape_listings",
+          "type": "list",
+          "count": 20
+        }
+      ],
+      "duration_seconds": 25.22,
+      "requests": 2,
+      "notes": "HTTP 403；首轮返回 20 条；后续请求失败，离线 URL 用例不算实测通过",
+      "finished_at": "2026-10-27T14:02:43+08:00"
+    },
+    {
+      "site": "bestbuy-scraper",
+      "status": "failed",
+      "passed": 0,
+      "collected": 4,
+      "tests": [
+        {
+          "test": "test_product_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 142.101,
+          "error_type": "ScrapeError",
+          "code": "SCRAPE_FAILED",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 143.39,
+      "requests": 2,
+      "notes": "SCRAPE_FAILED",
+      "finished_at": "2026-10-27T14:05:06+08:00"
+    },
+    {
+      "site": "bing-scraper",
+      "status": "passed",
+      "passed": 2,
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_serp_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 26.416
+        },
+        {
+          "test": "test_keyword_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 11.903
+        }
+      ],
+      "outputs": [
+        {
+          "function": "scrape_search",
+          "type": "list",
+          "count": 30
+        },
+        {
+          "function": "scrape_keywords",
+          "type": "list",
+          "count": 8
+        }
+      ],
+      "duration_seconds": 39.47,
+      "requests": 4,
+      "notes": "",
+      "finished_at": "2026-10-27T14:05:46+08:00"
+    },
+    {
+      "site": "bookingcom-scraper",
+      "status": "failed",
+      "passed": 0,
+      "collected": 3,
+      "tests": [
+        {
+          "test": "test_search_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 76.426,
+          "error_type": "ScrapeError",
+          "code": "SCRAPE_FAILED",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 77.67,
+      "requests": 2,
+      "notes": "SCRAPE_FAILED",
+      "finished_at": "2026-10-27T14:07:03+08:00"
+    },
+    {
+      "site": "capterra-scraper",
+      "status": "partial",
+      "passed": 1,
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_category_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 39.311
+        },
+        {
+          "test": "test_review_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 9.243,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [
+        {
+          "function": "scrape_category",
+          "type": "dict",
+          "count": 2,
+          "fields": [
+            "products",
+            "total_pages"
+          ]
+        }
+      ],
+      "duration_seconds": 49.85,
+      "requests": 3,
+      "notes": "HTTP 403",
+      "finished_at": "2026-10-27T14:07:53+08:00"
+    },
+    {
+      "site": "chatgpt-scraper",
+      "status": "passed",
+      "passed": 1,
+      "collected": 1,
+      "tests": [
+        {
+          "test": "test_scrape_conversation",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 37.884
+        }
+      ],
+      "outputs": [
+        {
+          "function": "scrape_conversation",
+          "type": "str",
+          "count": 151
+        }
+      ],
+      "duration_seconds": 39.07,
+      "requests": 1,
+      "notes": "",
+      "finished_at": "2026-10-27T14:08:32+08:00"
+    },
+    {
+      "site": "crunchbase-scraper",
+      "status": "failed",
+      "passed": 0,
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_company_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 21.998,
+          "error_type": "UnboundLocalError",
+          "code": null,
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 23.29,
+      "requests": 4,
+      "notes": "UnboundLocalError",
+      "finished_at": "2026-10-27T14:08:56+08:00"
+    },
+    {
+      "site": "dhl-scraper",
+      "status": "empty_output",
+      "passed": 1,
+      "collected": 1,
+      "tests": [
+        {
+          "test": "test_scrape_tracking",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 16.926
+        }
+      ],
+      "outputs": [
+        {
+          "function": "scrape_tracking",
+          "type": "dict",
+          "count": 0,
+          "fields": []
+        }
+      ],
+      "duration_seconds": 18.05,
+      "requests": 2,
+      "notes": "原测试接受空输出，验收不通过",
+      "finished_at": "2026-10-27T14:09:14+08:00"
+    },
+    {
+      "site": "digikey-scraper",
+      "status": "failed",
+      "passed": 0,
+      "collected": 3,
+      "tests": [
+        {
+          "test": "test_product_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 6.873,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 8.16,
+      "requests": 2,
+      "notes": "HTTP 403",
+      "finished_at": "2026-10-27T14:09:22+08:00"
+    },
+    {
+      "site": "domaincom-scraper",
+      "status": "failed",
+      "passed": 0,
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_properties_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 6.213,
+          "error_type": "ValueError",
+          "code": null,
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 306.29,
+      "requests": 2,
+      "notes": "ValueError；超过 300 秒限时",
+      "finished_at": "2026-10-27T14:14:28+08:00"
+    },
+    {
+      "site": "ebay-scraper",
+      "status": "failed",
+      "passed": 0,
+      "collected": 3,
+      "tests": [
+        {
+          "test": "test_product_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 7.195,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 8.67,
+      "requests": 1,
+      "notes": "HTTP 403",
+      "finished_at": "2026-10-27T14:14:37+08:00"
+    },
+    {
+      "site": "emirates-scraper",
+      "status": "failed",
+      "passed": 0,
+      "collected": 1,
+      "tests": [
+        {
+          "test": "test_scrape_flights",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 101.647,
+          "error_type": "ScrapeError",
+          "code": "SCRAPE_FAILED",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 102.98,
+      "requests": 1,
+      "notes": "SCRAPE_FAILED",
+      "finished_at": "2026-10-27T14:16:20+08:00"
+    },
+    {
+      "site": "etsy-scraper",
+      "status": "failed",
+      "passed": 0,
+      "collected": 3,
+      "tests": [
+        {
+          "test": "test_product_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 8.908,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 10.19,
+      "requests": 2,
+      "notes": "HTTP 403",
+      "finished_at": "2026-10-27T14:16:30+08:00"
+    },
+    {
+      "site": "expedia-scraper",
+      "status": "failed",
+      "passed": 0,
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_scrape_hotel_search",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 0.0,
+          "error_type": "TypeError",
+          "code": null,
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 1.21,
+      "requests": 0,
+      "notes": "TypeError",
+      "finished_at": "2026-10-27T14:16:31+08:00"
+    },
+    {
+      "site": "facebook-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "fashionphile-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "g2-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "glassdoor-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "goat-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "goibibo-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "goodreads-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "google-flights-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "google-jobs-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "google-play-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "google-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "homegate-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "idealista-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "idealo-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "imdb-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "immobilienscout24-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "immoscout24-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "immowelt-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "imovelweb-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "indeed-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "instagram-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "kayak-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "leboncoin-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "linkedin-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "loopnet-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "lowes-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "maersk-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "marriott-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "mouser-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "naver-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "nordstorm-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "perplexity-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "pinterest-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "realestatecom-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "realtorcom-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "reddit-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "redfin-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "rightmove-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "rs-online-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "seloger-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "shopify-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "similarweb-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "skyscanner-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "stockx-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "target-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "threads-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "ticketmaster-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "tiktok-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "tripadvisor-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "trustpilot-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "twitter-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "vestiairecollective-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "walmart-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "wellfound-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "yellowpages-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "yelp-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "youtube-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "zillow-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "zoominfo-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "zoopla-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    },
+    {
+      "site": "zoro-scraper",
+      "status": "not_run",
+      "passed": 0,
+      "collected": 0,
+      "tests": [],
+      "outputs": []
+    }
+  ]
+}

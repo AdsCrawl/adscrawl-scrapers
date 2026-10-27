@@ -1,4 +1,7 @@
-# Verification record
+# Initial migration verification record
+
+This is the initial migration checkpoint. The subsequent full-site audit,
+fixes and screenshots are recorded in [the live verification report](live-verification/2026-10-27.md).
 
 Date: 2026-10-27. Local environments: Python 3.10.16 and 3.12.14, adscrawl 0.1.0,
 Playwright 1.64.1. Source snapshot: f8db50104853ca8db0d1c4685c616e8107751fd4.

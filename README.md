@@ -9,9 +9,18 @@ content using remote browsers, HTML/JSON parsers and bounded concurrency.
 [API documentation](https://www.adscrawl.net/docs/) ·
 [中文](README.zh-CN.md) · [Migration details](docs/MIGRATION.md)
 
-> Migration status: all 81 site modules are ported. Live success rates have not
-> been measured with AdsCrawl. Offline checks are not a claim that all target
-> websites currently work. Files in `results/` are historical upstream examples.
+> All 81 site modules are ported. **Live verification is in progress**: see the
+> [dated per-site evidence report](docs/live-verification/2026-10-27.md) and
+> [machine-readable results](docs/live-verification/2026-10-27.json).
+> Passed, partially passed, failed and untested sites are listed separately.
+> Files in `results/` remain historical upstream examples.
+
+Verified examples from the current audit: **Bing** returned 30 search results and
+8 keyword suggestions; **ChatGPT** returned the correct answer to the test prompt.
+These checks cover the specific functions recorded in the report, not a blanket
+guarantee for every feature or future request.
+
+![ChatGPT live verification through AdsCrawl](docs/live-verification/evidence/chatgpt-answer.png)
 
 ## Quick start
 
