@@ -15,7 +15,7 @@ from typing import Dict, List, Optional, TypedDict
 from urllib.parse import parse_qs, urlencode, urlparse
 from uuid import uuid4
 from parsel import Selector
-from adscrawl_scrapers import Request, ScraperClient, Response
+from adscrawl_scrapers import Request, ScraperClient, Response, ScrapeError
 
 CLIENT = ScraperClient()
 
@@ -55,9 +55,14 @@ MODULE_REVIEWS = "ProductDetailReviewsAndQuestions"
 def _extract_deferred_modules(response: Response) -> Dict[str, Dict]:
     """collect deferred_enrichment module payloads from captured XHR calls"""
     modules = {}
+    errors = []
     xhr_calls = response.network or []
     for xhr in xhr_calls:
         if "deferred_enrichment/modules" not in xhr.get("url", ""):
+            continue
+        status = (xhr.get('response') or {}).get('status', 0)
+        if status >= 400:
+            errors.append(status)
             continue
         body = (xhr.get("response") or {}).get("body")
         if not body:
@@ -69,6 +74,8 @@ def _extract_deferred_modules(response: Response) -> Dict[str, Dict]:
         for module in data.get("modules", []):
             if module_type := module.get("module_type"):
                 modules[module_type] = module.get("module_data", {})
+    if not modules and errors:
+        raise ScrapeError(f'Target data API returned HTTP {errors[-1]}', response=response, code='HTTP_ERROR')
     return modules
 
 
@@ -216,8 +223,7 @@ async def scrape_availability(
 
 def parse_store_locations_sitemap(response: Response) -> List[Dict]:
     """parse store location entries from a sitemap response"""
-    content = response.content
-    bytes_data = content.read() if hasattr(content, "read") else content.encode("latin1")
+    bytes_data = response.raw or response.content.encode('utf-8')
     if bytes_data.startswith(b"\x1f\x8b"):
         bytes_data = gzip.decompress(bytes_data)
     # sitemaps declare a default xmlns: parse as XML and select url/loc in that namespace
@@ -235,7 +241,7 @@ def parse_store_locations_sitemap(response: Response) -> List[Dict]:
 @managed
 async def scrape_store_locations_sitemap(url: str) -> List[Dict]:
     """scrape store location URLs from the Target store sitemap"""
-    response = await CLIENT.fetch(Request(url, **BASE_CONFIG))
+    response = await CLIENT.fetch(Request(url, **BASE_CONFIG, binary=True))
     return parse_store_locations_sitemap(response)
 
 def parse_store_locations(response: Response) -> Dict:

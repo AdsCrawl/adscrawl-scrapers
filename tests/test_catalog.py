@@ -131,3 +131,25 @@ async def test_reddit_profile_pagination_uses_supported_wait_option(monkeypatch)
 def test_nordstrom_pagination_preserves_path_without_an_existing_query():
     module = audit.load_module(ROOT/'nordstorm-scraper/nordstorm.py')
     assert module.update_url_parameter('https://www.nordstrom.com/browse/men', page=2) == 'https://www.nordstrom.com/browse/men?page=2'
+
+
+def test_target_reports_data_api_access_error_instead_of_missing_module():
+    import pytest
+    from adscrawl_scrapers import ScrapeError
+    module = audit.load_module(ROOT/'target-scraper/target.py')
+    response = Response('https://www.target.com/p/example', network=[{
+        'url':'https://www.target.com/deferred_enrichment/modules',
+        'response':{'status':435,'body':'{"blockScript":"verification"}'},
+    }])
+    with pytest.raises(ScrapeError, match='HTTP 435') as caught:
+        module.parse_product(response)
+    assert caught.value.code == 'HTTP_ERROR'
+
+
+def test_target_store_sitemap_preserves_gzip_bytes_and_utf8():
+    import gzip
+    module = audit.load_module(ROOT/'target-scraper/target.py')
+    xml='<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://www.target.com/sl/café/123</loc></url></urlset>'.encode()
+    for payload in (xml,gzip.compress(xml)):
+        rows=module.parse_store_locations_sitemap(Response('https://www.target.com/sitemap.gz', raw=payload))
+        assert rows[0]['slug']=='café' and rows[0]['store_id']=='123'

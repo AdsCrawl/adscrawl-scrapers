@@ -66,7 +66,10 @@ async def test_thread_scraping():
         "https://www.threads.net/t/C8H5FiCtESk/",  # example with media
         "https://www.threads.net/t/C8CTu0iswgv",  # example without media
     ]
-    results = await asyncio.gather(*[threads.scrape_thread(url) for url in urls])
+    results = await asyncio.gather(*[threads.scrape_thread(url) for url in urls], return_exceptions=True)
+    for result in results:
+        if isinstance(result, BaseException):
+            raise result
     all_threads = [result["thread"] for result in results] + [
         reply for result in results for reply in result["replies"]
     ]
@@ -89,7 +92,10 @@ async def test_user_scraping():
     urls = [
         "https://www.threads.net/@natgeo",
     ]
-    results = await asyncio.gather(*[threads.scrape_profile(url) for url in urls])
+    results = await asyncio.gather(*[threads.scrape_profile(url) for url in urls], return_exceptions=True)
+    for result in results:
+        if isinstance(result, BaseException):
+            raise result
     # threads
     all_threads = [thread for result in results for thread in result["threads"] ]
     assert len(all_threads) > 2
