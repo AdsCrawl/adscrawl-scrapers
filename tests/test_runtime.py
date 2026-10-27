@@ -366,3 +366,15 @@ async def test_parser_failure_cancels_other_requests_before_leaving_scope(fake_s
         await asyncio.wait_for(operation(), 1)
     assert len(fake_sessions) == 2 and all(session.closed for session in fake_sessions)
     assert not client._active_requests and not client._sessions
+
+
+async def test_navigation_error_reports_safe_network_code_without_secret_url():
+    from playwright.async_api import Error
+    page = FakePage()
+    page.goto = AsyncMock(side_effect=Error('Page.goto: net::ERR_TUNNEL_CONNECTION_FAILED https://private.invalid/?token=secret'))
+    context = SimpleNamespace(new_page=AsyncMock(return_value=page))
+    with pytest.raises(ScrapeError) as caught:
+        await ScraperClient(sdk=object())._fetch_page(SimpleNamespace(context=context), Request('https://example.com'))
+    assert caught.value.code == 'ERR_TUNNEL_CONNECTION_FAILED'
+    assert caught.value.response.status_code == 0
+    assert 'secret' not in str(caught.value) and page.closed

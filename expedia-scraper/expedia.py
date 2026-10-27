@@ -250,7 +250,7 @@ async def scrape_hotel_search(
         url=build_hotel_search_url(destination, check_in, check_out, adults),
         session=session,
         waitForResponse="graphql",
-        waitMs="5000",
+        waitMs=5000,
         autoScroll=True,
         **BASE_CONFIG,
     ))
@@ -298,7 +298,7 @@ async def scrape_flight_search(
         session=session,
         autoScroll=True,
         waitForResponse="graphql",
-        waitMs="5000",
+        waitMs=5000,
         **BASE_CONFIG,
     ))
     captured_call = _find_graphql_call(

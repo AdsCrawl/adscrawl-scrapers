@@ -9,6 +9,7 @@ import asyncio
 import json
 import inspect
 import os
+import re
 import weakref
 from contextvars import ContextVar
 from functools import wraps
@@ -286,9 +287,11 @@ class ScraperClient:
                 raise
             except AdsCrawlAPIError as error:
                 raise ScrapeError(f"AdsCrawl API HTTP {error.status}", code=str(error.code or "API_ERROR")) from None
-            except (BrowserError, asyncio.TimeoutError):
+            except (BrowserError, asyncio.TimeoutError) as error:
                 # Browser errors can contain token-bearing CDP URLs. Never expose them.
-                raise ScrapeError("Remote browser request failed or timed out", response=Response(request.url, request_url=request.url)) from None
+                code = "TIMEOUT" if isinstance(error, (BrowserTimeout, asyncio.TimeoutError)) else "BROWSER_ERROR"
+                raise ScrapeError("Remote browser request failed or timed out", code=code,
+                                 response=Response(request.url, request_url=request.url, status_code=0)) from None
             finally:
                 if request.session is None:
                     try:
@@ -336,7 +339,7 @@ class ScraperClient:
         page = await session.context.new_page()
         network, collectors = [], set()
         response_ready = asyncio.Event()
-        response = Response(request.url, request_url=request.url)
+        response = Response(request.url, request_url=request.url, status_code=0)
         async def collect(reply):
             if reply.request.resource_type not in {"xhr", "fetch"}:
                 return
@@ -442,9 +445,13 @@ class ScraperClient:
             if request.raiseOnHttpError and response.status_code >= 400:
                 raise ScrapeError(f"Target returned HTTP {response.status_code}", response=response, code="HTTP_ERROR")
             return response
-        except BrowserError:
+        except BrowserError as error:
             response.url = page.url
-            raise ScrapeError("Browser navigation or interaction failed", response=response) from None
+            # Chromium's stable error identifier is useful for distinguishing
+            # proxy/routing failures from extraction bugs, without logging URLs.
+            reason = re.search(r"net::(ERR_[A-Z0-9_]+)", str(error))
+            code = reason.group(1) if reason else "TIMEOUT" if isinstance(error, BrowserTimeout) else "BROWSER_ERROR"
+            raise ScrapeError("Browser navigation or interaction failed", response=response, code=code) from None
         finally:
             page.remove_listener("response", on_response)
             for task in collectors:

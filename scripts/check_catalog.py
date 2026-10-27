@@ -37,6 +37,9 @@ def check():
                     assert node.attr not in {'scrape_result','async_scrape','concurrent_scrape','api_response','max_concurrency'}, (path,node.lineno,node.attr)
                 if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == 'Request':
                     assert all(k.arg is None or k.arg in allowed for k in node.keywords), (path,node.lineno)
+                    for keyword in node.keywords:
+                        if keyword.arg in {'waitMs', 'timeoutMs'} and isinstance(keyword.value, ast.Constant):
+                            assert type(keyword.value.value) is int, (path,node.lineno,keyword.arg)
         module = load_module(directory / entry['module'])
         for name in ('BASE_CONFIG','CLASSIFY_CONFIG'):
             if hasattr(module, name):
