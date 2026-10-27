@@ -35,7 +35,7 @@ class Price(TypedDict):
 class ProductVariant(TypedDict):
     tcin: str
     price: Optional[Price]
-    free_shipping: bool
+    free_shipping: Optional[bool]
     in_stock: bool
 
 
@@ -108,20 +108,42 @@ def _is_in_stock(fulfillment: Optional[Dict]) -> bool:
     return False
 
 
+def _parse_price_display(item: Dict) -> Optional[Price]:
+    """Read the current PriceBlock while keeping unknown prices explicit."""
+    current = regular = formatted = None
+    for row in (item.get('price_display') or {}).get('rows', []):
+        for part in (row.get('text') or {}).get('contents', []):
+            text = (part.get('insert') or {}).get('text', '')
+            match = re.search(r'\$([\d,]+(?:\.\d+)?)', text)
+            if not match:
+                continue
+            amount = float(match.group(1).replace(',', ''))
+            if (part.get('attributes') or {}).get('strike'):
+                regular = amount
+            elif current is None:
+                current, formatted = amount, match.group(0)
+    if current is None and regular is None:
+        return None
+    return {'current_retail': current, 'reg_retail': regular,
+            'formatted_current_price': formatted, 'location_id': None}
+
+
 def parse_product(response: Response) -> Product:
     """parse product data from deferred_enrichment XHR modules captured on the PDP"""
     modules = _extract_deferred_modules(response)
-    for name in (MODULE_FULFILLMENT, MODULE_WITH_STORE):
-        if name not in modules:
-            raise ValueError(f"missing deferred_enrichment module: {name}")
+    if MODULE_FULFILLMENT not in modules:
+        raise ValueError(f"missing deferred_enrichment module: {MODULE_FULFILLMENT}")
+    if MODULE_WITH_STORE not in modules and 'ProductDetailPrice' not in modules:
+        raise ValueError('missing product pricing module')
 
     fulfillment = modules[MODULE_FULFILLMENT]["data"]["product"]
-    store = modules[MODULE_WITH_STORE]["data"]["product"]
-    fulfillment_by_tcin = {c["tcin"]: c for c in fulfillment.get("children", [])}
-    store_by_tcin = {c["tcin"]: c for c in store.get("children", [])}
+    store = modules.get(MODULE_WITH_STORE, {}).get('data', {}).get('product', {})
+    fulfillment_by_tcin = {c["tcin"]: c for c in fulfillment.get("children") or [fulfillment]}
+    store_by_tcin = {c["tcin"]: c for c in (store.get("children") or [store]) if c.get('tcin')}
+    prices_by_tcin = {p['tcin']: p for p in modules.get('ProductDetailPrice', {}).get('data_by_tcin', []) if p.get('tcin')}
 
     variants: List[ProductVariant] = []
-    for tcin in sorted(set(fulfillment_by_tcin) | set(store_by_tcin)):
+    for tcin in sorted(set(fulfillment_by_tcin) | set(store_by_tcin) | set(prices_by_tcin)):
         store_child = store_by_tcin.get(tcin, {})
         fulfillment_child = fulfillment_by_tcin.get(tcin, {})
         price_data = store_child.get("price") or {}
@@ -132,8 +154,10 @@ def parse_product(response: Response) -> Product:
                 "reg_retail": price_data.get("reg_retail"),
                 "formatted_current_price": price_data.get("formatted_current_price"),
                 "location_id": price_data.get("location_id"),
-            } if price_data else None,
-            "free_shipping": (store_child.get("free_shipping") or {}).get("enabled", False),
+            } if price_data else _parse_price_display(prices_by_tcin.get(tcin, {})),
+            # New price modules omit eligibility; absence is not proof that
+            # shipping is paid or free.
+            "free_shipping": (store_child.get("free_shipping") or {}).get("enabled"),
             "in_stock": _is_in_stock(fulfillment_child.get("fulfillment")),
         })
 

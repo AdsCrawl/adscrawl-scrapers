@@ -23,7 +23,7 @@ product_schema = {
             "type": "dict",
             "schema": {
                 "tcin": {"type": "string"},
-                "free_shipping": {"type": "boolean"},
+                "free_shipping": {"type": "boolean", "nullable": True},
                 "in_stock": {"type": "boolean"},
             },
         },

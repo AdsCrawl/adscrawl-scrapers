@@ -153,3 +153,26 @@ def test_target_store_sitemap_preserves_gzip_bytes_and_utf8():
     for payload in (xml,gzip.compress(xml)):
         rows=module.parse_store_locations_sitemap(Response('https://www.target.com/sitemap.gz', raw=payload))
         assert rows[0]['slug']=='café' and rows[0]['store_id']=='123'
+
+
+def test_target_accepts_new_price_blocks_without_inventing_shipping_eligibility():
+    module = audit.load_module(ROOT/'target-scraper/target.py')
+    modules = [
+        {'module_type':module.MODULE_FULFILLMENT,'module_data':{'data':{'product':{
+            'tcin':'parent','children':[{'tcin':'1','fulfillment':{'shipping_options':{'availability_status':'IN_STOCK'}}}],
+        }}}},
+        {'module_type':'ProductDetailPrice','module_data':{'data_by_tcin':[
+            {'tcin':'1','price_display':{'rows':[{'text':{'contents':[
+                {'insert':{'text':'$11.25'}},
+                {'insert':{'text':'$15.00'},'attributes':{'strike':True}},
+            ]}}]}},
+        ]}},
+    ]
+    response=Response('https://www.target.com/p/example', '<h1 data-test="product-title">Example</h1>', network=[{
+        'url':'https://www.target.com/deferred_enrichment/modules','response':{'status':200,'body':json.dumps({'modules':modules})},
+    }])
+    result=module.parse_product(response)
+    variant=result['variants'][0]
+    assert result['title']=='Example' and result['tcin']=='parent'
+    assert variant['price']['current_retail']==11.25 and variant['price']['reg_retail']==15
+    assert variant['in_stock'] is True and variant['free_shipping'] is None
