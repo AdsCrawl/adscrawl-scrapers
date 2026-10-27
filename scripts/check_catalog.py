@@ -27,7 +27,7 @@ def check():
     for entry in catalog:
         directory = ROOT / entry['directory']
         for path in directory.rglob('*.py'):
-            tree = ast.parse(path.read_text(), filename=str(path))
+            tree = ast.parse(path.read_text(), filename=str(path), feature_version=(3, 10))
             for node in ast.walk(tree):
                 if isinstance(node, ast.ImportFrom):
                     assert not (node.module or '').startswith('scrapfly'), path

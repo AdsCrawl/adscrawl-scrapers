@@ -1,14 +1,19 @@
 # Verification record
 
-Date: 2026-10-27. Local environment: Python 3.12.14, adscrawl 0.1.0,
+Date: 2026-10-27. Local environments: Python 3.10.16 and 3.12.14, adscrawl 0.1.0,
 Playwright 1.64.1. Source snapshot: f8db50104853ca8db0d1c4685c616e8107751fd4.
 
 ## Offline checks
 
-- `python -m pytest tests -q`: 20 tests passed.
+- `python -m pytest tests -q`: 20 tests passed on both local Python versions.
 - `python scripts/check_catalog.py`: all 81 site modules imported without a key;
   catalog entry points and request options passed source/configuration checks.
 - `python -m build --no-isolation`: source distribution and wheel built locally.
+
+CI also tests Python 3.13. Current run results are available in
+[GitHub Actions](https://github.com/AdsCrawl/adscrawl-scrapers/actions/workflows/offline.yml).
+The initial CI run exposed a pre-3.12 f-string syntax incompatibility in Similarweb;
+it was corrected and rechecked with the Python 3.10 interpreter.
 
 Tests cover browser lifecycle, named-session scopes, bounded batches, error and
 cancellation cleanup, remote POST routing, completed XHR capture, actions, Unicode

@@ -118,7 +118,7 @@ def parse_sitemaps(response: Response) -> List[str]:
     # an HTML page (challenge or error page) instead of the sitemap would silently parse to no urls
     if "<urlset" not in xml:
         raise ValueError(
-            f"similarweb.com answered the sitemap request with {response.headers.get("content-type")} "
+            f"similarweb.com answered the sitemap request with {response.headers.get('content-type')} "
             f"(HTTP {response.status_code}) instead of a sitemap xml"
         )
 
