@@ -21,6 +21,9 @@ CLIENT = ScraperClient()
 BASE_CONFIG = {
     'countryCode': "US",
     'render': True,
+    # All page parsers depend on this dataset. A loading/verification shell
+    # must not be treated as an empty, successfully scraped result.
+    'waitForSelector': 'script#__NEXT_DATA__',
 }
 
 
@@ -151,11 +154,8 @@ async def scrape_titles(urls: List[str]) -> List[IMDbTitle]:
     to_scrape = [Request(url, **BASE_CONFIG) for url in urls]
     titles = []
     async for result in CLIENT.fetch_many(to_scrape):
-        try:
-            log.info("scraping title {}", result.url)
-            titles.append(parse_title(result))
-        except Exception as e:
-            log.error(f"failed to scrape title: {e}")
+        log.info("scraping title {}", result.url)
+        titles.append(parse_title(result))
     log.success(f"scraped {len(titles)} titles")
     return titles
 

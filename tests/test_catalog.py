@@ -97,3 +97,13 @@ async def test_fashionphile_pagination_uses_canonical_url_and_sort_order(monkeyp
     await module.scrape_search('https://www.fashionphile.com/shop/discounted/all', max_pages=3)
     assert [r.url for r in requests] == [canonical+'?sortBy=price_desc&page=2', canonical+'?sortBy=price_desc&page=3']
     assert all(r.waitForSelector == '.fp-algolia-product-card' for r in requests)
+
+
+async def test_imdb_does_not_report_success_after_a_title_parser_failure(monkeypatch):
+    import pytest
+    module = audit.load_module(ROOT/'imdb-scraper/imdb.py')
+    async def pages(items):
+        yield Response('https://www.imdb.com/title/tt0111161/', '<h1>Verification page</h1>')
+    monkeypatch.setattr(module.CLIENT, 'fetch_many', pages)
+    with pytest.raises(KeyError, match='url'):
+        await module.scrape_titles(['https://www.imdb.com/title/tt0111161/'])

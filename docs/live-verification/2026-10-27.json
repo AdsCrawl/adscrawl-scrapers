@@ -4,11 +4,11 @@
   "timezone": "Asia/Shanghai",
   "method": "Existing live pytest suites, sequential by site; stop at first failure per site; 300-second site deadline; no test retries; non-empty output review. Fixes are applied and retested separately.",
   "counts": {
-    "passed": 2,
-    "partial": 8,
-    "failed": 19,
+    "passed": 4,
+    "partial": 9,
+    "failed": 27,
     "empty_output": 1,
-    "not_run": 51
+    "not_run": 40
   },
   "sites": [
     {
@@ -30,6 +30,9 @@
       "outputs": [],
       "duration_seconds": 40.98,
       "requests": 1,
+      "observed_http_statuses": [],
+      "revision": null,
+      "working_tree_dirty": null,
       "notes": "UnicodeDecodeError",
       "finished_at": "2026-10-27T13:49:12+08:00"
     },
@@ -52,6 +55,9 @@
       "outputs": [],
       "duration_seconds": 191.81,
       "requests": 0,
+      "observed_http_statuses": [],
+      "revision": null,
+      "working_tree_dirty": null,
       "notes": "RuntimeError",
       "finished_at": "2026-10-27T13:52:24+08:00"
     },
@@ -80,6 +86,9 @@
       "outputs": [],
       "duration_seconds": 180.15,
       "requests": 2,
+      "observed_http_statuses": [],
+      "revision": null,
+      "working_tree_dirty": null,
       "notes": "SCRAPE_FAILED",
       "finished_at": "2026-10-27T13:55:24+08:00"
     },
@@ -102,6 +111,9 @@
       "outputs": [],
       "duration_seconds": 97.58,
       "requests": 2,
+      "observed_http_statuses": [],
+      "revision": null,
+      "working_tree_dirty": null,
       "notes": "SCRAPE_FAILED",
       "finished_at": "2026-10-27T13:57:02+08:00"
     },
@@ -124,6 +136,9 @@
       "outputs": [],
       "duration_seconds": 301.11,
       "requests": 2,
+      "observed_http_statuses": [],
+      "revision": null,
+      "working_tree_dirty": null,
       "notes": "SCRAPE_FAILED；超过 300 秒限时",
       "finished_at": "2026-10-27T14:02:03+08:00"
     },
@@ -197,6 +212,11 @@
       ],
       "duration_seconds": 14.66,
       "requests": 2,
+      "observed_http_statuses": [
+        200
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
       "notes": "SCRAPE_FAILED",
       "finished_at": "2026-10-27T14:02:18+08:00"
     },
@@ -231,7 +251,13 @@
       ],
       "duration_seconds": 25.22,
       "requests": 2,
-      "notes": "HTTP 403；首轮返回 20 条；后续请求失败，离线 URL 用例不算实测通过",
+      "observed_http_statuses": [
+        200,
+        403
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
+      "notes": "HTTP 403；目标导航 HTTP 403；首轮返回 20 条；后续请求失败，离线 URL 用例不算实测通过",
       "finished_at": "2026-10-27T14:02:43+08:00"
     },
     {
@@ -253,6 +279,11 @@
       "outputs": [],
       "duration_seconds": 143.39,
       "requests": 2,
+      "observed_http_statuses": [
+        200
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
       "notes": "SCRAPE_FAILED",
       "finished_at": "2026-10-27T14:05:06+08:00"
     },
@@ -289,6 +320,11 @@
       ],
       "duration_seconds": 39.47,
       "requests": 4,
+      "observed_http_statuses": [
+        200
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
       "notes": "",
       "finished_at": "2026-10-27T14:05:46+08:00"
     },
@@ -311,6 +347,11 @@
       "outputs": [],
       "duration_seconds": 77.67,
       "requests": 2,
+      "observed_http_statuses": [
+        202
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
       "notes": "SCRAPE_FAILED",
       "finished_at": "2026-10-27T14:07:03+08:00"
     },
@@ -349,7 +390,13 @@
       ],
       "duration_seconds": 49.85,
       "requests": 3,
-      "notes": "HTTP 403",
+      "observed_http_statuses": [
+        200,
+        403
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
+      "notes": "HTTP 403；目标导航 HTTP 403",
       "finished_at": "2026-10-27T14:07:53+08:00"
     },
     {
@@ -374,6 +421,11 @@
       ],
       "duration_seconds": 39.07,
       "requests": 1,
+      "observed_http_statuses": [
+        200
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
       "notes": "",
       "finished_at": "2026-10-27T14:08:32+08:00"
     },
@@ -396,7 +448,12 @@
       "outputs": [],
       "duration_seconds": 23.29,
       "requests": 4,
-      "notes": "UnboundLocalError",
+      "observed_http_statuses": [
+        403
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
+      "notes": "UnboundLocalError；目标导航 HTTP 403",
       "finished_at": "2026-10-27T14:08:56+08:00"
     },
     {
@@ -422,7 +479,13 @@
       ],
       "duration_seconds": 18.05,
       "requests": 2,
-      "notes": "原测试接受空输出，验收不通过",
+      "observed_http_statuses": [
+        200,
+        403
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
+      "notes": "目标导航 HTTP 403；原测试接受空输出，验收不通过",
       "finished_at": "2026-10-27T14:09:14+08:00"
     },
     {
@@ -444,7 +507,12 @@
       "outputs": [],
       "duration_seconds": 8.16,
       "requests": 2,
-      "notes": "HTTP 403",
+      "observed_http_statuses": [
+        403
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
+      "notes": "HTTP 403；目标导航 HTTP 403",
       "finished_at": "2026-10-27T14:09:22+08:00"
     },
     {
@@ -466,6 +534,11 @@
       "outputs": [],
       "duration_seconds": 306.29,
       "requests": 2,
+      "observed_http_statuses": [
+        200
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
       "notes": "ValueError；超过 300 秒限时",
       "finished_at": "2026-10-27T14:14:28+08:00"
     },
@@ -488,7 +561,12 @@
       "outputs": [],
       "duration_seconds": 8.67,
       "requests": 1,
-      "notes": "HTTP 403",
+      "observed_http_statuses": [
+        403
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
+      "notes": "HTTP 403；目标导航 HTTP 403",
       "finished_at": "2026-10-27T14:14:37+08:00"
     },
     {
@@ -510,6 +588,9 @@
       "outputs": [],
       "duration_seconds": 102.98,
       "requests": 1,
+      "observed_http_statuses": [],
+      "revision": null,
+      "working_tree_dirty": null,
       "notes": "SCRAPE_FAILED",
       "finished_at": "2026-10-27T14:16:20+08:00"
     },
@@ -532,7 +613,12 @@
       "outputs": [],
       "duration_seconds": 10.19,
       "requests": 2,
-      "notes": "HTTP 403",
+      "observed_http_statuses": [
+        403
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
+      "notes": "HTTP 403；目标导航 HTTP 403",
       "finished_at": "2026-10-27T14:16:30+08:00"
     },
     {
@@ -554,6 +640,9 @@
       "outputs": [],
       "duration_seconds": 1.21,
       "requests": 0,
+      "observed_http_statuses": [],
+      "revision": null,
+      "working_tree_dirty": null,
       "notes": "TypeError",
       "finished_at": "2026-10-27T14:16:31+08:00"
     },
@@ -599,6 +688,11 @@
       ],
       "duration_seconds": 268.76,
       "requests": 12,
+      "observed_http_statuses": [
+        200
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
       "notes": "SCRAPE_FAILED",
       "finished_at": "2026-10-27T14:21:00+08:00"
     },
@@ -633,6 +727,11 @@
       ],
       "duration_seconds": 303.5,
       "requests": 6,
+      "observed_http_statuses": [
+        200
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
       "notes": "SCRAPE_FAILED",
       "finished_at": "2026-10-27T14:26:03+08:00"
     },
@@ -655,7 +754,12 @@
       "outputs": [],
       "duration_seconds": 95.75,
       "requests": 1,
-      "notes": "TIMEOUT",
+      "observed_http_statuses": [
+        403
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
+      "notes": "TIMEOUT；目标导航 HTTP 403",
       "finished_at": "2026-10-27T14:27:39+08:00"
     },
     {
@@ -701,7 +805,13 @@
       ],
       "duration_seconds": 16.97,
       "requests": 2,
-      "notes": "HTTP 403",
+      "observed_http_statuses": [
+        200,
+        403
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
+      "notes": "HTTP 403；目标导航 HTTP 403",
       "finished_at": "2026-10-27T14:27:56+08:00"
     },
     {
@@ -729,6 +839,11 @@
       ],
       "duration_seconds": 95.38,
       "requests": 3,
+      "observed_http_statuses": [
+        200
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
       "notes": "ERR_TUNNEL_CONNECTION_FAILED",
       "finished_at": "2026-10-27T14:29:32+08:00"
     },
@@ -751,6 +866,11 @@
       "outputs": [],
       "duration_seconds": 77.29,
       "requests": 2,
+      "observed_http_statuses": [
+        200
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
       "notes": "JSONDecodeError",
       "finished_at": "2026-10-27T14:30:49+08:00"
     },
@@ -804,6 +924,11 @@
       ],
       "duration_seconds": 65.92,
       "requests": 2,
+      "observed_http_statuses": [
+        200
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
       "notes": "ERR_TUNNEL_CONNECTION_FAILED",
       "finished_at": "2026-10-27T14:31:55+08:00"
     },
@@ -842,6 +967,11 @@
       ],
       "duration_seconds": 30.39,
       "requests": 1,
+      "observed_http_statuses": [
+        200
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
       "notes": "AssertionError",
       "finished_at": "2026-10-27T14:32:25+08:00"
     },
@@ -864,6 +994,11 @@
       "outputs": [],
       "duration_seconds": 113.53,
       "requests": 1,
+      "observed_http_statuses": [
+        200
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
       "notes": "TIMEOUT",
       "finished_at": "2026-10-27T14:34:19+08:00"
     },
@@ -886,96 +1021,523 @@
       "outputs": [],
       "duration_seconds": 20.07,
       "requests": 2,
+      "observed_http_statuses": [
+        200
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
       "notes": "ERR_TUNNEL_CONNECTION_FAILED",
       "finished_at": "2026-10-27T14:34:39+08:00"
     },
     {
       "site": "google-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 5,
+      "tests": [
+        {
+          "test": "test_serp_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 19.702,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 21.04,
+      "requests": 4,
+      "observed_http_statuses": [
+        200,
+        429
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
+      "notes": "HTTP 429；目标导航 HTTP 429",
+      "finished_at": "2026-10-27T14:35:00+08:00"
     },
     {
       "site": "homegate-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_properties_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 7.753,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 9.13,
+      "requests": 1,
+      "observed_http_statuses": [
+        403
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
+      "notes": "HTTP 403；目标导航 HTTP 403",
+      "finished_at": "2026-10-27T14:35:09+08:00"
     },
     {
       "site": "idealista-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 3,
+      "tests": [
+        {
+          "test": "test_idealista_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 7.223,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 8.52,
+      "requests": 1,
+      "observed_http_statuses": [
+        403
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
+      "notes": "HTTP 403；目标导航 HTTP 403",
+      "finished_at": "2026-10-27T14:35:17+08:00"
     },
     {
       "site": "idealo-scraper",
-      "status": "not_run",
-      "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "status": "passed",
+      "passed": 4,
+      "collected": 4,
+      "tests": [
+        {
+          "test": "test_product_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 13.635
+        },
+        {
+          "test": "test_search_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 27.574
+        },
+        {
+          "test": "test_manufacturer_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 26.982
+        },
+        {
+          "test": "test_price_history_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 14.722
+        }
+      ],
+      "outputs": [
+        {
+          "function": "scrape_products",
+          "type": "list",
+          "count": 1,
+          "item_fields": [
+            "brand",
+            "currency",
+            "description",
+            "high_price",
+            "image",
+            "low_price",
+            "name",
+            "offer_count",
+            "offers",
+            "product_id",
+            "rating",
+            "rating_count",
+            "url"
+          ],
+          "nonempty_items": 1
+        },
+        {
+          "function": "scrape_search",
+          "type": "list",
+          "count": 60,
+          "item_fields": [
+            "currency",
+            "image",
+            "name",
+            "offer_count",
+            "price",
+            "product_id",
+            "shop_name",
+            "url"
+          ],
+          "nonempty_items": 60
+        },
+        {
+          "function": "scrape_manufacturer",
+          "type": "dict",
+          "count": 5,
+          "fields": [
+            "description",
+            "name",
+            "products",
+            "result_count",
+            "url"
+          ],
+          "collection_counts": {
+            "products": 36
+          }
+        },
+        {
+          "function": "scrape_price_history",
+          "type": "dict",
+          "count": 10,
+          "fields": [
+            "avg_price",
+            "currency",
+            "highest_price",
+            "highest_price_days",
+            "lowest_price",
+            "lowest_price_days",
+            "period",
+            "points",
+            "product_id",
+            "start_date"
+          ],
+          "collection_counts": {
+            "points": 92
+          }
+        }
+      ],
+      "duration_seconds": 84.11,
+      "requests": 5,
+      "observed_http_statuses": [
+        200
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
+      "notes": "",
+      "finished_at": "2026-10-27T14:36:42+08:00"
     },
     {
       "site": "imdb-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 5,
+      "tests": [
+        {
+          "test": "test_title_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 6.006,
+          "error_type": "AssertionError",
+          "code": null,
+          "status": null
+        }
+      ],
+      "outputs": [
+        {
+          "function": "scrape_titles",
+          "type": "list",
+          "count": 0
+        }
+      ],
+      "duration_seconds": 7.17,
+      "requests": 1,
+      "observed_http_statuses": [
+        202
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
+      "notes": "AssertionError；原测试接受空输出，验收不通过",
+      "finished_at": "2026-10-27T14:36:49+08:00"
     },
     {
       "site": "immobilienscout24-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_properties_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 9.857,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 11.18,
+      "requests": 1,
+      "observed_http_statuses": [
+        401
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
+      "notes": "HTTP 401；目标导航 HTTP 401",
+      "finished_at": "2026-10-27T14:37:00+08:00"
     },
     {
       "site": "immoscout24-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_properties_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 10.304,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 11.67,
+      "requests": 1,
+      "observed_http_statuses": [
+        403
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
+      "notes": "HTTP 403；目标导航 HTTP 403",
+      "finished_at": "2026-10-27T14:37:12+08:00"
     },
     {
       "site": "immowelt-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_properties_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 9.103,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 10.46,
+      "requests": 2,
+      "observed_http_statuses": [
+        403
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
+      "notes": "HTTP 403；目标导航 HTTP 403",
+      "finished_at": "2026-10-27T14:37:22+08:00"
     },
     {
       "site": "imovelweb-scraper",
-      "status": "not_run",
-      "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "status": "passed",
+      "passed": 2,
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_search_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 22.076
+        },
+        {
+          "test": "test_property_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 68.939
+        }
+      ],
+      "outputs": [
+        {
+          "function": "scrape_search",
+          "type": "dict",
+          "count": 3,
+          "fields": [
+            "search_properties",
+            "total_pages",
+            "total_properties"
+          ],
+          "collection_counts": {
+            "search_properties": 30
+          }
+        },
+        {
+          "function": "scrape_search",
+          "type": "dict",
+          "count": 3,
+          "fields": [
+            "search_properties",
+            "total_pages",
+            "total_properties"
+          ],
+          "collection_counts": {
+            "search_properties": 30
+          }
+        },
+        {
+          "function": "scrape_properties",
+          "type": "list",
+          "count": 3,
+          "item_fields": [
+            "area_m2",
+            "bathrooms",
+            "bedrooms",
+            "city",
+            "currency",
+            "description",
+            "images",
+            "neighborhood",
+            "phone",
+            "price",
+            "price_display",
+            "state",
+            "street",
+            "title",
+            "url"
+          ],
+          "nonempty_items": 3
+        }
+      ],
+      "duration_seconds": 92.33,
+      "requests": 5,
+      "observed_http_statuses": [
+        200
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
+      "notes": "",
+      "finished_at": "2026-10-27T14:38:54+08:00"
     },
     {
       "site": "indeed-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_search_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 6.66,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 8.02,
+      "requests": 1,
+      "observed_http_statuses": [
+        403
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
+      "notes": "HTTP 403；目标导航 HTTP 403",
+      "finished_at": "2026-10-27T14:39:02+08:00"
     },
     {
       "site": "instagram-scraper",
-      "status": "not_run",
-      "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "status": "partial",
+      "passed": 2,
+      "collected": 4,
+      "tests": [
+        {
+          "test": "test_user_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 25.05
+        },
+        {
+          "test": "test_post_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 12.364
+        },
+        {
+          "test": "test_user_post_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 6.134,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [
+        {
+          "function": "scrape_user",
+          "type": "dict",
+          "count": 16,
+          "fields": [
+            "account_badges",
+            "bio",
+            "bio_links",
+            "facebook_id",
+            "followers",
+            "follows",
+            "highlights",
+            "id",
+            "is_memorialized",
+            "is_private",
+            "is_verified",
+            "name",
+            "profile_image",
+            "pronouns",
+            "threads_handle",
+            "username"
+          ],
+          "collection_counts": {
+            "bio_links": 1,
+            "pronouns": 0,
+            "account_badges": 0,
+            "highlights": 1
+          }
+        },
+        {
+          "function": "scrape_post",
+          "type": "dict",
+          "count": 10,
+          "fields": [
+            "captions",
+            "comments",
+            "comments_count",
+            "id",
+            "likes",
+            "location",
+            "shortcode",
+            "src",
+            "src_attached",
+            "taken_at"
+          ],
+          "collection_counts": {
+            "src_attached": 4,
+            "captions": 1,
+            "comments": 9
+          }
+        }
+      ],
+      "duration_seconds": 44.89,
+      "requests": 3,
+      "observed_http_statuses": [
+        200,
+        401
+      ],
+      "revision": null,
+      "working_tree_dirty": null,
+      "notes": "HTTP 401；目标导航 HTTP 401",
+      "finished_at": "2026-10-27T14:39:47+08:00"
     },
     {
       "site": "kayak-scraper",
