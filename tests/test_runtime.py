@@ -391,3 +391,15 @@ async def test_stalled_tab_close_does_not_hold_a_completed_request(monkeypatch):
     response = await asyncio.wait_for(ScraperClient(sdk=object())._fetch_page(
         SimpleNamespace(context=context), Request('https://example.com/api')), 1)
     assert response.json() == {'rows': [1]}
+
+
+async def test_http_error_is_reported_before_waiting_for_missing_site_data():
+    page = FakePage()
+    page.goto = AsyncMock(return_value=SimpleNamespace(status=403, all_headers=AsyncMock(return_value={})))
+    page.wait_for_selector = AsyncMock(side_effect=AssertionError('must not wait on the error document'))
+    context = SimpleNamespace(new_page=AsyncMock(return_value=page))
+    with pytest.raises(ScrapeError) as caught:
+        await ScraperClient(sdk=object())._fetch_page(SimpleNamespace(context=context), Request(
+            'https://example.com', waitForSelector='#products', waitForResponse='/api/products'))
+    assert caught.value.code == 'HTTP_ERROR' and caught.value.response.status_code == 403
+    assert caught.value.response.content == '<h1>Rendered</h1>' and page.closed

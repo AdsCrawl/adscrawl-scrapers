@@ -397,6 +397,13 @@ class ScraperClient:
             if main:
                 response.status_code = main.status
                 response.headers = await main.all_headers()
+            if request.raiseOnHttpError and response.status_code >= 400:
+                # An error document cannot satisfy the site's data selector or
+                # API wait. Preserve the real status instead of masking it with
+                # a later timeout. Callers that inspect errors can opt out.
+                response.content = await page.content()
+                response.raw = response.content.encode()
+                raise ScrapeError(f"Target returned HTTP {response.status_code}", response=response, code="HTTP_ERROR")
             if request.waitForResponse:
                 await asyncio.wait_for(response_ready.wait(), request.timeoutMs / 1000)
             if request.waitForSelector:
