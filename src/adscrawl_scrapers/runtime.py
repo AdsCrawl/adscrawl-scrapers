@@ -23,6 +23,8 @@ from playwright.async_api import async_playwright, Error as BrowserError, Timeou
 
 _CLIENTS: weakref.WeakSet = weakref.WeakSet()
 _SCOPE = ContextVar("adscrawl_scraper_scope", default=None)
+_NETWORK_DRAIN_SECONDS = 2
+_DISCONNECT_TIMEOUT_SECONDS = 10
 
 
 @dataclass
@@ -163,19 +165,19 @@ class _Session:
         failures = []
         if self.browser:
             try:
-                await self.browser.close()
+                await asyncio.wait_for(self.browser.close(), _DISCONNECT_TIMEOUT_SECONDS)
             except Exception:
                 pass
             self.browser = None
         if self.info:
             try:
-                await self.sdk.cdp.close(self.info["sessionId"])
+                await self.sdk.cdp.close(self.info["sessionId"], timeout_ms=30_000)
                 self.info = None
             except Exception:
                 failures.append("AdsCrawl session cleanup failed; inspect active sessions before retrying")
         if self.playwright:
             try:
-                await self.playwright.stop()
+                await asyncio.wait_for(self.playwright.stop(), _DISCONNECT_TIMEOUT_SECONDS)
             finally:
                 self.playwright = None
         if failures:
@@ -409,7 +411,13 @@ class ScraperClient:
             response.cookies = await session.context.cookies()
             page.remove_listener("response", on_response)
             if collectors:
-                await asyncio.gather(*collectors)
+                # Background streams/telemetry can stay open indefinitely. A
+                # completed page must not wait for every unrelated response.
+                # waitForResponse above explicitly awaits any required payload.
+                _, pending = await asyncio.wait(collectors, timeout=_NETWORK_DRAIN_SECONDS)
+                for task in pending:
+                    task.cancel()
+                await asyncio.gather(*collectors, return_exceptions=True)
             response.network = network
             if request.raiseOnHttpError and response.status_code >= 400:
                 raise ScrapeError(f"Target returned HTTP {response.status_code}", response=response, code="HTTP_ERROR")

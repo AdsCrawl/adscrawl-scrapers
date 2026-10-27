@@ -139,7 +139,7 @@ async def test_sdk_close_runs_even_when_browser_disconnect_fails():
     session.browser = SimpleNamespace(close=AsyncMock(side_effect=RuntimeError('disconnect')))
     session.playwright = SimpleNamespace(stop=AsyncMock())
     await session.close()
-    sdk.cdp.close.assert_awaited_once_with('safe-id')
+    sdk.cdp.close.assert_awaited_once_with('safe-id', timeout_ms=30_000)
 
 
 async def test_cancel_during_sdk_creation_still_deletes_created_session():
@@ -154,7 +154,21 @@ async def test_cancel_during_sdk_creation_still_deletes_created_session():
     await created.wait()
     task.cancel()
     with pytest.raises(asyncio.CancelledError): await task
-    sdk.cdp.close.assert_awaited_once_with('new-session')
+    sdk.cdp.close.assert_awaited_once_with('new-session', timeout_ms=30_000)
+
+
+async def test_stalled_browser_disconnect_still_releases_remote_session(monkeypatch):
+    monkeypatch.setattr('adscrawl_scrapers.runtime._DISCONNECT_TIMEOUT_SECONDS', 0.01)
+    sdk = SimpleNamespace(cdp=SimpleNamespace(close=AsyncMock()))
+    session = _Session(sdk, {})
+    session.info = {'sessionId':'stalled-session'}
+    async def stalled():
+        await asyncio.Event().wait()
+    session.browser = SimpleNamespace(close=stalled)
+    session.playwright = SimpleNamespace(stop=AsyncMock())
+    await asyncio.wait_for(session.close(), 1)
+    sdk.cdp.close.assert_awaited_once_with('stalled-session', timeout_ms=30_000)
+    assert session.info is None and session.playwright is None
 
 
 async def test_browser_actions_and_script_results():
@@ -248,6 +262,28 @@ async def test_binary_background_fetch_does_not_break_html_or_json_capture():
     assert response.json() == {'rows':[1]}
     assert next(r for r in response.network if r['url'].endswith('/telemetry'))['response']['body'] is None
     assert page.closed
+
+
+async def test_open_background_stream_does_not_hold_completed_page(monkeypatch):
+    monkeypatch.setattr('adscrawl_scrapers.runtime._NETWORK_DRAIN_SECONDS', 0.01)
+    page = FakePage()
+    goto = page.goto
+    cancelled = asyncio.Event()
+    async def streaming_body():
+        try:
+            await asyncio.Event().wait()
+        finally:
+            cancelled.set()
+    async def with_stream(*args, **kwargs):
+        main = await goto(*args, **kwargs)
+        page.handler(SimpleNamespace(
+            request=SimpleNamespace(resource_type='fetch'), text=streaming_body))
+        return main
+    page.goto = with_stream
+    context = SimpleNamespace(new_page=AsyncMock(return_value=page), cookies=AsyncMock(return_value=[]))
+    result = await asyncio.wait_for(ScraperClient(sdk=object())._fetch_page(
+        SimpleNamespace(context=context), Request('https://example.com', waitForResponse='/api')), 1)
+    assert result.json() == {'rows':[1]} and cancelled.is_set() and page.closed
 
 
 async def test_attachment_preserves_bytes_and_decodes_unicode_json():
