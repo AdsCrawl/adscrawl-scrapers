@@ -64,7 +64,7 @@
       "scrape_reviews"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "partial",
+    "live_verification": "passed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -156,7 +156,7 @@
       "scrape_tracking"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "empty_output",
+    "live_verification": "failed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -248,7 +248,7 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "partial",
+    "live_verification": "passed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -408,7 +408,7 @@
       "scrape_person"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "failed",
+    "live_verification": "passed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -655,7 +655,7 @@
       "scrape_user_comments"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "partial",
+    "live_verification": "passed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {

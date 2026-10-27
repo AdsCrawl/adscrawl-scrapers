@@ -41,9 +41,11 @@ URLs or user cookies are recorded here. Historical result files were not replace
 
 ## Not established by these checks
 
-The complete live suites for all 81 sites have **not** been run. Current selectors,
-anti-bot behavior, access requirements, pagination and output schemas may need
-site-specific updates. In particular, Google AI Mode's configurable DOM selectors
-and Air France's form flow have not been live-validated in this migration.
+At this initial checkpoint, the live suites for all 81 sites had **not** been run.
+The subsequent [dated audit](live-verification/2026-10-27.md) attempted all 81 sites
+and records current passes, partial passes, failures and follow-up fixes. That
+report supersedes this initial checkpoint for online availability; a failed suite
+may stop before exercising every function, including Google AI Mode's selectors
+and Air France's complete form flow.
 Live tests remain opt-in and consume AdsCrawl credits. CI runs only offline checks
 unless the manual live workflow is explicitly selected.

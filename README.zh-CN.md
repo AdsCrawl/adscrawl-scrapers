@@ -36,9 +36,9 @@ python run.py
 
 ## 验证状态
 
-81 个站点已完成源码迁移，**正在逐站进行真实请求验证和修复**。
+81 个站点已完成源码迁移，**本轮 81 个站点均已实测**（2026-10-27）：15 个整套通过、11 个部分通过、55 个未通过。
 查看[逐站实测报告与截图](docs/live-verification/2026-10-27.md)及[JSON 记录](docs/live-verification/2026-10-27.json)。
-通过、部分通过、失败和待测会分别标注；空结果不算验证成功。
+每站状态以最新实测为准，报告列出已定位的修复和剩余失败原因；空结果不算验证成功。
 
 已核验示例：Bing 返回 30 条搜索结果和 8 条关键词建议；ChatGPT 实测回答包含正确答案 Paris。
 
@@ -50,10 +50,14 @@ python run.py
 
 | 爬虫 | 通过的实测用例 |
 | --- | --- |
+| [app-store](app-store-scraper/) | 2/2 |
 | [bing](bing-scraper/) | 2/2 |
 | [chatgpt](chatgpt-scraper/) | 1/1 |
+| [fashionphile](fashionphile-scraper/) | 2/2 |
 | [idealo](idealo-scraper/) | 4/4 |
+| [imdb](imdb-scraper/) | 5/5 |
 | [imovelweb](imovelweb-scraper/) | 2/2 |
+| [reddit](reddit-scraper/) | 4/4 |
 | [rightmove](rightmove-scraper/) | 2/2 |
 | [shopify](shopify-scraper/) | 5/5 |
 | [similarweb](similarweb-scraper/) | 4/4 |

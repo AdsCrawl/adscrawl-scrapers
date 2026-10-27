@@ -9,10 +9,11 @@ content using remote browsers, HTML/JSON parsers and bounded concurrency.
 [API documentation](https://www.adscrawl.net/docs/) ·
 [中文](README.zh-CN.md) · [Migration details](docs/MIGRATION.md)
 
-> All 81 site modules are ported. **Live verification is in progress**: see the
+> All 81 site modules are ported. **All 81 sites have been live-tested** (2026-10-27):
+> 15 fully passed, 11 partially passed, and 55 failed. See the
 > [dated per-site evidence report](docs/live-verification/2026-10-27.md) and
 > [machine-readable results](docs/live-verification/2026-10-27.json).
-> Passed, partially passed, failed and untested sites are listed separately.
+> Each status reflects the latest recorded attempt; see the report for scope and remaining failures.
 > Files in `results/` remain historical upstream examples.
 
 Verified examples from the current audit: **Bing** returned 30 search results and
@@ -28,10 +29,14 @@ Current fully passed live suites (2026-10-27)：
 
 | Scraper | Passed live checks |
 | --- | --- |
+| [app-store](app-store-scraper/) | 2/2 |
 | [bing](bing-scraper/) | 2/2 |
 | [chatgpt](chatgpt-scraper/) | 1/1 |
+| [fashionphile](fashionphile-scraper/) | 2/2 |
 | [idealo](idealo-scraper/) | 4/4 |
+| [imdb](imdb-scraper/) | 5/5 |
 | [imovelweb](imovelweb-scraper/) | 2/2 |
+| [reddit](reddit-scraper/) | 4/4 |
 | [rightmove](rightmove-scraper/) | 2/2 |
 | [shopify](shopify-scraper/) | 5/5 |
 | [similarweb](similarweb-scraper/) | 4/4 |
