@@ -22,6 +22,10 @@ python run.py
 默认每个客户端最多使用两个浏览器会话，可以通过 `ADSCRAWL_CONCURRENCY` 调整。
 无需安装本地 Chromium；浏览器由 AdsCrawl 提供。
 
+未指定国家或自定义代理时，默认使用 **US 美国线路**。
+可以用 `ADSCRAWL_DEFAULT_COUNTRY` 修改默认值；站点显式设置的 `countryCode` 优先。
+自定义代理与国家路由不会同时发送。
+
 ## 迁移方式
 
 - 通过官方 SDK 创建和关闭 CDP 会话，Playwright 负责导航、点击、滚动和 XHR 捕获。

@@ -403,3 +403,14 @@ async def test_http_error_is_reported_before_waiting_for_missing_site_data():
             'https://example.com', waitForSelector='#products', waitForResponse='/api/products'))
     assert caught.value.code == 'HTTP_ERROR' and caught.value.response.status_code == 403
     assert caught.value.response.content == '<h1>Rendered</h1>' and page.closed
+
+
+def test_default_us_route_respects_explicit_country_and_custom_proxy(monkeypatch):
+    monkeypatch.delenv('ADSCRAWL_DEFAULT_COUNTRY', raising=False)
+    assert Request('https://example.com').browser_settings()['countryCode'] == 'US'
+    monkeypatch.setenv('ADSCRAWL_DEFAULT_COUNTRY', 'gb')
+    assert Request('https://example.com').browser_settings()['countryCode'] == 'GB'
+    assert Request('https://example.com', countryCode='us').browser_settings()['countryCode'] == 'US'
+    settings = Request('https://example.com', proxy={'server':'http://proxy.example:8080'}).browser_settings()
+    assert settings['proxy']['server'] == 'http://proxy.example:8080'
+    assert 'countryCode' not in settings

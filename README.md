@@ -42,6 +42,10 @@ consume AdsCrawl credits. The default limit is two browser sessions per client;
 set `ADSCRAWL_CONCURRENCY` to match your account capacity. No local Chromium
 installation is necessary. Never commit your API key.
 
+Requests default to a **US** browser route when no country or custom proxy is
+specified. Set `ADSCRAWL_DEFAULT_COUNTRY` to change this default. A site's explicit
+`countryCode` takes precedence; custom proxies are not combined with country routing.
+
 ## How requests run
 
 The shared [transport](src/adscrawl_scrapers/runtime.py) creates browsers using

@@ -74,7 +74,12 @@ class Request:
 
     def browser_settings(self) -> dict:
         settings = {"viewport": {"width": 1440, "height": 900}}
-        for key in ("countryCode", "proxy", "locale", "userAgentOs"):
+        country = self.countryCode
+        if country is None and self.proxy is None:
+            country = os.getenv("ADSCRAWL_DEFAULT_COUNTRY", "US")
+        if country:
+            settings['countryCode'] = country.upper()
+        for key in ("proxy", "locale", "userAgentOs"):
             value = getattr(self, key)
             if value is not None:
                 settings[key] = value

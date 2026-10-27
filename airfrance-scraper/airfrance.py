@@ -15,7 +15,7 @@ from datetime import datetime
 from typing import List, Optional, TypedDict
 
 
-BROWSER_CONFIG = {"countryCode": "FR", "viewport": {"width": 1920, "height": 1080}}
+BROWSER_CONFIG = {"countryCode": os.getenv("ADSCRAWL_DEFAULT_COUNTRY", "US").upper(), "viewport": {"width": 1920, "height": 1080}}
 
 # SDK client is created lazily inside open_session().
 
