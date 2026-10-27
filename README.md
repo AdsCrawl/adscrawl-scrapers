@@ -1,20 +1,21 @@
 # AdsCrawl Scrapers
 
-81 site-specific Python scraper examples powered by the
+A collection of Python scraper examples maintained by AdsCrawl, covering
+81 websites and powered by the
 [AdsCrawl Python SDK](https://github.com/AdsCrawl/adscrawl-python).
 Extract products, search results, reviews, real estate, flights and public web
 content using remote browsers, HTML/JSON parsers and bounded concurrency.
 
 [Get an API key](https://app.adscrawl.net/dashboard/keys/) ·
 [API documentation](https://www.adscrawl.net/docs/) ·
-[中文](README.zh-CN.md) · [Migration details](docs/MIGRATION.md)
+[中文](README.zh-CN.md) · [Transport details](docs/MIGRATION.md)
 
-> All 81 site modules are ported. **All 81 sites have been live-tested** (2026-10-27):
+> **All 81 sites have been live-tested** (2026-10-27):
 > 15 fully passed, 11 partially passed, and 55 failed. See the
 > [dated per-site evidence report](docs/live-verification/2026-10-27.md) and
 > [machine-readable results](docs/live-verification/2026-10-27.json).
 > Each status reflects the latest recorded attempt; see the report for scope and remaining failures.
-> Files in `results/` remain historical upstream examples.
+> Files in `results/` are historical examples, not evidence of current live results.
 
 Verified examples from the current audit: **Bing** returned 30 search results and
 8 keyword suggestions; **ChatGPT** returned the correct answer to the test prompt.
@@ -202,11 +203,6 @@ historical sample data. See [catalog.json](docs/catalog.json) for the function l
 | [zoopla](zoopla-scraper/) | [zoopla.py](zoopla-scraper/zoopla.py) | `scrape_properties`, `scrape_search` |
 | [zoro](zoro-scraper/) | [zoro.py](zoro-scraper/zoro.py) | `scrape_product`, `scrape_search_listing` |
 
-## Attribution and license
+---
 
-Adapted from [scrapfly/scrapfly-scrapers](https://github.com/scrapfly/scrapfly-scrapers)
-at the revision recorded in [NOTICE](NOTICE). Original notices and sample data
-are retained. This derivative is licensed under **OSL-3.0**, pursuant to section
-17(d) of the upstream NPOSL-3.0. Read [LICENSE](LICENSE) before using, modifying
-or redistributing it; use constitutes assent to its terms. AdsCrawl's SDK is a
-separate package with its own license. No upstream endorsement is implied.
+Licensed under [OSL-3.0](LICENSE). See [notices](NOTICE).
