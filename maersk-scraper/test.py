@@ -97,6 +97,8 @@ def _validate_or_raise(item, schema):
 async def test_scrape_tracking():
     result = await maersk.scrape_tracking("269124324")
     _validate_or_raise(result, tracking_result_schema)
+    assert result['containers'], 'No container data returned for the tracking sample'
+    assert any(c['events'] for c in result['containers']), 'No tracking events returned'
 
 
 

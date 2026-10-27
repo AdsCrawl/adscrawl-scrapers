@@ -244,6 +244,7 @@ async def test_channel_scraping():
         ]
     )
     validator = Validator(channel_schema, allow_unknown=True)
+    assert channel_data, 'No channel data returned'
     for i in channel_data:
         validate_or_fail(i, validator)
 
@@ -288,6 +289,7 @@ async def test_shorts_scraping():
         ]
     )
     validator = Validator(shorts_schema, allow_unknown=True)
+    assert shorts_data, 'No Shorts data returned'
     for i in shorts_data:
         validate_or_fail(i, validator)
 

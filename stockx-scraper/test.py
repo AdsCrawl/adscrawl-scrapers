@@ -19,6 +19,7 @@ def validate_or_fail(item, validator):
 @pytest.mark.asyncio
 async def test_product_scraping():
     result = await stockx.scrape_product("https://stockx.com/nike-x-stussy-bucket-hat-black")
+    assert result.get('id') and result.get('title')
     _market_schema = {
         "bidAskData": {
             "type": "dict",
@@ -120,6 +121,7 @@ async def test_product_scraping():
 @pytest.mark.asyncio
 async def test_search_scraping():
     result = await stockx.scrape_search("https://stockx.com/search?s=nike", max_pages=2)
+    assert result, 'Search returned no products'
     schema = {
         "id": {"type": "string"},
         "name": {"type": "string"},

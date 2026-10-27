@@ -37,6 +37,7 @@ USER_SCHEMA = {
 async def test_tweet_scraping():
     url = "https://x.com/robinhanson/status/1872047986873885082"
     result = await twitter.scrape_tweet(url)
+    assert result.get('id') and result.get('text')
     validator = Validator(TWEET_SCHEMA, allow_unknown=True)
     validate_or_fail(result, validator)
 
@@ -45,6 +46,7 @@ async def test_tweet_scraping():
 async def test_user_scraping():
     url = "https://x.com/robinhanson"
     result = await twitter.scrape_profile(url)
+    assert result.get('rest_id'), 'No user identity returned'
     user_validator = Validator(USER_SCHEMA, allow_unknown=True)
     validate_or_fail(result, user_validator)
 
