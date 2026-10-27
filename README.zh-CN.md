@@ -44,6 +44,24 @@ python run.py
 
 ![ChatGPT 真实验证截图](docs/live-verification/evidence/chatgpt-answer.png)
 
+<!-- LIVE_VERIFIED_START -->
+
+本轮整套现有实测通过的站点（2026-10-27）：
+
+| 爬虫 | 通过的实测用例 |
+| --- | --- |
+| [bing](bing-scraper/) | 2/2 |
+| [chatgpt](chatgpt-scraper/) | 1/1 |
+| [idealo](idealo-scraper/) | 4/4 |
+| [imovelweb](imovelweb-scraper/) | 2/2 |
+| [shopify](shopify-scraper/) | 5/5 |
+| [similarweb](similarweb-scraper/) | 4/4 |
+| [ticketmaster](ticketmaster-scraper/) | 2/2 |
+
+[查看验证范围、输出数量和限制](docs/live-verification/2026-10-27.md)
+
+<!-- LIVE_VERIFIED_END -->
+
 `results/` 是上游历史示例，不是本次 AdsCrawl 实测输出。
 默认 CI 只做离线验证；真实测试需手动触发并配置密钥。
 初次迁移的离线与烟雾测试见[初始验证记录](docs/VERIFICATION.md)；

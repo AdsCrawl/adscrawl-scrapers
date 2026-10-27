@@ -4,11 +4,11 @@
   "timezone": "Asia/Shanghai",
   "method": "Existing live pytest suites, sequential by site; stop at first failure per site; 300-second site deadline; no test retries; non-empty output review. Fixes are applied and retested separately.",
   "counts": {
-    "passed": 4,
-    "partial": 9,
-    "failed": 27,
+    "passed": 7,
+    "partial": 12,
+    "failed": 47,
     "empty_output": 1,
-    "not_run": 40
+    "not_run": 14
   },
   "sites": [
     {
@@ -31,6 +31,7 @@
       "duration_seconds": 40.98,
       "requests": 1,
       "observed_http_statuses": [],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "UnicodeDecodeError",
@@ -56,6 +57,7 @@
       "duration_seconds": 191.81,
       "requests": 0,
       "observed_http_statuses": [],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "RuntimeError",
@@ -87,6 +89,7 @@
       "duration_seconds": 180.15,
       "requests": 2,
       "observed_http_statuses": [],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "SCRAPE_FAILED",
@@ -112,6 +115,7 @@
       "duration_seconds": 97.58,
       "requests": 2,
       "observed_http_statuses": [],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "SCRAPE_FAILED",
@@ -137,6 +141,7 @@
       "duration_seconds": 301.11,
       "requests": 2,
       "observed_http_statuses": [],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "SCRAPE_FAILED；超过 300 秒限时",
@@ -215,6 +220,7 @@
       "observed_http_statuses": [
         200
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "SCRAPE_FAILED",
@@ -255,6 +261,7 @@
         200,
         403
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "HTTP 403；目标导航 HTTP 403；首轮返回 20 条；后续请求失败，离线 URL 用例不算实测通过",
@@ -282,6 +289,7 @@
       "observed_http_statuses": [
         200
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "SCRAPE_FAILED",
@@ -323,6 +331,7 @@
       "observed_http_statuses": [
         200
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "",
@@ -350,6 +359,7 @@
       "observed_http_statuses": [
         202
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "SCRAPE_FAILED",
@@ -394,6 +404,7 @@
         200,
         403
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "HTTP 403；目标导航 HTTP 403",
@@ -424,6 +435,7 @@
       "observed_http_statuses": [
         200
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "",
@@ -451,6 +463,7 @@
       "observed_http_statuses": [
         403
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "UnboundLocalError；目标导航 HTTP 403",
@@ -483,6 +496,7 @@
         200,
         403
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "目标导航 HTTP 403；原测试接受空输出，验收不通过",
@@ -510,6 +524,7 @@
       "observed_http_statuses": [
         403
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "HTTP 403；目标导航 HTTP 403",
@@ -537,6 +552,7 @@
       "observed_http_statuses": [
         200
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "ValueError；超过 300 秒限时",
@@ -564,6 +580,7 @@
       "observed_http_statuses": [
         403
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "HTTP 403；目标导航 HTTP 403",
@@ -589,6 +606,7 @@
       "duration_seconds": 102.98,
       "requests": 1,
       "observed_http_statuses": [],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "SCRAPE_FAILED",
@@ -616,6 +634,7 @@
       "observed_http_statuses": [
         403
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "HTTP 403；目标导航 HTTP 403",
@@ -641,6 +660,7 @@
       "duration_seconds": 1.21,
       "requests": 0,
       "observed_http_statuses": [],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "TypeError",
@@ -691,6 +711,7 @@
       "observed_http_statuses": [
         200
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "SCRAPE_FAILED",
@@ -730,6 +751,7 @@
       "observed_http_statuses": [
         200
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "SCRAPE_FAILED",
@@ -757,6 +779,7 @@
       "observed_http_statuses": [
         403
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "TIMEOUT；目标导航 HTTP 403",
@@ -809,6 +832,7 @@
         200,
         403
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "HTTP 403；目标导航 HTTP 403",
@@ -842,6 +866,7 @@
       "observed_http_statuses": [
         200
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "ERR_TUNNEL_CONNECTION_FAILED",
@@ -869,6 +894,7 @@
       "observed_http_statuses": [
         200
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "JSONDecodeError",
@@ -927,6 +953,7 @@
       "observed_http_statuses": [
         200
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "ERR_TUNNEL_CONNECTION_FAILED",
@@ -970,6 +997,7 @@
       "observed_http_statuses": [
         200
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "AssertionError",
@@ -997,6 +1025,7 @@
       "observed_http_statuses": [
         200
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "TIMEOUT",
@@ -1024,6 +1053,7 @@
       "observed_http_statuses": [
         200
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "ERR_TUNNEL_CONNECTION_FAILED",
@@ -1052,6 +1082,7 @@
         200,
         429
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "HTTP 429；目标导航 HTTP 429",
@@ -1079,6 +1110,7 @@
       "observed_http_statuses": [
         403
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "HTTP 403；目标导航 HTTP 403",
@@ -1106,6 +1138,7 @@
       "observed_http_statuses": [
         403
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "HTTP 403；目标导航 HTTP 403",
@@ -1221,6 +1254,7 @@
       "observed_http_statuses": [
         200
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "",
@@ -1254,6 +1288,7 @@
       "observed_http_statuses": [
         202
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "AssertionError；原测试接受空输出，验收不通过",
@@ -1281,6 +1316,7 @@
       "observed_http_statuses": [
         401
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "HTTP 401；目标导航 HTTP 401",
@@ -1308,6 +1344,7 @@
       "observed_http_statuses": [
         403
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "HTTP 403；目标导航 HTTP 403",
@@ -1335,6 +1372,7 @@
       "observed_http_statuses": [
         403
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "HTTP 403；目标导航 HTTP 403",
@@ -1415,6 +1453,7 @@
       "observed_http_statuses": [
         200
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "",
@@ -1442,6 +1481,7 @@
       "observed_http_statuses": [
         403
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "HTTP 403；目标导航 HTTP 403",
@@ -1534,6 +1574,7 @@
         200,
         401
       ],
+      "countries": null,
       "revision": null,
       "working_tree_dirty": null,
       "notes": "HTTP 401；目标导航 HTTP 401",
@@ -1541,211 +1582,1055 @@
     },
     {
       "site": "kayak-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 1,
+      "tests": [
+        {
+          "test": "test_scrape_roundtrip",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 97.833,
+          "error_type": "ScrapeError",
+          "code": "TIMEOUT",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 99.39,
+      "requests": 1,
+      "observed_http_statuses": [
+        200
+      ],
+      "countries": null,
+      "revision": "1485ae85db8c7ad4b1b9ef491cf915cf4b76e94e",
+      "working_tree_dirty": true,
+      "notes": "TIMEOUT",
+      "finished_at": "2026-10-27T14:41:27+08:00"
     },
     {
       "site": "leboncoin-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_search_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 68.795,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 70.44,
+      "requests": 2,
+      "observed_http_statuses": [
+        200,
+        403
+      ],
+      "countries": null,
+      "revision": "b8a7bc16347ce66e753aa5243eb418dd48ab57fc",
+      "working_tree_dirty": false,
+      "notes": "HTTP 403；目标导航 HTTP 403",
+      "finished_at": "2026-10-27T14:42:37+08:00"
     },
     {
       "site": "linkedin-scraper",
-      "status": "not_run",
-      "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "status": "partial",
+      "passed": 1,
+      "collected": 5,
+      "tests": [
+        {
+          "test": "test_profile_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 8.494
+        },
+        {
+          "test": "test_company_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 33.813,
+          "error_type": "ScrapeError",
+          "code": "ERR_TUNNEL_CONNECTION_FAILED",
+          "status": null
+        }
+      ],
+      "outputs": [
+        {
+          "function": "scrape_profile",
+          "type": "list",
+          "count": 1,
+          "item_fields": [
+            "posts",
+            "profile"
+          ],
+          "nonempty_items": 1
+        }
+      ],
+      "duration_seconds": 43.73,
+      "requests": 6,
+      "observed_http_statuses": [
+        200
+      ],
+      "countries": null,
+      "revision": "b8a7bc16347ce66e753aa5243eb418dd48ab57fc",
+      "working_tree_dirty": false,
+      "notes": "ERR_TUNNEL_CONNECTION_FAILED",
+      "finished_at": "2026-10-27T14:43:21+08:00"
     },
     {
       "site": "loopnet-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_listing_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 9.044,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 10.44,
+      "requests": 2,
+      "observed_http_statuses": [
+        403
+      ],
+      "countries": null,
+      "revision": "b8a7bc16347ce66e753aa5243eb418dd48ab57fc",
+      "working_tree_dirty": false,
+      "notes": "HTTP 403；目标导航 HTTP 403",
+      "finished_at": "2026-10-27T14:43:31+08:00"
     },
     {
       "site": "lowes-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 3,
+      "tests": [
+        {
+          "test": "test_product_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 6.756,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 8.13,
+      "requests": 2,
+      "observed_http_statuses": [
+        403
+      ],
+      "countries": null,
+      "revision": "b8a7bc16347ce66e753aa5243eb418dd48ab57fc",
+      "working_tree_dirty": false,
+      "notes": "HTTP 403；目标导航 HTTP 403",
+      "finished_at": "2026-10-27T14:43:39+08:00"
     },
     {
       "site": "maersk-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_scrape_tracking",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 20.519,
+          "error_type": "ValueError",
+          "code": null,
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 21.99,
+      "requests": 1,
+      "observed_http_statuses": [
+        200
+      ],
+      "countries": null,
+      "revision": "b8a7bc16347ce66e753aa5243eb418dd48ab57fc",
+      "working_tree_dirty": false,
+      "notes": "HTTP 403",
+      "finished_at": "2026-10-27T14:44:01+08:00"
     },
     {
       "site": "marriott-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_search_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 7.371,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 9.02,
+      "requests": 1,
+      "observed_http_statuses": [
+        403
+      ],
+      "countries": null,
+      "revision": "b8a7bc16347ce66e753aa5243eb418dd48ab57fc",
+      "working_tree_dirty": false,
+      "notes": "HTTP 403；目标导航 HTTP 403",
+      "finished_at": "2026-10-27T14:44:10+08:00"
     },
     {
       "site": "mouser-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_product_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 7.838,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 9.26,
+      "requests": 1,
+      "observed_http_statuses": [
+        403
+      ],
+      "countries": null,
+      "revision": "b8a7bc16347ce66e753aa5243eb418dd48ab57fc",
+      "working_tree_dirty": false,
+      "notes": "HTTP 403；目标导航 HTTP 403",
+      "finished_at": "2026-10-27T14:44:20+08:00"
     },
     {
       "site": "naver-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 4,
+      "tests": [
+        {
+          "test": "test_web_search_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 15.705,
+          "error_type": "ScrapeError",
+          "code": "ERR_CERT_AUTHORITY_INVALID",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 17.16,
+      "requests": 3,
+      "observed_http_statuses": [
+        200
+      ],
+      "countries": null,
+      "revision": "b8a7bc16347ce66e753aa5243eb418dd48ab57fc",
+      "working_tree_dirty": false,
+      "notes": "ERR_CERT_AUTHORITY_INVALID",
+      "finished_at": "2026-10-27T14:44:37+08:00"
     },
     {
       "site": "nordstorm-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_product_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 7.845,
+          "error_type": "AttributeError",
+          "code": null,
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 9.17,
+      "requests": 2,
+      "observed_http_statuses": [
+        200
+      ],
+      "countries": null,
+      "revision": "b8a7bc16347ce66e753aa5243eb418dd48ab57fc",
+      "working_tree_dirty": false,
+      "notes": "AttributeError",
+      "finished_at": "2026-10-27T14:44:46+08:00"
     },
     {
       "site": "perplexity-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 1,
+      "tests": [
+        {
+          "test": "test_scrape_answer",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 9.297,
+          "error_type": "ScrapeError",
+          "code": "ERR_TUNNEL_CONNECTION_FAILED",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 10.61,
+      "requests": 1,
+      "observed_http_statuses": [],
+      "countries": null,
+      "revision": "b8a7bc16347ce66e753aa5243eb418dd48ab57fc",
+      "working_tree_dirty": false,
+      "notes": "ERR_TUNNEL_CONNECTION_FAILED",
+      "finished_at": "2026-10-27T14:44:57+08:00"
     },
     {
       "site": "pinterest-scraper",
-      "status": "not_run",
-      "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "status": "partial",
+      "passed": 2,
+      "collected": 5,
+      "tests": [
+        {
+          "test": "test_search_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 29.393
+        },
+        {
+          "test": "test_board_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 31.523
+        },
+        {
+          "test": "test_profile_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 38.356,
+          "error_type": "ScrapeError",
+          "code": "BROWSER_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [
+        {
+          "function": "scrape_search",
+          "type": "dict",
+          "count": 3,
+          "fields": [
+            "pins",
+            "query",
+            "search_date"
+          ],
+          "collection_counts": {
+            "pins": 44
+          }
+        },
+        {
+          "function": "scrape_board",
+          "type": "dict",
+          "count": 8,
+          "fields": [
+            "board_name",
+            "board_slug",
+            "description",
+            "follower_count",
+            "pin_count",
+            "pins",
+            "url",
+            "username"
+          ],
+          "collection_counts": {
+            "pins": 49
+          }
+        }
+      ],
+      "duration_seconds": 100.7,
+      "requests": 8,
+      "observed_http_statuses": [
+        200
+      ],
+      "countries": null,
+      "revision": "b8a7bc16347ce66e753aa5243eb418dd48ab57fc",
+      "working_tree_dirty": false,
+      "notes": "BROWSER_ERROR",
+      "finished_at": "2026-10-27T14:46:37+08:00"
     },
     {
       "site": "realestatecom-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_properties_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 18.308,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 19.68,
+      "requests": 1,
+      "observed_http_statuses": [
+        429
+      ],
+      "countries": null,
+      "revision": "b8a7bc16347ce66e753aa5243eb418dd48ab57fc",
+      "working_tree_dirty": false,
+      "notes": "HTTP 429；目标导航 HTTP 429",
+      "finished_at": "2026-10-27T14:46:57+08:00"
     },
     {
       "site": "realtorcom-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 3,
+      "tests": [
+        {
+          "test": "test_property_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 9.805,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 11.21,
+      "requests": 1,
+      "observed_http_statuses": [
+        429
+      ],
+      "countries": null,
+      "revision": "b8a7bc16347ce66e753aa5243eb418dd48ab57fc",
+      "working_tree_dirty": false,
+      "notes": "HTTP 429；目标导航 HTTP 429",
+      "finished_at": "2026-10-27T14:47:08+08:00"
     },
     {
       "site": "reddit-scraper",
-      "status": "not_run",
-      "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "status": "partial",
+      "passed": 2,
+      "collected": 4,
+      "tests": [
+        {
+          "test": "test_subreddit_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 80.804
+        },
+        {
+          "test": "test_post_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 71.04
+        },
+        {
+          "test": "test_user_post_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 0.0,
+          "error_type": "TypeError",
+          "code": null,
+          "status": null
+        }
+      ],
+      "outputs": [
+        {
+          "function": "scrape_subreddit",
+          "type": "dict",
+          "count": 2,
+          "fields": [
+            "info",
+            "posts"
+          ],
+          "collection_counts": {
+            "posts": 75
+          }
+        },
+        {
+          "function": "scrape_post",
+          "type": "dict",
+          "count": 2,
+          "fields": [
+            "comments",
+            "info"
+          ],
+          "collection_counts": {
+            "comments": 57
+          }
+        }
+      ],
+      "duration_seconds": 153.23,
+      "requests": 8,
+      "observed_http_statuses": [
+        200
+      ],
+      "countries": null,
+      "revision": "b8a7bc16347ce66e753aa5243eb418dd48ab57fc",
+      "working_tree_dirty": false,
+      "notes": "TypeError",
+      "finished_at": "2026-10-27T14:49:41+08:00"
     },
     {
       "site": "redfin-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 3,
+      "tests": [
+        {
+          "test": "test_properties_for_sale_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 8.707,
+          "error_type": "ValueError",
+          "code": null,
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 10.3,
+      "requests": 2,
+      "observed_http_statuses": [
+        202
+      ],
+      "countries": {
+        "US": 2
+      },
+      "revision": "4da49dccf365a9c572ff89a0cd4dd2c75592446d",
+      "working_tree_dirty": false,
+      "notes": "ValueError",
+      "finished_at": "2026-10-27T14:49:52+08:00"
     },
     {
       "site": "rightmove-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_search_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 7.034,
+          "error_type": "JSONDecodeError",
+          "code": null,
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 8.41,
+      "requests": 1,
+      "observed_http_statuses": [
+        200
+      ],
+      "countries": {
+        "GB": 1
+      },
+      "revision": "4da49dccf365a9c572ff89a0cd4dd2c75592446d",
+      "working_tree_dirty": false,
+      "notes": "JSONDecodeError",
+      "finished_at": "2026-10-27T14:50:00+08:00"
     },
     {
       "site": "rs-online-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 3,
+      "tests": [
+        {
+          "test": "test_product_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 7.766,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 9.2,
+      "requests": 2,
+      "observed_http_statuses": [
+        403
+      ],
+      "countries": {
+        "US": 2
+      },
+      "revision": "4da49dccf365a9c572ff89a0cd4dd2c75592446d",
+      "working_tree_dirty": false,
+      "notes": "HTTP 403；目标导航 HTTP 403",
+      "finished_at": "2026-10-27T14:50:09+08:00"
     },
     {
       "site": "seloger-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_search_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 21.641,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 23.26,
+      "requests": 1,
+      "observed_http_statuses": [
+        403
+      ],
+      "countries": {
+        "FR": 1
+      },
+      "revision": "4da49dccf365a9c572ff89a0cd4dd2c75592446d",
+      "working_tree_dirty": false,
+      "notes": "HTTP 403；目标导航 HTTP 403",
+      "finished_at": "2026-10-27T14:50:33+08:00"
     },
     {
       "site": "shopify-scraper",
-      "status": "not_run",
-      "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "status": "passed",
+      "passed": 5,
+      "collected": 5,
+      "tests": [
+        {
+          "test": "test_preflight_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 16.593
+        },
+        {
+          "test": "test_catalog_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 14.377
+        },
+        {
+          "test": "test_collection_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 7.505
+        },
+        {
+          "test": "test_product_page_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 59.222
+        },
+        {
+          "test": "test_product_urls_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 17.193
+        }
+      ],
+      "outputs": [
+        {
+          "function": "scrape_catalog",
+          "type": "list",
+          "count": 40,
+          "item_fields": [
+            "description",
+            "handle",
+            "images",
+            "options",
+            "price_max",
+            "price_min",
+            "product_id",
+            "product_type",
+            "published_at",
+            "tags",
+            "title",
+            "updated_at",
+            "url",
+            "variants",
+            "vendor"
+          ],
+          "nonempty_items": 40
+        },
+        {
+          "function": "scrape_collection",
+          "type": "list",
+          "count": 20,
+          "item_fields": [
+            "description",
+            "handle",
+            "images",
+            "options",
+            "price_max",
+            "price_min",
+            "product_id",
+            "product_type",
+            "published_at",
+            "tags",
+            "title",
+            "updated_at",
+            "url",
+            "variants",
+            "vendor"
+          ],
+          "nonempty_items": 20
+        },
+        {
+          "function": "scrape_product_pages",
+          "type": "list",
+          "count": 2,
+          "item_fields": [
+            "availability",
+            "brand",
+            "currency",
+            "description",
+            "images",
+            "name",
+            "offers",
+            "price",
+            "product_id",
+            "schema_type",
+            "sku",
+            "url",
+            "variant_urls"
+          ],
+          "nonempty_items": 2
+        },
+        {
+          "function": "scrape_product_urls",
+          "type": "list",
+          "count": 357
+        }
+      ],
+      "duration_seconds": 116.14,
+      "requests": 9,
+      "observed_http_statuses": [
+        200,
+        404
+      ],
+      "countries": {
+        "US": 9
+      },
+      "revision": "4da49dccf365a9c572ff89a0cd4dd2c75592446d",
+      "working_tree_dirty": true,
+      "notes": "",
+      "finished_at": "2026-10-27T14:52:29+08:00"
     },
     {
       "site": "similarweb-scraper",
-      "status": "not_run",
-      "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "status": "passed",
+      "passed": 4,
+      "collected": 4,
+      "tests": [
+        {
+          "test": "test_website_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 97.64
+        },
+        {
+          "test": "test_website_compare_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 38.783
+        },
+        {
+          "test": "test_trend_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 21.288
+        },
+        {
+          "test": "test_sitemap_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 8.342
+        }
+      ],
+      "outputs": [
+        {
+          "function": "scrape_website",
+          "type": "list",
+          "count": 3,
+          "item_fields": [
+            "adsSource",
+            "categoryId",
+            "compareCompetitor",
+            "competitors",
+            "demographics",
+            "domain",
+            "domainGaStatus",
+            "geography",
+            "icon",
+            "incomingReferrals",
+            "interests",
+            "isDataFromGa",
+            "isDataFromGaHighlyDiscrepant",
+            "isInvalidTrafficData",
+            "outgoingReferrals",
+            "overview",
+            "previewDesktop",
+            "previewMobile",
+            "ranking",
+            "recentAds",
+            "searchesSource",
+            "snapshotDate",
+            "socialNetworksSource",
+            "technologies",
+            "traffic",
+            "trafficSources"
+          ],
+          "nonempty_items": 3
+        },
+        {
+          "function": "scrape_website_compare",
+          "type": "dict",
+          "count": 2,
+          "fields": [
+            "instagram.com",
+            "twitter.com"
+          ],
+          "collection_counts": {}
+        },
+        {
+          "function": "scrape_trendings",
+          "type": "list",
+          "count": 3,
+          "item_fields": [
+            "list",
+            "name",
+            "url"
+          ],
+          "nonempty_items": 3
+        },
+        {
+          "function": "scrape_sitemaps",
+          "type": "list",
+          "count": 907
+        }
+      ],
+      "duration_seconds": 167.3,
+      "requests": 8,
+      "observed_http_statuses": [
+        200,
+        202
+      ],
+      "countries": {
+        "US": 8
+      },
+      "revision": "4da49dccf365a9c572ff89a0cd4dd2c75592446d",
+      "working_tree_dirty": true,
+      "notes": "",
+      "finished_at": "2026-10-27T14:55:16+08:00"
     },
     {
       "site": "skyscanner-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 1,
+      "tests": [
+        {
+          "test": "test_scrape_flights_oneway",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 93.149,
+          "error_type": "ScrapeError",
+          "code": "TIMEOUT",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 94.53,
+      "requests": 1,
+      "observed_http_statuses": [
+        200
+      ],
+      "countries": {
+        "US": 1
+      },
+      "revision": "e76976570a9ffffdc259f5f3a9bc233b16a44b55",
+      "working_tree_dirty": false,
+      "notes": "TIMEOUT",
+      "finished_at": "2026-10-27T14:56:51+08:00"
     },
     {
       "site": "stockx-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_product_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 6.29,
+          "error_type": "ScrapeError",
+          "code": "HTTP_ERROR",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 7.68,
+      "requests": 1,
+      "observed_http_statuses": [
+        403
+      ],
+      "countries": {
+        "US": 1
+      },
+      "revision": "e76976570a9ffffdc259f5f3a9bc233b16a44b55",
+      "working_tree_dirty": false,
+      "notes": "HTTP 403；目标导航 HTTP 403",
+      "finished_at": "2026-10-27T14:56:58+08:00"
     },
     {
       "site": "target-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 5,
+      "tests": [
+        {
+          "test": "test_product_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 23.733,
+          "error_type": "ValueError",
+          "code": null,
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 25.12,
+      "requests": 1,
+      "observed_http_statuses": [
+        200
+      ],
+      "countries": {
+        "US": 1
+      },
+      "revision": "e76976570a9ffffdc259f5f3a9bc233b16a44b55",
+      "working_tree_dirty": false,
+      "notes": "ValueError",
+      "finished_at": "2026-10-27T14:57:23+08:00"
     },
     {
       "site": "threads-scraper",
-      "status": "not_run",
+      "status": "failed",
       "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_thread_scraping",
+          "outcome": "failed",
+          "phase": "call",
+          "duration": 8.841,
+          "error_type": "ScrapeError",
+          "code": "ERR_TUNNEL_CONNECTION_FAILED",
+          "status": null
+        }
+      ],
+      "outputs": [],
+      "duration_seconds": 300.59,
+      "requests": 2,
+      "observed_http_statuses": [
+        200
+      ],
+      "countries": {
+        "US": 2
+      },
+      "revision": "e76976570a9ffffdc259f5f3a9bc233b16a44b55",
+      "working_tree_dirty": false,
+      "notes": "ERR_TUNNEL_CONNECTION_FAILED；超过 300 秒限时",
+      "finished_at": "2026-10-27T15:02:24+08:00"
     },
     {
       "site": "ticketmaster-scraper",
-      "status": "not_run",
-      "passed": 0,
-      "collected": 0,
-      "tests": [],
-      "outputs": []
+      "status": "passed",
+      "passed": 2,
+      "collected": 2,
+      "tests": [
+        {
+          "test": "test_artist_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 73.913
+        },
+        {
+          "test": "test_discovery_scraping",
+          "outcome": "passed",
+          "phase": "call",
+          "duration": 17.768
+        }
+      ],
+      "outputs": [
+        {
+          "function": "scrape_artist",
+          "type": "list",
+          "count": 2,
+          "item_fields": [
+            "artist_name",
+            "bestRating",
+            "events",
+            "events_count",
+            "genre",
+            "ratingCount",
+            "ratingValue",
+            "reviews"
+          ],
+          "nonempty_items": 2
+        },
+        {
+          "function": "scrape_discovery",
+          "type": "dict",
+          "count": 3,
+          "fields": [
+            "events",
+            "events_count",
+            "total_count"
+          ],
+          "collection_counts": {
+            "events": 20
+          }
+        }
+      ],
+      "duration_seconds": 93.08,
+      "requests": 3,
+      "observed_http_statuses": [
+        200
+      ],
+      "countries": {
+        "US": 3
+      },
+      "revision": "dbdd85e3f0867ba5390d4c063d279d82521d9a70",
+      "working_tree_dirty": false,
+      "notes": "",
+      "finished_at": "2026-10-27T15:03:57+08:00"
     },
     {
       "site": "tiktok-scraper",

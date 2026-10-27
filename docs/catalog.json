@@ -488,7 +488,7 @@
       "scrape_flights"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "failed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -499,7 +499,7 @@
       "scrape_ad"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "failed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -513,7 +513,7 @@
       "scrape_articles"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "partial",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -524,7 +524,7 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "failed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -536,7 +536,7 @@
       "scrape_store_locations"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "failed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -547,7 +547,7 @@
       "scrape_tracking"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "failed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -558,7 +558,7 @@
       "scrape_hotels"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "failed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -569,7 +569,7 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "failed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -582,7 +582,7 @@
       "scrape_news_article"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "failed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -594,7 +594,7 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "failed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -604,7 +604,7 @@
       "scrape_answer"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "failed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -617,7 +617,7 @@
       "scrape_pin"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "partial",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -628,7 +628,7 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "failed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -640,7 +640,7 @@
       "scrape_feed"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "failed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -655,7 +655,7 @@
       "scrape_user_comments"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "partial",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -667,7 +667,7 @@
       "scrape_property_for_rent"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "failed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -680,7 +680,7 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "failed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -692,7 +692,7 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "failed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -703,7 +703,7 @@
       "scrape_property"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "failed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -717,7 +717,7 @@
       "scrape_product_urls"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "passed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -730,7 +730,7 @@
       "scrape_trendings"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "passed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -740,7 +740,7 @@
       "scrape_flights"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "failed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -751,7 +751,7 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "failed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -765,7 +765,7 @@
       "scrape_search"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "failed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -776,7 +776,7 @@
       "scrape_profile"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "failed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {
@@ -787,7 +787,7 @@
       "scrape_discovery"
     ],
     "migration": "AdsCrawl SDK",
-    "live_verification": "not_run",
+    "live_verification": "passed",
     "live_verification_report": "docs/live-verification/2026-10-27.md"
   },
   {

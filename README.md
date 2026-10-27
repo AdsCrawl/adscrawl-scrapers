@@ -22,6 +22,24 @@ guarantee for every feature or future request.
 
 ![ChatGPT live verification through AdsCrawl](docs/live-verification/evidence/chatgpt-answer.png)
 
+<!-- LIVE_VERIFIED_START -->
+
+Current fully passed live suites (2026-10-27)：
+
+| Scraper | Passed live checks |
+| --- | --- |
+| [bing](bing-scraper/) | 2/2 |
+| [chatgpt](chatgpt-scraper/) | 1/1 |
+| [idealo](idealo-scraper/) | 4/4 |
+| [imovelweb](imovelweb-scraper/) | 2/2 |
+| [shopify](shopify-scraper/) | 5/5 |
+| [similarweb](similarweb-scraper/) | 4/4 |
+| [ticketmaster](ticketmaster-scraper/) | 2/2 |
+
+[Scope, output counts and limitations](docs/live-verification/2026-10-27.md)
+
+<!-- LIVE_VERIFIED_END -->
+
 ## Quick start
 
 Python 3.10 or newer is required.
