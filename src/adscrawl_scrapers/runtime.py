@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import inspect
 import os
 import weakref
 from contextvars import ContextVar
@@ -122,11 +123,18 @@ class ScrapeError(RuntimeError):
 async def _finish(coro):
     """Do not abandon a remote resource cleanup when the caller is cancelled."""
     task = asyncio.create_task(coro)
-    try:
-        return await asyncio.shield(task)
-    except asyncio.CancelledError:
-        await task
-        raise
+    cancelled = False
+    while True:
+        try:
+            result = await asyncio.shield(task)
+            break
+        except asyncio.CancelledError:
+            if task.cancelled():
+                raise
+            cancelled = True
+    if cancelled:
+        raise asyncio.CancelledError
+    return result
 
 
 class _Session:
@@ -199,6 +207,7 @@ class ScraperClient:
         self._loop = None
         self._gate = None
         self._sessions = {}
+        self._active_requests = {}
         self._pool_lock = None
         _CLIENTS.add(self)
 
@@ -241,6 +250,14 @@ class ScraperClient:
                 self._sessions.pop(name, None)
 
     async def fetch(self, request: Request) -> Response:
+        task = asyncio.current_task()
+        self._active_requests[task] = _SCOPE.get()
+        try:
+            return await self._fetch(request)
+        finally:
+            self._active_requests.pop(task, None)
+
+    async def _fetch(self, request: Request) -> Response:
         self._bind_loop()
         async with self._gate:
             settings = request.browser_settings()
@@ -274,8 +291,11 @@ class ScraperClient:
                 raise ScrapeError("Remote browser request failed or timed out", response=Response(request.url, request_url=request.url)) from None
             finally:
                 if request.session is None:
-                    await _finish(session.close())
-                    self._sessions.pop(key, None)
+                    try:
+                        await _finish(session.close())
+                    finally:
+                        if session.info is None:
+                            self._sessions.pop(key, None)
 
     async def fetch_many(self, requests: Iterable[Request]) -> AsyncIterator[Response]:
         # Keep only `concurrency` tasks alive, even for a generator of millions of URLs.
@@ -546,12 +566,69 @@ def run(coroutine):
     return asyncio.run(wrapped())
 
 
+async def _close_scope(scope):
+    errors = []
+    # An async-for consumer may raise in its parser before fetch_many is closed.
+    # Drain its in-flight requests now, while the event loop is still running.
+    # Otherwise loop teardown can cancel the SDK creation/cleanup tasks too.
+    current = asyncio.current_task()
+    requests = {
+        task for client in list(_CLIENTS)
+        for task, owner in list(client._active_requests.items())
+        if owner is scope and task is not current and not task.done()
+    }
+    for task in requests:
+        task.cancel()
+    if requests:
+        async def drain():
+            await asyncio.gather(*requests, return_exceptions=True)
+        await _finish(drain())
+    for client in list(_CLIENTS):
+        for key, session in list(client._sessions.items()):
+            if isinstance(key, tuple) and key[0] is scope:
+                try:
+                    await _finish(session.close())
+                    client._sessions.pop(key, None)
+                except Exception as error:
+                    errors.append(error)
+    if errors:
+        raise errors[0]
+
+
 def managed(function):
     """Close named sessions when an outer site operation returns or raises.
 
     Nested helpers share the outer scope; concurrent top-level operations get
     distinct scopes, so one operation never closes another operation's browser.
     """
+    if inspect.isasyncgenfunction(function):
+        @wraps(function)
+        async def generated(*args, **kwargs):
+            parent = _SCOPE.get()
+            scope = parent if parent is not None else object()
+            iterator = function(*args, **kwargs)
+            try:
+                while True:
+                    token = _SCOPE.set(scope)
+                    try:
+                        item = await iterator.__anext__()
+                    except StopAsyncIteration:
+                        break
+                    finally:
+                        # Never leak a generator's scope into its consumer while
+                        # suspended at yield, including an early aclose().
+                        _SCOPE.reset(token)
+                    yield item
+            finally:
+                token = _SCOPE.set(scope)
+                try:
+                    await iterator.aclose()
+                finally:
+                    _SCOPE.reset(token)
+                    if parent is None:
+                        await _close_scope(scope)
+        return generated
+
     @wraps(function)
     async def wrapped(*args, **kwargs):
         if _SCOPE.get() is not None:
@@ -562,17 +639,7 @@ def managed(function):
             return await function(*args, **kwargs)
         finally:
             try:
-                errors = []
-                for client in list(_CLIENTS):
-                    for key, session in list(client._sessions.items()):
-                        if isinstance(key, tuple) and key[0] is scope:
-                            try:
-                                await _finish(session.close())
-                                client._sessions.pop(key, None)
-                            except Exception as error:
-                                errors.append(error)
-                if errors:
-                    raise errors[0]
+                await _close_scope(scope)
             finally:
                 _SCOPE.reset(token)
     return wrapped

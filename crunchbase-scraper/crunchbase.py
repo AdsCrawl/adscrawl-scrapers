@@ -58,28 +58,18 @@ def parse_company(result: Response) -> CompanyData:
 
 
 @managed
-async def scrape_company(url: str, _retries: int = 0) -> CompanyData:
+async def scrape_company(url: str) -> CompanyData:
     """scrape crunchbase company page for organization and employee data"""
     # note: we use /people tab because it contains the most data:
     log.info(f"scraping company: {url}")
-    try:
-        result = await CLIENT.fetch(Request(url, **BASE_CONFIG))
-    except:
-        while _retries <= 2:
-            log.debug("retrying failed request")
-            return await scrape_company(url, _retries=_retries + 1)
+    result = await CLIENT.fetch(Request(url, **BASE_CONFIG))
     return parse_company(result)
 
 
 @managed
-async def scrape_person(url: str, _retries: int = 0) -> Dict:
+async def scrape_person(url: str) -> Dict:
     log.info(f"scraping person: {url}")
-    try:
-        result = await CLIENT.fetch(Request(url, **BASE_CONFIG))
-    except:
-        while _retries <= 2:
-            log.debug("retrying failed request")
-            return await scrape_person(url, _retries=_retries + 1)
+    result = await CLIENT.fetch(Request(url, **BASE_CONFIG))
     return parse_person(result)
 
 
@@ -108,7 +98,10 @@ async def _scrape_sitemap_index() -> List[str]:
 
 def parse_sitemap(result: Response) -> Iterator[Tuple[str, datetime]]:
     """parse sitemap for location urls and their last modification times"""
-    sel = Selector(text=gzip.decompress(result.content.read()).decode())
+    raw = result.raw or result.content.encode('utf-8')
+    xml = gzip.decompress(raw) if raw.startswith(b'\x1f\x8b') else raw
+    sel = Selector(text=xml.decode('utf-8'), type='xml')
+    sel.remove_namespaces()
     urls = sel.xpath("//url")
     log.info(f"found {len(urls)} in sitemap {result.url}")
     for url_node in urls:
@@ -130,7 +123,7 @@ async def discover_target(target: Literal["organizations", "people"], min_last_m
     log.info(f"found {len(urls)} matching sitemap urls (from total of {len(sitemap_urls)})")
     for url in urls:
         log.info(f"scraping sitemap: {url}")
-        result = await CLIENT.fetch(Request(url, **BASE_CONFIG))
+        result = await CLIENT.fetch(Request(url, binary=True, **BASE_CONFIG))
         for url, mod_time in parse_sitemap(result):
             if min_last_modified and mod_time < min_last_modified:
                 continue  # skip

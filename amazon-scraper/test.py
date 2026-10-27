@@ -40,7 +40,12 @@ async def test_product_scraping():
         "https://www.amazon.com/Atomic-Habits-Proven-Build-Break/dp/0735211299/",
         "https://www.amazon.com/42pcs-Fabric-Assorted-Squares-Nonwoven/dp/B01GCLS32M/",
     ]
-    results = await asyncio.gather(*[amazon.scrape_product(url) for url in urls])
+    # Drain every operation before reporting a failure so pytest does not shut
+    # down the loop while other remote browsers are still being created/closed.
+    results = await asyncio.gather(*[amazon.scrape_product(url) for url in urls], return_exceptions=True)
+    failures = [result for result in results if isinstance(result, BaseException)]
+    if failures:
+        raise failures[0]
     results = [result for result_set in results for result in result_set]
     schema = {
         "name": {"type": "string"},

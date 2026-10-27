@@ -311,3 +311,58 @@ async def test_browser_action_failure_retains_safe_error_code_and_closes_page():
             await client._fetch_page(SimpleNamespace(context=context), Request('https://example.com'))
     assert failure.value.code == 'ACTION_FAILED'
     assert 'secret' not in str(failure.value) and page.closed
+
+
+async def test_managed_async_generator_reuses_session_without_leaking_scope(fake_sessions):
+    from adscrawl_scrapers.runtime import _SCOPE
+    client = ScraperClient(sdk=object())
+    client._fetch_page = AsyncMock(return_value=Response('https://example.com'))
+    @managed
+    async def pages():
+        for number in range(2):
+            await client.fetch(Request('https://example.com', session='pages'))
+            yield number
+    iterator = pages()
+    assert await iterator.__anext__() == 0
+    assert _SCOPE.get() is None and not fake_sessions[0].closed
+    assert await iterator.__anext__() == 1
+    assert len(fake_sessions) == 1
+    await iterator.aclose()
+    assert fake_sessions[0].closed and _SCOPE.get() is None
+
+
+async def test_nested_generator_does_not_close_parent_scope(fake_sessions):
+    client = ScraperClient(sdk=object())
+    client._fetch_page = AsyncMock(return_value=Response('https://example.com'))
+    @managed
+    async def pages():
+        await client.fetch(Request('https://example.com', session='pages'))
+        yield 1
+    @managed
+    async def parent():
+        assert [item async for item in pages()] == [1]
+        assert not fake_sessions[0].closed
+    await parent()
+    assert fake_sessions[0].closed
+
+
+async def test_parser_failure_cancels_other_requests_before_leaving_scope(fake_sessions):
+    client = ScraperClient(sdk=object(), concurrency=2)
+    started = asyncio.Event()
+    async def page(session, request):
+        if request.url.endswith('/slow'):
+            started.set()
+            await asyncio.Event().wait()
+        await started.wait()
+        return Response(request.url)
+    client._fetch_page = page
+    @managed
+    async def operation():
+        async for response in client.fetch_many([
+            Request('https://example.com/fast'), Request('https://example.com/slow')
+        ]):
+            raise ValueError('parser rejected the response')
+    with pytest.raises(ValueError):
+        await asyncio.wait_for(operation(), 1)
+    assert len(fake_sessions) == 2 and all(session.closed for session in fake_sessions)
+    assert not client._active_requests and not client._sessions

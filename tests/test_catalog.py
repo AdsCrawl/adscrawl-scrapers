@@ -50,3 +50,33 @@ def test_pinterest_image_base64_preserves_binary_bytes():
     module=audit.load_module(ROOT/'pinterest-scraper/pinterest.py')
     raw=b'\x89PNG\r\n\x1a\n\xff\x00'
     assert base64.b64decode(module._content_to_base64(raw)) == raw
+
+
+async def test_crunchbase_preserves_original_failure_without_blind_retries(monkeypatch):
+    from unittest.mock import AsyncMock
+    import pytest
+    from adscrawl_scrapers import ScrapeError
+    module = audit.load_module(ROOT/'crunchbase-scraper/crunchbase.py')
+    for fn in (module.scrape_company, module.scrape_person):
+        failure = ScrapeError('Target returned HTTP 403', code='HTTP_ERROR')
+        fetch = AsyncMock(side_effect=failure)
+        monkeypatch.setattr(module.CLIENT, 'fetch', fetch)
+        with pytest.raises(ScrapeError) as caught:
+            await fn('https://www.crunchbase.com/organization/example')
+        assert caught.value is failure and fetch.await_count == 1
+
+
+def test_crunchbase_sitemap_accepts_raw_gzip_and_plain_xml():
+    import gzip
+    module = audit.load_module(ROOT/'crunchbase-scraper/crunchbase.py')
+    xml = b'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://example.com/company</loc><lastmod>2026-10-27T00:00:00Z</lastmod></url></urlset>'
+    for payload in (xml, gzip.compress(xml)):
+        rows = list(module.parse_sitemap(Response('https://example.com/sitemap.xml.gz', raw=payload)))
+        assert rows[0][0] == 'https://example.com/company' and rows[0][1].year == 2026
+
+
+def test_dhl_empty_feed_is_explicit_and_never_claims_success():
+    module = audit.load_module(ROOT/'dhl-scraper/dhl.py')
+    result = module._parse_tracking_api_response({'shipments': []}, 'EXAMPLE')
+    assert result['classification'] == 'empty'
+    assert result['tracking_number'] == 'EXAMPLE' and result['events'] == []

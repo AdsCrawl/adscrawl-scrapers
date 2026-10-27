@@ -199,7 +199,7 @@ async def scrape_reviews(app_id: str, country: str = "us", max_pages: int = None
     to_scrape = [
         Request(
             url=f"https://itunes.apple.com/{country}/rss/customerreviews/page={page}/id={app_id}/sortby=mostrecent/json",
-            binary=True,
+            render=False,
             **BASE_CONFIG,
         )
         for page in range(1, pages + 1)

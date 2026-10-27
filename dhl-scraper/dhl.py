@@ -64,7 +64,11 @@ def _parse_tracking_api_response(data: dict, tracking_number: str) -> TrackingRe
     shipment = (data.get("shipments") or [None])[0]
 
     if not shipment:
-        return {}
+        return {
+            "classification": "empty", "tracking_number": tracking_number,
+            "status": None, "events": [], "estimated_delivery": None,
+            "origin": None, "destination": None,
+        }
 
     status = shipment.get("status") or {}
     details = shipment.get("details") or {}
@@ -113,5 +117,9 @@ async def scrape_tracking(tracking_number: str) -> TrackingResult:
         Request(url, waitForResponse="/utapi", **BASE_CONFIG)
     )
     data = _get_xhr_data(response, "/utapi")
-    log.success("scraped tracking details for {}", tracking_number)
-    return _parse_tracking_api_response(data, tracking_number)
+    result = _parse_tracking_api_response(data, tracking_number)
+    if result["classification"] == "success":
+        log.success("scraped tracking details for {}", tracking_number)
+    else:
+        log.warning("no tracking details returned for {}", tracking_number)
+    return result
