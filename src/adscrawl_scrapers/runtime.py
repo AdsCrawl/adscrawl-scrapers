@@ -320,7 +320,9 @@ class ScraperClient:
                 return
             try:
                 body = await reply.text()
-            except BrowserError:
+            except (BrowserError, UnicodeDecodeError):
+                # Some sites fetch binary telemetry/fonts alongside their JSON.
+                # A non-text background response must not discard a valid page.
                 body = None
             network.append({
                 "url": reply.url, "method": reply.request.method,

@@ -228,6 +228,28 @@ async def test_network_wait_matches_completed_response_before_parsing():
     assert page.closed
 
 
+async def test_binary_background_fetch_does_not_break_html_or_json_capture():
+    page = FakePage()
+    goto = page.goto
+    async def with_binary(*args, **kwargs):
+        main = await goto(*args, **kwargs)
+        page.handler(SimpleNamespace(
+            request=SimpleNamespace(resource_type='fetch', method='POST',
+                all_headers=AsyncMock(return_value={}), post_data=None),
+            url='https://example.com/telemetry', status=200,
+            all_headers=AsyncMock(return_value={'content-type':'application/octet-stream'}),
+            text=AsyncMock(side_effect=UnicodeDecodeError('utf-8', b'\xff', 0, 1, 'invalid')),
+        ))
+        return main
+    page.goto = with_binary
+    context = SimpleNamespace(new_page=AsyncMock(return_value=page), cookies=AsyncMock(return_value=[]))
+    response = await ScraperClient(sdk=object())._fetch_page(
+        SimpleNamespace(context=context), Request('https://example.com'))
+    assert response.json() == {'rows':[1]}
+    assert next(r for r in response.network if r['url'].endswith('/telemetry'))['response']['body'] is None
+    assert page.closed
+
+
 async def test_attachment_preserves_bytes_and_decodes_unicode_json():
     raw = '{"title":"日本語 café"}'.encode('utf-8')
     page = SimpleNamespace(route=AsyncMock(), goto=AsyncMock(), evaluate=AsyncMock(return_value={
