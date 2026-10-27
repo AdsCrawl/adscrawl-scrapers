@@ -201,7 +201,7 @@ async def scrape_search(
         return url + urlencode(params)
 
     # scrape the first search page first
-    first_page = await CLIENT.fetch(Request(make_url(0), **BASE_CONFIG))
+    first_page = await CLIENT.fetch(Request(make_url(0), **BASE_CONFIG, render=False, headers={'Accept': 'application/json'}))
     first_page_data = json.loads(first_page.content)
     # get the properties data in the first search page
     results = first_page_data["properties"]
@@ -221,7 +221,7 @@ async def scrape_search(
         # stop adding more pages when the scraper reach the API limit
         if offset >= max_api_results:
             break
-        other_pages.insert(0, Request(make_url(offset), **BASE_CONFIG))
+        other_pages.insert(0, Request(make_url(offset), **BASE_CONFIG, render=False, headers={'Accept': 'application/json'}))
     log.info(
         "scraped search page with the location id {} remaining ({} more pages)",
         location_id,
