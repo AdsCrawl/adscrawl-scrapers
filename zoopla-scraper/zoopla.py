@@ -138,6 +138,12 @@ async def scrape_properties(urls: List[str]):
             **BASE_CONFIG,
             render=True,
             autoScroll=True,
+            # The local-area client component is lazy-loaded. Jumping directly
+            # to the page bottom can skip its intersection observer entirely.
+            actions=[
+                {'type': 'evaluate', 'script': 'document.querySelector("section[aria-labelledby=\"local-area\"]")?.scrollIntoView({block: "center"})'},
+                {'type': 'waitForSelector', 'selector': 'section[aria-labelledby="local-area"] li, section[aria-label*="Travel"]', 'timeoutMs': 15000, 'optional': True},
+            ],
             # Wait for property content or a search redirect, which the parser reports.
             waitForSelector="//section[@aria-labelledby='about'] | //*[@data-testid='regular-listings']",
         )
