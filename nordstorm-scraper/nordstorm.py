@@ -22,6 +22,7 @@ BASE_CONFIG = {
     # bypass nordstorm.com web scraping blocking
     'countryCode': "US",
     'render': True,
+    'waitForSelector': 'script:has-text("__INITIAL_CONFIG__")',
 
 }
 
@@ -80,13 +81,15 @@ def update_url_parameter(url, **params):
     """update url query parameter of an url with new values"""
     current_params = parse_qs(urlparse(url).query)
     updated_query_params = urlencode({**current_params, **params}, doseq=True)
-    return url[: url.find("?")] + "?" + updated_query_params
+    return urlparse(url)._replace(query=updated_query_params).geturl()
 
 
 def find_hidden_data(result: Response) -> dict:
     """extract hidden web cache from page html"""
     # use XPath to find script tag with data
     data = result.selector.xpath("//script[contains(.,'__INITIAL_CONFIG__')]/text()").get()
+    if not data:
+        raise ValueError('Nordstrom page configuration is missing; the page may still be loading or require verification')
     data = data.split("=", 1)[-1].strip().strip(";")
     data = json.loads(data)
     return data

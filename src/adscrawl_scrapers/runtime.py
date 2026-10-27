@@ -371,7 +371,7 @@ class ScraperClient:
         try:
             # Replayed XHR metadata must not override browser-managed routing or
             # stale payload lengths; cookies are installed into the context below.
-            headers = {k: v for k, v in request.headers.items()
+            headers = {k.lower(): v for k, v in request.headers.items()
                        if k.lower() not in {"host", "content-length", "connection", "accept-encoding"}
                        and not k.startswith(":")}
             # Browser navigation forbids a Cookie override; install actual cookies.
@@ -386,7 +386,10 @@ class ScraperClient:
             await page.set_extra_http_headers(headers)
             if request.binary:
                 return await self._fetch_binary(session, page, request, headers)
-            if request.method != "GET" or request.body is not None or request.data is not None:
+            # Chromium can overwrite navigation headers such as Accept after
+            # set_extra_http_headers. Interception applies explicit headers to
+            # the actual document request as well as replayed POST payloads.
+            if headers or request.method != "GET" or request.body is not None or request.data is not None:
                 intercepted = False
                 async def intercept(route):
                     nonlocal intercepted

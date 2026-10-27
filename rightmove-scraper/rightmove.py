@@ -8,6 +8,7 @@ $ export ADSCRAWL_API_KEY="your key from https://app.adscrawl.net/dashboard/keys
 from adscrawl_scrapers import managed
 import os
 import json
+import xml.etree.ElementTree as ET
 import jmespath
 from adscrawl_scrapers import Request, ScraperClient, Response
 from typing import List
@@ -149,18 +150,31 @@ async def scrape_properties(urls: List[str]) -> List[PropertyResult]:
     return properties
 
 
-@managed
-async def find_locations(query: str) -> List[str]:
-    """use rightmove's typeahead api to find location IDs. Returns list of location IDs in most likely order"""
-    url = f"https://los.rightmove.co.uk/typeahead?query={query}&limit=10&exclude=STREET"
-    result = await CLIENT.fetch(
-        Request(url, **BASE_CONFIG, headers={"Accept": "application/json"})
-    )
-    data = json.loads(result.content)
+def parse_locations(result: Response) -> List[str]:
+    """The typeahead service can return JSON or XML despite the Accept header."""
+    try:
+        predictions = result.json()["matches"]
+    except json.JSONDecodeError:
+        root = ET.fromstring(result.content)
+        predictions = []
+        for node in root.iter():
+            fields = {child.tag.rsplit('}', 1)[-1]: child.text for child in node}
+            if fields.get('id') and fields.get('type'):
+                predictions.append(fields)
     # reconstruct location identifier from type and id (e.g. "REGION^61294")
     return [
-        f"{prediction['type']}^{prediction['id']}" for prediction in data["matches"]
+        f"{prediction['type']}^{prediction['id']}" for prediction in predictions
     ]
+
+
+@managed
+async def find_locations(query: str) -> List[str]:
+    """Return matching location IDs, in the order supplied by the typeahead API."""
+    url = 'https://los.rightmove.co.uk/typeahead?' + urlencode({'query': query, 'limit': 10, 'exclude': 'STREET'})
+    result = await CLIENT.fetch(
+        Request(url, **BASE_CONFIG, render=False, headers={"Accept": "application/json"})
+    )
+    return parse_locations(result)
 
 
 @managed

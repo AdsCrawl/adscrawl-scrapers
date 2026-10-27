@@ -107,3 +107,27 @@ async def test_imdb_does_not_report_success_after_a_title_parser_failure(monkeyp
     monkeypatch.setattr(module.CLIENT, 'fetch_many', pages)
     with pytest.raises(KeyError, match='url'):
         await module.scrape_titles(['https://www.imdb.com/title/tt0111161/'])
+
+
+def test_rightmove_location_parser_accepts_json_and_negotiated_xml():
+    module = audit.load_module(ROOT/'rightmove-scraper/rightmove.py')
+    bodies = [
+        '{"matches":[{"id":61294,"type":"REGION"},{"id":997,"type":"REGION"}]}',
+        '<TypeaheadDTO><matches><matches><id>61294</id><type>REGION</type></matches><matches><id>997</id><type>REGION</type></matches></matches></TypeaheadDTO>',
+    ]
+    for body in bodies:
+        assert module.parse_locations(Response('https://los.rightmove.co.uk/typeahead', body)) == ['REGION^61294', 'REGION^997']
+
+
+async def test_reddit_profile_pagination_uses_supported_wait_option(monkeypatch):
+    from unittest.mock import AsyncMock
+    module = audit.load_module(ROOT/'reddit-scraper/reddit.py')
+    fetch = AsyncMock(return_value=Response('https://www.reddit.com/user/example/', '<shreddit-post/>'))
+    monkeypatch.setattr(module.CLIENT, 'fetch', fetch)
+    await module.scrape_paginated('https://www.reddit.com/user/example/', lambda r: [], wait_for_selector='//shreddit-post', max_pages=1)
+    assert fetch.call_args.args[0].waitForSelector == '//shreddit-post'
+
+
+def test_nordstrom_pagination_preserves_path_without_an_existing_query():
+    module = audit.load_module(ROOT/'nordstorm-scraper/nordstorm.py')
+    assert module.update_url_parameter('https://www.nordstrom.com/browse/men', page=2) == 'https://www.nordstrom.com/browse/men?page=2'

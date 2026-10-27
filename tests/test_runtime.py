@@ -414,3 +414,13 @@ def test_default_us_route_respects_explicit_country_and_custom_proxy(monkeypatch
     settings = Request('https://example.com', proxy={'server':'http://proxy.example:8080'}).browser_settings()
     assert settings['proxy']['server'] == 'http://proxy.example:8080'
     assert 'countryCode' not in settings
+
+
+async def test_explicit_accept_is_applied_to_get_navigation_interception():
+    page = FakePage()
+    context = SimpleNamespace(new_page=AsyncMock(return_value=page), cookies=AsyncMock(return_value=[]))
+    await ScraperClient(sdk=object())._fetch_page(SimpleNamespace(context=context), Request(
+        'https://example.com/api', headers={'Accept':'application/json'}))
+    assert page.routed['method'] == 'GET'
+    assert page.routed['headers']['accept'] == 'application/json'
+    assert 'Accept' not in page.routed['headers']

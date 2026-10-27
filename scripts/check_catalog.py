@@ -36,7 +36,7 @@ def check():
                 if isinstance(node, ast.Attribute):
                     assert node.attr not in {'scrape_result','async_scrape','concurrent_scrape','api_response','max_concurrency'}, (path,node.lineno,node.attr)
                 if isinstance(node, ast.Subscript) and isinstance(node.ctx, ast.Store):
-                    if isinstance(node.slice, ast.Constant) and node.slice.value in {'cache_clear', 'cache_ttl', 'proxy_pool', 'render_js'}:
+                    if isinstance(node.slice, ast.Constant) and node.slice.value in {'cache_clear', 'cache_ttl', 'proxy_pool', 'render_js', 'wait_for_selector'}:
                         raise AssertionError((path, node.lineno, 'obsolete provider option', node.slice.value))
                 if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == 'Request':
                     assert all(k.arg is None or k.arg in allowed for k in node.keywords), (path,node.lineno)

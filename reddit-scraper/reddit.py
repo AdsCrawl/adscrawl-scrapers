@@ -88,7 +88,7 @@ async def scrape_paginated(
     """scrape a first page then follow faceplate-partial pagination"""
     config = {**BASE_CONFIG}
     if wait_for_selector:
-        config["wait_for_selector"] = wait_for_selector
+        config["waitForSelector"] = wait_for_selector
     response = await CLIENT.fetch(Request(url, **config))
     data = parse(response)
     next_url = next_profile_page_url(response.selector)
