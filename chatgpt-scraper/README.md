@@ -54,8 +54,13 @@ unset. It exited 1 after about 35s. `scrape_conversation` logged success, and
 chrome (`ChatGPT is AI and can make mistakes. ChatGPT New chat Images Plugins
 See plans and pricing Help Deep research Settings`), not the assistant reply.
 There was no `ScrapeError` and no new failure screenshot. Capture after that
-commit ignores that chrome and waits until an assistant reply is stable. That
-change has not been live re-verified.
+commit ignores that chrome and waits until an assistant reply is stable.
+
+Commit `3f7a7b4` passed on the US route. `ADSCRAWL_DEFAULT_COUNTRY=US`,
+`ADSCRAWL_CONCURRENCY=1`, and `ADSCRAWL_CHATGPT_COUNTRY` was unset.
+`SELECTED_SCRAPER=chatgpt-scraper python scripts/live_test.py` exited 0.
+`chatgpt-scraper/test.py::test_scrape_conversation` passed, 1 passed in 70.17s.
+No `EMPTY_ANSWER`, `ACTION_FAILED`, `TIMEOUT`, or `ERR_*`.
 
 `countryCode` stays `US` unless `ADSCRAWL_CHATGPT_COUNTRY` is set.
 `ADSCRAWL_DEFAULT_COUNTRY` does not replace it. From the repository root:
