@@ -40,6 +40,8 @@ python run.py
 
 > 2026-11-03（Asia/Shanghai）用 PR #1 的验收脚本复测，默认美国线路，每轮不重试（`--reruns=0`），并发为 1。离线测试 47/47、目录检查 81/81 通过。在线烟雾测试通过（渲染后的 HTML、JSON POST、会话清理）。在线套件通过的是 **bing**（第二次 2/2，走代码里写死的英国线路）、**shopify**（5/5），以及提交 `3f7a7b4` 的 **chatgpt**（美国线路、未设置 `ADSCRAWL_CHATGPT_COUNTRY`，1/1，70.17 秒，退出码 0）。同一天更早的 ChatGPT 尝试没有通过：第一次复测 0/1（超时或空回答）；`ddd17ac` 先是 `ERR_TUNNEL_CONNECTION_FAILED` 再是 `ACTION_FAILED`；`ef4cc2b` 返回了导航和免责声明。其余站点本轮没有重测。上一次全站审计仍是 [2026-10-27 报告](docs/live-verification/2026-10-27.md)（15 个整套通过、11 个部分通过、55 个未通过）。这些结果只说明当天目标网站的表现。
 
+2026-11-03 稍后的第一波在线修复没有开跑。这次 Cloud Agent 的进程环境和磁盘上都没有 `ADSCRAWL_API_KEY`，关联环境也没有完成过的构建，因此容器用的是默认镜像。`python3 scripts/smoke.py`（`ADSCRAWL_DEFAULT_COUNTRY=US`，`ADSCRAWL_CONCURRENCY=1`）退出码 2，错误码 `MISSING_API_KEY`，没有打开浏览器。名单里的 15 个站点都没有执行。这既不是通过，也不是失败，下面的在线通过表没有改动。说明见 [第一波受阻记录](docs/live-verification/2026-11-03-wave1.md)。同一检出的离线检查仍然通过：`pytest tests -q --reruns=0` 为 66 项通过，`check_catalog.py` 为 81/81。
+
 `scripts/live_test.py` 在 `ADSCRAWL_DEFAULT_COUNTRY` 为空时设为 `US`。站点自己的 `countryCode` 会覆盖该默认值。Bing 的 `BASE_CONFIG` 写死 `countryCode` 为 `GB`，所以两次 Bing 都走英国线路，而不是这次的美国默认值。第一次 Bing 为 1 通过 / 1 失败（分页导航错误），第二次为 2/2。
 
 | 本次复测（2026-11-03） | 结果 |

@@ -23,6 +23,8 @@ content using remote browsers, HTML/JSON parsers and bounded concurrency.
 > for the last full 81-site audit (15 passed, 11 partial, 55 failed). Live
 > results reflect target-site behaviour on that date only.
 
+Wave 1 later on 2026-11-03 did not run. This Cloud Agent had no `ADSCRAWL_API_KEY` in the process environment or on disk, and the linked environment has no finished build, so the pod used the default image. `python3 scripts/smoke.py` (`ADSCRAWL_DEFAULT_COUNTRY=US`, `ADSCRAWL_CONCURRENCY=1`) exited 2 with `MISSING_API_KEY` and did not open a browser. The 15 wave-1 sites were not executed. That is not a pass or a fail for them, and the live table below is unchanged. Details: [wave 1 blocked](docs/live-verification/2026-11-03-wave1.md). Offline on that checkout stayed green: `pytest tests -q --reruns=0` was 66 passed, and `check_catalog.py` was 81/81.
+
 `scripts/live_test.py` sets `ADSCRAWL_DEFAULT_COUNTRY=US` when that variable is
 unset or blank. A site's explicit `countryCode` overrides that default. Bing's
 `BASE_CONFIG` hard-codes `countryCode` `GB`, so both Bing attempts used the GB
