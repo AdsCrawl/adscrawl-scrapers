@@ -13,6 +13,7 @@ import gzip
 import json
 import os
 import re
+import time
 from copy import deepcopy
 from datetime import datetime
 from typing import Dict, List, Optional, TypedDict
@@ -20,11 +21,13 @@ from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 from uuid import uuid4
 
 from loguru import logger as log
-from adscrawl_scrapers import Response, Request, ScraperClient
+from adscrawl_scrapers import Response, Request, ScraperClient, ScrapeError
 
 CLIENT = ScraperClient()
 
 BASE_CONFIG = {
+    # Goibibo is an India marketplace. US routing leaves the flight shell idle
+    # and the hotel listing call missing; IN matches the site.
     'countryCode': "IN",
     'render': True,
     'autoScroll': True,
@@ -32,6 +35,7 @@ BASE_CONFIG = {
 
 LISTING_API = "clientbackend-gi/cg/listing/DESKTOP/"
 SEARCH_STREAM_DT = "search-stream-dt"
+FLIGHT_SEARCH_API = "https://flights-cb.goibibo.com/api/search-stream-dt"
 
 
 class Hotel(TypedDict):
@@ -136,8 +140,96 @@ def build_flight_search_url(
         "paxType": f"A-{adults}_C-{children}_I-{infants}",
         "intl": "false",
         "cabinClass": "E",
+        # ccde/lang are part of the results URL the site itself issues. They
+        # select the India market; browser countryCode stays IN (see BASE_CONFIG).
+        "ccde": "IN",
+        "lang": "eng",
     }
     return f"https://www.goibibo.com/flight/search?{urlencode(params, safe='/')}"
+
+
+def build_flight_search_api_url(
+    origin: str,
+    destination: str,
+    departure_date: str,
+    adults: int = 1,
+    children: int = 0,
+    infants: int = 0,
+    return_date: Optional[str] = None,
+) -> str:
+    """search-stream-dt URL the results page requests for these inputs"""
+
+    def api_date(date: str) -> str:
+        return datetime.strptime(date, "%Y-%m-%d" if "-" in date else "%Y%m%d").strftime("%Y%m%d")
+
+    origin, destination = origin.upper(), destination.upper()
+    itinerary = f"{origin}-{destination}-{api_date(departure_date)}"
+    if return_date:
+        itinerary += f"${destination}-{origin}-{api_date(return_date)}"
+    params = {
+        "apiCallTimestamp": int(time.time() * 1000),
+        "cc": "E",
+        "cmpId": "",
+        "crId": str(uuid4()),
+        "creditShellInfo": "",
+        "cur": "INR",
+        "currency": "INR",
+        "dfs": "0",
+        "forwardFlowRequired": "true",
+        "it": itinerary,
+        "language": "eng",
+        "pax": f"A-{adults}_C-{children}_I-{infants}",
+        "pfm": "DESKTOP",
+        "region": "in",
+        "shd": "true",
+        "sortBy": "rhino",
+        "src": "",
+    }
+    return f"{FLIGHT_SEARCH_API}?{urlencode(params)}"
+
+
+def build_flight_api_headers(token: str, device_id: str) -> Dict[str, str]:
+    """headers the results page sends with search-stream-dt; token is __PRE_AUTH__"""
+    return {
+        "accept": "text/event-stream",
+        "app-ver": "1.0.0",
+        "currency": "INR",
+        "User-Currency": "INR",
+        "device-id": device_id,
+        "mcid": device_id,
+        "domain": "in",
+        "language": "eng",
+        "os": "Windows",
+        "pfm": "DESKTOP",
+        "profile-type": "PERSONAL",
+        "region": "in",
+        "src": "gi",
+        "x-user-cc": "IN",
+        "Cache-Control": "no-cache",
+        "X-Cb-Preauth": token,
+        "origin": "https://www.goibibo.com",
+        "referer": "https://www.goibibo.com/",
+    }
+
+
+def parse_flight_stream(body: str) -> Dict:
+    """parse a search-stream-dt SSE body (gzip + base64 event payloads)"""
+    data = {}
+    body = (body or "").replace("\r\n", "\n").replace("\r", "\n")
+    for block in body.split("\n\n"):
+        lines = block.split("\n")
+        if "event: response" not in lines:
+            if "event: error" in lines:
+                raw = "".join(line[5:].strip() for line in lines if line.startswith("data:"))
+                error = json.loads(gzip.decompress(base64.b64decode(raw))) if raw else {}
+                raise RuntimeError(f"search-stream-dt returned an error event: {error.get('error', {}).get('type')}")
+            continue
+        raw = "".join(line[5:].strip() for line in lines if line.startswith("data:"))
+        if raw:
+            data = json.loads(gzip.decompress(base64.b64decode(raw)))
+    if not data:
+        raise RuntimeError("no response event in search-stream-dt SSE body")
+    return data
 
 
 def parse_flight_stream_call(response: Response):
@@ -155,25 +247,42 @@ def parse_flight_stream_call(response: Response):
                 f"goibibo.com answered the flight search with its page shell, the search never started: {url}"
             )
         raise RuntimeError(f"flight search-stream-dt API call not found in captured browser data for {url}")
+    return parse_flight_stream(calls[-1]["response"]["body"])
 
-    call = calls[-1]
-    body = call["response"]["body"]
-    data = {}
-    for block in body.split("\n\n"):
-        lines = block.split("\n")
-        if "event: response" not in lines:
-            if "event: error" in lines:
-                raw = "".join(line[5:].strip() for line in lines if line.startswith("data:"))
-                error = json.loads(gzip.decompress(base64.b64decode(raw))) if raw else {}
-                raise RuntimeError(f"search-stream-dt returned an error event: {error.get('error', {}).get('type')}")
-            continue
-        raw = "".join(line[5:].strip() for line in lines if line.startswith("data:"))
-        if raw:
-            data = json.loads(gzip.decompress(base64.b64decode(raw)))
 
-    if not data:
-        raise RuntimeError("no response event in search-stream-dt SSE body")
-    return data
+def parse_flight_leg(leg: Dict) -> FlightLeg:
+    """one journey leg. Older payloads use legList fields; current ones use legListV2 text."""
+
+    def _strip(html: Optional[str]) -> Optional[str]:
+        return re.sub(r"<[^>]+>", "", html).strip() if html else html
+
+    def _city(point: str) -> Optional[str]:
+        city = (leg.get(point) or {}).get("city")
+        return re.sub(r"\s*\(.*$", "", city).strip() if city else city
+
+    info = leg.get("airlineInfo")
+    if info:
+        number = info.get("airlineNumber") or ""
+        code = re.match(r"\s*([A-Z0-9]{2})\s*-?\s*(\d+)", number)
+        aircraft = re.search(r"\(([^)]*)\)", number)
+        return FlightLeg(
+            flight_number=f"{code[1]}-{code[2]}" if code else number.split("(")[0].strip() or None,
+            airline=info.get("airlineName"),
+            aircraft=aircraft[1].strip() if aircraft else None,
+            departure_city=_city("depart"),
+            departure_time=(leg.get("depart") or {}).get("time"),
+            arrival_city=_city("arrival"),
+            arrival_time=(leg.get("arrival") or {}).get("time"),
+        )
+    return FlightLeg(
+        flight_number=leg.get("legID"),
+        airline=leg.get("airlinename"),
+        aircraft=_strip((leg.get("aircraft") or {}).get("text")),
+        departure_city=_city("depart"),
+        departure_time=(leg.get("depart") or {}).get("time"),
+        arrival_city=_city("arrival"),
+        arrival_time=(leg.get("arrival") or {}).get("time"),
+    )
 
 
 def parse_flights(data: Dict) -> List[Flight]:
@@ -186,16 +295,12 @@ def parse_flights(data: Dict) -> List[Flight]:
         for card in group:
             key = (card.get("journeyKeys") or [None])[0]
             journey = journey_map.get(key) or {}
-            legs = ((journey.get("flightDetail") or {}).get("legList")) or []
-            first_leg = legs[0] if legs else {}
-            last_leg = legs[-1] if legs else {}
+            detail = journey.get("flightDetail") or {}
+            legs = detail.get("legList") or detail.get("legListV2") or []
             layover = journey.get("layover") or {}
 
             def _strip(html: Optional[str]) -> Optional[str]:
                 return re.sub(r"<[^>]+>", "", html).strip() if html else html
-
-            def _city(leg: Dict, point: str) -> Optional[str]:
-                return (leg.get(point) or {}).get("city")
 
             flights.append(
                 Flight(
@@ -213,18 +318,7 @@ def parse_flights(data: Dict) -> List[Flight]:
                     duration=journey.get("duration") and f"{journey['duration']['h']}h {journey['duration']['m']}m",
                     stops=journey.get("stops"),
                     layover_cities=[c.get("cd") for c in layover.get("layoverCityList") or []],
-                    legs=[
-                        FlightLeg(
-                            flight_number=leg.get("legID"),
-                            airline=leg.get("airlinename"),
-                            aircraft=_strip((leg.get("aircraft") or {}).get("text")),
-                            departure_city=_city(leg, "depart"),
-                            departure_time=(leg.get("depart") or {}).get("time"),
-                            arrival_city=_city(leg, "arrival"),
-                            arrival_time=(leg.get("arrival") or {}).get("time"),
-                        )
-                        for leg in legs
-                    ],
+                    legs=[parse_flight_leg(leg) for leg in legs],
                     fare=card.get("fare"),
                     currency=currency,
                 )
@@ -340,13 +434,34 @@ async def scrape_hotel_search(
 ) -> List[Hotel]:
     """Scrape goibibo hotel search; capture the listing API from the search page then paginate until max_pages (copy locus_id from a hotel-listing URL)."""
     url = build_search_url(search_text, locus_id, checkin, checkout, adults, children, rooms)
-    session = uuid4().hex
     log.info(f"scraping goibibo hotels for {search_text}: {url}")
 
-    page = await CLIENT.fetch(
-        Request(url, waitMs=10000, waitForResponse=f"{LISTING_API}", session=session, **BASE_CONFIG)
-    )
-    call, data, payload = parse_listing_call(page)
+    page = None
+    session = None
+    last_error: Optional[BaseException] = None
+    for attempt in range(1, 3):
+        # a fresh session per attempt: a timed-out shell must not keep the next try
+        session = uuid4().hex
+        try:
+            page = await CLIENT.fetch(
+                Request(
+                    url,
+                    waitMs=5000,
+                    waitForResponse=LISTING_API,
+                    session=session,
+                    timeoutMs=120000,
+                    **BASE_CONFIG,
+                )
+            )
+            call, data, payload = parse_listing_call(page)
+            break
+        except (ScrapeError, RuntimeError) as error:
+            last_error = error
+            if attempt == 2:
+                raise
+            log.warning(f"hotel listing was not captured ({error}); retrying once")
+    else:
+        raise last_error or RuntimeError("hotel listing API call not found")
     headers = call["headers"]
     api_url = call["url"]
 
@@ -395,24 +510,90 @@ async def scrape_flight_search(
     infants: int = 0,
     return_date: Optional[str] = None,
 ) -> List[Flight]:
-    """Scrape flight search results and return parsed flight data."""
-    url = build_flight_search_url(origin, destination, departure_date, adults, children, infants, return_date)
-    log.info(f"scraping flight search: {url}")
-    js_scenario = [
-        {"type": "wait", "milliseconds": 5000},
-        {"type": 'condition', 'selector': "[data-testid='cta-wrapper'] button", 'state': "not_existing", 'outcome': "exit_success"},
-        {"type": 'click', 'selector': "[data-testid='cta-wrapper'] button"},
-        {"type": "wait", "milliseconds": 10000},
-    ]
-    page = await CLIENT.fetch(
-        Request(
-            url,
-            waitMs=5000,
-            actions=js_scenario,
-            **BASE_CONFIG,
+    """Scrape flight search results and return parsed flight data.
+
+    The results URL often paints a shell with SEARCH left disabled and never
+    fires search-stream-dt. The static page still carries ``__PRE_AUTH__``;
+    the same session then requests the stream the page would have sent. If
+    that token is missing, one rendered attempt waits for the stream and only
+    clicks SEARCH once the control is enabled.
+    """
+    page_url = build_flight_search_url(origin, destination, departure_date, adults, children, infants, return_date)
+    log.info(f"scraping flight search: {page_url}")
+    try:
+        data = await _flight_via_preauth(
+            page_url, origin, destination, departure_date, adults, children, infants, return_date
         )
-    )
-    data = parse_flight_stream_call(page)
+    except (RuntimeError, ScrapeError) as error:
+        log.warning(f"flight API path failed ({error}); waiting for the page to start search")
+        data = await _flight_via_browser(page_url)
     flights = parse_flights(data)
     log.success(f"scraped {len(flights)} flights for {origin}-{destination}")
     return flights
+
+
+def _preauth_token(html: str) -> Optional[str]:
+    match = re.search(r'__PRE_AUTH__\s*=\s*"([0-9a-f]+)"', html or "")
+    return match.group(1) if match else None
+
+
+async def _flight_via_preauth(
+    page_url: str,
+    origin: str,
+    destination: str,
+    departure_date: str,
+    adults: int,
+    children: int,
+    infants: int,
+    return_date: Optional[str],
+) -> Dict:
+    session = uuid4().hex
+    page = await CLIENT.fetch(Request(page_url, session=session, render=False, countryCode="IN"))
+    token = _preauth_token(page.content)
+    if not token:
+        if page.selector.css("[data-cy='submit'][disabled]"):
+            raise RuntimeError(
+                "goibibo.com answered the flight search with its page shell, the search never started: "
+                f"no __PRE_AUTH__ token at {page.url}"
+            )
+        raise RuntimeError(f"no __PRE_AUTH__ token in the goibibo.com flight search page: {page.url}")
+    api_url = build_flight_search_api_url(
+        origin, destination, departure_date, adults, children, infants, return_date
+    )
+    headers = build_flight_api_headers(token, device_id=str(uuid4()))
+    response = await CLIENT.fetch(
+        Request(api_url, session=session, headers=headers, render=False, countryCode="IN")
+    )
+    return parse_flight_stream(response.content)
+
+
+async def _flight_via_browser(page_url: str) -> Dict:
+    """rendered fallback: dismiss the interstitial if it is there, then click SEARCH only once enabled.
+
+    The old scenario treated a missing CTA as success and returned before the search started.
+    """
+    actions = [
+        {"type": "wait", "milliseconds": 3000},
+        {"type": "click", "selector": "[data-testid='cta-wrapper'] button", "optional": True},
+        {"type": "waitForSelector", "selector": "[data-cy='submit']:not([disabled])", "timeoutMs": 20000, "optional": True},
+        {"type": "click", "selector": "[data-cy='submit']:not([disabled])", "optional": True},
+        {"type": "wait", "milliseconds": 8000},
+    ]
+    try:
+        page = await CLIENT.fetch(
+            Request(
+                page_url,
+                actions=actions,
+                waitForResponse=SEARCH_STREAM_DT,
+                timeoutMs=120000,
+                **BASE_CONFIG,
+            )
+        )
+    except ScrapeError as error:
+        if error.code == "TIMEOUT":
+            raise RuntimeError(
+                "goibibo.com flight search did not start: search-stream-dt was not captured "
+                f"(SEARCH stays disabled on the page shell): {page_url}"
+            ) from error
+        raise
+    return parse_flight_stream_call(page)

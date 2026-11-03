@@ -78,7 +78,7 @@ async def scrape_search(url: str, max_pages: Optional[int] = None) -> List[Produ
     log.info(f"{url}: scraping first page")
 
     # first, scrape the first page and find total pages:
-    first_result = await CLIENT.fetch(Request(url, **BASE_CONFIG))
+    first_result = await _fetch_once_retry(Request(url, **BASE_CONFIG))
     results = parse_search(first_result)
     _paging_meta = first_result.selector.xpath("//*[@cel_widget_id='UPPER-RESULT_INFO_BAR-0']//span/text()").get()
     _total_results = int(re.findall(r"(?:over\s+)?([\d,]+)\s+results", _paging_meta)[0].replace(',', ''))
@@ -89,14 +89,10 @@ async def scrape_search(url: str, max_pages: Optional[int] = None) -> List[Produ
 
     # now we can scrape remaining pages concurrently
     log.info(f"{url}: found total results: {_total_results}, scraping {total_pages} pages concurrently")
-    other_pages = [
-        Request(
-            _add_or_replace_url_parameters(first_result.url, page=page),
-            **BASE_CONFIG
+    for page in range(2, total_pages + 1):
+        result = await _fetch_once_retry(
+            Request(_add_or_replace_url_parameters(first_result.url, page=page), **BASE_CONFIG)
         )
-        for page in range(2, total_pages + 1)
-    ]
-    async for result in CLIENT.fetch_many(other_pages):
         results.extend(parse_search(result))
 
     log.info(f"{url}: found total of {len(results)} product previews")
@@ -110,41 +106,125 @@ class Review(TypedDict):
     rating: float
 
 
+def _review_title(box) -> str:
+    spans = box.css("[data-hook=review-title] span::text, [data-hook=reviewTitle] span::text").getall()
+    titles = [span.strip() for span in spans if span.strip() and "out of" not in span]
+    if titles:
+        return titles[-1]
+    raw = box.css("[data-hook=review-title]::text, [data-hook=reviewTitle]::text").get()
+    return (raw or "").strip()
+
+
 def parse_reviews(result: Response) -> List[Review]:
-    """parse review from single review page"""
+    """parse review from a product page or the /product-reviews/ page.
+
+    Current cards use data-hook review-title and review-body. Older cards use
+    reviewTitle and reviewRichContentContainer. Both are accepted.
+    """
     review_boxes = result.selector.css("[data-hook=review]")
     parsed = []
     for box in review_boxes:
-        rating = box.css("i[data-hook=review-star-rating] ::text").re_first(r"(\d+\.*\d*) out")
+        rating = box.css("[data-hook*=review-star-rating] ::text").re_first(r"(\d+\.*\d*) out")
+        if not rating:
+            continue
+        text = "".join(
+            box.css("[data-hook=review-body] ::text, [data-hook=reviewRichContentContainer] ::text").getall()
+        ).strip()
         parsed.append(
             {
-                "text": "".join(box.css("[data-hook=reviewRichContentContainer] ::text").getall()).strip(),
-                "title": box.css("*[data-hook=reviewTitle]::text").get(),
-                "location_and_date": box.css("span[data-hook=review-date] ::text").get(),
+                "text": text,
+                "title": _review_title(box),
+                "location_and_date": (box.css("span[data-hook=review-date] ::text").get() or "").strip(),
                 "verified": bool(box.css("span[data-hook=avp-badge] ::text").get()),
-                "rating": float(rating) if rating else None,
+                "rating": float(rating),
             }
         )
     return parsed
 
 
+def reviews_page_url(url: str) -> str:
+    """the dedicated reviews document. Product pages often never render the review cards."""
+    if "/product-reviews/" in url:
+        return url.split("?")[0]
+    match = re.search(r"/(?:dp|gp/product)/([A-Z0-9]{10})", url)
+    asin = match.group(1) if match else url.rstrip("/").split("/")[-1].split("?")[0]
+    return f"https://www.amazon.com/product-reviews/{asin}/"
+
+
+def next_review_page(result: Response) -> Optional[str]:
+    href = result.selector.css(".a-pagination .a-last a::attr(href)").get()
+    if not href:
+        return None
+    return urljoin("https://www.amazon.com/", href)
+
+
+_TRANSIENT_CODES = {
+    "ERR_TUNNEL_CONNECTION_FAILED",
+    "ERR_CONNECTION_CLOSED",
+    "ERR_HTTP2_PROTOCOL_ERROR",
+    "TIMEOUT",
+}
+
+
+def _transient_failure(error: ScrapeError) -> bool:
+    if error.code in _TRANSIENT_CODES:
+        return True
+    status = error.response.status_code if error.response else 0
+    return error.code == "HTTP_ERROR" and status in {502, 503}
+
+
+async def _fetch_once_retry(request: Request) -> Response:
+    """one extra attempt for a tunnel drop or a 503, matching the site's existing retry style"""
+    try:
+        return await CLIENT.fetch(request)
+    except ScrapeError as error:
+        if not _transient_failure(error):
+            raise
+        log.warning(f"retrying {request.url} once after {error.code}")
+        return await CLIENT.fetch(request)
+
+
 @managed
-async def scrape_reviews(url: str) -> List[Review]:
-    """scrape product reviews of a given URL of an amazon product"""
-    # pagination is not publically available, so we can't scrape more than one page
-    log.info(f"scraping review page: {url}")
-    config = {**BASE_CONFIG, }
-    for attempt in range(1, 6 + 1):
-        api_response = await CLIENT.fetch(
-            Request(url, render=True, autoScroll=True, waitMs=8000, **config)
-        )
-        reviews = parse_reviews(api_response)
-        if reviews:
-            log.info(f"scraped {len(reviews)} reviews")
-            return reviews
-        log.debug(f"review widget was not rendered, retrying ({attempt}/6)")
-    log.warning(f"failed to scrape reviews of {url}: Amazon kept gating the review widget")
-    return []
+async def scrape_reviews(url: str, max_pages: int = 2) -> List[Review]:
+    """scrape product reviews of a given Amazon product URL"""
+    page_url = reviews_page_url(url)
+    log.info(f"scraping review page: {page_url}")
+    reviews: List[Review] = []
+    seen = set()
+    for page_number in range(1, max_pages + 1):
+        page = None
+        attempts = 6 if page_number == 1 else 1
+        for attempt in range(1, attempts + 1):
+            page = await CLIENT.fetch(
+                Request(
+                    page_url,
+                    render=True,
+                    autoScroll=True,
+                    actions=[
+                        {"type": "waitForSelector", "selector": "[data-hook=review]", "timeoutMs": 12000, "optional": True},
+                    ],
+                    **BASE_CONFIG,
+                )
+            )
+            parsed = parse_reviews(page)
+            if parsed:
+                break
+            log.debug(f"review widget was not rendered, retrying ({attempt}/{attempts})")
+            page = None
+        if page is None:
+            log.warning(f"failed to scrape reviews of {page_url}: Amazon kept gating the review widget")
+            break
+        for review in parse_reviews(page):
+            key = (review["title"], review["text"], review["location_and_date"])
+            if key in seen:
+                continue
+            seen.add(key)
+            reviews.append(review)
+        page_url = next_review_page(page)
+        if not page_url:
+            break
+    log.info(f"scraped {len(reviews)} reviews")
+    return reviews
 
 
 class Product(TypedDict):
@@ -238,7 +318,7 @@ async def scrape_product(url: str) -> List[Product]:
     asin = url.split("/dp/")[-1]
     log.info(f"scraping product {url}")
     try:
-        product_result = await CLIENT.fetch(
+        product_result = await _fetch_once_retry(
             Request(
                 url,
                 **BASE_CONFIG,
@@ -260,8 +340,13 @@ async def scrape_product(url: str) -> List[Product]:
     if _variation_data:
         variant_asins = [variant_asin for variant_asin in json.loads(_variation_data[0]) if variant_asin != asin]
         log.info(f"scraping {len(variant_asins)} variants: {variant_asins}")
-        _to_scrape = [Request(f"https://www.amazon.com/dp/{asin}", **BASE_CONFIG) for asin in variant_asins]
-        async for result in CLIENT.fetch_many(_to_scrape):
+        for variant_asin in variant_asins:
+            variant_url = f"https://www.amazon.com/dp/{variant_asin}"
+            try:
+                result = await _fetch_once_retry(Request(variant_url, **BASE_CONFIG))
+            except ScrapeError as error:
+                log.warning(f"skipping variant {variant_url}: {error}")
+                continue
             # skip variant pages that came back as the notice page (or any page without product data)
             if not result.selector.css("#productTitle"):
                 log.warning(f"skipping variant {result.url}: amazon.com returned {_page_summary(result)}")

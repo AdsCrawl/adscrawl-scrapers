@@ -25,6 +25,10 @@ not need to download or launch a local Chromium browser.
 - `scrape_search`
 - `scrape_product`
 
+Requests set `countryCode` to `PL`. Allegro is a Poland-only marketplace
+(`allegro.pl`); the US route answers HTTP 403 for product and search. Other
+sites in this repository stay on US unless they document a different code.
+
 ## Validation
 
 Run the credential-free repository checks with `python -m pytest tests` from the root.

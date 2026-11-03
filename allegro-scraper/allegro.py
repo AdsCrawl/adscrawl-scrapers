@@ -19,10 +19,11 @@ from adscrawl_scrapers import Request, ScraperClient, Response, ScrapeError
 
 CLIENT = ScraperClient()
 BASE_CONFIG = {
-
-
-    'render':True,
-
+    # allegro.pl is the Polish marketplace. A US exit gets HTTP 403 on both
+    # the offer page and the listing page before any HTML is parsed. PL is
+    # the site's own country, not a preference over US for other retailers.
+    'countryCode': "PL",
+    'render': True,
 }
 
 output = Path(__file__).parent / "results"

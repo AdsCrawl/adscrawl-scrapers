@@ -321,6 +321,31 @@ async def test_attachment_preserves_bytes_and_decodes_unicode_json():
     assert page.evaluate.await_args.args[1]['url'] == 'https://itunes.apple.com/lookup'
 
 
+async def test_binary_gzip_xml_is_inflated_before_text_decode():
+    import gzip
+    xml = (
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+        '<url><loc>https://www.bestbuy.com/site/promo</loc></url></urlset>'
+    ).encode()
+    raw = gzip.compress(xml)
+    page = SimpleNamespace(route=AsyncMock(), goto=AsyncMock(), evaluate=AsyncMock(return_value={
+        'url': 'https://sitemaps.bestbuy.com/sitemaps_promos.0000.xml.gz',
+        'status': 200,
+        'headers': {'content-type': 'application/xml'},
+        'bytes': list(raw),
+    }))
+    context = SimpleNamespace(cookies=AsyncMock(return_value=[]))
+    result = await ScraperClient(sdk=object())._fetch_binary(
+        SimpleNamespace(context=context), page,
+        Request('https://sitemaps.bestbuy.com/sitemaps_promos.0000.xml.gz', binary=True),
+        {},
+    )
+    assert result.raw == raw
+    assert result.raw[:2] == b'\x1f\x8b'
+    assert 'https://www.bestbuy.com/site/promo' in result.content
+    assert not result.content.startswith('\x1f')
+
+
 async def test_browser_action_failure_retains_safe_error_code_and_closes_page(monkeypatch, tmp_path):
     from playwright.async_api import Error
     monkeypatch.setenv('ADSCRAWL_FAILURE_DIR', str(tmp_path))

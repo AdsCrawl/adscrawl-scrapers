@@ -34,8 +34,11 @@ accepts HTML or Markdown. Responses expose `url`, `request_url`, `content`, `raw
 
 Download endpoints (including iTunes JSON attachments, compressed sitemaps and
 images) use `binary=True`: browser-side fetch from a same-origin document returns
-bytes through CDP. JSON/XML/text bodies are decoded as UTF-8; other bytes remain
-available unchanged in `raw`. This mode does not execute page actions or scripts.
+bytes through CDP. JSON/XML/text bodies are decoded as UTF-8. A gzip member
+(magic bytes `1f 8b`) is decompressed before that decode when the response is
+labeled as text/XML/JSON or the inflated body is XML or JSON. `raw` keeps the
+original bytes. Other bodies remain available unchanged in `raw`. This mode
+does not execute page actions or scripts.
 
 ## Sessions and embedding
 

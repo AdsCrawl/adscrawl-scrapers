@@ -6,6 +6,7 @@ use navigation interception, never Playwright's locally executed APIRequestConte
 from __future__ import annotations
 
 import asyncio
+import gzip
 import json
 import inspect
 import os
@@ -595,17 +596,42 @@ class ScraperClient:
         }""", {"url": request.url, "method": request.method, "headers": headers, "body": payload})
         raw = bytes(value["bytes"])
         content_type = value["headers"].get("content-type", "").lower()
-        # Download endpoints may return JSON as an attachment. Preserve Unicode
-        # for textual payloads while keeping the original bytes for images/gzip.
-        textual = content_type.startswith("text/") or any(
-            kind in content_type for kind in ("json", "xml", "javascript")
-        )
+        # Download endpoints may return JSON as an attachment, or a .gz sitemap
+        # whose Content-Type still says xml/text. Inflate gzip before the text
+        # decode. `raw` stays the original bytes so callers can decompress too.
         result = Response(url=value["url"], request_url=request.url, raw=raw,
-                          content=raw.decode("utf-8-sig" if textual else "latin1"), status_code=value["status"],
+                          content=decode_download_body(raw, content_type), status_code=value["status"],
                           headers=value["headers"], cookies=await session.context.cookies())
         if request.raiseOnHttpError and result.status_code >= 400:
             raise ScrapeError(f"Target returned HTTP {result.status_code}", response=result, code="HTTP_ERROR")
         return result
+
+
+def decode_download_body(raw: bytes, content_type: str) -> str:
+    """Decode a binary-mode download.
+
+    Text, JSON, XML and script bodies use UTF-8. A gzip member (magic ``1f 8b``)
+    is decompressed first when the type claims text or the inflated bytes look
+    like XML/JSON. Images and other binary payloads stay a latin-1 view of the
+    original bytes.
+    """
+    content_type = (content_type or "").lower()
+    textual = content_type.startswith("text/") or any(
+        kind in content_type for kind in ("json", "xml", "javascript", "ecmascript")
+    )
+    payload = raw
+    if raw.startswith(b"\x1f\x8b"):
+        try:
+            payload = gzip.decompress(raw)
+        except OSError:
+            payload = raw
+        else:
+            head = payload.lstrip()[:1]
+            if not textual and (head in (b"<", b"{", b"[") or payload.startswith(b"\xef\xbb\xbf")):
+                textual = True
+    if textual:
+        return payload.decode("utf-8-sig")
+    return raw.decode("latin1")
 
 
 async def evaluate_script(page, script):

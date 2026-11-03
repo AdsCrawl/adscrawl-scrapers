@@ -56,12 +56,39 @@ def parse_search(result: Response):
     return data["mods"]["itemList"]["content"]
 
 
+_TRANSIENT = {
+    "TIMEOUT",
+    "ERR_CONNECTION_CLOSED",
+    "ERR_TUNNEL_CONNECTION_FAILED",
+    "ERR_HTTP2_PROTOCOL_ERROR",
+    "BROWSER_ERROR",
+}
+
+
+def _transient(error: ScrapeError) -> bool:
+    if error.code in _TRANSIENT:
+        return True
+    status = error.response.status_code if error.response else 0
+    return error.code == "HTTP_ERROR" and status in {502, 503}
+
+
+async def _fetch_once_retry(request: Request) -> Response:
+    """one extra attempt when the browser drops the connection or the page times out"""
+    try:
+        return await CLIENT.fetch(request)
+    except ScrapeError as error:
+        if not _transient(error):
+            raise
+        log.warning(f"retrying {request.url} once after {error.code}")
+        return await CLIENT.fetch(request)
+
+
 @managed
 async def scrape_search(url, max_pages: int = 60):
     """Scrape all search results and return parsed search result data"""
     log.info("scraping search url {}", url)
     # scrape first search page and find total result count
-    first_page_result = await CLIENT.fetch(Request(url, **BASE_CONFIG))
+    first_page_result = await _fetch_once_retry(Request(url, **BASE_CONFIG, timeoutMs=120000))
     _first_page_data = extract_search(first_page_result)
     page_size = _first_page_data["pageInfo"]["pageSize"]
     total_pages = int(math.ceil(_first_page_data["pageInfo"]["totalResults"] / page_size))
@@ -71,15 +98,14 @@ async def scrape_search(url, max_pages: int = 60):
     # scrape remaining pages concurrently
     product_previews = parse_search(first_page_result)
     log.info("search {} found {} pages", url, total_pages)
-    other_pages = [
-        Request(add_or_replace_url_parameters(first_page_result.url, page=page), **BASE_CONFIG)
-        for page in range(2, total_pages + 1)
-    ]
-    async for result in CLIENT.fetch_many(other_pages):
-        if not isinstance(result, ScrapeError):
-            product_previews.extend(parse_search(result))
-        else:
-            log.error(f"failed to scrape {result.response.request_url}, got: {result.message}")
+    for page in range(2, total_pages + 1):
+        page_url = add_or_replace_url_parameters(first_page_result.url, page=page)
+        try:
+            result = await _fetch_once_retry(Request(page_url, **BASE_CONFIG, timeoutMs=120000))
+        except ScrapeError as error:
+            log.error(f"failed to scrape {page_url} after one retry, got: {error}")
+            raise
+        product_previews.extend(parse_search(result))
     log.info("search {} scraped {} results", url, len(product_previews))
     return product_previews
 
@@ -186,13 +212,26 @@ async def scrape_product_reviews(product_id: str, max_scrape_pages: int = None):
     """scrape all reviews of aliexpress product"""
 
     def scrape_config_for_page(page):
-        url = f"https://feedback.aliexpress.com/pc/searchEvaluation.do?productId={product_id}&lang=en_US&country=US&page={page}&pageSize=10&filter=all&sort=complex_default"
+        # pageSize 50 so one page can clear the acceptance floor (>30) and two
+        # pages stay within max_scrape_pages. The feedback host is JSON: read
+        # the response body, on the US route, with a product-page referer.
+        url = (
+            "https://feedback.aliexpress.com/pc/searchEvaluation.do"
+            f"?productId={product_id}&lang=en_US&country=US&page={page}&pageSize=50"
+            "&filter=all&sort=complex_default"
+        )
         return Request(
-            url
+            url,
+            countryCode="US",
+            render=False,
+            headers={
+                "accept": "application/json, text/plain, */*",
+                "referer": "https://www.aliexpress.com/",
+            },
         )
 
     # scrape first page of reviews and find total count of review pages
-    first_page_result = await CLIENT.fetch(scrape_config_for_page(1))
+    first_page_result = await _fetch_once_retry(scrape_config_for_page(1))
     data = parse_review_page(first_page_result)
     max_pages = data["max_pages"]
 
@@ -201,8 +240,12 @@ async def scrape_product_reviews(product_id: str, max_scrape_pages: int = None):
 
     # create scrape configs for other pages and scrape them concurrently
     log.info(f"scraping reviews pagination of product {product_id}, {max_pages - 1} pages remaining")
-    to_scrape = [scrape_config_for_page(page) for page in range(2, max_pages + 1)]
-    async for result in CLIENT.fetch_many(to_scrape):
+    for page in range(2, max_pages + 1):
+        try:
+            result = await _fetch_once_retry(scrape_config_for_page(page))
+        except ScrapeError as error:
+            log.error(f"review page {page} failed after one retry: {error}")
+            break
         data["reviews"].extend(parse_review_page(result)["reviews"])
     log.success(f"scraped {len(data['reviews'])} from review pages")
     data.pop("max_pages")
