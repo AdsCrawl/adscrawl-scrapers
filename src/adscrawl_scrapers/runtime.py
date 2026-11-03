@@ -24,6 +24,7 @@ from typing import Any, AsyncIterator, Iterable
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from adscrawl import AsyncAdsCrawl, AdsCrawlAPIError, AdsCrawlTimeoutError
+from loguru import logger as log
 from parsel import Selector
 from playwright.async_api import async_playwright, Error as BrowserError, TimeoutError as BrowserTimeout
 
@@ -31,6 +32,9 @@ _CLIENTS: weakref.WeakSet = weakref.WeakSet()
 _SCOPE = ContextVar("adscrawl_scraper_scope", default=None)
 _NETWORK_DRAIN_SECONDS = 2
 _DISCONNECT_TIMEOUT_SECONDS = 10
+# US tunnel failures move between pages. One new browser for a GET navigation
+# is safe to repeat. POST bodies are not retried.
+_NAVIGATION_RETRY_CODES = {"ERR_TUNNEL_CONNECTION_FAILED", "ERR_CONNECTION_CLOSED", "CONNECT_FAILED"}
 
 
 @dataclass
@@ -398,7 +402,17 @@ class ScraperClient:
         task = asyncio.current_task()
         self._active_requests[task] = _SCOPE.get()
         try:
-            return await self._fetch(request)
+            try:
+                return await self._fetch(request)
+            except ScrapeError as error:
+                if request.method != "GET" or error.code not in _NAVIGATION_RETRY_CODES:
+                    raise
+                # The browser that hit the tunnel is discarded. A named session
+                # would otherwise be reused and fail the same way.
+                log.warning("retrying GET {} once after {}", redact_page_url(request.url), error.code)
+                if request.session:
+                    await self.close_session(request.session)
+                return await self._fetch(request)
         finally:
             self._active_requests.pop(task, None)
 

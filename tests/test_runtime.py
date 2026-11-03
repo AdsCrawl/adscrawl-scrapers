@@ -207,6 +207,45 @@ async def test_session_create_timeout_closes_only_the_new_session():
     assert 'secret' not in str(caught.value)
 
 
+async def test_get_navigation_retries_a_tunnel_once_on_a_new_browser(fake_sessions):
+    client = ScraperClient(sdk=object())
+    calls = {"n": 0}
+
+    async def page(session, request):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise ScrapeError("tunnel", code="ERR_TUNNEL_CONNECTION_FAILED")
+        return Response(request.url)
+
+    client._fetch_page = page
+    response = await client.fetch(Request("https://example.com/item"))
+    assert response.url == "https://example.com/item"
+    assert calls["n"] == 2
+    assert fake_sessions[0].closed and not client._sessions
+
+    calls["n"] = 0
+
+    async def denied(session, request):
+        calls["n"] += 1
+        raise ScrapeError("denied", response=Response(request.url, status_code=403), code="HTTP_ERROR")
+
+    client._fetch_page = denied
+    with pytest.raises(ScrapeError) as http_error:
+        await client.fetch(Request("https://example.com/item"))
+    assert http_error.value.code == "HTTP_ERROR" and calls["n"] == 1
+
+    calls["n"] = 0
+
+    async def post_tunnel(session, request):
+        calls["n"] += 1
+        raise ScrapeError("tunnel", code="ERR_TUNNEL_CONNECTION_FAILED")
+
+    client._fetch_page = post_tunnel
+    with pytest.raises(ScrapeError) as post_error:
+        await client.fetch(Request("https://example.com/item", method="POST", body="{}"))
+    assert post_error.value.code == "ERR_TUNNEL_CONNECTION_FAILED" and calls["n"] == 1
+
+
 async def test_named_session_timeout_releases_the_browser(fake_sessions):
     client = ScraperClient(sdk=object(), concurrency=1)
 

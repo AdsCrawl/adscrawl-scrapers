@@ -24,6 +24,10 @@ not need to download or launch a local Chromium browser.
 
 - `scrape_tracking`
 
+## Anti-bot limits
+
+`https://www.dhl.com/utapi` answers HTTP 428 (`sec-cp-challenge`) for a direct request, including the Unified Tracking demo `7777777770`. The scraper does not open that URL. It renders the public tracking page and reads a solved shipment document or `#panel_events`. A challenge, a not-found message, or a page with no events is not a successful shipment. `EXAMPLE_TRACKING_NUMBER` (`146000018487`) is the local id from a public page capture that showed events on 2026-05-20. This repository has not confirmed that number still resolves. The live test still requires `classification == "success"` and at least one event.
+
 ## Validation
 
 Run the credential-free repository checks with `python -m pytest tests` from the root.

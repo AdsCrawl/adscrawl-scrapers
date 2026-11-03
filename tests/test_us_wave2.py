@@ -185,12 +185,12 @@ async def test_kayak_search_waits_for_the_poll_and_raises_the_client_budget(monk
     assert flights[0]["price"] == "$120"
 
 
-def test_dhl_fixture_is_the_documented_public_example_and_empty_is_not_success():
-    assert dhl.EXAMPLE_TRACKING_NUMBER == "7777777770"
-    url = dhl._build_tracking_url(dhl.EXAMPLE_TRACKING_NUMBER, api_endpoint=True)
-    assert "trackingNumber=7777777770" in url
-    assert "requesterCountryCode=US" in url
-    assert "source=tt" in url
+def test_dhl_fixture_is_a_public_page_shipment_and_empty_is_not_success():
+    assert dhl.EXAMPLE_TRACKING_NUMBER == "146000018487"
+    assert dhl.EXAMPLE_TRACKING_NUMBER != "7777777770"
+    url = dhl._build_tracking_url(dhl.EXAMPLE_TRACKING_NUMBER, api_endpoint=False)
+    assert "tracking-id=146000018487" in url
+    assert "/utapi" not in url
     empty = dhl._parse_tracking_api_response({"shipments": []}, dhl.EXAMPLE_TRACKING_NUMBER)
     assert empty["classification"] == "empty" and empty["events"] == []
     blocked = dhl._classify_payload({"sec-cp-challenge": "true"}, dhl.EXAMPLE_TRACKING_NUMBER)
@@ -223,6 +223,66 @@ def test_dhl_panel_events_fill_in_when_utapi_is_blocked():
     assert dhl._with_panel_events(blocked, Response("https://www.dhl.com/us-en/home/tracking.html", "<html></html>"), "7777777770")["classification"] == "captcha-or-forbidden"
 
 
+def test_dhl_page_ignores_the_challenge_xhr_and_not_found_is_empty():
+    challenge = {"url": "https://www.dhl.com/utapi?trackingNumber=1", "response": {"body": '{"sec-cp-challenge":"true"}'}}
+    shipment = {
+        "url": "https://www.dhl.com/utapi?trackingNumber=1",
+        "response": {"body": json.dumps({"shipments": [{
+            "id": "146000018487",
+            "status": {"description": "Delivered"},
+            "events": [{
+                "timestamp": "2026-04-29T18:25:00",
+                "description": "Delivered",
+                "location": {"address": {"addressLocality": "France"}},
+            }],
+        }]})},
+    }
+    page = Response("https://www.dhl.com/us-en/home/tracking.html", "<html></html>", network=[challenge, shipment])
+    solved = dhl._page_result(page, dhl.EXAMPLE_TRACKING_NUMBER)
+    assert solved["classification"] == "success"
+    assert solved["events"][0]["location"] == "France"
+    missing = Response(
+        "https://www.dhl.com/us-en/home/tracking.html",
+        "<main><p>Sorry, your tracking attempt was not successful. Please check your tracking number.</p></main>",
+        network=[challenge],
+    )
+    assert dhl._page_result(missing, dhl.EXAMPLE_TRACKING_NUMBER)["classification"] == "empty"
+    blocked = Response(
+        "https://www.dhl.com/us-en/home/tracking.html",
+        '<html><iframe id="sec-cpt-if"></iframe></html>',
+        status_code=200,
+        network=[challenge],
+    )
+    assert dhl._page_result(blocked, dhl.EXAMPLE_TRACKING_NUMBER)["classification"] == "captcha-or-forbidden"
+
+
+async def test_dhl_tracking_reads_the_rendered_page_not_the_utapi_document(monkeypatch):
+    seen = []
+
+    async def fetch(request):
+        seen.append(request)
+        html = (
+            '<main><div class="c-tracking-result--container is-visible">'
+            'Tracking Code: 146000018487'
+            '<table id="panel_events"><tr>'
+            '<td class="c-event-log--date">April 29, 2026</td>'
+            '<td class="c-event-log--localtime">6:25 PM Local time</td>'
+            '<td class="c-event-log--status">Delivered</td>'
+            '<td class="c-event-log--location">France</td>'
+            '</tr></table></div></main>'
+        )
+        return Response(request.url, html)
+
+    monkeypatch.setattr(dhl.CLIENT, "fetch", fetch)
+    result = await dhl.scrape_tracking(dhl.EXAMPLE_TRACKING_NUMBER)
+    assert "/utapi" not in seen[0].url
+    assert "tracking-id=146000018487" in seen[0].url
+    assert seen[0].waitForResponse is None
+    assert result["classification"] == "success"
+    assert result["events"][0]["description"] == "Delivered"
+    assert result["events"][0]["location"] == "France"
+
+
 async def test_target_product_retries_435_then_names_the_anti_bot_block(monkeypatch):
     calls = {"n": 0}
 
@@ -241,27 +301,70 @@ async def test_target_product_retries_435_then_names_the_anti_bot_block(monkeypa
     assert "anti-bot" in str(caught.value) and "435" in str(caught.value)
 
 
-async def test_target_availability_retries_a_435_on_a_new_session(monkeypatch):
+def _target_credentials(request):
+    return Response(request.url, network=[{
+        "url": "https://redsky.target.com/store_location_v1?key=abc&visitor_id=vis",
+        "response": {"status": 200, "body": "{}"},
+    }])
+
+
+async def test_target_availability_fetches_redsky_from_the_page_and_falls_back(monkeypatch):
     seen = []
     closed = []
 
+    async def pause(seconds):
+        return None
+
     async def fetch(request):
         seen.append(request)
-        if "redsky.target.com" in request.url and "product_summary" in request.url:
+        if request.javascript and "product_summary_with_fulfillment_v1" in request.javascript:
+            request.javascript_result = {"status": 435, "body": "<html>Access Denied</html>"}
+            return Response(request.url, "<html></html>", javascript={"status": 435, "body": "<html>Access Denied</html>"})
+        if "/A-89231676" in request.url:
             raise ScrapeError("blocked", response=Response(request.url, status_code=435), code="HTTP_ERROR")
-        return Response(request.url, network=[{
-            "url": "https://redsky.target.com/store_location_v1?key=abc&visitor_id=vis",
-            "response": {"status": 200, "body": "{}"},
-        }])
+        return _target_credentials(request)
 
     async def close_session(name):
         closed.append(name)
 
+    monkeypatch.setattr(target, "_pause", pause)
     monkeypatch.setattr(target.CLIENT, "fetch", fetch)
     monkeypatch.setattr(target.CLIENT, "close_session", close_session)
     with pytest.raises(ScrapeError) as caught:
         await target.scrape_availability(["89231676"], "1771", "52404")
     assert "anti-bot" in str(caught.value) and "435" in str(caught.value)
-    redsky = [request.session for request in seen if "product_summary" in request.url]
-    assert len(redsky) == 2 and redsky[0] != redsky[1]
-    assert set(redsky) <= set(closed)
+    redsky_pages = [request for request in seen if request.javascript and "product_summary" in request.javascript]
+    assert len(redsky_pages) == target._REDSKY_ATTEMPTS
+    assert all(request.url.startswith("https://www.target.com/") for request in redsky_pages)
+    assert len({request.session for request in redsky_pages}) == target._REDSKY_ATTEMPTS
+    assert {request.session for request in redsky_pages} <= set(closed)
+
+
+async def test_target_availability_uses_an_in_page_json_payload(monkeypatch):
+    body = json.dumps({"data": {"product_summaries": [{
+        "tcin": "89231676",
+        "item": {"product_description": {"title": "Tee"}},
+        "fulfillment": {"shipping_options": {"availability_status": "IN_STOCK"}},
+    }]}})
+
+    async def fetch(request):
+        if request.javascript and "product_summary" in request.javascript:
+            return Response(request.url, javascript={"status": 200, "body": body})
+        return _target_credentials(request)
+
+    monkeypatch.setattr(target.CLIENT, "fetch", fetch)
+    monkeypatch.setattr(target.CLIENT, "close_session", lambda name: _done())
+    availability = await target.scrape_availability(["89231676"], "1771", "52404")
+    assert availability["89231676"]["in_stock"] is True
+
+
+async def _done():
+    return None
+
+
+def test_target_store_page_name_comes_from_the_public_heading():
+    page = Response("https://www.target.com/sl/crystal/3", "<h1>Target Crystal</h1>")
+    parsed = target.parse_store_page(page, "3", "crystal", page.url)
+    assert parsed["store_id"] == "3"
+    assert parsed["location_name"] == "Crystal"
+    assert parsed["slug"] == "crystal"

@@ -26,6 +26,9 @@ The API's country routing is not a promise of a particular upstream proxy pool
 or anti-bot product. No automatic billing retries are added. Existing site-level
 retry loops may still issue extra requests; inspect the chosen site's code.
 A timeout does not prove remote work stopped; cleanup errors are surfaced.
+A GET navigation that fails with `ERR_TUNNEL_CONNECTION_FAILED`,
+`ERR_CONNECTION_CLOSED`, or `CONNECT_FAILED` is retried once on a new browser.
+Named sessions are closed before that retry. POST requests are not retried.
 Session creation uses the SDK HTTP deadline, at least 90 seconds, or the
 request's `timeoutMs` when that is longer. If that call times out, the client
 lists CDP sessions and closes only ids that were not present before the create,

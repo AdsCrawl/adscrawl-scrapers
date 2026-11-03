@@ -28,6 +28,10 @@ not need to download or launch a local Chromium browser.
 - `scrape_store_locations`
 - `scrape_search`
 
+## Anti-bot limits
+
+On the US route (2026-11-03) product, search, and the store sitemap returned data. Availability and store locations did not: opening a `redsky.target.com` URL as the document is HTTP 435. Those two calls now run `fetch()` from a warmed `target.com` page, with two further sessions after a block. If redsky is still 435, availability falls back to the product page (shipping/stock on that page, not store inventory) and store locations fall back to the public `/sl/{slug}/{id}` page. A 435 that leaves no page data is still an error. The in-page fetch and the HTML fallback have not been confirmed live.
+
 ## Validation
 
 Run the credential-free repository checks with `python -m pytest tests` from the root.

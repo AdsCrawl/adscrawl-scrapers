@@ -9,6 +9,7 @@ from adscrawl_scrapers import managed
 
 import json
 import os
+import re
 from typing import List, Literal, Optional, TypedDict
 from urllib.parse import urlencode
 
@@ -25,11 +26,24 @@ BASE_CONFIG = {
 
 API_BASE_URL = "https://www.dhl.com/utapi"
 TRACKING_PAGE_URL = "https://www.dhl.com/us-en/home/tracking.html"
-# Public example in DHL's Shipment Tracking - Unified guide. The documented
-# sample response for this number includes a shipment and events. LBAA19526
-# returned no shipment on 2026-11-03.
-# https://developer.dhl.com/api-reference/shipment-tracking
-EXAMPLE_TRACKING_NUMBER = "7777777770"
+# Direct calls to /utapi answer HTTP 428 (Akamai sec-cp-challenge), including
+# the Unified API demo 7777777770. LBAA19526 had no public shipment on
+# 2026-11-03. This is the local tracking number from a public tracking-page
+# capture (2026-05-20) whose rendered timeline had events. A challenge or an
+# unknown number is still a failure. This checkout has not confirmed the
+# number still resolves.
+# https://browse.sh/skills/dhl.com/track-shipment-18m2jq
+EXAMPLE_TRACKING_NUMBER = "146000018487"
+_NOT_FOUND_TEXT = (
+    "tracking attempt was not successful",
+    "could not be found",
+    "unable to find",
+    "no shipment",
+)
+_PAGE_READY = (
+    ".c-event-log--date, .c-tracking-result-message--content, "
+    ".c-tracking-result--container.is-visible"
+)
 
 Classification = Literal["success", "empty", "captcha-or-forbidden", "semantic-mismatch"]
 
@@ -89,9 +103,23 @@ def _classify_payload(data: dict, tracking_number: str) -> TrackingResult:
 
 
 def _events_from_panel(response: Response) -> List[TrackingEvent]:
-    """Event rows rendered on the tracking page when the utapi body is blocked."""
+    """Event rows on the tracking page. utapi itself is an Akamai challenge."""
     events = []
     for row in response.selector.css("#panel_events tr"):
+        date = (row.css(".c-event-log--date::text").get() or "").strip()
+        local = (row.css(".c-event-log--localtime::text").get() or "").strip()
+        status = " ".join(
+            part.strip() for part in row.css(".c-event-log--status::text").getall() if part and part.strip()
+        )
+        location = (row.css(".c-event-log--location::text").get() or "").strip() or None
+        if date or status:
+            events.append({
+                "timestamp": " ".join(part for part in (date, local) if part) or None,
+                "status": None,
+                "description": status or None,
+                "location": location,
+            })
+            continue
         cells = [text.strip() for text in row.css("td::text").getall() if text and text.strip()]
         if len(cells) < 2:
             continue
@@ -171,37 +199,116 @@ def _parse_tracking_api_response(data: dict, tracking_number: str) -> TrackingRe
     }
 
 
-async def _scrape_tracking_once(tracking_number: str) -> TrackingResult:
-    try:
-        url = _build_tracking_url(tracking_number, api_endpoint=True)
-        response = await CLIENT.fetch(Request(
-            url,
-            headers={"Accept": "application/json", "Referer": TRACKING_PAGE_URL},
-            **BASE_CONFIG,
-        ))
-        result = _classify_payload(json.loads(response.content), tracking_number)
-        if result.get("events"):
-            return result
-        if result["classification"] == "captcha-or-forbidden":
-            log.warning(f"API blocked for {tracking_number}")
-    except ScrapeError as error:
-        log.warning(f"API failed for {tracking_number}: {error}")
-    except json.JSONDecodeError:
-        log.warning(f"API returned non-JSON for {tracking_number}")
+def _visible_text(response: Response) -> str:
+    parts = response.selector.css("main ::text, .c-tracking--container ::text").getall()
+    text = "\n".join(part.strip() for part in parts if part and part.strip())
+    return text or (response.content or "")
 
-    url = _build_tracking_url(tracking_number, api_endpoint=False)
-    response = await CLIENT.fetch(Request(
-        url, waitForResponse="/utapi", timeoutMs=60_000, **BASE_CONFIG,
+
+def _line_value(text: str, label: str) -> Optional[str]:
+    match = re.search(rf"(?m)^{re.escape(label)}\s*:?\s*(.+)$", text)
+    return match.group(1).strip() if match else None
+
+
+def _solved_utapi_payload(response: Response) -> Optional[dict]:
+    """A later utapi body that is a shipment document, not the 428 challenge."""
+    for call in reversed(response.network or []):
+        if "/utapi" not in (call.get("url") or ""):
+            continue
+        body = ((call.get("response") or {}).get("body")) or ""
+        try:
+            data = json.loads(body)
+        except (json.JSONDecodeError, TypeError):
+            continue
+        if isinstance(data, dict) and not data.get("sec-cp-challenge") and "shipments" in data:
+            return data
+    return None
+
+
+def _challenge_page(response: Response, text: str) -> bool:
+    lowered = f"{text}\n{response.content or ''}".lower()
+    if response.status_code in {403, 428, 429}:
+        return True
+    return any(marker in lowered for marker in (
+        "sec-cp-challenge", "sec-cpt-if", "pardon our interruption", "access denied",
     ))
-    try:
-        data = _get_xhr_data(response, "/utapi")
-    except (RuntimeError, json.JSONDecodeError):
-        data = None
-    if isinstance(data, dict):
+
+
+def _page_result(response: Response, tracking_number: str) -> TrackingResult:
+    """Prefer a solved utapi document, then the rendered event panel.
+
+    The first utapi response is the Akamai challenge. It is not the shipment.
+    """
+    data = _solved_utapi_payload(response)
+    if data is not None:
         result = _classify_payload(data, tracking_number)
-    else:
-        result = _empty_result(tracking_number, "semantic-mismatch")
-    return _with_panel_events(result, response, tracking_number)
+        if result.get("events") or result["classification"] == "empty":
+            return result
+    events = _events_from_panel(response)
+    text = _visible_text(response)
+    compact_request = re.sub(r"\s+", "", tracking_number)
+    code_line = re.search(r"Tracking Code:?[ \t]*([^\n]+)", text)
+    displayed_code = ""
+    if code_line:
+        pieces = code_line.group(1).split()
+        if pieces and all(len(piece) == 1 and piece.isalnum() for piece in pieces):
+            displayed_code = "".join(pieces)
+        elif pieces:
+            displayed_code = re.sub(r"[^A-Za-z0-9]", "", pieces[0])
+    if events and len(displayed_code) >= 5 and displayed_code != compact_request:
+        log.warning("tracking page showed {} for requested {}", displayed_code, tracking_number)
+        return _empty_result(tracking_number, "empty")
+    if events:
+        return {
+            "classification": "success",
+            "tracking_number": tracking_number,
+            "status": _line_value(text, "Status") or events[0].get("description"),
+            "events": events,
+            "estimated_delivery": None,
+            "origin": _line_value(text, "Origin"),
+            "destination": _line_value(text, "Destination"),
+        }
+    lowered = text.lower()
+    if any(phrase in lowered for phrase in _NOT_FOUND_TEXT):
+        return _empty_result(tracking_number, "empty")
+    if _challenge_page(response, text):
+        return _empty_result(tracking_number, "captcha-or-forbidden")
+    return _empty_result(tracking_number, "semantic-mismatch")
+
+
+async def _scrape_tracking_once(tracking_number: str) -> TrackingResult:
+    # Do not open /utapi as a document. That request is HTTP 428, and waiting
+    # for the first utapi XHR returns the challenge before the page renders.
+    url = _build_tracking_url(tracking_number, api_endpoint=False)
+    request = Request(
+        url,
+        timeoutMs=90_000,
+        waitMs=3000,
+        actions=[
+            {
+                "type": "waitForSelector",
+                "selector": "button#onetrust-reject-all-handler",
+                "timeoutMs": 4000,
+                "optional": True,
+            },
+            {"type": "click", "selector": "button#onetrust-reject-all-handler", "optional": True},
+            {
+                "type": "waitForSelector",
+                "selector": _PAGE_READY,
+                "state": "attached",
+                "timeoutMs": 45_000,
+            },
+        ],
+        **BASE_CONFIG,
+    )
+    try:
+        response = await CLIENT.fetch(request)
+    except ScrapeError as error:
+        response = error.response
+        if response is None or error.code not in {"HTTP_ERROR", "ACTION_FAILED", "SELECTOR_NOT_FOUND", "TIMEOUT"}:
+            raise
+        log.warning("tracking page for {} ended with {}", tracking_number, error.code)
+    return _page_result(response, tracking_number)
 
 
 @managed

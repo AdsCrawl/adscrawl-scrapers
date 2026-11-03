@@ -7,6 +7,7 @@ $ export ADSCRAWL_API_KEY="your key from https://app.adscrawl.net/dashboard/keys
 """
 from adscrawl_scrapers import managed
 
+import asyncio
 import gzip
 import os
 import re
@@ -30,6 +31,15 @@ BASE_CONFIG = {
 # different route; a repeated 435 stays an error and is not treated as an empty
 # catalog.
 _ANTIBOT_STATUSES = {403, 429, 435}
+# Document navigations to redsky return 435. The homepage XHR does not, so
+# the API is called with fetch() from a target.com document. Two further
+# attempts use a new session. The HTML fallback is only after those fail.
+_REDSKY_ATTEMPTS = 3
+STORE_SITEMAP_URL = "https://www.target.com/sl/sitemap_0001.xml.gz"
+
+
+async def _pause(seconds: float) -> None:
+    await asyncio.sleep(seconds)
 
 
 def _antibot_status(error: ScrapeError) -> Optional[int]:
@@ -248,6 +258,83 @@ def parse_availability(response: Response) -> Dict:
     return availability
 
 
+def _redsky_script(url: str) -> str:
+    """Fetch redsky from the target.com page instead of navigating to it."""
+    return (
+        "const response = await fetch(%s, {credentials: 'include', headers: {accept: 'application/json'}});\n"
+        "const body = await response.text();\n"
+        "return {status: response.status, body};\n"
+    ) % json.dumps(url)
+
+
+def _redsky_response(url: str, payload) -> Response:
+    if not isinstance(payload, dict):
+        raise ScrapeError(
+            "Target page did not return a redsky response",
+            response=Response(url, request_url=url, status_code=0),
+            code="HTTP_ERROR",
+        )
+    status = int(payload.get("status") or 0)
+    body = payload.get("body") if isinstance(payload.get("body"), str) else ""
+    response = Response(url, content=body, request_url=url, status_code=status)
+    blocked_document = not body.lstrip().startswith(("{", "[")) and "access denied" in body[:400].lower()
+    if status in _ANTIBOT_STATUSES or blocked_document:
+        raise ScrapeError(
+            f"Target data API returned HTTP {status or 435}",
+            response=response,
+            code="HTTP_ERROR",
+        )
+    if status >= 400:
+        raise ScrapeError(f"Target returned HTTP {status}", response=response, code="HTTP_ERROR")
+    if not body.lstrip().startswith(("{", "[")):
+        raise ScrapeError("Target page fetch did not return JSON", response=response, code="HTTP_ERROR")
+    return response
+
+
+async def _fetch_redsky(session: str, url: str) -> Response:
+    """Call redsky with the cookies of a target.com document in this session."""
+    page = await CLIENT.fetch(Request(
+        "https://www.target.com/",
+        session=session,
+        render=True,
+        waitUntil="commit",
+        javascript=_redsky_script(url),
+        timeoutMs=90_000,
+        **BASE_CONFIG,
+    ))
+    return _redsky_response(url, page.javascript)
+
+
+async def _availability_from_product_pages(tcins: List[str]) -> Dict:
+    """Product-page fulfillment when redsky keeps returning 435.
+
+    This is the PDP shipping/stock flag, not the store-inventory payload.
+    """
+    availability = {}
+    for tcin in tcins:
+        product = await scrape_product(f"https://www.target.com/p/-/A-{tcin}")
+        variants = list(product.get("variants") or [])
+        if not variants and product.get("tcin"):
+            variants = [{
+                "tcin": product["tcin"],
+                "in_stock": False,
+                "price": None,
+                "free_shipping": None,
+            }]
+        for variant in variants:
+            availability[variant["tcin"]] = {
+                "tcin": variant["tcin"],
+                "title": product.get("title"),
+                "price": variant.get("price"),
+                "free_shipping": variant.get("free_shipping"),
+                "fulfillment": None,
+                "in_stock": bool(variant.get("in_stock")),
+            }
+    if not availability:
+        raise ValueError("product page did not include a tcin")
+    return availability
+
+
 async def _redsky_session():
     """Homepage session that yields redsky key and visitor id. Closed by the caller."""
     session = str(uuid4()).replace("-", "")
@@ -272,9 +359,13 @@ async def scrape_availability(
     store_id: str,
     zip_code: str,
 ) -> Dict:
-    """scrape product availability and fulfillment data from product_summary_with_fulfillment_v1"""
+    """scrape product availability from redsky, called inside a target.com page.
+
+    Opening the redsky URL itself is HTTP 435. After three blocked sessions,
+    the product page is the fallback. That fallback is not store inventory.
+    """
     last = None
-    for attempt in range(2):
+    for attempt in range(_REDSKY_ATTEMPTS):
         session = None
         try:
             session, credentials = await _redsky_session()
@@ -290,19 +381,23 @@ async def scrape_availability(
                 "channel": "WEB",
                 "page": f"/p/A-{tcins[0]}",
             })
-            response = await CLIENT.fetch(Request(url, session=session, **BASE_CONFIG))
-            return parse_availability(response)
+            return parse_availability(await _fetch_redsky(session, url))
         except ScrapeError as error:
             last = error
-            if _antibot_status(error) is None or attempt == 1:
-                if _antibot_status(error) is not None:
-                    raise _antibot_error(error) from None
+            if _antibot_status(error) is None:
                 raise
-            log.warning(f"retrying Target once after HTTP {_antibot_status(error)}")
+            if attempt == _REDSKY_ATTEMPTS - 1:
+                break
+            log.warning(f"retrying Target after HTTP {_antibot_status(error)}")
+            await _pause(2 * (attempt + 1))
         finally:
             if session is not None:
                 await CLIENT.close_session(session)
-    raise last
+    try:
+        return await _availability_from_product_pages(tcins)
+    except Exception as error:
+        log.warning(f"Target product-page fallback failed: {error}")
+        raise _antibot_error(last) from None
 
 def parse_store_locations_sitemap(response: Response) -> List[Dict]:
     """parse store location entries from a sitemap response"""
@@ -350,40 +445,71 @@ def parse_store_locations(response: Response) -> Dict:
     return store
 
 
+def parse_store_page(response: Response, store_id: str, slug: str, page_url: str) -> Dict:
+    """location name from the public /sl/{slug}/{id} page."""
+    name = (response.selector.css("h1::text").get() or "").strip()
+    name = re.sub(r"^Target\s+", "", name).strip()
+    if not name:
+        match = re.search(r'"location_name"\s*:\s*"([^"]+)"', response.content or "")
+        name = match.group(1).strip() if match else ""
+    if not name:
+        raise ValueError(f"store page {page_url} did not include a location name")
+    return {"store_id": str(store_id), "location_name": name, "slug": slug, "url": page_url}
+
+
+async def _stores_from_pages(store_ids: List[str]) -> List[Dict]:
+    """Resolve ids through the sitemap, then read each public store page."""
+    locations = await scrape_store_locations_sitemap(STORE_SITEMAP_URL)
+    by_id = {item["store_id"]: item for item in locations}
+    stores = []
+    for store_id in store_ids:
+        item = by_id.get(str(store_id))
+        if item is None:
+            raise ValueError(f"store id {store_id} was not in the Target sitemap")
+        page = await CLIENT.fetch(Request(item["url"], render=True, timeoutMs=90_000, **BASE_CONFIG))
+        stores.append(parse_store_page(page, str(store_id), item["slug"], item["url"]))
+    return stores
+
+
 @managed
 async def scrape_store_locations(store_ids: List[str]) -> List[Dict]:
-    """scrape store location details from store_location_v1 for a list of store IDs"""
+    """scrape store details from store_location_v1, called inside a target.com page.
+
+    A repeated HTTP 435 falls back to the public store page. That page still
+    has to include a location name; a block with no page data stays an error.
+    """
     last = None
-    for attempt in range(2):
+    for attempt in range(_REDSKY_ATTEMPTS):
         session = None
         try:
             session, credentials = await _redsky_session()
             stores = []
             for store_id in store_ids:
-                response = await CLIENT.fetch(Request(
-                    "https://redsky.target.com/redsky_aggregations/v1/web/store_location_v1?" + urlencode({
-                        "key": credentials["key"],
-                        "visitor_id": credentials["visitor_id"],
-                        "store_id": store_id,
-                        "channel": "WEB",
-                        "page": "/c/root",
-                    }),
-                    session=session,
-                    **BASE_CONFIG,
-                ))
-                stores.append(parse_store_locations(response))
+                url = "https://redsky.target.com/redsky_aggregations/v1/web/store_location_v1?" + urlencode({
+                    "key": credentials["key"],
+                    "visitor_id": credentials["visitor_id"],
+                    "store_id": store_id,
+                    "channel": "WEB",
+                    "page": "/c/root",
+                })
+                stores.append(parse_store_locations(await _fetch_redsky(session, url)))
             return stores
         except ScrapeError as error:
             last = error
-            if _antibot_status(error) is None or attempt == 1:
-                if _antibot_status(error) is not None:
-                    raise _antibot_error(error) from None
+            if _antibot_status(error) is None:
                 raise
-            log.warning(f"retrying Target once after HTTP {_antibot_status(error)}")
+            if attempt == _REDSKY_ATTEMPTS - 1:
+                break
+            log.warning(f"retrying Target after HTTP {_antibot_status(error)}")
+            await _pause(2 * (attempt + 1))
         finally:
             if session is not None:
                 await CLIENT.close_session(session)
-    raise last
+    try:
+        return await _stores_from_pages(store_ids)
+    except Exception as error:
+        log.warning(f"Target store-page fallback failed: {error}")
+        raise _antibot_error(last) from None
 
 
 
