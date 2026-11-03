@@ -2,12 +2,21 @@
 
 Runs only when explicitly invoked. Consumes AdsCrawl credits. Does not log keys,
 CDP URLs, cookies, response bodies or exception messages containing credentials.
+A missing API key is a precondition failure (exit 2), not a scrape TypeError.
 """
 import asyncio
 import json
+import os
 from adscrawl_scrapers import Request, ScraperClient
 
+def _require_api_key():
+    if os.environ.get('ADSCRAWL_API_KEY'):
+        return
+    print(json.dumps({'status': 'failed', 'error_type': 'MissingCredential', 'code': 'MISSING_API_KEY'}))
+    raise SystemExit(2)
+
 async def main():
+    _require_api_key()
     results = []
     async with ScraperClient(concurrency=1) as client:
         html = await client.fetch(Request('https://example.com', session='smoke', countryCode='US', timeoutMs=60000))
@@ -25,6 +34,8 @@ async def main():
 if __name__ == '__main__':
     try:
         asyncio.run(main())
+    except SystemExit:
+        raise
     except Exception as error:
         print(json.dumps({'status':'failed','error_type':type(error).__name__,'code':getattr(error,'code',None)}))
         raise SystemExit(1)
