@@ -15,7 +15,10 @@ content using remote browsers, HTML/JSON parsers and bounded concurrency.
 > checks 81/81 passed. The live smoke test (rendered HTML + JSON POST + session
 > cleanup) passed. Live suites passed for **bing** (2/2, on its built-in GB
 > route, second attempt) and **shopify** (5/5). **chatgpt** did not pass in
-> this re-run (0/1, timeout / empty answer). Other sites were not re-tested
+> this re-run (0/1, timeout / empty answer). Commit `ddd17ac` was checked later
+> on the US route and still failed (`ERR_TUNNEL_CONNECTION_FAILED` in about 15s,
+> then `ACTION_FAILED` in about 83s); smoke still passed and the answer-capture
+> change did not run. Other sites were not re-tested
 > this round; see [the 2026-10-27 audit](docs/live-verification/2026-10-27.md)
 > for the last full 81-site audit (15 passed, 11 partial, 55 failed). Live
 > results reflect target-site behaviour on that date only.
@@ -32,9 +35,12 @@ route even though the run default was US. The first Bing attempt was 1 pass and
 | [bing](bing-scraper/) | 2/2 on the second attempt, built-in GB route. First attempt 1/2, pagination navigation error |
 | [shopify](shopify-scraper/) | 5/5 passed |
 | [chatgpt](chatgpt-scraper/) | 0/1 on both runs: timeout / empty answer. Not passed |
+| [chatgpt](chatgpt-scraper/) `ddd17ac` | Not passed on the US route. Run 1 `ERR_TUNNEL_CONNECTION_FAILED` (~15s). Run 2 `ACTION_FAILED` (~83s). Answer capture did not run |
 
 Settings for that run: `ADSCRAWL_DEFAULT_COUNTRY=US`, `ADSCRAWL_CONCURRENCY=1`, `--reruns=0`.
-The ChatGPT scraper was changed after that failure (current send controls, an explicit prompt fill, and waiting for the assistant message). That change has not been live re-verified.
+
+A later check of commit `ddd17ac` on 2026-11-03, still on the US route, did not pass ChatGPT. `scripts/smoke.py` still passed, so ordinary sites loaded. `chatgpt-scraper` run 1 exited 1 in about 15s with `ScrapeError` `ERR_TUNNEL_CONNECTION_FAILED`. Run 2 exited 1 in about 83s with `ScrapeError` `ACTION_FAILED`. Direct checks of chatgpt.com hit that tunnel error or a blank page with no chat UI. `EMPTY_ANSWER` did not occur. The answer-capture change did not run, so it is not live-verified.
+
 Files in `results/` are historical examples, not output from this re-run.
 The screenshot below is from the 2026-10-27 audit. ChatGPT did not pass on 2026-11-03.
 
@@ -127,8 +133,10 @@ Offline on that run: `python -m pytest tests -q` was 47/47, and
 `python scripts/check_catalog.py` was 81/81. `python scripts/smoke.py` exited 0
 (rendered HTML, JSON POST, session cleanup). Live suites: Bing 2/2 on the second
 attempt (built-in GB route; first attempt 1/2), Shopify 5/5, ChatGPT 0/1 on both
-runs. No other site suite was re-run. The ChatGPT scraper was updated after
-those failures and has not been live re-run.
+runs. No other site suite was re-run. Commit `ddd17ac` was checked later the
+same day on the US route: smoke still passed, and ChatGPT failed again
+(`ERR_TUNNEL_CONNECTION_FAILED` in about 15s, then `ACTION_FAILED` in about
+83s). The answer-capture change did not run. `EMPTY_ANSWER` did not occur.
 
 ```bash
 python -m pytest tests -q
@@ -141,6 +149,18 @@ SELECTED_SCRAPER=bing-scraper python scripts/live_test.py
 SELECTED_SCRAPER=shopify-scraper python scripts/live_test.py
 SELECTED_SCRAPER=chatgpt-scraper python scripts/live_test.py
 ```
+
+ChatGPT keeps `countryCode` `US` when `ADSCRAWL_CHATGPT_COUNTRY` is unset. `ADSCRAWL_DEFAULT_COUNTRY` does not replace that explicit country. To try another route for ChatGPT only:
+
+```bash
+export ADSCRAWL_API_KEY="your_api_key"
+export ADSCRAWL_DEFAULT_COUNTRY=US
+export ADSCRAWL_CHATGPT_COUNTRY=GB
+export ADSCRAWL_CONCURRENCY=1
+SELECTED_SCRAPER=chatgpt-scraper python scripts/live_test.py
+```
+
+On `ERR_*`, `TIMEOUT`, and `ACTION_FAILED`, the run writes a redacted page URL, the page title, and a screenshot under `artifacts/scrape-failures/` (gitignored). Pytest failure text includes those three fields. Do not commit that directory.
 
 `live_test.py` sets `ADSCRAWL_DEFAULT_COUNTRY=US` when that variable is unset or
 blank. A site `countryCode` overrides it, which is why Bing still used GB.

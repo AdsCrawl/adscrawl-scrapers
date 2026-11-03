@@ -10,14 +10,17 @@ import json
 import inspect
 import os
 import re
+import uuid
 import weakref
 from contextvars import ContextVar
+from datetime import datetime, timezone
 from functools import wraps
 from dataclasses import dataclass, field
 from functools import cached_property
 from http.cookies import SimpleCookie
+from pathlib import Path
 from typing import Any, AsyncIterator, Iterable
-from urllib.parse import urlsplit, urlencode
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from adscrawl import AsyncAdsCrawl, AdsCrawlAPIError
 from parsel import Selector
@@ -108,6 +111,7 @@ class Response:
     cookies: list[dict] = field(default_factory=list)
     javascript: Any = None
     raw: bytes = b""
+    diagnostics: dict = field(default_factory=dict)
 
     @cached_property
     def selector(self) -> Selector:
@@ -125,10 +129,91 @@ class ScrapeError(RuntimeError):
         self.code = code
         # Pytest prints str(exception). The useful ERR_*/TIMEOUT/ACTION_FAILED
         # identifier lived only on .code, so failure reports omitted it.
-        # Only a short identifier is appended; response URLs stay off the string.
+        # Failure diagnostics may also include a redacted page URL, title, and
+        # screenshot path. The raw browser error, which can carry a CDP URL, stays off.
         if code and re.fullmatch(r"[A-Z][A-Z0-9_]{0,80}", code) and code not in message:
             message = f"{message} [{code}]"
         super().__init__(message)
+
+
+def redact_page_url(url: str) -> str:
+    """Page URL safe to print. Drops userinfo and secret query values."""
+    if not isinstance(url, str):
+        return ""
+    stripped = url.strip()
+    if not stripped:
+        return ""
+    if stripped.startswith(("about:", "chrome:", "chrome-error:")):
+        return stripped.split("?", 1)[0][:500]
+    parts = urlsplit(stripped)
+    if parts.scheme not in {"http", "https"} or not parts.hostname:
+        return ""
+    host = f"[{parts.hostname}]" if ":" in parts.hostname else parts.hostname
+    if parts.port:
+        host = f"{host}:{parts.port}"
+    query = []
+    for key, value in parse_qsl(parts.query, keep_blank_values=True):
+        folded = key.lower().replace("-", "_")
+        sensitive = folded in {
+            "token", "key", "api_key", "apikey", "access_token", "auth", "session",
+            "password", "secret", "sig", "signature", "credential", "code",
+        } or any(part in folded for part in ("token", "secret", "password", "apikey", "api_key"))
+        query.append((key, "REDACTED" if sensitive else value))
+    return urlunsplit((parts.scheme, host, parts.path, urlencode(query), ""))[:500]
+
+
+def _format_page_diagnostic(info: dict) -> str:
+    parts = []
+    if info.get("url"):
+        parts.append(f"url={info['url']}")
+    if info.get("title"):
+        parts.append("title=" + json.dumps(info["title"], ensure_ascii=False))
+    if info.get("screenshot"):
+        parts.append(f"screenshot={info['screenshot']}")
+    return (" " + " ".join(parts)) if parts else ""
+
+
+async def capture_failure_page(page, response, code: str) -> str:
+    """Record URL, title, and a screenshot for a tunnel, timeout, or action failure.
+
+    Best-effort: a dead tab must not hide the original error. The note and PNG
+    go under ``ADSCRAWL_FAILURE_DIR`` (default ``artifacts/scrape-failures``),
+    which is gitignored. Cookies, headers, and secret query values are omitted.
+    """
+    info = {"code": code, "url": "", "title": "", "screenshot": ""}
+    try:
+        current = getattr(page, "url", "") or getattr(response, "url", "")
+        info["url"] = redact_page_url(current)
+    except Exception:
+        pass
+    try:
+        title = await asyncio.wait_for(page.title(), 3)
+        info["title"] = re.sub(r"\s+", " ", str(title or "")).strip()[:180]
+    except Exception:
+        pass
+    directory = Path(os.environ.get("ADSCRAWL_FAILURE_DIR", "artifacts/scrape-failures"))
+    stem = f"{code}-{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}-{uuid.uuid4().hex[:8]}"
+    try:
+        directory.mkdir(parents=True, exist_ok=True)
+        note_path = directory / f"{stem}.json"
+        image_path = directory / f"{stem}.png"
+        try:
+            await asyncio.wait_for(page.screenshot(path=str(image_path), type="png"), 5)
+            info["screenshot"] = str(image_path)
+        except Exception:
+            pass
+        note_path.write_text(json.dumps({
+            "code": code,
+            "url": info["url"],
+            "title": info["title"],
+            "screenshot": image_path.name if info["screenshot"] else "",
+        }, ensure_ascii=False), encoding="utf-8")
+    except Exception:
+        pass
+    if info["url"]:
+        response.url = info["url"]
+    response.diagnostics = info
+    return _format_page_diagnostic(info)
 
 
 async def _finish(coro):
@@ -428,8 +513,8 @@ class ScraperClient:
             try:
                 await perform_actions(page, request.actions, request.timeoutMs)
             except (BrowserError, asyncio.TimeoutError):
-                response.url = page.url
-                raise ScrapeError("Browser action failed or timed out", response=response, code="ACTION_FAILED") from None
+                detail = await capture_failure_page(page, response, "ACTION_FAILED")
+                raise ScrapeError(f"Browser action failed or timed out{detail}", response=response, code="ACTION_FAILED") from None
             if request.autoScroll:
                 await scroll_page(page, 5)
             if request.waitMs:
@@ -466,12 +551,13 @@ class ScraperClient:
                 raise ScrapeError(f"Target returned HTTP {response.status_code}", response=response, code="HTTP_ERROR")
             return response
         except BrowserError as error:
-            response.url = page.url
-            # Chromium's stable error identifier is useful for distinguishing
-            # proxy/routing failures from extraction bugs, without logging URLs.
+            # Chromium's stable error identifier distinguishes a tunnel failure
+            # from an extraction bug. The exception text can contain a CDP URL,
+            # so it stays off the message; the page URL below is redacted.
             reason = re.search(r"net::(ERR_[A-Z0-9_]+)", str(error))
             code = reason.group(1) if reason else "TIMEOUT" if isinstance(error, BrowserTimeout) else "BROWSER_ERROR"
-            raise ScrapeError("Browser navigation or interaction failed", response=response, code=code) from None
+            detail = await capture_failure_page(page, response, code)
+            raise ScrapeError(f"Browser navigation or interaction failed{detail}", response=response, code=code) from None
         finally:
             page.remove_listener("response", on_response)
             for task in collectors:

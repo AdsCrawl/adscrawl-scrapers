@@ -38,7 +38,7 @@ python run.py
 
 ## 验证状态
 
-> 2026-11-03（Asia/Shanghai）用 PR #1 的验收脚本复测，默认美国线路，每轮不重试（`--reruns=0`），并发为 1。离线测试 47/47、目录检查 81/81 通过。在线烟雾测试通过（渲染后的 HTML、JSON POST、会话清理）。在线套件通过的是 **bing**（第二次 2/2，走代码里写死的英国线路）和 **shopify**（5/5）。**chatgpt** 两轮都未通过（0/1，超时或空回答）。其余站点本轮没有重测。上一次全站审计仍是 [2026-10-27 报告](docs/live-verification/2026-10-27.md)（15 个整套通过、11 个部分通过、55 个未通过）。这些结果只说明当天目标网站的表现。
+> 2026-11-03（Asia/Shanghai）用 PR #1 的验收脚本复测，默认美国线路，每轮不重试（`--reruns=0`），并发为 1。离线测试 47/47、目录检查 81/81 通过。在线烟雾测试通过（渲染后的 HTML、JSON POST、会话清理）。在线套件通过的是 **bing**（第二次 2/2，走代码里写死的英国线路）和 **shopify**（5/5）。**chatgpt** 两轮都未通过（0/1，超时或空回答）。提交 `ddd17ac` 随后在美国线路复测仍未通过（约 15 秒 `ERR_TUNNEL_CONNECTION_FAILED`，约 83 秒 `ACTION_FAILED`）；烟雾测试仍通过，回答提取没有跑到。其余站点本轮没有重测。上一次全站审计仍是 [2026-10-27 报告](docs/live-verification/2026-10-27.md)（15 个整套通过、11 个部分通过、55 个未通过）。这些结果只说明当天目标网站的表现。
 
 `scripts/live_test.py` 在 `ADSCRAWL_DEFAULT_COUNTRY` 为空时设为 `US`。站点自己的 `countryCode` 会覆盖该默认值。Bing 的 `BASE_CONFIG` 写死 `countryCode` 为 `GB`，所以两次 Bing 都走英国线路，而不是这次的美国默认值。第一次 Bing 为 1 通过 / 1 失败（分页导航错误），第二次为 2/2。
 
@@ -48,9 +48,12 @@ python run.py
 | [bing](bing-scraper/) | 第二次 2/2，内置英国线路。第一次 1/2，分页导航错误 |
 | [shopify](shopify-scraper/) | 5/5 通过 |
 | [chatgpt](chatgpt-scraper/) | 两轮都是 0/1：超时或空回答。未通过 |
+| [chatgpt](chatgpt-scraper/) `ddd17ac` | 美国线路未通过。第一次 `ERR_TUNNEL_CONNECTION_FAILED`（约 15 秒）。第二次 `ACTION_FAILED`（约 83 秒）。回答提取没有跑到 |
 
 本次设置：`ADSCRAWL_DEFAULT_COUNTRY=US`，`ADSCRAWL_CONCURRENCY=1`，`--reruns=0`。
-这次失败之后改过 ChatGPT 抓取（当前的发送按钮、把问题写入输入框、等到助手消息再提取）。这次改动还没有重新做在线验证。
+
+随后在 2026-11-03 对提交 `ddd17ac` 做了美国线路复测，ChatGPT 仍未通过。`scripts/smoke.py` 仍然通过，普通站点可以打开。`chatgpt-scraper` 第一次约 15 秒、退出码 1，错误是 `ScrapeError` `ERR_TUNNEL_CONNECTION_FAILED`。第二次约 83 秒、退出码 1，错误是 `ScrapeError` `ACTION_FAILED`。直接打开 chatgpt.com 也会遇到同一隧道错误，或是没有聊天界面的空白页。没有出现 `EMPTY_ANSWER`。回答提取逻辑没有跑到，因此不能算在线验证通过。
+
 `results/` 是历史示例，不是这次复测的输出。
 下面的截图来自 2026-10-27 审计。ChatGPT 在 2026-11-03 没有通过。
 
@@ -82,7 +85,7 @@ python run.py
 
 <!-- LIVE_VERIFIED_END -->
 
-默认 CI 只做离线验证。2026-11-03 的在线复测只覆盖烟雾测试、Bing、Shopify 和 ChatGPT，不是全站通过。ChatGPT 抓取在那两次失败之后改过，还没有重新在线跑过。
+默认 CI 只做离线验证。2026-11-03 的在线复测只覆盖烟雾测试、Bing、Shopify 和 ChatGPT，不是全站通过。提交 `ddd17ac` 当天又在美国线路复测了 ChatGPT：烟雾测试仍通过，ChatGPT 因 `ERR_TUNNEL_CONNECTION_FAILED`（约 15 秒）和 `ACTION_FAILED`（约 83 秒）失败。回答提取逻辑没有跑到。
 [初始验证记录](docs/VERIFICATION.md)和[2026-10-27 实测报告](docs/live-verification/2026-10-27.md)是更早的全站审计。
 
 ```bash
@@ -97,7 +100,11 @@ python scripts/smoke.py
 SELECTED_SCRAPER=bing-scraper python scripts/live_test.py
 SELECTED_SCRAPER=shopify-scraper python scripts/live_test.py
 SELECTED_SCRAPER=chatgpt-scraper python scripts/live_test.py
+# 未设置 ADSCRAWL_CHATGPT_COUNTRY 时，ChatGPT 固定走 US，不受 ADSCRAWL_DEFAULT_COUNTRY 影响。
+# 只改这一站的线路：export ADSCRAWL_CHATGPT_COUNTRY=GB
 ```
+
+`ERR_*`、`TIMEOUT`、`ACTION_FAILED` 会把打码后的页面 URL、标题和截图写到 `artifacts/scrape-failures/`（已加入 gitignore）。Pytest 失败文本里会带上这三项。不要提交这个目录。
 
 ---
 

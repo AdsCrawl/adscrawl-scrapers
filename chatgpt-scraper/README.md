@@ -33,13 +33,17 @@ To run this site's **live** tests (uses AdsCrawl credits):
 python -m pytest chatgpt-scraper/test.py -v
 ```
 
-The 2026-10-27 audit passed this site once. The 2026-11-03 re-run failed twice:
-the browser action timed out, then the captured page was an empty string. The
-scraper no longer treats `button[data-composer-submit]` existing as a finished
-answer. It fills the composer, clicks an enabled send control, and reads the
-assistant message. That change has **not** been live re-verified.
+The 2026-10-27 audit passed this site once. An earlier 2026-11-03 run timed out,
+then returned an empty string. Commit `ddd17ac` was re-checked the same day on
+the US route and did **not** pass. `scripts/smoke.py` still passed. Run 1
+exited 1 in about 15s with `ScrapeError` `ERR_TUNNEL_CONNECTION_FAILED`. Run 2
+exited 1 in about 83s with `ScrapeError` `ACTION_FAILED`. Direct checks of
+chatgpt.com hit that tunnel error or a blank page with no chat UI.
+`EMPTY_ANSWER` did not occur. The answer-capture change did not run, so it is
+not live-verified.
 
-From the repository root, with a US route:
+`countryCode` stays `US` unless `ADSCRAWL_CHATGPT_COUNTRY` is set.
+`ADSCRAWL_DEFAULT_COUNTRY` does not replace it. From the repository root:
 
 ```bash
 export ADSCRAWL_API_KEY="your_api_key"
@@ -47,6 +51,13 @@ export ADSCRAWL_DEFAULT_COUNTRY=US
 export ADSCRAWL_CONCURRENCY=1
 SELECTED_SCRAPER=chatgpt-scraper python scripts/live_test.py
 ```
+
+To try another route for this site only, add `export ADSCRAWL_CHATGPT_COUNTRY=GB`
+before that command. Leave it unset to stay on US.
+
+On `ERR_*`, `TIMEOUT`, and `ACTION_FAILED`, a redacted page URL, the page
+title, and a screenshot are written under `artifacts/scrape-failures/`
+(gitignored). Do not commit that directory.
 
 Historical files in `results/` are earlier examples, not output from that
 re-run. Review the prompt in `run.py` first.

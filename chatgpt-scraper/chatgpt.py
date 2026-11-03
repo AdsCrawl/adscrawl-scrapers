@@ -6,6 +6,7 @@ To run this scraper set env variable $ADSCRAWL_API_KEY with your AdsCrawl API ke
 $ export ADSCRAWL_API_KEY="your key from https://app.adscrawl.net/dashboard/keys/"
 """
 import json
+import os
 import re
 from pathlib import Path
 from urllib.parse import quote_plus
@@ -127,6 +128,17 @@ def conversation_url(prompt: str) -> str:
     return f"https://chatgpt.com/?prompt={quote_plus(prompt)}"
 
 
+def conversation_country() -> str:
+    """US unless ``ADSCRAWL_CHATGPT_COUNTRY`` names another route.
+
+    The process-wide ``ADSCRAWL_DEFAULT_COUNTRY`` does not replace this site's
+    explicit country. Set the ChatGPT variable to try another route while
+    other scrapers stay on the US default.
+    """
+    chosen = os.environ.get("ADSCRAWL_CHATGPT_COUNTRY", "").strip()
+    return chosen.upper() if chosen else BASE_CONFIG["countryCode"]
+
+
 def drive_conversation_script(prompt: str) -> str:
     """Browser script that resolves only after a stable assistant answer."""
     return (
@@ -196,7 +208,7 @@ async def scrape_conversation(prompt: str) -> str:
             render=True,
             actions=conversation_actions(prompt),
             javascript=_READ_ANSWER_SCRIPT.replace("__ASSISTANT__", ASSISTANT_SELECTOR, 1),
-            **BASE_CONFIG,
+            countryCode=conversation_country(),
         )
     )
     answer = answer_from_response(response.javascript, response.content)

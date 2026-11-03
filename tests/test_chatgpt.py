@@ -76,6 +76,14 @@ def test_actions_fill_the_prompt_and_wait_for_the_assistant_message():
     assert "Paris" in chatgpt.conversation_url(prompt)
 
 
+def test_country_stays_us_unless_chatgpt_override_is_set(monkeypatch):
+    monkeypatch.delenv("ADSCRAWL_CHATGPT_COUNTRY", raising=False)
+    monkeypatch.setenv("ADSCRAWL_DEFAULT_COUNTRY", "DE")
+    assert chatgpt.conversation_country() == "US"
+    monkeypatch.setenv("ADSCRAWL_CHATGPT_COUNTRY", " gb ")
+    assert chatgpt.conversation_country() == "GB"
+
+
 def test_prompt_with_quotes_stays_inside_a_javascript_string():
     prompt = 'say "hi"\nnext'
     script = chatgpt.drive_conversation_script(prompt)
@@ -91,6 +99,7 @@ async def test_scrape_conversation_reads_the_answer_when_main_is_empty(monkeypat
         seen["request"] = request
         return Response(url=request.url, content="<main></main>", javascript="The capital of France is Paris.")
 
+    monkeypatch.delenv("ADSCRAWL_CHATGPT_COUNTRY", raising=False)
     monkeypatch.setattr(chatgpt.CLIENT, "fetch", fetch)
     result = await chatgpt.scrape_conversation("What is the capital of France?")
     request = seen["request"]
