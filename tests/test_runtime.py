@@ -245,6 +245,29 @@ async def test_get_navigation_retries_a_tunnel_once_on_a_new_browser(fake_sessio
         await client.fetch(Request("https://example.com/item", method="POST", body="{}"))
     assert post_error.value.code == "ERR_TUNNEL_CONNECTION_FAILED" and calls["n"] == 1
 
+    calls["n"] = 0
+
+    async def get_timeout(session, request):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise ScrapeError("timed out", code="TIMEOUT")
+        return Response(request.url)
+
+    client._fetch_page = get_timeout
+    response = await client.fetch(Request("https://www.facebook.com/events/1/"))
+    assert response.url.endswith("/events/1/") and calls["n"] == 2
+
+    calls["n"] = 0
+
+    async def post_timeout(session, request):
+        calls["n"] += 1
+        raise ScrapeError("timed out", code="TIMEOUT")
+
+    client._fetch_page = post_timeout
+    with pytest.raises(ScrapeError) as timeout_error:
+        await client.fetch(Request("https://example.com/item", method="POST", body="{}"))
+    assert timeout_error.value.code == "TIMEOUT" and calls["n"] == 1
+
 
 async def test_named_session_timeout_releases_the_browser(fake_sessions):
     client = ScraperClient(sdk=object(), concurrency=1)

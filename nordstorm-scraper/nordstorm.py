@@ -39,7 +39,9 @@ BASE_CONFIG = {
     ],
 }
 
-_RETRYABLE = {"TIMEOUT", "ACTION_FAILED", "SELECTOR_NOT_FOUND"}
+# GET TIMEOUT is retried once by the runtime. Retrying it here as well would
+# run the 120s navigation four times.
+_RETRYABLE = {"ACTION_FAILED", "SELECTOR_NOT_FOUND"}
 
 
 async def _fetch(request: Request) -> Response:

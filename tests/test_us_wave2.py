@@ -117,13 +117,13 @@ def test_nordstrom_waits_for_the_config_script_without_using_the_whole_budget():
     assert action["timeoutMs"] < request.timeoutMs
 
 
-async def test_nordstrom_retries_a_timeout_once(monkeypatch):
+async def test_nordstrom_retries_an_action_failure_once_and_not_a_timeout(monkeypatch):
     calls = {"n": 0}
 
     async def fetch(request):
         calls["n"] += 1
         if calls["n"] == 1:
-            raise ScrapeError("timed out url=https://www.nordstrom.com/s/example/1", code="TIMEOUT")
+            raise ScrapeError("action failed", code="ACTION_FAILED")
         return Response(request.url, "<html></html>")
 
     monkeypatch.setattr(nordstorm.CLIENT, "fetch", fetch)
@@ -136,6 +136,19 @@ async def test_nordstrom_retries_a_timeout_once(monkeypatch):
     products = await nordstorm.scrape_products(["https://www.nordstrom.com/s/example/1"])
     assert calls["n"] == 2
     assert products[0]["id"] == "1"
+
+    calls["n"] = 0
+
+    async def timeout(request):
+        calls["n"] += 1
+        raise ScrapeError("timed out url=https://www.nordstrom.com/s/example/1", code="TIMEOUT")
+
+    monkeypatch.setattr(nordstorm.CLIENT, "fetch", timeout)
+    with pytest.raises(ScrapeError) as caught:
+        await nordstorm.scrape_products(["https://www.nordstrom.com/s/example/1"])
+    # GET TIMEOUT is one runtime retry. The scraper must not add another 120s pass.
+    assert caught.value.code == "TIMEOUT"
+    assert calls["n"] == 1
 
 
 async def test_kayak_search_waits_for_the_poll_and_raises_the_client_budget(monkeypatch):
@@ -283,22 +296,156 @@ async def test_dhl_tracking_reads_the_rendered_page_not_the_utapi_document(monke
     assert result["events"][0]["location"] == "France"
 
 
+def _target_product_block(request):
+    return Response(request.url, "<html></html>", network=[{
+        "url": "https://redsky.target.com/deferred_enrichment/modules",
+        "response": {"status": 435, "body": ""},
+    }])
+
+
 async def test_target_product_retries_435_then_names_the_anti_bot_block(monkeypatch):
-    calls = {"n": 0}
+    seen = []
+    closed = []
+
+    async def pause(seconds):
+        return None
 
     async def fetch(request):
-        calls["n"] += 1
-        return Response(request.url, "<html></html>", network=[{
-            "url": "https://redsky.target.com/deferred_enrichment/modules",
-            "response": {"status": 435, "body": ""},
-        }])
+        seen.append(request)
+        if request.javascript and "product_summary_with_fulfillment_v1" in request.javascript:
+            return Response(
+                request.url,
+                javascript={"status": 435, "body": "<html>Access Denied</html>"},
+            )
+        if "/A-" in request.url:
+            return _target_product_block(request)
+        return _target_credentials(request)
 
+    async def close_session(name):
+        closed.append(name)
+
+    monkeypatch.setattr(target, "_pause", pause)
     monkeypatch.setattr(target.CLIENT, "fetch", fetch)
+    monkeypatch.setattr(target.CLIENT, "close_session", close_session)
     with pytest.raises(ScrapeError) as caught:
         await target.scrape_product("https://www.target.com/p/-/A-1")
-    assert calls["n"] == 2
     assert caught.value.code == "HTTP_ERROR"
     assert "anti-bot" in str(caught.value) and "435" in str(caught.value)
+    assert all(not request.url.startswith("https://redsky.target.com") for request in seen)
+    summaries = [
+        request for request in seen
+        if request.javascript and "product_summary_with_fulfillment_v1" in request.javascript
+    ]
+    assert len(summaries) == target._REDSKY_ATTEMPTS
+    assert len({request.session for request in summaries}) == target._REDSKY_ATTEMPTS
+    assert {request.session for request in summaries} <= set(closed)
+    assert all("store_id=1771" in request.javascript and "zip=52404" in request.javascript for request in summaries)
+
+
+async def test_target_product_uses_the_summary_when_the_page_is_blocked(monkeypatch):
+    body = json.dumps({"data": {"product_summaries": [{
+        "tcin": "95213693",
+        "item": {"product_description": {"title": "Lace tank"}},
+        "price": {"current_retail": 15, "formatted_current_price": "$15.00"},
+        "free_shipping": {"enabled": True},
+        "fulfillment": {"shipping_options": {"availability_status": "IN_STOCK"}},
+    }]}})
+    seen = []
+
+    async def fetch(request):
+        seen.append(request)
+        if request.javascript and "product_summary_with_fulfillment_v1" in request.javascript:
+            return Response(request.url, javascript={"status": 200, "body": body})
+        if "/A-" in request.url:
+            raise ScrapeError(
+                "blocked",
+                response=Response(request.url, status_code=435),
+                code="HTTP_ERROR",
+            )
+        return _target_credentials(request)
+
+    monkeypatch.setattr(target.CLIENT, "fetch", fetch)
+    monkeypatch.setattr(target.CLIENT, "close_session", lambda name: _done())
+    product = await target.scrape_product(
+        "https://www.target.com/p/women-s-lace-godet-tank-top-wild-fable/-/A-95213693"
+    )
+    assert product["tcin"] == "95213693"
+    assert product["title"] == "Lace tank"
+    assert product["rating"] is None
+    assert product["variants"][0]["in_stock"] is True
+    assert product["variants"][0]["free_shipping"] is True
+    assert all(not request.url.startswith("https://redsky.target.com") for request in seen)
+    assert sum(1 for request in seen if request.javascript) == 1
+
+
+def test_target_search_api_rows_keep_tcin_and_url():
+    rows = target.parse_search_api({"data": {"search": {"products": [{
+        "tcin": "123",
+        "item": {
+            "product_description": {"title": "Laptop"},
+            "primary_brand": {"name": "Acer"},
+            "enrichment": {"buy_url": "/p/laptop/-/A-123"},
+        },
+        "price": {"formatted_current_price": "$199.00", "formatted_comparison_price": "$249.00"},
+    }]}}})
+    assert rows == [{
+        "tcin": "123",
+        "url": "https://www.target.com/p/laptop/-/A-123",
+        "title": "Laptop",
+        "brand": "Acer",
+        "price": "$199.00",
+        "reg_price": "$249.00",
+    }]
+    assert target.parse_search_api({"data": {"search": {"products": []}}}) == []
+
+
+async def test_target_search_falls_back_to_plp_search_when_the_page_times_out(monkeypatch):
+    body = json.dumps({"data": {"search": {"products": [
+        {"tcin": str(1000 + index), "item": {"product_description": {"title": f"Laptop {index}"}}}
+        for index in range(12)
+    ]}}})
+    seen = []
+
+    async def fetch(request):
+        seen.append(request)
+        if request.javascript and "plp_search_v2" in request.javascript:
+            return Response(request.url, javascript={"status": 200, "body": body})
+        if "/s?" in request.url:
+            raise ScrapeError("timed out", code="TIMEOUT")
+        return _target_credentials(request)
+
+    monkeypatch.setattr(target.CLIENT, "fetch", fetch)
+    monkeypatch.setattr(target.CLIENT, "close_session", lambda name: _done())
+    rows = await target.scrape_search("laptop", max_pages=1)
+    assert len(rows) == 12
+    assert rows[0]["tcin"] == "1000"
+    assert rows[0]["url"] == "https://www.target.com/p/-/A-1000"
+    page = next(request for request in seen if "/s?" in request.url)
+    assert page.timeoutMs == 120_000
+    assert page.waitUntil == "commit"
+    assert page.actions[0]["timeoutMs"] == 45_000
+    assert page.actions[0]["state"] == "attached"
+    assert all(not request.url.startswith("https://redsky.target.com") for request in seen)
+    assert "keyword=laptop" in next(request.javascript for request in seen if request.javascript)
+
+
+async def test_target_search_empty_api_is_an_error(monkeypatch):
+    async def fetch(request):
+        if request.javascript and "plp_search_v2" in request.javascript:
+            return Response(
+                request.url,
+                javascript={"status": 200, "body": json.dumps({"data": {"search": {"products": []}}})},
+            )
+        if "/s?" in request.url:
+            raise ScrapeError("action failed", code="ACTION_FAILED")
+        return _target_credentials(request)
+
+    monkeypatch.setattr(target.CLIENT, "fetch", fetch)
+    monkeypatch.setattr(target.CLIENT, "close_session", lambda name: _done())
+    with pytest.raises(ScrapeError) as caught:
+        await target.scrape_search("laptop", max_pages=1)
+    assert caught.value.code == "HTTP_ERROR"
+    assert "no products" in str(caught.value)
 
 
 def _target_credentials(request):
@@ -334,9 +481,11 @@ async def test_target_availability_fetches_redsky_from_the_page_and_falls_back(m
         await target.scrape_availability(["89231676"], "1771", "52404")
     assert "anti-bot" in str(caught.value) and "435" in str(caught.value)
     redsky_pages = [request for request in seen if request.javascript and "product_summary" in request.javascript]
-    assert len(redsky_pages) == target._REDSKY_ATTEMPTS
+    # Availability tries the summary three times, then the product fallback
+    # tries the same summary three more times before the block is final.
+    assert len(redsky_pages) == target._REDSKY_ATTEMPTS * 2
     assert all(request.url.startswith("https://www.target.com/") for request in redsky_pages)
-    assert len({request.session for request in redsky_pages}) == target._REDSKY_ATTEMPTS
+    assert len({request.session for request in redsky_pages}) == target._REDSKY_ATTEMPTS * 2
     assert {request.session for request in redsky_pages} <= set(closed)
 
 

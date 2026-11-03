@@ -26,12 +26,14 @@ BASE_CONFIG = {
 
 API_BASE_URL = "https://www.dhl.com/utapi"
 TRACKING_PAGE_URL = "https://www.dhl.com/us-en/home/tracking.html"
-# Direct calls to /utapi answer HTTP 428 (Akamai sec-cp-challenge), including
-# the Unified API demo 7777777770. LBAA19526 had no public shipment on
-# 2026-11-03. This is the local tracking number from a public tracking-page
-# capture (2026-05-20) whose rendered timeline had events. A challenge or an
-# unknown number is still a failure. This checkout has not confirmed the
-# number still resolves.
+# Direct /utapi is HTTP 428. The public page no longer 428s, but this id
+# returned no shipment on 2026-11-03 (semantic-mismatch: the result panel
+# never rendered). It is the local id from a 2026-05-20 page capture whose
+# delivery date was 2026-04-29. DHL drops most delivered ids about 90 days
+# after the last event. Official pages only show format samples
+# (1234567890, 7777777770), which are not public shipments. No replacement
+# with a visible event list could be confirmed offline. A missing shipment
+# stays a failure.
 # https://browse.sh/skills/dhl.com/track-shipment-18m2jq
 EXAMPLE_TRACKING_NUMBER = "146000018487"
 _NOT_FOUND_TEXT = (

@@ -36,6 +36,10 @@ _ANTIBOT_STATUSES = {403, 429, 435}
 # attempts use a new session. The HTML fallback is only after those fail.
 _REDSKY_ATTEMPTS = 3
 STORE_SITEMAP_URL = "https://www.target.com/sl/sitemap_0001.xml.gz"
+# Pricing context for redsky summaries. Availability for this store passed on
+# the US route; the product and search fallbacks need some store to price.
+_DEFAULT_STORE_ID = "1771"
+_DEFAULT_ZIP = "52404"
 
 
 async def _pause(seconds: float) -> None:
@@ -211,28 +215,132 @@ def parse_product(response: Response) -> Product:
     }
 
 
+def _tcin_from_url(url: str) -> str:
+    match = re.search(r"/A-(\d+)", url)
+    if not match:
+        raise ValueError(f"no Target tcin in {url}")
+    return match.group(1)
+
+
+def _summary_url(credentials: Dict[str, str], tcins: List[str], page: str) -> str:
+    return "https://redsky.target.com/redsky_aggregations/v1/web/product_summary_with_fulfillment_v1?" + urlencode({
+        "key": credentials["key"],
+        "visitor_id": credentials["visitor_id"],
+        "tcins": ",".join(tcins),
+        "store_id": _DEFAULT_STORE_ID,
+        "pricing_store_id": _DEFAULT_STORE_ID,
+        "required_store_id": _DEFAULT_STORE_ID,
+        "scheduled_delivery_store_id": _DEFAULT_STORE_ID,
+        "zip": _DEFAULT_ZIP,
+        "channel": "WEB",
+        "page": page,
+    })
+
+
+def _search_api_url(credentials: Dict[str, str], keyword: str, offset: int) -> str:
+    return "https://redsky.target.com/redsky_aggregations/v1/web/plp_search_v2?" + urlencode({
+        "key": credentials["key"],
+        "channel": "WEB",
+        "count": 24,
+        "default_purchasability_filter": "true",
+        "include_sponsored": "true",
+        "keyword": keyword,
+        "offset": offset,
+        "page": f"/s/{keyword}",
+        "platform": "desktop",
+        "pricing_store_id": _DEFAULT_STORE_ID,
+        "store_ids": _DEFAULT_STORE_ID,
+        "visitor_id": credentials["visitor_id"],
+        "zip": _DEFAULT_ZIP,
+    })
+
+
+def product_from_availability(availability: Dict, page_url: str) -> Product:
+    """Map a redsky fulfillment summary onto the product result.
+
+    Ratings are only on the product page. The summary still has a title,
+    tcin, and stock flag, which is what a blocked PDP can honestly return.
+    """
+    if not availability:
+        raise ValueError("redsky summary had no products")
+    parent = _tcin_from_url(page_url)
+    title = None
+    variants: List[ProductVariant] = []
+    for item in availability.values():
+        title = title or item.get("title")
+        price = item.get("price") if isinstance(item.get("price"), dict) else None
+        shipping = item.get("free_shipping")
+        variants.append({
+            "tcin": str(item["tcin"]),
+            "price": {
+                "current_retail": price.get("current_retail"),
+                "reg_retail": price.get("reg_retail"),
+                "formatted_current_price": price.get("formatted_current_price"),
+                "location_id": price.get("location_id"),
+            } if price else None,
+            "free_shipping": shipping if isinstance(shipping, bool) else None,
+            "in_stock": bool(item.get("in_stock")),
+        })
+    if not title or not variants:
+        raise ValueError("redsky summary had no titled variant")
+    tcin = parent if any(variant["tcin"] == parent for variant in variants) else variants[0]["tcin"]
+    return {
+        "tcin": tcin,
+        "title": title,
+        "rating": None,
+        "review_count": None,
+        "variants": variants,
+    }
+
+
 @managed
 async def scrape_product(url: str) -> Product:
-    """scrape a Target product page and return parsed product data"""
-    request = Request(
-        url,
-        **BASE_CONFIG,
-        render=True,
-        waitForResponse="deferred_enrichment/modules",
-        waitMs=5000,
-    )
+    """scrape a Target product page, then the redsky summary if the page is blocked.
+
+    The PDP is loaded in the homepage session. HTTP 435 on that document's
+    data call, or a timeout, uses the same in-page redsky fetch that availability
+    uses. A repeated block with no summary is still an error.
+    """
+    tcin = _tcin_from_url(url)
     last = None
-    for attempt in range(2):
-        response = await CLIENT.fetch(request)
+    for attempt in range(_REDSKY_ATTEMPTS):
+        session = None
         try:
-            return parse_product(response)
+            session, credentials = await _redsky_session()
+            try:
+                response = await CLIENT.fetch(Request(
+                    url,
+                    session=session,
+                    render=True,
+                    waitForResponse="deferred_enrichment/modules",
+                    waitMs=3000,
+                    timeoutMs=90_000,
+                    **BASE_CONFIG,
+                ))
+                return parse_product(response)
+            except ScrapeError as error:
+                # A blocked XHR is HTTP 435. A missing modules response is a
+                # timeout or a failed wait, and that is the same fallback.
+                if _antibot_status(error) is None and error.code not in {
+                    "TIMEOUT", "SELECTOR_NOT_FOUND", "ACTION_FAILED",
+                }:
+                    raise
+                log.warning(f"product page failed ({error.code}); fetching the redsky summary")
+                summary = await _fetch_redsky(session, _summary_url(credentials, [tcin], f"/p/A-{tcin}"))
+                return product_from_availability(parse_availability(summary), url)
         except ScrapeError as error:
             last = error
-            if _antibot_status(error) is None or attempt == 1:
-                if _antibot_status(error) is not None:
-                    raise _antibot_error(error) from None
+            if _antibot_status(error) is None and error.code != "TIMEOUT":
                 raise
-            log.warning(f"retrying Target once after HTTP {_antibot_status(error)}")
+            if attempt == _REDSKY_ATTEMPTS - 1:
+                break
+            log.warning(f"retrying Target product after {error.code}")
+            await _pause(2 * (attempt + 1))
+        finally:
+            if session is not None:
+                await CLIENT.close_session(session)
+    if last is not None and _antibot_status(last) is not None:
+        raise _antibot_error(last) from None
     raise last
 
 
@@ -565,27 +673,93 @@ def parse_search(response: Response) -> List[Dict]:
     return products
 
 
+def parse_search_api(data: dict) -> List[Dict]:
+    """product rows from plp_search_v2 when the search document times out."""
+    search = (data.get("data") or {}).get("search") or {}
+    products = search.get("products") or []
+    results = []
+    for product in products:
+        if not isinstance(product, dict) or not product.get("tcin"):
+            continue
+        item = product.get("item") or {}
+        description = item.get("product_description") or {}
+        enrichment = item.get("enrichment") or {}
+        buy = enrichment.get("buy_url") or ""
+        if buy.startswith("http"):
+            url = buy
+        elif buy.startswith("/"):
+            url = "https://www.target.com" + buy
+        else:
+            url = f"https://www.target.com/p/-/A-{product['tcin']}"
+        price = product.get("price") or {}
+        brand = item.get("primary_brand") or {}
+        results.append({
+            "tcin": str(product["tcin"]),
+            "url": url.split("#")[0],
+            "title": description.get("title"),
+            "brand": brand.get("name") if isinstance(brand, dict) else None,
+            "price": price.get("formatted_current_price"),
+            "reg_price": price.get("formatted_comparison_price"),
+        })
+    return results
+
+
 @managed
 async def scrape_search(
     keyword: str,
     max_pages: Optional[int] = None,
 ) -> List[Dict]:
-    """scrape search results and paginate through all result pages"""
+    """scrape search results from the warmed session, then plp_search_v2.
+
+    The search document hit the 90s deadline on the US route. Card wait is
+    inside a 120s request. A timeout or a block uses the in-page search API.
+    An empty API result is still an error.
+    """
     results: List[Dict] = []
-    for page in range(max_pages or 1):
-        params = {"searchTerm": keyword}
-        if page > 0:
-            params["Nao"] = page * 24
-        url = "https://www.target.com/s?" + urlencode(params)
-        response = await CLIENT.fetch(
-            Request(
-                url,
-                render=True,
-                # wait for the product cards (current and older layout); XPath because the old name contains "/"
-                waitForSelector='//*[@data-test="ListingPageProductListing" '
-                'or @data-test="@web/site-top-of-funnel/ProductCardWrapper"]',
-                **BASE_CONFIG,
-            )
-        )
-        results.extend(parse_search(response))
-    return results
+    session, credentials = await _redsky_session()
+    try:
+        for page in range(max_pages or 1):
+            params = {"searchTerm": keyword}
+            if page > 0:
+                params["Nao"] = page * 24
+            url = "https://www.target.com/s?" + urlencode(params)
+            try:
+                response = await CLIENT.fetch(Request(
+                    url,
+                    session=session,
+                    render=True,
+                    waitUntil="commit",
+                    timeoutMs=120_000,
+                    actions=[{
+                        "type": "waitForSelector",
+                        # XPath because the older test id contains "/".
+                        "selector": 'xpath=//*[@data-test="ListingPageProductListing" or '
+                                    '@data-test="@web/site-top-of-funnel/ProductCardWrapper"]',
+                        "state": "attached",
+                        "timeoutMs": 45_000,
+                    }],
+                    **BASE_CONFIG,
+                ))
+                page_results = parse_search(response)
+                if not page_results:
+                    raise ScrapeError("Target search page had no products", response=response, code="HTTP_ERROR")
+            except ScrapeError as error:
+                if _antibot_status(error) is None and error.code not in {
+                    "TIMEOUT", "HTTP_ERROR", "ACTION_FAILED", "SELECTOR_NOT_FOUND",
+                }:
+                    raise
+                log.warning(f"search page failed ({error.code}); fetching plp_search_v2")
+                payload = await _fetch_redsky(
+                    session, _search_api_url(credentials, keyword, page * 24),
+                )
+                page_results = parse_search_api(json.loads(payload.content))
+                if not page_results:
+                    raise ScrapeError(
+                        "Target search API returned no products",
+                        response=payload,
+                        code="HTTP_ERROR",
+                    ) from None
+            results.extend(page_results)
+        return results
+    finally:
+        await CLIENT.close_session(session)
