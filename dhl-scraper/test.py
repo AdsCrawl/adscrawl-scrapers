@@ -34,8 +34,11 @@ def _validate_or_raise(item, schema):
 
 @pytest.mark.asyncio
 async def test_scrape_tracking():
-    result = await dhl.scrape_tracking("LBAA19526")
-    assert result.get("classification") == "success", "No shipment returned; a current valid test tracking number is required"
+    result = await dhl.scrape_tracking(dhl.EXAMPLE_TRACKING_NUMBER)
+    assert result.get("classification") == "success", (
+        f"No shipment returned ({result.get('classification')}); "
+        "a current valid test tracking number is required"
+    )
     assert result.get("events"), "A passing tracking test must include real tracking events"
     _validate_or_raise(result, tracking_result_schema)
 

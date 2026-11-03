@@ -15,6 +15,7 @@ from typing import Dict, List, Optional, TypedDict
 from urllib.parse import parse_qs, urlencode, urlparse
 from uuid import uuid4
 from parsel import Selector
+from loguru import logger as log
 from adscrawl_scrapers import Request, ScraperClient, Response, ScrapeError
 
 CLIENT = ScraperClient()
@@ -23,6 +24,30 @@ BASE_CONFIG = {
     'countryCode': "US",
 
 }
+
+# 435 is Target's anti-bot response (the store parser already calls it an access
+# denial). 403/429 are the same class. A second session sometimes gets a
+# different route; a repeated 435 stays an error and is not treated as an empty
+# catalog.
+_ANTIBOT_STATUSES = {403, 429, 435}
+
+
+def _antibot_status(error: ScrapeError) -> Optional[int]:
+    status = error.response.status_code if error.response is not None else 0
+    if error.code == "HTTP_ERROR" and status in _ANTIBOT_STATUSES:
+        return status
+    if error.code == "HTTP_ERROR" and "435" in error.message:
+        return 435
+    return None
+
+
+def _antibot_error(error: ScrapeError) -> ScrapeError:
+    status = _antibot_status(error) or 435
+    return ScrapeError(
+        f"Target anti-bot block (HTTP {status})",
+        response=error.response,
+        code="HTTP_ERROR",
+    )
 
 
 class Price(TypedDict):
@@ -179,14 +204,26 @@ def parse_product(response: Response) -> Product:
 @managed
 async def scrape_product(url: str) -> Product:
     """scrape a Target product page and return parsed product data"""
-    response = await CLIENT.fetch(Request(
+    request = Request(
         url,
         **BASE_CONFIG,
         render=True,
         waitForResponse="deferred_enrichment/modules",
         waitMs=5000,
-    ))
-    return parse_product(response)
+    )
+    last = None
+    for attempt in range(2):
+        response = await CLIENT.fetch(request)
+        try:
+            return parse_product(response)
+        except ScrapeError as error:
+            last = error
+            if _antibot_status(error) is None or attempt == 1:
+                if _antibot_status(error) is not None:
+                    raise _antibot_error(error) from None
+                raise
+            log.warning(f"retrying Target once after HTTP {_antibot_status(error)}")
+    raise last
 
 
 def parse_availability(response: Response) -> Dict:
@@ -211,6 +248,24 @@ def parse_availability(response: Response) -> Dict:
     return availability
 
 
+async def _redsky_session():
+    """Homepage session that yields redsky key and visitor id. Closed by the caller."""
+    session = str(uuid4()).replace("-", "")
+    try:
+        warm_up = await CLIENT.fetch(Request(
+            "https://www.target.com/",
+            session=session,
+            render=True,
+            waitForResponse="store_location_v1",
+            waitMs=5000,
+            **BASE_CONFIG,
+        ))
+        return session, _extract_redsky_credentials(warm_up)
+    except Exception:
+        await CLIENT.close_session(session)
+        raise
+
+
 @managed
 async def scrape_availability(
     tcins: List[str],
@@ -218,32 +273,36 @@ async def scrape_availability(
     zip_code: str,
 ) -> Dict:
     """scrape product availability and fulfillment data from product_summary_with_fulfillment_v1"""
-    session = str(uuid4()).replace("-", "")
-    warm_up = await CLIENT.fetch(Request(
-        "https://www.target.com/",
-        session=session,
-        render=True,
-        waitForResponse="store_location_v1",
-        waitMs=5000,
-        **BASE_CONFIG,
-    ))
-    credentials = _extract_redsky_credentials(warm_up)
-
-    url = "https://redsky.target.com/redsky_aggregations/v1/web/product_summary_with_fulfillment_v1?" + urlencode({
-        "key": credentials["key"],
-        "visitor_id": credentials["visitor_id"],
-        "tcins": ",".join(tcins),
-        "store_id": store_id,
-        "pricing_store_id": store_id,
-        "required_store_id": store_id,
-        "scheduled_delivery_store_id": store_id,
-        "zip": zip_code,
-        "channel": "WEB",
-        "page": f"/p/A-{tcins[0]}",
-    })
-
-    response = await CLIENT.fetch(Request(url, session=session, **BASE_CONFIG))
-    return parse_availability(response)
+    last = None
+    for attempt in range(2):
+        session = None
+        try:
+            session, credentials = await _redsky_session()
+            url = "https://redsky.target.com/redsky_aggregations/v1/web/product_summary_with_fulfillment_v1?" + urlencode({
+                "key": credentials["key"],
+                "visitor_id": credentials["visitor_id"],
+                "tcins": ",".join(tcins),
+                "store_id": store_id,
+                "pricing_store_id": store_id,
+                "required_store_id": store_id,
+                "scheduled_delivery_store_id": store_id,
+                "zip": zip_code,
+                "channel": "WEB",
+                "page": f"/p/A-{tcins[0]}",
+            })
+            response = await CLIENT.fetch(Request(url, session=session, **BASE_CONFIG))
+            return parse_availability(response)
+        except ScrapeError as error:
+            last = error
+            if _antibot_status(error) is None or attempt == 1:
+                if _antibot_status(error) is not None:
+                    raise _antibot_error(error) from None
+                raise
+            log.warning(f"retrying Target once after HTTP {_antibot_status(error)}")
+        finally:
+            if session is not None:
+                await CLIENT.close_session(session)
+    raise last
 
 def parse_store_locations_sitemap(response: Response) -> List[Dict]:
     """parse store location entries from a sitemap response"""
@@ -294,36 +353,37 @@ def parse_store_locations(response: Response) -> Dict:
 @managed
 async def scrape_store_locations(store_ids: List[str]) -> List[Dict]:
     """scrape store location details from store_location_v1 for a list of store IDs"""
-    session = str(uuid4()).replace("-", "")
-    warm_up = await CLIENT.fetch(Request(
-        "https://www.target.com/",
-        session=session,
-        render=True,
-        waitForResponse="store_location_v1",
-        waitMs=5000,
-        **BASE_CONFIG,
-    ))
-    credentials = _extract_redsky_credentials(warm_up)
-
-    to_scrape = [
-        Request(
-            "https://redsky.target.com/redsky_aggregations/v1/web/store_location_v1?" + urlencode({
-                "key": credentials["key"],
-                "visitor_id": credentials["visitor_id"],
-                "store_id": store_id,
-                "channel": "WEB",
-                "page": "/c/root",
-            }),
-            session=session,
-            **BASE_CONFIG,
-        )
-        for store_id in store_ids
-    ]
-
-    stores = []
-    async for response in CLIENT.fetch_many(to_scrape):
-        stores.append(parse_store_locations(response))
-    return stores
+    last = None
+    for attempt in range(2):
+        session = None
+        try:
+            session, credentials = await _redsky_session()
+            stores = []
+            for store_id in store_ids:
+                response = await CLIENT.fetch(Request(
+                    "https://redsky.target.com/redsky_aggregations/v1/web/store_location_v1?" + urlencode({
+                        "key": credentials["key"],
+                        "visitor_id": credentials["visitor_id"],
+                        "store_id": store_id,
+                        "channel": "WEB",
+                        "page": "/c/root",
+                    }),
+                    session=session,
+                    **BASE_CONFIG,
+                ))
+                stores.append(parse_store_locations(response))
+            return stores
+        except ScrapeError as error:
+            last = error
+            if _antibot_status(error) is None or attempt == 1:
+                if _antibot_status(error) is not None:
+                    raise _antibot_error(error) from None
+                raise
+            log.warning(f"retrying Target once after HTTP {_antibot_status(error)}")
+        finally:
+            if session is not None:
+                await CLIENT.close_session(session)
+    raise last
 
 
 

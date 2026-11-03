@@ -10,6 +10,7 @@ from adscrawl_scrapers import managed
 import json
 import os
 from typing import List, Literal, Optional, TypedDict
+from urllib.parse import urlencode
 
 from loguru import logger as log
 from adscrawl_scrapers import Response, Request, ScraperClient, ScrapeError
@@ -24,6 +25,11 @@ BASE_CONFIG = {
 
 API_BASE_URL = "https://www.dhl.com/utapi"
 TRACKING_PAGE_URL = "https://www.dhl.com/us-en/home/tracking.html"
+# Public example in DHL's Shipment Tracking - Unified guide. The documented
+# sample response for this number includes a shipment and events. LBAA19526
+# returned no shipment on 2026-11-03.
+# https://developer.dhl.com/api-reference/shipment-tracking
+EXAMPLE_TRACKING_NUMBER = "7777777770"
 
 Classification = Literal["success", "empty", "captcha-or-forbidden", "semantic-mismatch"]
 
@@ -47,8 +53,72 @@ class TrackingResult(TypedDict):
 
 def _build_tracking_url(tracking_number: str, api_endpoint: bool = False) -> str:
     if api_endpoint:
-        return f"{API_BASE_URL}?trackingNumber={tracking_number}"
+        # Same query the tracking page sends. A bare trackingNumber is what
+        # answered HTTP 403 before any shipment JSON.
+        query = urlencode({
+            "trackingNumber": tracking_number,
+            "language": "en",
+            "requesterCountryCode": "US",
+            "source": "tt",
+        })
+        return f"{API_BASE_URL}?{query}"
     return f"{TRACKING_PAGE_URL}?tracking-id={tracking_number}&submit=1"
+
+
+def _empty_result(tracking_number: str, classification: Classification) -> TrackingResult:
+    return {
+        "classification": classification,
+        "tracking_number": tracking_number,
+        "status": None,
+        "events": [],
+        "estimated_delivery": None,
+        "origin": None,
+        "destination": None,
+    }
+
+
+def _classify_payload(data: dict, tracking_number: str) -> TrackingResult:
+    """A challenge or a non-shipment body is not an empty tracking result."""
+    if not isinstance(data, dict):
+        return _empty_result(tracking_number, "semantic-mismatch")
+    if data.get("sec-cp-challenge"):
+        return _empty_result(tracking_number, "captcha-or-forbidden")
+    if "shipments" not in data:
+        return _empty_result(tracking_number, "semantic-mismatch")
+    return _parse_tracking_api_response(data, tracking_number)
+
+
+def _events_from_panel(response: Response) -> List[TrackingEvent]:
+    """Event rows rendered on the tracking page when the utapi body is blocked."""
+    events = []
+    for row in response.selector.css("#panel_events tr"):
+        cells = [text.strip() for text in row.css("td::text").getall() if text and text.strip()]
+        if len(cells) < 2:
+            continue
+        events.append({
+            "timestamp": cells[0],
+            "status": None,
+            "description": cells[1],
+            "location": cells[2] if len(cells) > 2 else None,
+        })
+    return events
+
+
+def _with_panel_events(result: TrackingResult, response: Response, tracking_number: str) -> TrackingResult:
+    if result.get("events"):
+        return result
+    events = _events_from_panel(response)
+    if not events:
+        return result
+    return {
+        "classification": "success",
+        "tracking_number": tracking_number,
+        "status": events[-1]["description"],
+        "events": events,
+        "estimated_delivery": None,
+        "origin": None,
+        "destination": None,
+    }
 
 
 def _get_xhr_data(response: Response, url_pattern: str) -> dict:
@@ -101,25 +171,48 @@ def _parse_tracking_api_response(data: dict, tracking_number: str) -> TrackingRe
     }
 
 
-@managed
-async def scrape_tracking(tracking_number: str) -> TrackingResult:
+async def _scrape_tracking_once(tracking_number: str) -> TrackingResult:
     try:
         url = _build_tracking_url(tracking_number, api_endpoint=True)
-        response = await CLIENT.fetch(Request(url, **BASE_CONFIG))
-        result = _parse_tracking_api_response(json.loads(response.content), tracking_number)
+        response = await CLIENT.fetch(Request(
+            url,
+            headers={"Accept": "application/json", "Referer": TRACKING_PAGE_URL},
+            **BASE_CONFIG,
+        ))
+        result = _classify_payload(json.loads(response.content), tracking_number)
         if result.get("events"):
             return result
-    except ScrapeError as e:
-        log.warning(f"API failed for {tracking_number}: {e}")
+        if result["classification"] == "captcha-or-forbidden":
+            log.warning(f"API blocked for {tracking_number}")
+    except ScrapeError as error:
+        log.warning(f"API failed for {tracking_number}: {error}")
+    except json.JSONDecodeError:
+        log.warning(f"API returned non-JSON for {tracking_number}")
 
     url = _build_tracking_url(tracking_number, api_endpoint=False)
-    response = await CLIENT.fetch(
-        Request(url, waitForResponse="/utapi", **BASE_CONFIG)
-    )
-    data = _get_xhr_data(response, "/utapi")
-    result = _parse_tracking_api_response(data, tracking_number)
-    if result["classification"] == "success":
+    response = await CLIENT.fetch(Request(
+        url, waitForResponse="/utapi", timeoutMs=60_000, **BASE_CONFIG,
+    ))
+    try:
+        data = _get_xhr_data(response, "/utapi")
+    except (RuntimeError, json.JSONDecodeError):
+        data = None
+    if isinstance(data, dict):
+        result = _classify_payload(data, tracking_number)
+    else:
+        result = _empty_result(tracking_number, "semantic-mismatch")
+    return _with_panel_events(result, response, tracking_number)
+
+
+@managed
+async def scrape_tracking(tracking_number: str) -> TrackingResult:
+    result = await _scrape_tracking_once(tracking_number)
+    # A block is not an empty shipment. One new session, then keep the failure.
+    if result["classification"] == "captcha-or-forbidden":
+        log.warning(f"retrying {tracking_number} once after a tracking block")
+        result = await _scrape_tracking_once(tracking_number)
+    if result["classification"] == "success" and result.get("events"):
         log.success("scraped tracking details for {}", tracking_number)
     else:
-        log.warning("no tracking details returned for {}", tracking_number)
+        log.warning("no tracking details returned for {} ({})", tracking_number, result["classification"])
     return result

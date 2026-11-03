@@ -23,7 +23,7 @@ from pathlib import Path
 from typing import Any, AsyncIterator, Iterable
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
-from adscrawl import AsyncAdsCrawl, AdsCrawlAPIError
+from adscrawl import AsyncAdsCrawl, AdsCrawlAPIError, AdsCrawlTimeoutError
 from parsel import Selector
 from playwright.async_api import async_playwright, Error as BrowserError, TimeoutError as BrowserTimeout
 
@@ -239,19 +239,67 @@ class _Session:
         self.sdk, self.settings = sdk, settings
         self.info = self.playwright = self.browser = self.context = None
         self.lock = asyncio.Lock()
+        # At least the SDK default. A slower site can raise this per request.
+        self.create_timeout_ms = 90_000
+
+    async def _known_session_ids(self):
+        """Session ids currently listed for this API key.
+
+        ``cdp.list()`` also returns ``cdpBaseUrl``, which embeds a data token.
+        Only the ids leave this method, and nothing here is logged.
+        """
+        list_sessions = getattr(getattr(self.sdk, "cdp", None), "list", None)
+        if list_sessions is None:
+            return None
+        try:
+            listed = await list_sessions(timeout_ms=10_000)
+        except Exception:
+            return None
+        data = listed.get("data") if isinstance(listed, dict) else None
+        if not isinstance(data, list):
+            return None
+        return {
+            item["sessionId"]
+            for item in data
+            if isinstance(item, dict) and isinstance(item.get("sessionId"), str)
+        }
+
+    async def _close_new_sessions(self, before):
+        """Close sessions that appeared after a create call timed out.
+
+        The HTTP client can give up before the create response arrives. The
+        server may still hold that browser. Ids already present are left alone
+        so another in-process session is not deleted.
+        """
+        if before is None:
+            return
+        after = await self._known_session_ids()
+        if after is None:
+            return
+        for session_id in sorted(after - before):
+            try:
+                await self.sdk.cdp.close(session_id, timeout_ms=15_000)
+            except Exception:
+                pass
 
     async def open(self):
+        # Snapshot first, then create. A timed-out create never returns an id,
+        # so the difference between the two listings is the leaked browser.
+        before = await self._known_session_ids()
         # SDK uses a worker thread. Await an in-flight creation before handling
         # cancellation so that a successfully created remote session can be closed.
         creation = asyncio.create_task(self.sdk.cdp.create({
             "idleTimeoutMs": 120_000, "maxSessionMs": 3_600_000,
             "browserSettings": self.settings,
-        }))
+        }, timeout_ms=self.create_timeout_ms))
         try:
             self.info = await asyncio.shield(creation)
         except asyncio.CancelledError:
             self.info = await creation
             await _finish(self.close())
+            raise
+        except AdsCrawlTimeoutError:
+            await self._close_new_sessions(before)
             raise
         try:
             self.playwright = await async_playwright().start()
@@ -367,15 +415,29 @@ class ScraperClient:
                     if len(self._sessions) >= self.concurrency:
                         raise ScrapeError("Named sessions occupy the browser limit; close_session(name) before opening another", code="SESSION_LIMIT")
                     session = _Session(self._sdk, settings)
+                    # Do not shorten the historical 90s create budget. A site that
+                    # raises Request.timeoutMs (Kayak) also gives session startup
+                    # that long, so a slow create still returns an id we can close.
+                    session.create_timeout_ms = max(int(request.timeoutMs), 90_000)
                     self._sessions[key] = session
                     try:
                         await session.open()
+                    except AdsCrawlTimeoutError:
+                        self._sessions.pop(key, None)
+                        page = redact_page_url(request.url)
+                        detail = f" url={page}" if page else ""
+                        raise ScrapeError(
+                            f"AdsCrawl session creation timed out{detail}",
+                            code="TIMEOUT",
+                            response=Response(request.url, request_url=request.url, status_code=0),
+                        ) from None
                     except BaseException:
                         if session.info is None:
                             self._sessions.pop(key, None)
                         raise
                 elif session.settings != settings:
                     raise ValueError("A named session cannot change countryCode, proxy, locale, or fingerprint")
+            release = False
             try:
                 async with session.lock:
                     return await asyncio.wait_for(self._fetch_page(session, request), request.timeoutMs / 1000)
@@ -383,18 +445,38 @@ class ScraperClient:
                 raise
             except AdsCrawlAPIError as error:
                 raise ScrapeError(f"AdsCrawl API HTTP {error.status}", code=str(error.code or "API_ERROR")) from None
+            except AdsCrawlTimeoutError:
+                release = True
+                page = redact_page_url(request.url)
+                detail = f" url={page}" if page else ""
+                raise ScrapeError(
+                    f"AdsCrawl request timed out{detail}",
+                    code="TIMEOUT",
+                    response=Response(request.url, request_url=request.url, status_code=0),
+                ) from None
             except (BrowserError, asyncio.TimeoutError) as error:
                 # Browser errors can contain token-bearing CDP URLs. Never expose them.
+                # A named session that dies here is released immediately. Waiting
+                # for the caller to unwind left Kayak's browser counted against
+                # the account limit and the next site received HTTP 429.
+                release = True
                 code = "TIMEOUT" if isinstance(error, (BrowserTimeout, asyncio.TimeoutError)) else "BROWSER_ERROR"
-                raise ScrapeError("Remote browser request failed or timed out", code=code,
+                page = redact_page_url(request.url)
+                detail = f" url={page}" if page else ""
+                raise ScrapeError(f"Remote browser request failed or timed out{detail}", code=code,
                                  response=Response(request.url, request_url=request.url, status_code=0)) from None
             finally:
-                if request.session is None:
+                if request.session is None or release:
+                    # Pop even when close is cancelled. ``_finish`` re-raises
+                    # CancelledError after the DELETE, and skipping the pop left
+                    # a closed browser in the pool (parser cancellation).
                     try:
                         await _finish(session.close())
+                    except Exception:
+                        if not release:
+                            raise
                     finally:
-                        if session.info is None:
-                            self._sessions.pop(key, None)
+                        self._sessions.pop(key, None)
 
     async def fetch_many(self, requests: Iterable[Request]) -> AsyncIterator[Response]:
         # Keep only `concurrency` tasks alive, even for a generator of millions of URLs.

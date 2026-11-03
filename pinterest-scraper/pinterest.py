@@ -17,7 +17,7 @@ from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 from uuid import uuid4
 
 from loguru import logger as log
-from adscrawl_scrapers import Request, ScraperClient, Response
+from adscrawl_scrapers import Request, ScraperClient, Response, ScrapeError
 
 CLIENT = ScraperClient()
 BASE_CONFIG = {
@@ -524,6 +524,53 @@ def _content_to_base64(content: Any) -> str:
     return content
 
 
+_IMAGE_RETRY_CODES = {"CONNECT_FAILED", "ERR_TUNNEL_CONNECTION_FAILED", "ERR_CONNECTION_CLOSED", "TIMEOUT"}
+_IMAGE_MAGIC = (b"\xff\xd8\xff", b"\x89PNG", b"GIF87a", b"GIF89a", b"RIFF")
+
+
+def _image_payload(response: Response) -> bytes:
+    """Bytes of an image navigation. An HTML challenge is not an image."""
+    raw = response.raw or b""
+    if not raw and response.content:
+        raw = response.content.encode("latin1", errors="ignore")
+    content_type = (response.headers.get("content-type") or "").split(";")[0].strip().lower()
+    if "html" in content_type or content_type.startswith("text/") or raw.lstrip()[:1] == b"<":
+        return b""
+    if content_type.startswith("image/") or raw.startswith(_IMAGE_MAGIC):
+        return raw
+    return b""
+
+
+async def _download_image(image_url: str) -> Optional[str]:
+    """Load the image URL itself and read the response body.
+
+    ``binary=True`` fulfills a fake document and returns every byte through
+    ``page.evaluate`` as a JSON array. That path dropped the CDP connection
+    (``CONNECT_FAILED``) on pin images. A normal navigation keeps the bytes on
+    ``Response.raw``. One new session covers a transient tunnel or connect failure.
+    """
+    request = Request(image_url, render=False, timeoutMs=60_000, **BASE_CONFIG)
+    last_error = "image response was empty"
+    for attempt in range(2):
+        try:
+            response = await CLIENT.fetch(request)
+        except ScrapeError as error:
+            last_error = f"{error}"
+            if error.code not in _IMAGE_RETRY_CODES or attempt == 1:
+                break
+            log.warning(f"retrying image download once after {error.code}")
+            continue
+        raw = _image_payload(response)
+        if raw:
+            return base64.b64encode(raw).decode("ascii")
+        last_error = "image response was not an image"
+        if attempt == 1:
+            break
+        log.warning("retrying image download once after a non-image response")
+    log.error(f"failed to download {image_url}: {last_error}")
+    return None
+
+
 @managed
 async def download_pin_images(pins: List[Dict[str, Any]]) -> List[DownloadResult]:
     """download the best-quality image for each scraped pin and return it as base64"""
@@ -535,12 +582,9 @@ async def download_pin_images(pins: List[Dict[str, Any]]) -> List[DownloadResult
         image_base64 = None
 
         if image_url:
-            try:
-                resp = await CLIENT.fetch(Request(image_url, binary=True, **BASE_CONFIG))
-                image_base64 = _content_to_base64(resp.raw)
-            except Exception as e:
-                log.error(f"failed to download pin {pin_id} image: {e}")
-                image_base64 = None
+            image_base64 = await _download_image(image_url)
+            if image_base64 is None:
+                log.error(f"failed to download pin {pin_id} image")
 
         results.append(
             DownloadResult(

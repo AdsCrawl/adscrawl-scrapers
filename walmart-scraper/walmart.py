@@ -14,7 +14,7 @@ import asyncio
 from typing import Dict, List, TypedDict, Any
 from urllib.parse import urlencode
 from loguru import logger as log
-from adscrawl_scrapers import Request, ScraperClient, Response
+from adscrawl_scrapers import Request, ScraperClient, Response, ScrapeError
 
 CLIENT = ScraperClient()
 
@@ -69,16 +69,28 @@ def parse_search(response: Response) -> List[Dict]:
     return {"results": results, "total_results": total_results}
 
 
+async def _fetch_product_page(url: str, **extra) -> Response:
+    """One fresh session when the product navigation dies in the proxy tunnel."""
+    request = Request(url, **BASE_CONFIG, **extra)
+    try:
+        return await CLIENT.fetch(request)
+    except ScrapeError as error:
+        if error.code != "ERR_TUNNEL_CONNECTION_FAILED":
+            raise
+        log.warning(f"retrying {url} once after {error.code}")
+        return await CLIENT.fetch(request)
+
+
 @managed
 async def _scrape_product_with_fallback(url: str) -> Dict[str, Any]:
     """helper that scrapes a single URL with a JS rendering fallback."""
     log.info(f"scraping product: {url}")
-    response = await CLIENT.fetch(Request(url, **BASE_CONFIG))
+    response = await _fetch_product_page(url)
     parsed_data = parse_product(response)
 
     if parsed_data is None:
         log.warning(f"retrying with JS rendering: {url}")
-        response = await CLIENT.fetch(Request(url, render=True, **BASE_CONFIG))
+        response = await _fetch_product_page(url, render=True)
         parsed_data = parse_product(response)
         if parsed_data is None:
             log.error(f"failed to scrape product even with JS rendering: {url}")

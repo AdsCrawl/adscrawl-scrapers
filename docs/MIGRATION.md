@@ -26,6 +26,12 @@ The API's country routing is not a promise of a particular upstream proxy pool
 or anti-bot product. No automatic billing retries are added. Existing site-level
 retry loops may still issue extra requests; inspect the chosen site's code.
 A timeout does not prove remote work stopped; cleanup errors are surfaced.
+Session creation uses the SDK HTTP deadline, at least 90 seconds, or the
+request's `timeoutMs` when that is longer. If that call times out, the client
+lists CDP sessions and closes only ids that were not present before the create,
+without logging `cdpBaseUrl` (it embeds a data token). A named session whose
+page request times out is closed before the error propagates, so the browser
+does not keep occupying the account limit.
 
 `render=False` requests preserve the main response body rather than the mutated
 DOM. The remote browser still runs JavaScript while navigating. `contentMode`

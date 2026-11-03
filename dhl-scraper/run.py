@@ -22,7 +22,7 @@ async def run():
 
     print("running DHL scrape and saving results to ./results directory")
 
-    tracking = await dhl.scrape_tracking("LBAA19526")
+    tracking = await dhl.scrape_tracking(dhl.EXAMPLE_TRACKING_NUMBER)
     with open(output / "tracking.json", "w", encoding="utf-8") as f:
         json.dump(tracking, f, indent=2, ensure_ascii=False)
 

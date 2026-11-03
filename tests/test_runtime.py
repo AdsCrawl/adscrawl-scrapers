@@ -6,6 +6,7 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
+from adscrawl import AdsCrawlTimeoutError
 from adscrawl_scrapers import Request, Response, ScraperClient, ScrapeError, managed
 from adscrawl_scrapers.runtime import _Session, perform_actions, evaluate_script
 
@@ -164,7 +165,7 @@ async def test_sdk_close_runs_even_when_browser_disconnect_fails():
 
 async def test_cancel_during_sdk_creation_still_deletes_created_session():
     created = asyncio.Event()
-    async def create(params):
+    async def create(params, timeout_ms=None):
         created.set()
         await asyncio.sleep(0.02)
         return {'sessionId':'new-session','cdpBaseUrl':'https://secret.invalid/?token=hidden'}
@@ -175,6 +176,49 @@ async def test_cancel_during_sdk_creation_still_deletes_created_session():
     task.cancel()
     with pytest.raises(asyncio.CancelledError): await task
     sdk.cdp.close.assert_awaited_once_with('new-session', timeout_ms=30_000)
+
+
+async def test_session_create_timeout_closes_only_the_new_session():
+    state = {'phase': 0, 'closed': []}
+
+    async def list_sessions(timeout_ms=None):
+        state['phase'] += 1
+        ids = ['kept'] if state['phase'] == 1 else ['kept', 'orphan']
+        return {'ok': True, 'data': [
+            {'sessionId': sid, 'expiresAt': '2099-01-01T00:00:00Z', 'cdpBaseUrl': 'https://cdp.invalid/s?token=secret'}
+            for sid in ids
+        ]}
+
+    async def create(params, timeout_ms=None):
+        assert timeout_ms == 180_000
+        raise AdsCrawlTimeoutError(timeout_ms)
+
+    async def close(session_id, timeout_ms=None):
+        state['closed'].append(session_id)
+        return {'ok': True}
+
+    sdk = SimpleNamespace(cdp=SimpleNamespace(list=list_sessions, create=create, close=close))
+    session = _Session(sdk, {})
+    session.create_timeout_ms = 180_000
+    with pytest.raises(AdsCrawlTimeoutError) as caught:
+        await session.open()
+    assert state['closed'] == ['orphan']
+    assert session.info is None
+    assert 'secret' not in str(caught.value)
+
+
+async def test_named_session_timeout_releases_the_browser(fake_sessions):
+    client = ScraperClient(sdk=object(), concurrency=1)
+
+    async def hang(session, request):
+        await asyncio.Event().wait()
+
+    client._fetch_page = hang
+    with pytest.raises(ScrapeError) as caught:
+        await client.fetch(Request('https://example.com/slow', session='kayak', timeoutMs=50))
+    assert caught.value.code == 'TIMEOUT'
+    assert 'example.com/slow' in str(caught.value)
+    assert fake_sessions[0].closed and not client._sessions
 
 
 async def test_stalled_browser_disconnect_still_releases_remote_session(monkeypatch):
