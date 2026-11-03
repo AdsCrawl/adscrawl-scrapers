@@ -14,6 +14,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e ".[dev]"
 export ADSCRAWL_API_KEY="你的 API Key"
+export ADSCRAWL_DEFAULT_COUNTRY=US
 cd amazon-scraper
 python run.py
 ```
@@ -22,8 +23,9 @@ python run.py
 默认每个客户端最多使用两个浏览器会话，可以通过 `ADSCRAWL_CONCURRENCY` 调整。
 无需安装本地 Chromium；浏览器由 AdsCrawl 提供。
 
-未指定国家或自定义代理时，默认使用 **US 美国线路**。
-可以用 `ADSCRAWL_DEFAULT_COUNTRY` 修改默认值；站点显式设置的 `countryCode` 优先。
+未指定国家或自定义代理时使用 **US 美国线路**。
+`scripts/live_test.py` 在 `ADSCRAWL_DEFAULT_COUNTRY` 为空时设为 `US`，手动在线工作流也会设为 `US`。
+自行设置该变量可改用其他线路。站点显式设置的 `countryCode` 优先。
 自定义代理与国家路由不会同时发送。
 
 ## SDK 工作方式
@@ -36,17 +38,21 @@ python run.py
 
 ## 验证状态
 
-**本轮 81 个站点均已实测**（2026-10-27）：15 个整套通过、11 个部分通过、55 个未通过。
-查看[逐站实测报告与截图](docs/live-verification/2026-10-27.md)及[JSON 记录](docs/live-verification/2026-10-27.json)。
-每站状态以最新实测为准，报告列出已定位的修复和剩余失败原因；空结果不算验证成功。
+**本次只复验了离线脚本**，没有 API Key，也没有消耗额度：
+`python -m pytest tests -q`（49 项通过）与 `python scripts/check_catalog.py`（81 个站点模块）已通过。
+在线烟雾测试和逐站用例 **没有重跑**。下面的 2026-10-27 数字是历史记录，不是本次新的通过结论。
 
-已核验示例：Bing 返回 30 条搜索结果和 8 条关键词建议；ChatGPT 实测回答包含正确答案 Paris。
+上次全站实测是 **2026-10-27**（15 个整套通过、11 个部分通过、55 个未通过），本分支没有重复该次审计。
+查看[逐站实测报告与截图](docs/live-verification/2026-10-27.md)及[JSON 记录](docs/live-verification/2026-10-27.json)。
+空结果不算验证成功。`results/` 里的文件是历史示例，不是本次在线输出。
+
+历史示例（本次未复测）：当时 Bing 返回 30 条搜索结果和 8 条关键词建议；ChatGPT 回答包含 Paris。
 
 ![ChatGPT 真实验证截图](docs/live-verification/evidence/chatgpt-answer.png)
 
 <!-- LIVE_VERIFIED_START -->
 
-本轮整套现有实测通过的站点（2026-10-27）：
+2026-10-27 整套通过的站点（本次未重跑）：
 
 | 爬虫 | 通过的实测用例 |
 | --- | --- |
@@ -70,16 +76,18 @@ python run.py
 
 <!-- LIVE_VERIFIED_END -->
 
-`results/` 是历史示例，不是本次 AdsCrawl 实测输出。
-默认 CI 只做离线验证；真实测试需手动触发并配置密钥。
-早期离线与烟雾测试见[初始验证记录](docs/VERIFICATION.md)；
-当前逐站结果以实测报告为准。
+默认 CI 只做离线验证。真实测试需手动触发并配置密钥，本次没有执行。
+[初始验证记录](docs/VERIFICATION.md)和[2026-10-27 实测报告](docs/live-verification/2026-10-27.md)描述的是更早的运行。
 
 ```bash
 python -m pytest tests -q
 python scripts/check_catalog.py
-# 以下命令会使用额度：
-python -m pytest amazon-scraper/test.py -v
+# 以下命令会使用额度。未设置国家时 live_test 默认 US；站点自己的 countryCode 优先。
+export ADSCRAWL_API_KEY="你的 API Key"
+export ADSCRAWL_DEFAULT_COUNTRY=US
+python scripts/smoke.py
+SELECTED_SCRAPER=bing-scraper python scripts/live_test.py
+python -m pytest bing-scraper/test.py -v --reruns=0
 ```
 
 ---

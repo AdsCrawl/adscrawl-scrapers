@@ -3,6 +3,7 @@
 These tests do not call AdsCrawl and do not require ADSCRAWL_API_KEY.
 """
 import ast
+import importlib.util
 import json
 import os
 import subprocess
@@ -135,3 +136,23 @@ def test_live_test_usage_errors_do_not_look_like_test_failures():
     assert no_key.returncode == 2
     assert 'ADSCRAWL_API_KEY' in no_key.stderr
     assert 'TypeError' not in no_key.stdout + no_key.stderr
+    assert 'ADSCRAWL_DEFAULT_COUNTRY' not in no_key.stderr
+
+
+def _live_test_module():
+    spec = importlib.util.spec_from_file_location('live_test_harness', ROOT / 'scripts' / 'live_test.py')
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_live_child_defaults_blank_country_to_us(monkeypatch):
+    monkeypatch.delenv('ADSCRAWL_DEFAULT_COUNTRY', raising=False)
+    assert _live_test_module().child_environment()['ADSCRAWL_DEFAULT_COUNTRY'] == 'US'
+    monkeypatch.setenv('ADSCRAWL_DEFAULT_COUNTRY', '  ')
+    assert _live_test_module().child_environment()['ADSCRAWL_DEFAULT_COUNTRY'] == 'US'
+
+
+def test_live_child_keeps_explicit_country(monkeypatch):
+    monkeypatch.setenv('ADSCRAWL_DEFAULT_COUNTRY', ' gb ')
+    assert _live_test_module().child_environment()['ADSCRAWL_DEFAULT_COUNTRY'] == 'GB'

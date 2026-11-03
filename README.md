@@ -10,23 +10,26 @@ content using remote browsers, HTML/JSON parsers and bounded concurrency.
 [API documentation](https://www.adscrawl.net/docs/) ·
 [中文](README.zh-CN.md) · [Transport details](docs/MIGRATION.md)
 
-> **All 81 sites have been live-tested** (2026-10-27):
-> 15 fully passed, 11 partially passed, and 55 failed. See the
-> [dated per-site evidence report](docs/live-verification/2026-10-27.md) and
-> [machine-readable results](docs/live-verification/2026-10-27.json).
-> Each status reflects the latest recorded attempt; see the report for scope and remaining failures.
-> Files in `results/` are historical examples, not evidence of current live results.
+> **Re-verified here, offline only.** `python -m pytest tests -q` (49 passed) and
+> `python scripts/check_catalog.py` (81 site modules) passed with no API key and no credits.
+> Live smoke and per-site suites were **not** re-run: `ADSCRAWL_API_KEY` was not
+> available in this environment. Nothing below is a new live pass.
 
-Verified examples from the current audit: **Bing** returned 30 search results and
-8 keyword suggestions; **ChatGPT** returned the correct answer to the test prompt.
-These checks cover the specific functions recorded in the report, not a blanket
-guarantee for every feature or future request.
+The last full live audit was **2026-10-27** (15 full passes, 11 partial passes,
+55 failures). That audit was not repeated. See the
+[dated report](docs/live-verification/2026-10-27.md) and
+[JSON results](docs/live-verification/2026-10-27.json).
+Files in `results/` are historical examples, not evidence of a current live run.
+
+Historical examples from that audit, not re-checked here: **Bing** then returned
+30 search results and 8 keyword suggestions; **ChatGPT** then returned the
+correct answer to the test prompt. Those outputs are not a fresh result.
 
 ![ChatGPT live verification through AdsCrawl](docs/live-verification/evidence/chatgpt-answer.png)
 
 <!-- LIVE_VERIFIED_START -->
 
-Current fully passed live suites (2026-10-27)：
+Historical full passes on 2026-10-27 (not re-run):
 
 | Scraper | Passed live checks |
 | --- | --- |
@@ -61,6 +64,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e ".[dev]"
 export ADSCRAWL_API_KEY="your_api_key"
+export ADSCRAWL_DEFAULT_COUNTRY=US
 cd amazon-scraper
 python run.py
 ```
@@ -70,8 +74,10 @@ consume AdsCrawl credits. The default limit is two browser sessions per client;
 set `ADSCRAWL_CONCURRENCY` to match your account capacity. No local Chromium
 installation is necessary. Never commit your API key.
 
-Requests default to a **US** browser route when no country or custom proxy is
-specified. Set `ADSCRAWL_DEFAULT_COUNTRY` to change this default. A site's explicit
+Requests use a **US** browser route when no country or custom proxy is
+specified. `scripts/live_test.py` sets `ADSCRAWL_DEFAULT_COUNTRY=US` when that
+variable is unset or blank, and the manual live workflow sets it to `US`.
+Set `ADSCRAWL_DEFAULT_COUNTRY` yourself to choose another route. A site's explicit
 `countryCode` takes precedence; custom proxies are not combined with country routing.
 
 ## How requests run
@@ -101,18 +107,40 @@ run(main())
 
 ## Validation
 
+Offline checks do not use a key or credits. Re-run for this branch:
+`python -m pytest tests -q` passed (49 tests) and
+`python scripts/check_catalog.py` passed (81 site modules).
+
 ```bash
-python -m pytest tests -q          # offline, no key and no credits
-python scripts/check_catalog.py  # imports and request configuration for every site
-# Explicit live testing, with ADSCRAWL_API_KEY set:
-python -m pytest amazon-scraper/test.py -v
+python -m pytest tests -q
+python scripts/check_catalog.py
 ```
 
-See [verification results](docs/VERIFICATION.md) for the checks actually run.
+Live checks consume credits and were **not** run here. With a key, use the US
+route. `live_test.py` still defaults the country to `US` if you omit the export.
+A site's own `countryCode` overrides that default.
 
-CI runs offline tests on pushes and pull requests. Live tests are available only
-through a manual workflow for a selected scraper and require the
-`ADSCRAWL_API_KEY` repository secret. There is no scheduled billable test suite.
+```bash
+export ADSCRAWL_API_KEY="your_api_key"
+export ADSCRAWL_DEFAULT_COUNTRY=US
+python scripts/smoke.py
+SELECTED_SCRAPER=bing-scraper python scripts/live_test.py
+python -m pytest bing-scraper/test.py -v --reruns=0
+```
+
+`scripts/live_test.py` exits 2 when `SELECTED_SCRAPER` is not a catalog directory
+or `ADSCRAWL_API_KEY` is missing. A site suite that fails keeps pytest's exit code.
+`scripts/smoke.py` exits 2 with `code` `MISSING_API_KEY` when the key is missing,
+and does not open a browser.
+
+The [2026-10-27 verification note](docs/VERIFICATION.md) and the
+[live audit](docs/live-verification/2026-10-27.md) describe earlier runs. They
+are not results from this branch.
+
+CI runs the offline tests on pushes and pull requests. Live tests are available
+only through a manual workflow for one selected scraper. That workflow sets
+`ADSCRAWL_DEFAULT_COUNTRY=US` and requires the `ADSCRAWL_API_KEY` repository
+secret. There is no scheduled billable test suite.
 
 ## Scrapers
 
