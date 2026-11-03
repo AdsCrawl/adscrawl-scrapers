@@ -140,6 +140,9 @@ runs. No other site suite was re-run. Commit `ddd17ac` was checked later the
 same day on the US route: smoke still passed, and ChatGPT failed again
 (`ERR_TUNNEL_CONNECTION_FAILED` in about 15s, then `ACTION_FAILED` in about
 83s). The answer-capture change did not run. `EMPTY_ANSWER` did not occur.
+Commit `2669477` later showed the Paris reply on the guest page and still
+failed with `ACTION_FAILED` after about 85s. The capture change after that
+screenshot has not been live re-verified.
 
 ```bash
 python -m pytest tests -q
