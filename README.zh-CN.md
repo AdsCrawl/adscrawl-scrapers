@@ -49,10 +49,13 @@ python run.py
 | [shopify](shopify-scraper/) | 5/5 通过 |
 | [chatgpt](chatgpt-scraper/) | 两轮都是 0/1：超时或空回答。未通过 |
 | [chatgpt](chatgpt-scraper/) `ddd17ac` | 美国线路未通过。第一次 `ERR_TUNNEL_CONNECTION_FAILED`（约 15 秒）。第二次 `ACTION_FAILED`（约 83 秒）。回答提取没有跑到 |
+| [chatgpt](chatgpt-scraper/) `2669477` | 未通过。美国访客页已经显示 “The capital of France is Paris.”，约 85 秒后 `ACTION_FAILED`，回答没有返回 |
 
 本次设置：`ADSCRAWL_DEFAULT_COUNTRY=US`，`ADSCRAWL_CONCURRENCY=1`，`--reruns=0`。
 
 随后在 2026-11-03 对提交 `ddd17ac` 做了美国线路复测，ChatGPT 仍未通过。`scripts/smoke.py` 仍然通过，普通站点可以打开。`chatgpt-scraper` 第一次约 15 秒、退出码 1，错误是 `ScrapeError` `ERR_TUNNEL_CONNECTION_FAILED`。第二次约 83 秒、退出码 1，错误是 `ScrapeError` `ACTION_FAILED`。直接打开 chatgpt.com 也会遇到同一隧道错误，或是没有聊天界面的空白页。没有出现 `EMPTY_ANSWER`。回答提取逻辑没有跑到，因此不能算在线验证通过。
+
+提交 `2669477` 又在同一美国线路复测。chatgpt.com 打开了，访客页 `https://chatgpt.com/uc/...` 已经显示 “The capital of France is Paris.”。`SELECTED_SCRAPER=chatgpt-scraper` 仍在约 85 秒后以 `ACTION_FAILED` 退出，回答没有返回。之后的提取改动会读取已经出现在页面上的回复（包括没有 assistant 角色属性的 `/uc/` 页面）。这次改动还没有重新做在线验证。
 
 `results/` 是历史示例，不是这次复测的输出。
 下面的截图来自 2026-10-27 审计。ChatGPT 在 2026-11-03 没有通过。
@@ -85,7 +88,7 @@ python run.py
 
 <!-- LIVE_VERIFIED_END -->
 
-默认 CI 只做离线验证。2026-11-03 的在线复测只覆盖烟雾测试、Bing、Shopify 和 ChatGPT，不是全站通过。提交 `ddd17ac` 当天又在美国线路复测了 ChatGPT：烟雾测试仍通过，ChatGPT 因 `ERR_TUNNEL_CONNECTION_FAILED`（约 15 秒）和 `ACTION_FAILED`（约 83 秒）失败。回答提取逻辑没有跑到。
+默认 CI 只做离线验证。2026-11-03 的在线复测只覆盖烟雾测试、Bing、Shopify 和 ChatGPT，不是全站通过。提交 `ddd17ac` 当天又在美国线路复测了 ChatGPT：烟雾测试仍通过，ChatGPT 因 `ERR_TUNNEL_CONNECTION_FAILED`（约 15 秒）和 `ACTION_FAILED`（约 83 秒）失败。回答提取逻辑没有跑到。提交 `2669477` 的复测里，页面已经出现 Paris 回答，约 85 秒后仍是 `ACTION_FAILED`。之后的提取改动还没有重新在线验证。
 [初始验证记录](docs/VERIFICATION.md)和[2026-10-27 实测报告](docs/live-verification/2026-10-27.md)是更早的全站审计。
 
 ```bash

@@ -46,16 +46,22 @@ SEND_BUTTON_SELECTORS = (
     "button.composer-submit-btn",
 )
 ASSISTANT_SELECTOR = "[data-message-author-role='assistant']"
-USER_SELECTOR = "[data-message-author-role='user']"
-COMPOSER_WAIT_MS = 30_000
-ANSWER_WAIT_MS = 65_000
+ANSWER_ATTRIBUTE = "[data-adscrawl-answer]"
+COMPOSER_WAIT_MS = 15_000
+ANSWER_WAIT_MS = 55_000
 _PLACEHOLDER = re.compile(r"^(thinking|generating|hang tight)[.!…\s]*$", re.IGNORECASE)
+# Composer chrome that follows a guest /uc/ reply. Cutting here keeps the
+# sidebar (Log in, New chat), which is rendered before the answer, out of it.
+_CHROME_STOPS = (
+    "Ask ChatGPT",
+    "Message ChatGPT",
+    "ChatGPT can make mistakes",
+    "Get responses tailored to you",
+)
 
 # Playwright's `:visible` is resolved when the action runs. Tagging a node and
 # clicking it later loses the mark if React redraws the composer.
 COMPOSER_FILL_SELECTOR = ", ".join(f"{part.strip()}:visible" for part in COMPOSER_SELECTOR.split(","))
-SEND_CLICK_SELECTOR = ", ".join(f"{selector}:visible" for selector in SEND_BUTTON_SELECTORS)
-SEND_CLICK_TIMEOUT_MS = 20_000
 
 _DISMISS_SCRIPT = """
 const visible = (node) => {
@@ -73,34 +79,104 @@ for (let attempt = 0; attempt < 4; attempt += 1) {
 }
 """
 
-_WAIT_ANSWER_TEMPLATE = """
+# Guest /uc/ replies are visible text after the prompt. They do not always
+# carry data-message-author-role, and the stop control often never appears.
+_FIND_ANSWER_JS = r"""
+function findAnswer(prompt) {
+  const prefix = prompt.slice(0, Math.min(prompt.length, 80));
+  const clean = (value) => (value || "").replace(/\s+/g, " ").trim();
+  const placeholder = (value) => /^(thinking|generating|hang tight)[.!…\s]*$/i.test(value);
+  const usable = (value) => {
+    const text = clean(value);
+    return text && !placeholder(text) && text !== prefix && text.length >= 3 ? text : "";
+  };
+  const roleNodes = [...document.querySelectorAll("__ASSISTANT__")];
+  for (let index = roleNodes.length - 1; index >= 0; index -= 1) {
+    const text = usable(roleNodes[index].innerText || roleNodes[index].textContent);
+    if (text) return text;
+  }
+  const body = clean(document.body ? document.body.innerText : "");
+  const stops = ["Ask ChatGPT", "Message ChatGPT", "ChatGPT can make mistakes", "Get responses tailored to you"];
+  let from = 0;
+  while (from < body.length) {
+    const at = body.indexOf(prefix, from);
+    if (at < 0) break;
+    let after = body.slice(at + prefix.length);
+    const nextPrompt = after.indexOf(prefix);
+    if (nextPrompt >= 0) after = after.slice(0, nextPrompt);
+    for (const stop of stops) {
+      const found = after.indexOf(stop);
+      if (found >= 0) after = after.slice(0, found);
+    }
+    const text = usable(after);
+    if (text) return text;
+    from = at + Math.max(prefix.length, 1);
+  }
+  return "";
+}
+""".replace("__ASSISTANT__", ASSISTANT_SELECTOR)
+
+_MARK_TEMPLATE = r"""
+// Capture an answer already on the page before clicking send.
 const prompt = __PROMPT_LITERAL__;
+__FIND_ANSWER__
+const deadline = Date.now() + 12000;
+let previous = "";
+let ticks = 0;
+while (Date.now() < deadline) {
+  const answer = findAnswer(prompt);
+  if (answer && answer === previous) {
+    ticks += 1;
+    if (ticks >= 2) {
+      document.documentElement.setAttribute("data-adscrawl-answer", answer);
+      return answer;
+    }
+  } else {
+    ticks = 0;
+  }
+  previous = answer;
+  await new Promise((resolve) => setTimeout(resolve, 400));
+}
+return "";
+"""
+
+_DRIVE_TEMPLATE = r"""
+const prompt = __PROMPT_LITERAL__;
+__FIND_ANSWER__
 const visible = (node) => {
   if (!node) return false;
   const style = getComputedStyle(node);
   const rect = node.getBoundingClientRect();
   return style.display !== "none" && style.visibility !== "hidden" && rect.width > 0 && rect.height > 0;
 };
-const textOf = (node) => ((node && (node.innerText || node.textContent)) || "").replace(/\\s+/g, " ").trim();
-const placeholder = (value) => /^(thinking|generating|hang tight)[.!…\\s]*$/i.test(value);
-const deadline = Date.now() + 60000;
+function clickSend() {
+  const selectors = __SEND_SELECTORS__;
+  for (const selector of selectors) {
+    const button = [...document.querySelectorAll(selector)].find((node) =>
+      visible(node) && !node.disabled && node.getAttribute("aria-disabled") !== "true");
+    if (button) {
+      button.click();
+      return true;
+    }
+  }
+  return false;
+}
+if (!findAnswer(prompt)) clickSend();
+const deadline = Date.now() + 45000;
 let previous = "";
-let stableTicks = 0;
+let ticks = 0;
 let answer = "";
 while (Date.now() < deadline) {
-  const promptPrefix = prompt.slice(0, Math.min(prompt.length, 80));
-  const asked = [...document.querySelectorAll("__USER__, [data-testid*='conversation-turn']")].some((node) =>
-    (node.textContent || "").replace(/\\s+/g, " ").includes(promptPrefix));
-  const latest = textOf([...document.querySelectorAll("__ASSISTANT__")].filter(visible).at(-1));
+  const latest = findAnswer(prompt);
   const stopping = [...document.querySelectorAll("button[data-testid='stop-button'], button[data-testid='composer-stop-button'], button[aria-label^='Stop']")].some(visible);
-  if (asked && latest && !placeholder(latest) && !stopping && latest === previous) {
-    stableTicks += 1;
-    if (stableTicks >= 3) {
+  if (latest && !stopping && latest === previous) {
+    ticks += 1;
+    if (ticks >= 2) {
       answer = latest;
       break;
     }
   } else {
-    stableTicks = 0;
+    ticks = 0;
   }
   previous = latest;
   await new Promise((resolve) => setTimeout(resolve, 400));
@@ -110,17 +186,12 @@ document.documentElement.setAttribute("data-adscrawl-answer", answer);
 return answer;
 """
 
-_READ_ANSWER_SCRIPT = """
+_READ_TEMPLATE = r"""
 const stored = document.documentElement.getAttribute("data-adscrawl-answer");
 if (stored && stored.trim()) return stored.trim();
-const visible = (node) => {
-  if (!node) return false;
-  const style = getComputedStyle(node);
-  const rect = node.getBoundingClientRect();
-  return style.display !== "none" && style.visibility !== "hidden" && rect.width > 0 && rect.height > 0;
-};
-const node = [...document.querySelectorAll("__ASSISTANT__")].filter(visible).at(-1);
-return node ? (node.innerText || node.textContent || "").replace(/\\s+/g, " ").trim() : "";
+const prompt = __PROMPT_LITERAL__;
+__FIND_ANSWER__
+return findAnswer(prompt) || "";
 """
 
 
@@ -139,25 +210,42 @@ def conversation_country() -> str:
     return chosen.upper() if chosen else BASE_CONFIG["countryCode"]
 
 
-def drive_conversation_script(prompt: str) -> str:
-    """Browser script that resolves only after a stable assistant answer."""
+def _script(template: str, prompt: str) -> str:
     return (
-        _WAIT_ANSWER_TEMPLATE
+        template
         .replace("__PROMPT_LITERAL__", json.dumps(prompt), 1)
-        .replace("__USER__", USER_SELECTOR, 1)
-        .replace("__ASSISTANT__", ASSISTANT_SELECTOR, 1)
+        .replace("__FIND_ANSWER__", _FIND_ANSWER_JS, 1)
+        .replace("__SEND_SELECTORS__", json.dumps(list(SEND_BUTTON_SELECTORS)), 1)
     )
 
 
+def drive_conversation_script(prompt: str) -> str:
+    """Browser script that resolves when a stable assistant answer is visible.
+
+    A missing stop button is normal on a finished guest /uc/ reply. The send
+    control is clicked only when that reply is not already on the page.
+    """
+    return _script(_DRIVE_TEMPLATE, prompt)
+
+
 def conversation_actions(prompt: str) -> list[dict]:
+    # The 2026-11-03 US retest of 2669477 already showed
+    # "The capital of France is Paris." on /uc/... and then ACTION_FAILED.
+    # Reading that reply has to happen before composer fill/click timeouts.
     return [
         {"type": "click", "selector": "#credentials-picker-container #close", "optional": True},
         {"type": "click", "selector": "button[data-testid='close-button']", "optional": True},
         {"type": "click", "selector": "[role='dialog'] button[aria-label='Close']", "optional": True},
-        {"type": "waitForSelector", "selector": COMPOSER_SELECTOR, "timeoutMs": COMPOSER_WAIT_MS},
-        {"type": "evaluate", "script": _DISMISS_SCRIPT, "timeoutMs": 5_000},
-        {"type": "fill", "selector": COMPOSER_FILL_SELECTOR, "value": prompt, "timeoutMs": 15_000},
-        {"type": "click", "selector": SEND_CLICK_SELECTOR, "timeoutMs": SEND_CLICK_TIMEOUT_MS},
+        {"type": "evaluate", "script": _script(_MARK_TEMPLATE, prompt), "timeoutMs": 20_000},
+        {
+            "type": "condition",
+            "selector": ANSWER_ATTRIBUTE,
+            "state": "existing",
+            "outcome": "exit_success",
+        },
+        {"type": "waitForSelector", "selector": COMPOSER_SELECTOR, "timeoutMs": COMPOSER_WAIT_MS, "optional": True},
+        {"type": "evaluate", "script": _DISMISS_SCRIPT, "timeoutMs": 5_000, "optional": True},
+        {"type": "fill", "selector": COMPOSER_FILL_SELECTOR, "value": prompt, "timeoutMs": 10_000, "optional": True},
         {"type": "evaluate", "script": drive_conversation_script(prompt), "timeoutMs": ANSWER_WAIT_MS},
     ]
 
@@ -171,11 +259,40 @@ def _usable_answer(value: object) -> str:
     return cleaned
 
 
-def extract_assistant_answer(html: str) -> str:
+def extract_guest_reply(html: str, prompt: str) -> str:
+    """Reply text on a guest /uc/ page that has no assistant role attribute."""
+    prefix = re.sub(r"\s+", " ", prompt or "").strip()[:80]
+    if not html or not prefix:
+        return ""
+    selector = Selector(text=html)
+    raw = selector.xpath("string(//body)").get() or selector.xpath("string(.)").get() or ""
+    text = re.sub(r"\s+", " ", raw).strip()
+    start = 0
+    while start < len(text):
+        at = text.find(prefix, start)
+        if at < 0:
+            return ""
+        after = text[at + len(prefix):]
+        next_prompt = after.find(prefix)
+        if next_prompt >= 0:
+            after = after[:next_prompt]
+        for stop in _CHROME_STOPS:
+            cut = after.find(stop)
+            if cut >= 0:
+                after = after[:cut]
+        answer = _usable_answer(after)
+        if answer and answer != prefix and len(answer) >= 3:
+            return answer
+        start = at + max(len(prefix), 1)
+    return ""
+
+
+def extract_assistant_answer(html: str, prompt: str = "") -> str:
     """Pull the assistant text from the page, including when `<main>` is empty.
 
     Markdown mode uses the first `<main>` whenever that element exists. An
     empty main is truthy, so the conversation nodes outside it disappear.
+    A guest /uc/ reply can also sit in plain text with no role attribute.
     """
     if not html or not html.strip():
         return ""
@@ -190,11 +307,13 @@ def extract_assistant_answer(html: str) -> str:
         text = _usable_answer(node.xpath("string(.)").get() or "")
         if text:
             texts.append(text)
-    return texts[-1] if texts else ""
+    if texts:
+        return texts[-1]
+    return extract_guest_reply(html, prompt)
 
 
-def answer_from_response(javascript: object, html: str) -> str:
-    return _usable_answer(javascript) or extract_assistant_answer(html)
+def answer_from_response(javascript: object, html: str, prompt: str = "") -> str:
+    return _usable_answer(javascript) or extract_assistant_answer(html, prompt)
 
 
 @managed
@@ -207,11 +326,11 @@ async def scrape_conversation(prompt: str) -> str:
             contentMode="html",
             render=True,
             actions=conversation_actions(prompt),
-            javascript=_READ_ANSWER_SCRIPT.replace("__ASSISTANT__", ASSISTANT_SELECTOR, 1),
+            javascript=_script(_READ_TEMPLATE, prompt),
             countryCode=conversation_country(),
         )
     )
-    answer = answer_from_response(response.javascript, response.content)
+    answer = answer_from_response(response.javascript, response.content, prompt)
     if not answer:
         raise ScrapeError("ChatGPT returned an empty answer", response=response, code="EMPTY_ANSWER")
     log.success("finished scraping ChatGPT for the prompt: {}", prompt)

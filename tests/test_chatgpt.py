@@ -50,28 +50,51 @@ def test_extract_keeps_the_latest_real_assistant_turn():
     assert chatgpt.extract_assistant_answer(html) == "Paris is the capital."
 
 
-def test_actions_fill_the_prompt_and_wait_for_the_assistant_message():
+GUEST_UC_HTML = """
+<body>
+  <nav><p>New chat</p><p>Log in</p><p>Sign up for free</p></nav>
+  <div>What is the capital of France?</div>
+  <div>The capital of France is Paris. 🇫🇷</div>
+  <form><div id="prompt-textarea">Ask ChatGPT</div></form>
+</body>
+"""
+
+
+def test_guest_uc_page_without_role_attributes_is_the_paris_reply():
+    answer = chatgpt.extract_assistant_answer(GUEST_UC_HTML, "What is the capital of France?")
+    assert answer == "The capital of France is Paris. 🇫🇷"
+    assert "New chat" not in answer and "Log in" not in answer
+    prompt_only = "<body><p>What is the capital of France?</p><div>Ask ChatGPT</div></body>"
+    assert chatgpt.extract_assistant_answer(prompt_only, "What is the capital of France?") == ""
+
+
+def test_actions_read_an_answer_already_on_the_page_before_send():
     prompt = 'What is the capital of France? He said "Paris".'
     actions = chatgpt.conversation_actions(prompt)
     serialized = json.dumps(actions)
-    assert "exit_success" not in serialized
     assert "div[aria-live='polite'] button:first-of-type" not in serialized
-    assert actions[3]["type"] == "waitForSelector"
-    assert actions[3]["timeoutMs"] == chatgpt.COMPOSER_WAIT_MS
-    assert "prompt-textarea" in actions[3]["selector"]
+    exits = [action for action in actions if action.get("outcome") == "exit_success"]
+    assert exits == [{
+        "type": "condition",
+        "selector": chatgpt.ANSWER_ATTRIBUTE,
+        "state": "existing",
+        "outcome": "exit_success",
+    }]
+    mark = next(action for action in actions if action["type"] == "evaluate" and "already on the page" in action["script"])
     fill = next(action for action in actions if action["type"] == "fill")
-    assert fill["value"] == prompt
-    assert ":visible" in fill["selector"] and "prompt-textarea" in fill["selector"]
+    assert actions.index(mark) < actions.index(exits[0]) < actions.index(fill)
+    assert fill["value"] == prompt and fill.get("optional") is True
+    composer = next(action for action in actions if action["type"] == "waitForSelector")
+    assert composer.get("optional") is True and "prompt-textarea" in composer["selector"]
+    assert not any(action["type"] == "click" and not action.get("optional") for action in actions)
     wait = actions[-1]
     assert wait["type"] == "evaluate" and wait["timeoutMs"] == chatgpt.ANSWER_WAIT_MS
     assert json.dumps(prompt) in wait["script"]
     assert chatgpt.ASSISTANT_SELECTOR in wait["script"]
-    assert chatgpt.USER_SELECTOR in wait["script"]
-    assert "data-adscrawl-answer" in wait["script"]
-    send = next(action for action in actions if action.get("type") == "click" and action.get("timeoutMs") == chatgpt.SEND_CLICK_TIMEOUT_MS)
+    assert "document.body" in wait["script"] and "Ask ChatGPT" in wait["script"]
+    assert "!stopping" in wait["script"]
     for selector in chatgpt.SEND_BUTTON_SELECTORS:
-        assert selector in send["selector"]
-    assert ":visible" in send["selector"]
+        assert selector in wait["script"]
     assert chatgpt.conversation_url(prompt).startswith("https://chatgpt.com/?prompt=")
     assert "Paris" in chatgpt.conversation_url(prompt)
 

@@ -36,10 +36,13 @@ route even though the run default was US. The first Bing attempt was 1 pass and
 | [shopify](shopify-scraper/) | 5/5 passed |
 | [chatgpt](chatgpt-scraper/) | 0/1 on both runs: timeout / empty answer. Not passed |
 | [chatgpt](chatgpt-scraper/) `ddd17ac` | Not passed on the US route. Run 1 `ERR_TUNNEL_CONNECTION_FAILED` (~15s). Run 2 `ACTION_FAILED` (~83s). Answer capture did not run |
+| [chatgpt](chatgpt-scraper/) `2669477` | Not passed. The US guest page already showed "The capital of France is Paris." Then `ACTION_FAILED` after about 85s, before that reply was returned |
 
 Settings for that run: `ADSCRAWL_DEFAULT_COUNTRY=US`, `ADSCRAWL_CONCURRENCY=1`, `--reruns=0`.
 
 A later check of commit `ddd17ac` on 2026-11-03, still on the US route, did not pass ChatGPT. `scripts/smoke.py` still passed, so ordinary sites loaded. `chatgpt-scraper` run 1 exited 1 in about 15s with `ScrapeError` `ERR_TUNNEL_CONNECTION_FAILED`. Run 2 exited 1 in about 83s with `ScrapeError` `ACTION_FAILED`. Direct checks of chatgpt.com hit that tunnel error or a blank page with no chat UI. `EMPTY_ANSWER` did not occur. The answer-capture change did not run, so it is not live-verified.
+
+Commit `2669477` was retested on the same US route. chatgpt.com loaded, and the guest page `https://chatgpt.com/uc/...` already showed "The capital of France is Paris." `SELECTED_SCRAPER=chatgpt-scraper` still exited 1 after about 85s with `ACTION_FAILED` from `perform_actions`, before that reply was returned. Capture was changed after that to read a reply already on the page, including a guest `/uc/` layout with no assistant role attribute. That change has not been live re-verified.
 
 Files in `results/` are historical examples, not output from this re-run.
 The screenshot below is from the 2026-10-27 audit. ChatGPT did not pass on 2026-11-03.

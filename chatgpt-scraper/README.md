@@ -39,8 +39,15 @@ the US route and did **not** pass. `scripts/smoke.py` still passed. Run 1
 exited 1 in about 15s with `ScrapeError` `ERR_TUNNEL_CONNECTION_FAILED`. Run 2
 exited 1 in about 83s with `ScrapeError` `ACTION_FAILED`. Direct checks of
 chatgpt.com hit that tunnel error or a blank page with no chat UI.
-`EMPTY_ANSWER` did not occur. The answer-capture change did not run, so it is
-not live-verified.
+`EMPTY_ANSWER` did not occur. The answer-capture change on that commit did not
+run, so it is not live-verified.
+
+Commit `2669477` was retested on the US route. The guest page already showed
+"The capital of France is Paris." and `live_test` still exited 1 after about
+85s with `ACTION_FAILED` before that reply was returned. Capture now reads a
+reply that is already on the page, including a guest `/uc/` layout without an
+assistant role attribute, and does not require a stop button. That change has
+not been live re-verified.
 
 `countryCode` stays `US` unless `ADSCRAWL_CHATGPT_COUNTRY` is set.
 `ADSCRAWL_DEFAULT_COUNTRY` does not replace it. From the repository root:
