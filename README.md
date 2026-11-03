@@ -34,6 +34,7 @@ route even though the run default was US. The first Bing attempt was 1 pass and
 | [chatgpt](chatgpt-scraper/) | 0/1 on both runs: timeout / empty answer. Not passed |
 
 Settings for that run: `ADSCRAWL_DEFAULT_COUNTRY=US`, `ADSCRAWL_CONCURRENCY=1`, `--reruns=0`.
+The ChatGPT scraper was changed after that failure (current send controls, an explicit prompt fill, and waiting for the assistant message). That change has not been live re-verified.
 Files in `results/` are historical examples, not output from this re-run.
 The screenshot below is from the 2026-10-27 audit. ChatGPT did not pass on 2026-11-03.
 
@@ -126,7 +127,8 @@ Offline on that run: `python -m pytest tests -q` was 47/47, and
 `python scripts/check_catalog.py` was 81/81. `python scripts/smoke.py` exited 0
 (rendered HTML, JSON POST, session cleanup). Live suites: Bing 2/2 on the second
 attempt (built-in GB route; first attempt 1/2), Shopify 5/5, ChatGPT 0/1 on both
-runs. No other site suite was re-run.
+runs. No other site suite was re-run. The ChatGPT scraper was updated after
+those failures and has not been live re-run.
 
 ```bash
 python -m pytest tests -q

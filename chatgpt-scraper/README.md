@@ -33,10 +33,23 @@ To run this site's **live** tests (uses AdsCrawl credits):
 python -m pytest chatgpt-scraper/test.py -v
 ```
 
-This site has been migrated at source level. Live website behavior is **not yet
-verified** with AdsCrawl. Websites can change selectors, require sign-in, or
-reject a browser session. Historical files in `results/` are upstream examples,
-not outputs from a verified AdsCrawl run. Review URLs and dates in `run.py` first.
+The 2026-10-27 audit passed this site once. The 2026-11-03 re-run failed twice:
+the browser action timed out, then the captured page was an empty string. The
+scraper no longer treats `button[data-composer-submit]` existing as a finished
+answer. It fills the composer, clicks an enabled send control, and reads the
+assistant message. That change has **not** been live re-verified.
+
+From the repository root, with a US route:
+
+```bash
+export ADSCRAWL_API_KEY="your_api_key"
+export ADSCRAWL_DEFAULT_COUNTRY=US
+export ADSCRAWL_CONCURRENCY=1
+SELECTED_SCRAPER=chatgpt-scraper python scripts/live_test.py
+```
+
+Historical files in `results/` are earlier examples, not output from that
+re-run. Review the prompt in `run.py` first.
 
 ## Source and license
 

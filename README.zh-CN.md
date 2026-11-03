@@ -50,6 +50,7 @@ python run.py
 | [chatgpt](chatgpt-scraper/) | 两轮都是 0/1：超时或空回答。未通过 |
 
 本次设置：`ADSCRAWL_DEFAULT_COUNTRY=US`，`ADSCRAWL_CONCURRENCY=1`，`--reruns=0`。
+这次失败之后改过 ChatGPT 抓取（当前的发送按钮、把问题写入输入框、等到助手消息再提取）。这次改动还没有重新做在线验证。
 `results/` 是历史示例，不是这次复测的输出。
 下面的截图来自 2026-10-27 审计。ChatGPT 在 2026-11-03 没有通过。
 
@@ -81,7 +82,7 @@ python run.py
 
 <!-- LIVE_VERIFIED_END -->
 
-默认 CI 只做离线验证。2026-11-03 的在线复测只覆盖烟雾测试、Bing、Shopify 和 ChatGPT，不是全站通过。
+默认 CI 只做离线验证。2026-11-03 的在线复测只覆盖烟雾测试、Bing、Shopify 和 ChatGPT，不是全站通过。ChatGPT 抓取在那两次失败之后改过，还没有重新在线跑过。
 [初始验证记录](docs/VERIFICATION.md)和[2026-10-27 实测报告](docs/live-verification/2026-10-27.md)是更早的全站审计。
 
 ```bash
