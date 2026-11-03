@@ -10,26 +10,38 @@ content using remote browsers, HTML/JSON parsers and bounded concurrency.
 [API documentation](https://www.adscrawl.net/docs/) ·
 [中文](README.zh-CN.md) · [Transport details](docs/MIGRATION.md)
 
-> **Re-verified here, offline only.** `python -m pytest tests -q` (49 passed) and
-> `python scripts/check_catalog.py` (81 site modules) passed with no API key and no credits.
-> Live smoke and per-site suites were **not** re-run: `ADSCRAWL_API_KEY` was not
-> available in this environment. Nothing below is a new live pass.
+> Live re-verification on 2026-11-03 (Asia/Shanghai, PR #1 harness, US default
+> routing, one attempt per run, no reruns): offline tests 47/47 and catalog
+> checks 81/81 passed. The live smoke test (rendered HTML + JSON POST + session
+> cleanup) passed. Live suites passed for **bing** (2/2, on its built-in GB
+> route, second attempt) and **shopify** (5/5). **chatgpt** did not pass in
+> this re-run (0/1, timeout / empty answer). Other sites were not re-tested
+> this round; see [the 2026-10-27 audit](docs/live-verification/2026-10-27.md)
+> for the last full 81-site audit (15 passed, 11 partial, 55 failed). Live
+> results reflect target-site behaviour on that date only.
 
-The last full live audit was **2026-10-27** (15 full passes, 11 partial passes,
-55 failures). That audit was not repeated. See the
-[dated report](docs/live-verification/2026-10-27.md) and
-[JSON results](docs/live-verification/2026-10-27.json).
-Files in `results/` are historical examples, not evidence of a current live run.
+`scripts/live_test.py` sets `ADSCRAWL_DEFAULT_COUNTRY=US` when that variable is
+unset or blank. A site's explicit `countryCode` overrides that default. Bing's
+`BASE_CONFIG` hard-codes `countryCode` `GB`, so both Bing attempts used the GB
+route even though the run default was US. The first Bing attempt was 1 pass and
+1 fail (pagination navigation error); the second attempt was 2/2.
 
-Historical examples from that audit, not re-checked here: **Bing** then returned
-30 search results and 8 keyword suggestions; **ChatGPT** then returned the
-correct answer to the test prompt. Those outputs are not a fresh result.
+| This re-run (2026-11-03) | Result |
+| --- | --- |
+| `scripts/smoke.py` | Passed, exit 0: rendered HTML, JSON POST, session cleanup |
+| [bing](bing-scraper/) | 2/2 on the second attempt, built-in GB route. First attempt 1/2, pagination navigation error |
+| [shopify](shopify-scraper/) | 5/5 passed |
+| [chatgpt](chatgpt-scraper/) | 0/1 on both runs: timeout / empty answer. Not passed |
 
-![ChatGPT live verification through AdsCrawl](docs/live-verification/evidence/chatgpt-answer.png)
+Settings for that run: `ADSCRAWL_DEFAULT_COUNTRY=US`, `ADSCRAWL_CONCURRENCY=1`, `--reruns=0`.
+Files in `results/` are historical examples, not output from this re-run.
+The screenshot below is from the 2026-10-27 audit. ChatGPT did not pass on 2026-11-03.
+
+![ChatGPT answer from the 2026-10-27 audit](docs/live-verification/evidence/chatgpt-answer.png)
 
 <!-- LIVE_VERIFIED_START -->
 
-Historical full passes on 2026-10-27 (not re-run):
+Historical full passes on 2026-10-27 (not re-run on 2026-11-03):
 
 | Scraper | Passed live checks |
 | --- | --- |
@@ -107,35 +119,38 @@ run(main())
 
 ## Validation
 
-Offline checks do not use a key or credits. Re-run for this branch:
-`python -m pytest tests -q` passed (49 tests) and
-`python scripts/check_catalog.py` passed (81 site modules).
+The 2026-11-03 re-run used the PR harness with `ADSCRAWL_DEFAULT_COUNTRY=US`,
+`ADSCRAWL_CONCURRENCY=1`, and `--reruns=0`. It is not a pass for every site.
+
+Offline on that run: `python -m pytest tests -q` was 47/47, and
+`python scripts/check_catalog.py` was 81/81. `python scripts/smoke.py` exited 0
+(rendered HTML, JSON POST, session cleanup). Live suites: Bing 2/2 on the second
+attempt (built-in GB route; first attempt 1/2), Shopify 5/5, ChatGPT 0/1 on both
+runs. No other site suite was re-run.
 
 ```bash
 python -m pytest tests -q
 python scripts/check_catalog.py
-```
-
-Live checks consume credits and were **not** run here. With a key, use the US
-route. `live_test.py` still defaults the country to `US` if you omit the export.
-A site's own `countryCode` overrides that default.
-
-```bash
 export ADSCRAWL_API_KEY="your_api_key"
 export ADSCRAWL_DEFAULT_COUNTRY=US
+export ADSCRAWL_CONCURRENCY=1
 python scripts/smoke.py
 SELECTED_SCRAPER=bing-scraper python scripts/live_test.py
-python -m pytest bing-scraper/test.py -v --reruns=0
+SELECTED_SCRAPER=shopify-scraper python scripts/live_test.py
+SELECTED_SCRAPER=chatgpt-scraper python scripts/live_test.py
 ```
 
-`scripts/live_test.py` exits 2 when `SELECTED_SCRAPER` is not a catalog directory
-or `ADSCRAWL_API_KEY` is missing. A site suite that fails keeps pytest's exit code.
+`live_test.py` sets `ADSCRAWL_DEFAULT_COUNTRY=US` when that variable is unset or
+blank. A site `countryCode` overrides it, which is why Bing still used GB.
+The command exits 2 when `SELECTED_SCRAPER` is not a catalog directory or
+`ADSCRAWL_API_KEY` is missing. A site suite that fails keeps pytest's exit code.
 `scripts/smoke.py` exits 2 with `code` `MISSING_API_KEY` when the key is missing,
-and does not open a browser.
+and does not open a browser. Pytest failure text includes a safe `ScrapeError`
+code such as `ERR_*`, `TIMEOUT`, or `ACTION_FAILED`.
 
 The [2026-10-27 verification note](docs/VERIFICATION.md) and the
-[live audit](docs/live-verification/2026-10-27.md) describe earlier runs. They
-are not results from this branch.
+[live audit](docs/live-verification/2026-10-27.md) are the earlier full audit.
+They are not the 2026-11-03 re-run.
 
 CI runs the offline tests on pushes and pull requests. Live tests are available
 only through a manual workflow for one selected scraper. That workflow sets

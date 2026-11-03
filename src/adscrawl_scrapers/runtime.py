@@ -120,10 +120,15 @@ class Response:
 class ScrapeError(RuntimeError):
     """Safe-to-log request error; response is available even for failed navigations."""
     def __init__(self, message: str, *, response: Response | None = None, code: str = "SCRAPE_FAILED"):
-        super().__init__(message)
         self.message = message
         self.response = response
         self.code = code
+        # Pytest prints str(exception). The useful ERR_*/TIMEOUT/ACTION_FAILED
+        # identifier lived only on .code, so failure reports omitted it.
+        # Only a short identifier is appended; response URLs stay off the string.
+        if code and re.fullmatch(r"[A-Z][A-Z0-9_]{0,80}", code) and code not in message:
+            message = f"{message} [{code}]"
+        super().__init__(message)
 
 
 async def _finish(coro):

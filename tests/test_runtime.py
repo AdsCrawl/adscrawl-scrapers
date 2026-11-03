@@ -9,6 +9,16 @@ from adscrawl_scrapers import Request, Response, ScraperClient, ScrapeError, man
 from adscrawl_scrapers.runtime import _Session, perform_actions, evaluate_script
 
 
+def test_scrape_error_failure_text_includes_safe_code():
+    navigation = ScrapeError("Browser navigation or interaction failed", code="ERR_TUNNEL_CONNECTION_FAILED")
+    assert str(navigation) == "Browser navigation or interaction failed [ERR_TUNNEL_CONNECTION_FAILED]"
+    assert str(ScrapeError("Remote browser request failed or timed out", code="TIMEOUT")).endswith("[TIMEOUT]")
+    assert str(ScrapeError("Browser action failed or timed out", code="ACTION_FAILED")).endswith("[ACTION_FAILED]")
+    secret = ScrapeError("Browser navigation failed https://private.invalid/?token=secret", code="not a safe code")
+    assert str(secret) == secret.message
+    assert "not a safe code" not in str(secret)
+
+
 def test_response_html_json_and_redirect_metadata():
     page = Response('https://example.com/final', '<h1>Hello</h1>', request_url='https://example.com/start')
     assert page.selector.css('h1::text').get() == 'Hello'

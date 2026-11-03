@@ -38,21 +38,26 @@ python run.py
 
 ## 验证状态
 
-**本次只复验了离线脚本**，没有 API Key，也没有消耗额度：
-`python -m pytest tests -q`（49 项通过）与 `python scripts/check_catalog.py`（81 个站点模块）已通过。
-在线烟雾测试和逐站用例 **没有重跑**。下面的 2026-10-27 数字是历史记录，不是本次新的通过结论。
+> 2026-11-03（Asia/Shanghai）用 PR #1 的验收脚本复测，默认美国线路，每轮不重试（`--reruns=0`），并发为 1。离线测试 47/47、目录检查 81/81 通过。在线烟雾测试通过（渲染后的 HTML、JSON POST、会话清理）。在线套件通过的是 **bing**（第二次 2/2，走代码里写死的英国线路）和 **shopify**（5/5）。**chatgpt** 两轮都未通过（0/1，超时或空回答）。其余站点本轮没有重测。上一次全站审计仍是 [2026-10-27 报告](docs/live-verification/2026-10-27.md)（15 个整套通过、11 个部分通过、55 个未通过）。这些结果只说明当天目标网站的表现。
 
-上次全站实测是 **2026-10-27**（15 个整套通过、11 个部分通过、55 个未通过），本分支没有重复该次审计。
-查看[逐站实测报告与截图](docs/live-verification/2026-10-27.md)及[JSON 记录](docs/live-verification/2026-10-27.json)。
-空结果不算验证成功。`results/` 里的文件是历史示例，不是本次在线输出。
+`scripts/live_test.py` 在 `ADSCRAWL_DEFAULT_COUNTRY` 为空时设为 `US`。站点自己的 `countryCode` 会覆盖该默认值。Bing 的 `BASE_CONFIG` 写死 `countryCode` 为 `GB`，所以两次 Bing 都走英国线路，而不是这次的美国默认值。第一次 Bing 为 1 通过 / 1 失败（分页导航错误），第二次为 2/2。
 
-历史示例（本次未复测）：当时 Bing 返回 30 条搜索结果和 8 条关键词建议；ChatGPT 回答包含 Paris。
+| 本次复测（2026-11-03） | 结果 |
+| --- | --- |
+| `scripts/smoke.py` | 通过，退出码 0：渲染 HTML、JSON POST、会话清理 |
+| [bing](bing-scraper/) | 第二次 2/2，内置英国线路。第一次 1/2，分页导航错误 |
+| [shopify](shopify-scraper/) | 5/5 通过 |
+| [chatgpt](chatgpt-scraper/) | 两轮都是 0/1：超时或空回答。未通过 |
 
-![ChatGPT 真实验证截图](docs/live-verification/evidence/chatgpt-answer.png)
+本次设置：`ADSCRAWL_DEFAULT_COUNTRY=US`，`ADSCRAWL_CONCURRENCY=1`，`--reruns=0`。
+`results/` 是历史示例，不是这次复测的输出。
+下面的截图来自 2026-10-27 审计。ChatGPT 在 2026-11-03 没有通过。
+
+![2026-10-27 审计中的 ChatGPT 回答](docs/live-verification/evidence/chatgpt-answer.png)
 
 <!-- LIVE_VERIFIED_START -->
 
-2026-10-27 整套通过的站点（本次未重跑）：
+2026-10-27 整套通过的站点（2026-11-03 未重跑）：
 
 | 爬虫 | 通过的实测用例 |
 | --- | --- |
@@ -76,18 +81,21 @@ python run.py
 
 <!-- LIVE_VERIFIED_END -->
 
-默认 CI 只做离线验证。真实测试需手动触发并配置密钥，本次没有执行。
-[初始验证记录](docs/VERIFICATION.md)和[2026-10-27 实测报告](docs/live-verification/2026-10-27.md)描述的是更早的运行。
+默认 CI 只做离线验证。2026-11-03 的在线复测只覆盖烟雾测试、Bing、Shopify 和 ChatGPT，不是全站通过。
+[初始验证记录](docs/VERIFICATION.md)和[2026-10-27 实测报告](docs/live-verification/2026-10-27.md)是更早的全站审计。
 
 ```bash
 python -m pytest tests -q
 python scripts/check_catalog.py
 # 以下命令会使用额度。未设置国家时 live_test 默认 US；站点自己的 countryCode 优先。
+# Bing 写死 GB，因此不会改走 US。
 export ADSCRAWL_API_KEY="你的 API Key"
 export ADSCRAWL_DEFAULT_COUNTRY=US
+export ADSCRAWL_CONCURRENCY=1
 python scripts/smoke.py
 SELECTED_SCRAPER=bing-scraper python scripts/live_test.py
-python -m pytest bing-scraper/test.py -v --reruns=0
+SELECTED_SCRAPER=shopify-scraper python scripts/live_test.py
+SELECTED_SCRAPER=chatgpt-scraper python scripts/live_test.py
 ```
 
 ---
