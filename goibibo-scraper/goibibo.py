@@ -457,6 +457,10 @@ async def scrape_hotel_search(
             break
         except (ScrapeError, RuntimeError) as error:
             last_error = error
+            # the named session still occupies a browser slot after a timeout.
+            # at concurrency 1 the next attempt would raise SESSION_LIMIT.
+            await CLIENT.close_session(session)
+            session = None
             if attempt == 2:
                 raise
             log.warning(f"hotel listing was not captured ({error}); retrying once")
@@ -548,23 +552,32 @@ async def _flight_via_preauth(
     return_date: Optional[str],
 ) -> Dict:
     session = uuid4().hex
-    page = await CLIENT.fetch(Request(page_url, session=session, render=False, countryCode="IN"))
-    token = _preauth_token(page.content)
-    if not token:
-        if page.selector.css("[data-cy='submit'][disabled]"):
-            raise RuntimeError(
-                "goibibo.com answered the flight search with its page shell, the search never started: "
-                f"no __PRE_AUTH__ token at {page.url}"
-            )
-        raise RuntimeError(f"no __PRE_AUTH__ token in the goibibo.com flight search page: {page.url}")
-    api_url = build_flight_search_api_url(
-        origin, destination, departure_date, adults, children, infants, return_date
-    )
-    headers = build_flight_api_headers(token, device_id=str(uuid4()))
-    response = await CLIENT.fetch(
-        Request(api_url, session=session, headers=headers, render=False, countryCode="IN")
-    )
-    return parse_flight_stream(response.content)
+    try:
+        page = await CLIENT.fetch(Request(page_url, session=session, render=False, countryCode="IN"))
+        token = _preauth_token(page.content)
+        if not token:
+            if page.selector.css("[data-cy='submit'][disabled]"):
+                raise RuntimeError(
+                    "goibibo.com answered the flight search with its page shell, the search never started: "
+                    f"no __PRE_AUTH__ token at {page.url}"
+                )
+            raise RuntimeError(f"no __PRE_AUTH__ token in the goibibo.com flight search page: {page.url}")
+        api_url = build_flight_search_api_url(
+            origin, destination, departure_date, adults, children, infants, return_date
+        )
+        headers = build_flight_api_headers(token, device_id=str(uuid4()))
+        request = Request(api_url, session=session, headers=headers, render=False, countryCode="IN")
+        try:
+            response = await CLIENT.fetch(request)
+        except ScrapeError as error:
+            if error.code not in {"ERR_HTTP2_PROTOCOL_ERROR", "ERR_TUNNEL_CONNECTION_FAILED", "ERR_CONNECTION_CLOSED", "TIMEOUT"}:
+                raise
+            log.warning(f"retrying the flight stream once after {error.code}")
+            response = await CLIENT.fetch(request)
+        return parse_flight_stream(response.content)
+    except BaseException:
+        await CLIENT.close_session(session)
+        raise
 
 
 async def _flight_via_browser(page_url: str) -> Dict:

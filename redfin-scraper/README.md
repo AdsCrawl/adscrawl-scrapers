@@ -26,6 +26,18 @@ not need to download or launch a local Chromium browser.
 - `scrape_property_for_sale`
 - `scrape_property_for_rent`
 
+## US route notes (2026-11-03 retest)
+
+Rent and search passed. For-sale HTML navigation timed out, then the stingray
+fallback failed on the first `ERR_TUNNEL_CONNECTION_FAILED` (a later run reported
+a connect failure after the timeouts stacked).
+
+For-sale now requests the stingray detail APIs first, on the same US route as
+search. `initialInfo` is retried once. If it still fails, `aboveTheFold` is
+called with the property id from the URL (`/home/46456`). `mainHouseInfoPanelInfo`
+and `belowTheFold` are optional. The HTML document is opened only when those
+API calls do not return an address. This order has not been re-run live.
+
 ## Validation
 
 Run the credential-free repository checks with `python -m pytest tests` from the root.
@@ -35,10 +47,9 @@ To run this site's **live** tests (uses AdsCrawl credits):
 python -m pytest redfin-scraper/test.py -v
 ```
 
-This site has been migrated at source level. Live website behavior is **not yet
-verified** with AdsCrawl. Websites can change selectors, require sign-in, or
-reject a browser session. Historical files in `results/` are upstream examples,
-not outputs from a verified AdsCrawl run. Review URLs and dates in `run.py` first.
+Rent and search passed on the 2026-11-03 US-route retest. For-sale did not; see
+the notes above. Historical files in `results/` are upstream examples, not
+outputs from that retest.
 
 ## Source and license
 

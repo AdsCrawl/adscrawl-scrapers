@@ -142,13 +142,20 @@ def parse_reviews(result: Response) -> List[Review]:
     return parsed
 
 
+def _asin_from_url(url: str) -> str:
+    match = re.search(r"/(?:dp|gp/product|product-reviews)/([A-Z0-9]{10})", url, re.I)
+    return match.group(1) if match else url.rstrip("/").split("/")[-1].split("?")[0]
+
+
 def reviews_page_url(url: str) -> str:
     """the dedicated reviews document. Product pages often never render the review cards."""
     if "/product-reviews/" in url:
         return url.split("?")[0]
-    match = re.search(r"/(?:dp|gp/product)/([A-Z0-9]{10})", url)
-    asin = match.group(1) if match else url.rstrip("/").split("/")[-1].split("?")[0]
-    return f"https://www.amazon.com/product-reviews/{asin}/"
+    return f"https://www.amazon.com/product-reviews/{_asin_from_url(url)}/"
+
+
+def product_page_url(url: str) -> str:
+    return f"https://www.amazon.com/dp/{_asin_from_url(url)}"
 
 
 def next_review_page(result: Response) -> Optional[str]:
@@ -184,6 +191,18 @@ async def _fetch_once_retry(request: Request) -> Response:
         return await CLIENT.fetch(request)
 
 
+def _review_request(page_url: str) -> Request:
+    return Request(
+        page_url,
+        render=True,
+        autoScroll=True,
+        actions=[
+            {"type": "waitForSelector", "selector": "[data-hook=review]", "timeoutMs": 12000, "optional": True},
+        ],
+        **BASE_CONFIG,
+    )
+
+
 @managed
 async def scrape_reviews(url: str, max_pages: int = 2) -> List[Review]:
     """scrape product reviews of a given Amazon product URL"""
@@ -191,21 +210,30 @@ async def scrape_reviews(url: str, max_pages: int = 2) -> List[Review]:
     log.info(f"scraping review page: {page_url}")
     reviews: List[Review] = []
     seen = set()
+    fell_back_from_404 = False
     for page_number in range(1, max_pages + 1):
         page = None
         attempts = 6 if page_number == 1 else 1
         for attempt in range(1, attempts + 1):
-            page = await CLIENT.fetch(
-                Request(
-                    page_url,
-                    render=True,
-                    autoScroll=True,
-                    actions=[
-                        {"type": "waitForSelector", "selector": "[data-hook=review]", "timeoutMs": 12000, "optional": True},
-                    ],
-                    **BASE_CONFIG,
-                )
-            )
+            try:
+                page = await CLIENT.fetch(_review_request(page_url))
+            except ScrapeError as error:
+                status = error.response.status_code if error.response else 0
+                fallback = product_page_url(page_url)
+                if (
+                    page_number == 1
+                    and not fell_back_from_404
+                    and error.code == "HTTP_ERROR"
+                    and status == 404
+                    and fallback.rstrip("/") != page_url.rstrip("/")
+                ):
+                    # B0BCNKKZ91's /product-reviews/ URL is HTTP 404. The product
+                    # page can still carry the review widget for a live ASIN.
+                    log.warning(f"{page_url} returned HTTP 404; falling back to {fallback}")
+                    page_url = fallback
+                    fell_back_from_404 = True
+                    continue
+                raise
             parsed = parse_reviews(page)
             if parsed:
                 break
@@ -324,6 +352,7 @@ async def scrape_product(url: str) -> List[Product]:
                 **BASE_CONFIG,
                 render=True,
                 waitForSelector="#productTitle",
+                timeoutMs=120000,
             )
         )
     except ScrapeError as e:
@@ -339,11 +368,16 @@ async def scrape_product(url: str) -> List[Product]:
     _variation_data = re.findall(r'dimensionValuesDisplayData"\s*:\s*({.+?}),\n', product_result.content)
     if _variation_data:
         variant_asins = [variant_asin for variant_asin in json.loads(_variation_data[0]) if variant_asin != asin]
+        # a multipack can list dozens of ASINs. two is enough to prove the variant
+        # path; fetching every one stacked timeouts on the 2026-11-03 US retest.
+        if len(variant_asins) > 2:
+            log.info(f"limiting variants from {len(variant_asins)} to 2")
+            variant_asins = variant_asins[:2]
         log.info(f"scraping {len(variant_asins)} variants: {variant_asins}")
         for variant_asin in variant_asins:
             variant_url = f"https://www.amazon.com/dp/{variant_asin}"
             try:
-                result = await _fetch_once_retry(Request(variant_url, **BASE_CONFIG))
+                result = await _fetch_once_retry(Request(variant_url, **BASE_CONFIG, timeoutMs=120000))
             except ScrapeError as error:
                 log.warning(f"skipping variant {variant_url}: {error}")
                 continue

@@ -14,6 +14,7 @@ import os
 import re
 import math
 from collections import defaultdict
+from copy import deepcopy
 from typing import Dict, List, Optional, TypedDict
 from urllib.parse import urlencode
 from uuid import uuid4
@@ -250,8 +251,15 @@ def retrieve_search_data(result: Response) -> Dict:
 
 
 def generate_graphql_request(url_params: str, body: Dict, offset: int, session: Optional[str] = None):
-    """create a scrape config for the search graphql request"""
-    body["variables"]["input"]["pagination"]["offset"] = offset
+    """create a scrape config for one search graphql page.
+
+    Each page needs its own body. The caller reuses one template, and a shared
+    dict would leave every request on the last offset (the 2026-11-03 US retest
+    asked for 3 pages and kept 25 unique hotels).
+    """
+    body = deepcopy(body)
+    pagination = body.setdefault("variables", {}).setdefault("input", {}).setdefault("pagination", {})
+    pagination["offset"] = offset
     return Request(
         "https://www.booking.com/dml/graphql?" + url_params,
             headers={
@@ -375,24 +383,29 @@ async def scrape_search(
     if max_pages and max_pages * _page_size < _total_results:
         _total_results = max_pages * _page_size
 
-    data = []
     # request every page through the graphql api, including the first one: the results embedded in the page
-    # carry extra fields, and mixing them would give the first page a different shape than the others
+    # carry extra fields, and mixing them would give the first page a different shape than the others.
+    # pages are sequential on the first page's session so a later offset cannot be overwritten by an earlier one.
     offsets = list(range(0, _total_results, _page_size))
     body = retrieve_graphql_body(first_page)
-    body["variables"]["input"]["pagination"]["rowsPerPage"] = _page_size
-    to_scrape = [generate_graphql_request(url_params, body, offset, session) for offset in offsets]
-    log.info(f"scraping search results from the graphql api: {len(to_scrape)} pages to request")
-    async for response in CLIENT.fetch_many(to_scrape):
-        try:
-            data.extend(parse_graphql_response(response))
-        except Exception as e:
-            log.error("Failed to parse search results: {}", e)
-
-    # the same property can appear on multiple pages
+    body["variables"]["input"].setdefault("pagination", {})["rowsPerPage"] = _page_size
+    log.info(f"scraping search results from the graphql api: {len(offsets)} pages to request")
     unique_data = {}
-    for result in data:
-        unique_data.setdefault(result.get("basicPropertyData", {}).get("id"), result)
+    for offset in offsets:
+        try:
+            response = await CLIENT.fetch(generate_graphql_request(url_params, body, offset, session))
+            page_rows = parse_graphql_response(response)
+        except Exception as e:
+            log.error(f"Failed to parse search results at offset {offset}: {e}")
+            continue
+        before = len(unique_data)
+        for result in page_rows:
+            unique_data.setdefault(result.get("basicPropertyData", {}).get("id"), result)
+        added = len(unique_data) - before
+        log.info(f"graphql offset {offset}: {len(page_rows)} rows, {added} new")
+        if page_rows and added == 0 and offset != 0:
+            log.warning(f"graphql offset {offset} repeated hotels already scraped; stopping pagination")
+            break
     data = list(unique_data.values())
     log.success(f"scraped {len(data)} results from search pages")
     return data

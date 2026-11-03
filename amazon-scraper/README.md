@@ -26,6 +26,19 @@ not need to download or launch a local Chromium browser.
 - `scrape_reviews`
 - `scrape_product`
 
+## US route notes (2026-11-03 retest)
+
+Search passed. Product pages are fetched one at a time with a 120s timeout and
+one retry, and at most two variants. The live product test uses the PS5 slim
+`B0CL61F39H` and the 2024 MacBook `B0CX22ZW1T`. Atomic Habits (`0735211299`) and
+the fabric multipack (`B01GCLS32M`) each timed out on that run and are not in
+the live product set.
+
+`B0BCNKKZ91` (PlayStation 5 CFI-1215A01X) returns HTTP 404 on
+`/product-reviews/`. Reviews now use `B0CL61F39H`. If a reviews URL 404s, the
+scraper tries the `/dp/{ASIN}` page once. An empty review list still fails
+`assert len(result) != 0`. This ASIN change has not been re-run live.
+
 ## Validation
 
 Run the credential-free repository checks with `python -m pytest tests` from the root.
@@ -35,10 +48,9 @@ To run this site's **live** tests (uses AdsCrawl credits):
 python -m pytest amazon-scraper/test.py -v
 ```
 
-This site has been migrated at source level. Live website behavior is **not yet
-verified** with AdsCrawl. Websites can change selectors, require sign-in, or
-reject a browser session. Historical files in `results/` are upstream examples,
-not outputs from a verified AdsCrawl run. Review URLs and dates in `run.py` first.
+Search passed on the 2026-11-03 US-route retest. Product and reviews did not;
+see the notes above. Historical files in `results/` are upstream examples, not
+outputs from that retest.
 
 ## Source and license
 

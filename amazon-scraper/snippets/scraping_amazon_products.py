@@ -82,7 +82,7 @@ async def scrape_product(url: str) -> List[Dict]:
 @managed
 async def main():
     product_data = await scrape_product(
-        url = "https://www.amazon.com/PlayStation-5-Console-CFI-1215A01X/dp/B0BCNKKZ91/"
+        url = "https://www.amazon.com/PlayStation%C2%AE5-console-slim-PlayStation-5/dp/B0CL61F39H"
     )
 
     # save the results to a json file

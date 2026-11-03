@@ -133,10 +133,37 @@ async def test_hotel_listing_retries_a_timeout_once(monkeypatch):
     )
     fetch = AsyncMock(side_effect=[ScrapeError("timed out", code="TIMEOUT"), ok])
     monkeypatch.setattr(goibibo.CLIENT, "fetch", fetch)
+    closed = []
+
+    async def close_session(name):
+        closed.append(name)
+
+    monkeypatch.setattr(goibibo.CLIENT, "close_session", close_session)
     hotels = await goibibo.scrape_hotel_search("Delhi", "CTDEL", "2026-11-04", "2026-11-10", max_pages=1)
     assert hotels[0]["id"] == "h1"
     assert fetch.await_count == 2
-    assert fetch.await_args_list[0].args[0].session != fetch.await_args_list[1].args[0].session
+    failed = fetch.await_args_list[0].args[0].session
+    assert failed != fetch.await_args_list[1].args[0].session
+    assert closed == [failed]
+
+
+async def test_flight_stream_retries_http2_on_the_same_session(monkeypatch):
+    shell = Response(
+        "https://www.goibibo.com/flight/search?itinerary=DEL-BOM",
+        '<html><script>__PRE_AUTH__ = "abc123";</script></html>',
+    )
+    stream = Response("https://flights-cb.goibibo.com/api/search-stream-dt?it=DEL-BOM", _sse(_flight_payload()))
+    fetch = AsyncMock(side_effect=[
+        shell,
+        ScrapeError("http2", code="ERR_HTTP2_PROTOCOL_ERROR"),
+        stream,
+    ])
+    monkeypatch.setattr(goibibo.CLIENT, "fetch", fetch)
+    flights = await goibibo.scrape_flight_search("DEL", "BOM", "2026-11-04")
+    assert flights[0]["airline_name"] == "IndiGo"
+    assert fetch.await_count == 3
+    assert fetch.await_args_list[1].args[0].session == fetch.await_args_list[2].args[0].session
+    assert "search-stream-dt" in fetch.await_args_list[2].args[0].url
 
 
 def _above_payload():
@@ -215,6 +242,27 @@ async def test_sale_shell_falls_back_to_stingray_detail_apis(monkeypatch):
     assert parsed[0]["features"]["Interior"] == ["Heating: Forced air"]
 
 
+async def test_sale_uses_the_url_property_id_when_initial_info_tunnels(monkeypatch):
+    url = "https://www.redfin.com/WA/Seattle/506-E-Howell-St-98122/unit-W303/home/46456"
+    calls = []
+
+    async def fetch(request):
+        calls.append(request.url)
+        if "initialInfo" in request.url:
+            raise ScrapeError("tunnel", code="ERR_TUNNEL_CONNECTION_FAILED")
+        if "aboveTheFold" in request.url:
+            assert "propertyId=46456" in request.url
+            return Response(request.url, "{}&&" + json.dumps({"payload": _above_payload()}))
+        return Response(request.url, "{}&&" + json.dumps({"payload": {}}))
+
+    monkeypatch.setattr(redfin.CLIENT, "fetch", fetch)
+    parsed = await redfin.scrape_property_for_sale([url])
+    assert parsed[0]["price"] == "$500,000"
+    assert sum("initialInfo" in item for item in calls) == 2
+    assert any("aboveTheFold" in item and "propertyId=46456" in item for item in calls)
+    assert not any(item.split("?")[0] == url for item in calls)
+
+
 async def test_rent_page_retries_a_loading_browser_error(monkeypatch):
     loading = ScrapeError(
         "Browser navigation or interaction failed",
@@ -284,6 +332,30 @@ async def test_amazon_reviews_use_the_reviews_page_and_its_next_link(monkeypatch
     assert "pageNumber=2" in fetch.await_args_list[1].args[0].url
 
 
+async def test_amazon_reviews_fall_back_to_the_product_page_on_404(monkeypatch):
+    product = Response(
+        "https://www.amazon.com/dp/B0CL61F39H",
+        '''<div data-hook="review"><i data-hook="review-star-rating"><span>5.0 out of 5 stars</span></i>
+        <a data-hook="review-title"><span>Kept</span></a>
+        <span data-hook="review-date">Reviewed in the United States on January 2, 2026</span>
+        <div data-hook="review-body"><span>Still here.</span></div></div>''',
+    )
+
+    async def fetch(request):
+        if "/product-reviews/" in request.url:
+            raise ScrapeError(
+                "Target returned HTTP 404",
+                response=Response(request.url, status_code=404),
+                code="HTTP_ERROR",
+            )
+        return product
+
+    monkeypatch.setattr(amazon.CLIENT, "fetch", fetch)
+    reviews = await amazon.scrape_reviews("https://www.amazon.com/dp/B0CL61F39H")
+    assert reviews[0]["title"] == "Kept"
+    assert reviews[0]["text"] == "Still here."
+
+
 async def test_amazon_product_and_search_retry_tunnel_and_503_once(monkeypatch):
     product_html = "<html><span id='productTitle'>Example</span><input name='ASIN' value='B000000000'></html>"
     product_calls = {"n": 0}
@@ -313,6 +385,14 @@ async def test_amazon_product_and_search_retry_tunnel_and_503_once(monkeypatch):
     found = await amazon.scrape_search("https://www.amazon.com/s?k=kindle", max_pages=2)
     assert len(found) == 2
     assert sum(1 for url in search_calls if "page=2" in url) == 2
+
+
+def test_booking_graphql_pages_keep_distinct_offsets():
+    body = {"variables": {"input": {"pagination": {"offset": 0, "rowsPerPage": 25}}}, "query": "q"}
+    requests = [bookingcom.generate_graphql_request("ss=Malta", body, offset) for offset in (0, 25, 50)]
+    offsets = [json.loads(item.payload())["variables"]["input"]["pagination"]["offset"] for item in requests]
+    assert offsets == [0, 25, 50]
+    assert body["variables"]["input"]["pagination"]["offset"] == 0
 
 
 def test_booking_challenge_error_names_the_page_and_unmarked_apollo_still_parses():
@@ -418,16 +498,42 @@ async def test_allegro_requests_use_the_polish_route(monkeypatch):
         seen.append(request)
         return Response(
             request.url,
-            '<html><script data-serialize-box-id="search">{"props":{"searchMeta":{"lastAvailablePage":1,"totalCount":30}}}</script></html>',
+            '<html><script data-serialize-box-id="search">{"props":{"searchMeta":{"lastAvailablePage":1,"totalCount":30}}}</script>'
+            '<script data-serialize-box-id="price">{"price":{"formattedPrice":"10 zl"}}</script></html>',
         )
 
-    async def many(requests):
-        for request in requests:
-            seen.append(request)
-            yield Response(request.url, "<html></html>")
-
     monkeypatch.setattr(allegro.CLIENT, "fetch", fetch)
-    monkeypatch.setattr(allegro.CLIENT, "fetch_many", many)
     await allegro.scrape_search("Cooler CPU")
     await allegro.scrape_product(["https://allegro.pl/oferta/example-1"])
-    assert seen and all(request.countryCode == "PL" for request in seen)
+    assert seen and all(request.countryCode == "PL" and request.locale == "pl-PL" for request in seen)
+    assert all(request.headers.get("Accept-Language", "").startswith("pl-PL") for request in seen)
+    assert any(request.url.rstrip("/") == "https://allegro.pl" for request in seen)
+
+
+async def test_allegro_403_block_page_is_an_error_and_a_data_body_is_parsed(monkeypatch):
+    async def blocked(request):
+        if request.url.rstrip("/") == "https://allegro.pl":
+            raise ScrapeError(
+                "Target returned HTTP 403",
+                response=Response(request.url, "<html>denied</html>", status_code=403),
+                code="HTTP_ERROR",
+            )
+        return Response(request.url, "<html><title>Access denied</title></html>", status_code=403)
+
+    monkeypatch.setattr(allegro.CLIENT, "fetch", blocked)
+    with pytest.raises(ScrapeError, match="anti-bot"):
+        await allegro.scrape_search("Cooler CPU")
+
+    html = (
+        '<html><script data-serialize-box-id="search">'
+        '{"props":{"searchMeta":{"lastAvailablePage":1,"totalCount":30}}}</script></html>'
+    )
+
+    async def with_data(request):
+        if request.url.rstrip("/") == "https://allegro.pl":
+            return Response(request.url, "<html>ok</html>")
+        return Response(request.url, html, status_code=403)
+
+    monkeypatch.setattr(allegro.CLIENT, "fetch", with_data)
+    data = await allegro.scrape_search("Cooler CPU")
+    assert data["total_count"] == 30

@@ -25,6 +25,12 @@ not need to download or launch a local Chromium browser.
 - `scrape_hotel_search`
 - `scrape_flight_search`
 
+## Country and concurrency
+
+Requests set `countryCode` to `IN`. Goibibo is an India marketplace. A US exit leaves the flight search shell idle and the hotel listing call missing.
+
+A failed hotel or flight attempt closes its named browser session before the next attempt. With `ADSCRAWL_CONCURRENCY=1`, leaving that session open makes the retry raise `SESSION_LIMIT`. The 2026-11-03 US-route retest passed hotel and flight only at `ADSCRAWL_CONCURRENCY=2` (concurrency 1: hotel timeout, flight `ERR_HTTP2_PROTOCOL_ERROR` then `SESSION_LIMIT`). The flight stream is retried once on that HTTP/2 error before the rendered fallback. Concurrency 1 has not been re-run live after the session close.
+
 ## Validation
 
 Run the credential-free repository checks with `python -m pytest tests` from the root.
@@ -34,10 +40,10 @@ To run this site's **live** tests (uses AdsCrawl credits):
 python -m pytest goibibo-scraper/test.py -v
 ```
 
-This site has been migrated at source level. Live website behavior is **not yet
-verified** with AdsCrawl. Websites can change selectors, require sign-in, or
-reject a browser session. Historical files in `results/` are upstream examples,
-not outputs from a verified AdsCrawl run. Review URLs and dates in `run.py` first.
+Hotel and flight search passed on the 2026-11-03 US-route retest at
+`ADSCRAWL_CONCURRENCY=2` and `countryCode=IN`. They did not pass at concurrency 1
+on that run. The session-close change above is not part of that passing run.
+Historical files in `results/` are upstream examples, not outputs from that retest.
 
 ## Source and license
 

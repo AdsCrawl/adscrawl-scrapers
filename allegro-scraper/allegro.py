@@ -13,6 +13,7 @@ import json
 import re
 import urllib.parse
 from pathlib import Path
+from uuid import uuid4
 from loguru import logger as log
 from typing import List, Dict, TypedDict
 from adscrawl_scrapers import Request, ScraperClient, Response, ScrapeError
@@ -22,9 +23,16 @@ BASE_CONFIG = {
     # allegro.pl is the Polish marketplace. A US exit gets HTTP 403 on both
     # the offer page and the listing page before any HTML is parsed. PL is
     # the site's own country, not a preference over US for other retailers.
+    # The 2026-11-03 US retest still returned HTTP 403 with countryCode=PL.
     'countryCode': "PL",
+    'locale': "pl-PL",
     'render': True,
 }
+_ALLEGRO_HEADERS = {
+    "Accept-Language": "pl-PL,pl;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+}
+_LISTING_MARKERS = ("searchMeta", "formattedPrice", "__listing_StoreState")
 
 output = Path(__file__).parent / "results"
 output.mkdir(exist_ok=True)
@@ -84,6 +92,62 @@ def parse_search(result: Response) -> List[Dict]:
     }
     return data
 
+
+def _allegro_block_message(response: Response, url: str) -> str:
+    return (
+        f"allegro.pl returned HTTP {response.status_code} for {url} on the PL route. "
+        "The 2026-11-03 US retest also got HTTP 403 with countryCode=PL. "
+        "locale pl-PL, a Polish Accept-Language, and a homepage session did not "
+        "return a listing or offer document. This is an anti-bot block, not an empty catalog."
+    )
+
+
+def _document_has_listing(response: Response) -> bool:
+    html = response.content or ""
+    return any(marker in html for marker in _LISTING_MARKERS)
+
+
+async def _fetch_allegro(url: str, **extra) -> Response:
+    """homepage on a PL session, then the target page.
+
+    A 403 whose body actually contains listing JSON is returned for parsing.
+    A 403 block page is raised. Callers must not turn that into an empty success.
+    """
+    session = uuid4().hex
+    extra.setdefault("timeoutMs", 60000)
+    try:
+        try:
+            await CLIENT.fetch(Request(
+                "https://allegro.pl/",
+                session=session,
+                headers=_ALLEGRO_HEADERS,
+                timeoutMs=45000,
+                **BASE_CONFIG,
+            ))
+        except ScrapeError as error:
+            status = error.response.status_code if error.response else 0
+            if error.code != "HTTP_ERROR" or status != 403:
+                raise
+            log.warning("allegro.pl homepage returned HTTP 403; requesting the target page on the same session")
+        response = await CLIENT.fetch(Request(
+            url,
+            session=session,
+            headers=_ALLEGRO_HEADERS,
+            raiseOnHttpError=False,
+            **BASE_CONFIG,
+            **extra,
+        ))
+    finally:
+        await CLIENT.close_session(session)
+    if response.status_code >= 400 and not _document_has_listing(response):
+        raise ScrapeError(_allegro_block_message(response, url), response=response, code="HTTP_ERROR")
+    if response.status_code >= 400:
+        log.warning(
+            f"allegro.pl returned HTTP {response.status_code} for {url} but the body contains listing data; parsing it"
+        )
+    return response
+
+
 @managed
 async def scrape_search(query: str, max_pages: int = 3, scrape_all_pages: bool = False) -> List[Dict]:
     """
@@ -97,7 +161,7 @@ async def scrape_search(query: str, max_pages: int = 3, scrape_all_pages: bool =
     encoded_query = urllib.parse.quote(query)
     base_url = f"https://allegro.pl/listing?string={encoded_query}"
     log.info(f"scraping base url {base_url}")
-    first_page = await CLIENT.fetch(Request(base_url, **BASE_CONFIG))
+    first_page = await _fetch_allegro(base_url)
 
     # Parse first page
     first_page_data = parse_search(first_page)
@@ -113,16 +177,13 @@ async def scrape_search(query: str, max_pages: int = 3, scrape_all_pages: bool =
     log.info(f"Scraping {pages_to_scrape - 1} additional pages (total: {pages_to_scrape})")
     scraped_pages = 0
     if pages_to_scrape > 1:
-        other_pages = [
-            Request(f"{base_url}&p={page}", **BASE_CONFIG)
-            for page in range(2, pages_to_scrape + 1)
-        ]
-
-        log.info(f"Scraping {len(other_pages)} additional pages")
-        async for result in CLIENT.fetch_many(other_pages):
-            if isinstance(result, ScrapeError):
-                log.error("ASP protection failed - skipping page")
-                continue
+        log.info(f"Scraping {pages_to_scrape - 1} additional pages")
+        for page in range(2, pages_to_scrape + 1):
+            try:
+                result = await _fetch_allegro(f"{base_url}&p={page}")
+            except ScrapeError as error:
+                log.error(f"allegro listing page {page} failed: {error}")
+                break
             try:
                 page_data = parse_search(result)
                 search_results.extend(page_data["products"])
@@ -236,15 +297,14 @@ def parse_product(result: Response) -> Dict:
 
 @managed
 async def scrape_product(urls: list[str]) -> Dict:
-    """scrape a single Allegro product"""
-    product_config = {
-        **BASE_CONFIG,
-        'waitMs': 5000,
-        'waitForSelector': '//script[@data-serialize-box-id and contains(text(), "formattedPrice")]',
-    }
-    to_scrape = [Request(url, **product_config) for url in urls]
+    """scrape Allegro product pages. A block-page 403 is raised, not returned as an empty list."""
     data = []
-    async for response in CLIENT.fetch_many(to_scrape):
+    for url in urls:
+        response = await _fetch_allegro(
+            url,
+            waitMs=5000,
+            waitForSelector='//script[@data-serialize-box-id and contains(text(), "formattedPrice")]',
+        )
         try:
             data.append(parse_product(response))
         except Exception as e:
