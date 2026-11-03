@@ -13,7 +13,6 @@ import json
 import re
 import urllib.parse
 from pathlib import Path
-from uuid import uuid4
 from loguru import logger as log
 from typing import List, Dict, TypedDict
 from adscrawl_scrapers import Request, ScraperClient, Response, ScrapeError
@@ -96,9 +95,9 @@ def parse_search(result: Response) -> List[Dict]:
 def _allegro_block_message(response: Response, url: str) -> str:
     return (
         f"allegro.pl returned HTTP {response.status_code} for {url} on the PL route. "
-        "The 2026-11-03 US retest also got HTTP 403 with countryCode=PL. "
-        "locale pl-PL, a Polish Accept-Language, and a homepage session did not "
-        "return a listing or offer document. This is an anti-bot block, not an empty catalog."
+        "US and PL exits, locale pl-PL, a Polish Accept-Language, and a homepage "
+        "session were all tried. The tip2 retest was still HTTP 403. This is an "
+        "anti-bot block, not an empty catalog."
     )
 
 
@@ -108,37 +107,20 @@ def _document_has_listing(response: Response) -> bool:
 
 
 async def _fetch_allegro(url: str, **extra) -> Response:
-    """homepage on a PL session, then the target page.
+    """one rendered PL request.
 
-    A 403 whose body actually contains listing JSON is returned for parsing.
-    A 403 block page is raised. Callers must not turn that into an empty success.
+    A homepage session was tried on the tip2 retest and the listing was still
+    HTTP 403, with an extra timeout. A 403 body that actually contains listing
+    JSON is parsed. A 403 block page is raised, not turned into an empty catalog.
     """
-    session = uuid4().hex
     extra.setdefault("timeoutMs", 60000)
-    try:
-        try:
-            await CLIENT.fetch(Request(
-                "https://allegro.pl/",
-                session=session,
-                headers=_ALLEGRO_HEADERS,
-                timeoutMs=45000,
-                **BASE_CONFIG,
-            ))
-        except ScrapeError as error:
-            status = error.response.status_code if error.response else 0
-            if error.code != "HTTP_ERROR" or status != 403:
-                raise
-            log.warning("allegro.pl homepage returned HTTP 403; requesting the target page on the same session")
-        response = await CLIENT.fetch(Request(
-            url,
-            session=session,
-            headers=_ALLEGRO_HEADERS,
-            raiseOnHttpError=False,
-            **BASE_CONFIG,
-            **extra,
-        ))
-    finally:
-        await CLIENT.close_session(session)
+    response = await CLIENT.fetch(Request(
+        url,
+        headers=_ALLEGRO_HEADERS,
+        raiseOnHttpError=False,
+        **BASE_CONFIG,
+        **extra,
+    ))
     if response.status_code >= 400 and not _document_has_listing(response):
         raise ScrapeError(_allegro_block_message(response, url), response=response, code="HTTP_ERROR")
     if response.status_code >= 400:

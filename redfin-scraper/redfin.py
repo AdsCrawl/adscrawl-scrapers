@@ -13,6 +13,7 @@ import re
 from html import unescape
 from typing import List, Dict, Optional
 from urllib.parse import quote, urlsplit
+from uuid import uuid4
 from loguru import logger as log
 from adscrawl_scrapers import Request, ScraperClient, Response, ScrapeError
 
@@ -234,22 +235,21 @@ def _stingray_retryable(error: ScrapeError) -> bool:
     return code in _STINGRAY_RETRY or "CONNECT" in code or "TUNNEL" in code
 
 
-async def _stingray_get(url: str) -> Response:
-    """one JSON stingray call, retried once. Search already succeeds on this US route;
-    a single tunnel must not abort the sale listing."""
-    request = Request(
-        url,
-        countryCode="US",
-        render=False,
-        headers={"Accept": "application/json,text/plain,*/*", "Referer": "https://www.redfin.com/"},
-        timeoutMs=30000,
-    )
+async def _stingray_get(url: str, session: Optional[str] = None) -> Response:
+    """one JSON stingray call, same shape as the GIS search that already passes.
+
+    render=False plus an Accept/Referer override was HTTP 403 on initialInfo.
+    Search uses a normal US document navigation and does not.
+    """
+    request = Request(url, countryCode="US", session=session, timeoutMs=45000)
     try:
         return await CLIENT.fetch(request)
     except ScrapeError as error:
-        if not _stingray_retryable(error):
+        status = error.response.status_code if error.response else 0
+        blocked = error.code == "HTTP_ERROR" and status in {403, 429, 503}
+        if not _stingray_retryable(error) and not blocked:
             raise
-        log.warning(f"retrying stingray once after {error.code}: {url}")
+        log.warning(f"retrying stingray once after {error.code} HTTP {status}: {url}")
         return await CLIENT.fetch(request)
 
 
@@ -269,14 +269,15 @@ def _usable_above(payload: Dict) -> bool:
     return isinstance(info, dict) and bool(info.get("streetAddress"))
 
 
-async def _property_from_apis(url: str) -> Response:
+async def _property_from_apis(url: str, session: Optional[str] = None) -> Response:
     """stingray detail calls. initialInfo is optional: the sale URL ends in the property id."""
     path = urlsplit(url).path
     property_id = _property_id_from_url(url)
     listing_id = None
     try:
         initial = await _stingray_get(
-            "https://www.redfin.com/stingray/api/home/details/initialInfo?path=" + quote(path)
+            "https://www.redfin.com/stingray/api/home/details/initialInfo?path=" + quote(path),
+            session=session,
         )
         payload = _payload_from_text(initial.content)
         property_id = _nested_id(payload, "propertyId") or property_id
@@ -292,7 +293,7 @@ async def _property_from_apis(url: str) -> Response:
     for query in _detail_queries(property_id, listing_id):
         api_url = f"https://www.redfin.com/stingray/api/home/details/aboveTheFold?{query}"
         try:
-            above = await _stingray_get(api_url)
+            above = await _stingray_get(api_url, session=session)
             payload = _payload_from_text(above.content)
         except (ScrapeError, json.JSONDecodeError, ValueError) as error:
             last_error = error
@@ -315,7 +316,7 @@ async def _property_from_apis(url: str) -> Response:
     ):
         api_url = f"https://www.redfin.com{key}?{chosen}"
         try:
-            api_response = await _stingray_get(api_url)
+            api_response = await _stingray_get(api_url, session=session)
         except ScrapeError as error:
             log.warning(f"stingray {key} failed ({error.code}); continuing with aboveTheFold")
             continue
@@ -324,23 +325,30 @@ async def _property_from_apis(url: str) -> Response:
 
 
 async def _load_sale_page(url: str) -> Response:
-    # The HTML document timed out on the 2026-11-03 US retest, and the stingray
-    # call that followed died on the first tunnel. Ask for the JSON first (the
-    # same US route search already uses) and only open the document if that fails.
+    # Direct stingray (render=False) returned HTTP 403, then the HTML document
+    # was the 2 KB noscript shell. Open the property page on a session first so
+    # its cookies and any aboveTheFold XHR are kept, and call the detail APIs
+    # the same way search calls GIS.
+    session = uuid4().hex
     try:
-        return await _property_from_apis(url)
-    except (ScrapeError, ValueError, json.JSONDecodeError) as error:
-        log.warning(f"stingray details were not usable ({error}); opening {url}")
-    try:
-        return await CLIENT.fetch(
-            Request(url, **BASE_CONFIG, actions=_SALE_ACTIONS, timeoutMs=60000)
-        )
-    except ScrapeError as error:
-        raise ScrapeError(
-            f"redfin.com for-sale listing failed after stingray details and HTML navigation ({error.code}) for {url}",
-            response=error.response,
-            code=error.code,
-        ) from None
+        page = None
+        try:
+            page = await CLIENT.fetch(
+                Request(url, **BASE_CONFIG, session=session, actions=_SALE_ACTIONS, timeoutMs=45000)
+            )
+        except ScrapeError as error:
+            log.warning(f"property page navigation failed ({error.code}); requesting stingray on the same session")
+            if error.response and (error.response.network or error.response.content):
+                page = error.response
+        if page is not None:
+            try:
+                parse_data_cache(page)
+                return page
+            except ValueError as error:
+                log.warning(f"{error}; requesting stingray details for {url}")
+        return await _property_from_apis(url, session=session)
+    finally:
+        await CLIENT.close_session(session)
 
 
 @managed

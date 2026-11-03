@@ -26,18 +26,25 @@ not need to download or launch a local Chromium browser.
 - `scrape_reviews`
 - `scrape_product`
 
-## US route notes (2026-11-03 retest)
+## US route notes (2026-11-03 retests)
 
-Search passed. Product pages are fetched one at a time with a 120s timeout and
-one retry, and at most two variants. The live product test uses the PS5 slim
-`B0CL61F39H` and the 2024 MacBook `B0CX22ZW1T`. Atomic Habits (`0735211299`) and
-the fabric multipack (`B01GCLS32M`) each timed out on that run and are not in
-the live product set.
+Product pages are fetched one at a time. The live product set is the PS5 slim
+`B0CL61F39H` and the 2024 MacBook `B0CX22ZW1T`. On the tip2 retest both pages
+scraped, and `style` was `""` because the inline-twister span was empty. Style
+is now read from that span, the variation selection, the product-overview row,
+and `dimensionValuesDisplayData`. When the page has none of those, `style` is
+`null` (not `""`). A nullable style with no `min_presence` counts that null as
+present. Name, images, and the other fields keep their presence checks.
 
-`B0BCNKKZ91` (PlayStation 5 CFI-1215A01X) returns HTTP 404 on
-`/product-reviews/`. Reviews now use `B0CL61F39H`. If a reviews URL 404s, the
-scraper tries the `/dp/{ASIN}` page once. An empty review list still fails
-`assert len(result) != 0`. This ASIN change has not been re-run live.
+Search page 2 of `k=kindle` was HTTP 503 after one retry on a fresh browser.
+Later pages reuse the first page's session and, if that session is still
+blocked, try once on a new session. The `len(result) > 30` assertion is unchanged.
+
+`/product-reviews/B0CL61F39H` was HTTP 404 and the product page never rendered
+the review widget (6 attempts). Reviews are requested from
+`/hz/reviews-render/ajax/reviews/get/` first. The live example ASIN is Atomic
+Habits `0735211299`. `assert len(result) != 0` stays. This path has not been
+re-run live.
 
 ## Validation
 

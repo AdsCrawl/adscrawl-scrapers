@@ -13,6 +13,7 @@ import os
 import re
 from typing import Dict, List, TypedDict, Optional
 from urllib.parse import urljoin, urlparse, parse_qsl, urlencode, urlunparse
+from uuid import uuid4
 
 from loguru import logger as log
 from adscrawl_scrapers import Response, Request, ScraperClient, ScrapeError
@@ -77,26 +78,53 @@ async def scrape_search(url: str, max_pages: Optional[int] = None) -> List[Produ
     """Scrape amazon search pages product previews"""
     log.info(f"{url}: scraping first page")
 
-    # first, scrape the first page and find total pages:
-    first_result = await _fetch_once_retry(Request(url, **BASE_CONFIG))
-    results = parse_search(first_result)
-    _paging_meta = first_result.selector.xpath("//*[@cel_widget_id='UPPER-RESULT_INFO_BAR-0']//span/text()").get()
-    _total_results = int(re.findall(r"(?:over\s+)?([\d,]+)\s+results", _paging_meta)[0].replace(',', ''))
-    _results_per_page = int(re.findall(r"\d+-(\d+)", _paging_meta)[0])
-    total_pages = math.ceil(_total_results / _results_per_page)
-    if max_pages and total_pages > max_pages:
-        total_pages = max_pages
-
-    # now we can scrape remaining pages concurrently
-    log.info(f"{url}: found total results: {_total_results}, scraping {total_pages} pages concurrently")
-    for page in range(2, total_pages + 1):
-        result = await _fetch_once_retry(
-            Request(_add_or_replace_url_parameters(first_result.url, page=page), **BASE_CONFIG)
-        )
-        results.extend(parse_search(result))
+    # Later pages stay on the first page's session. A cold browser for page 2
+    # was HTTP 503 on the 2026-11-03 tip2 retest after the one retry.
+    session = uuid4().hex
+    try:
+        first_result = await _fetch_search_page(url, session)
+        results = parse_search(first_result)
+        _paging_meta = first_result.selector.xpath("//*[@cel_widget_id='UPPER-RESULT_INFO_BAR-0']//span/text()").get()
+        _total_results = int(re.findall(r"(?:over\s+)?([\d,]+)\s+results", _paging_meta)[0].replace(',', ''))
+        _results_per_page = int(re.findall(r"\d+-(\d+)", _paging_meta)[0])
+        total_pages = math.ceil(_total_results / _results_per_page)
+        if max_pages and total_pages > max_pages:
+            total_pages = max_pages
+        log.info(f"{url}: found total results: {_total_results}, scraping {total_pages} pages")
+        referer = str(first_result.url)
+        for page in range(2, total_pages + 1):
+            page_url = _next_search_page(first_result) or _add_or_replace_url_parameters(referer, page=page)
+            try:
+                result = await _fetch_search_page(page_url, session, referer=referer)
+            except ScrapeError as error:
+                if not _transient_failure(error):
+                    raise
+                log.warning(f"search page {page} still failed ({error.code}); one fresh session")
+                await CLIENT.close_session(session)
+                session = uuid4().hex
+                result = await _fetch_search_page(page_url, session, referer=referer)
+            results.extend(parse_search(result))
+            first_result = result
+            referer = str(result.url)
+    finally:
+        await CLIENT.close_session(session)
 
     log.info(f"{url}: found total of {len(results)} product previews")
     return results
+
+
+def _next_search_page(result: Response) -> Optional[str]:
+    href = result.selector.css(
+        "a.s-pagination-next::attr(href), a[aria-label='Go to next page']::attr(href)"
+    ).get()
+    if not href:
+        return None
+    return urljoin("https://www.amazon.com/", href)
+
+
+async def _fetch_search_page(url: str, session: str, referer: Optional[str] = None) -> Response:
+    headers = {"Referer": referer} if referer else {}
+    return await _fetch_once_retry(Request(url, **BASE_CONFIG, session=session, headers=headers))
 
 class Review(TypedDict):
     title: str
@@ -191,6 +219,75 @@ async def _fetch_once_retry(request: Request) -> Response:
         return await CLIENT.fetch(request)
 
 
+REVIEWS_AJAX = "https://www.amazon.com/hz/reviews-render/ajax/reviews/get/ref=cm_cr_arp_d_viewopt_srt"
+
+
+def reviews_ajax_request(asin: str, page: int, referer: str) -> Request:
+    """the XHR the product page uses. /product-reviews/ is HTTP 404 for some live ASINs."""
+    return Request(
+        REVIEWS_AJAX,
+        method="POST",
+        data={
+            "sortBy": "recent",
+            "reviewerType": "all_reviews",
+            "formatType": "",
+            "mediaType": "",
+            "filterByStar": "",
+            "filterByAge": "",
+            "filterByLanguage": "",
+            "filterByKeyword": "",
+            "shouldAppend": "undefined",
+            "deviceType": "desktop",
+            "canShowIntHeader": "undefined",
+            "pageSize": "20",
+            "asin": asin,
+            "pageNumber": str(page),
+            "scope": f"reviewsAjax{page}",
+        },
+        headers={
+            "content-type": "application/x-www-form-urlencoded;charset=UTF-8",
+            "accept": "text/html,*/*",
+            "x-requested-with": "XMLHttpRequest",
+            "referer": referer,
+            "origin": "https://www.amazon.com",
+        },
+        render=False,
+        countryCode="US",
+        timeoutMs=60000,
+    )
+
+
+def parse_review_fragments(content: str) -> List[Review]:
+    """reviews ajax answers are `&&&` separated JSON chunks whose strings hold the cards"""
+    pieces = []
+    for chunk in re.split(r"\s*&&&\s*", content or ""):
+        chunk = chunk.strip()
+        if not chunk:
+            continue
+        try:
+            payload = json.loads(chunk)
+        except json.JSONDecodeError:
+            if "data-hook" in chunk:
+                pieces.append(chunk)
+            continue
+        if isinstance(payload, list):
+            pieces.extend(str(item) for item in payload if isinstance(item, str) and "data-hook" in item)
+        elif isinstance(payload, str) and "data-hook" in payload:
+            pieces.append(payload)
+    if not pieces and content and 'data-hook="review"' in content:
+        pieces.append(content)
+    reviews: List[Review] = []
+    seen = set()
+    for html in pieces:
+        for review in parse_reviews(Response(REVIEWS_AJAX, html)):
+            key = (review["title"], review["text"], review["location_and_date"])
+            if key in seen:
+                continue
+            seen.add(key)
+            reviews.append(review)
+    return reviews
+
+
 def _review_request(page_url: str) -> Request:
     return Request(
         page_url,
@@ -203,54 +300,65 @@ def _review_request(page_url: str) -> Request:
     )
 
 
+def _extend_reviews(reviews: List[Review], seen: set, parsed: List[Review]) -> None:
+    for review in parsed:
+        key = (review["title"], review["text"], review["location_and_date"])
+        if key in seen:
+            continue
+        seen.add(key)
+        reviews.append(review)
+
+
 @managed
 async def scrape_reviews(url: str, max_pages: int = 2) -> List[Review]:
-    """scrape product reviews of a given Amazon product URL"""
-    page_url = reviews_page_url(url)
-    log.info(f"scraping review page: {page_url}")
+    """scrape product reviews of a given Amazon product URL.
+
+    The reviews ajax endpoint is what the product page calls. /product-reviews/
+    returned HTTP 404 for B0BCNKKZ91 and B0CL61F39H, and the product page's
+    review widget stayed gated across six renders.
+    """
+    asin = _asin_from_url(url)
+    referer = product_page_url(url)
+    log.info(f"scraping reviews for {asin} via the reviews ajax endpoint")
     reviews: List[Review] = []
     seen = set()
-    fell_back_from_404 = False
     for page_number in range(1, max_pages + 1):
-        page = None
-        attempts = 6 if page_number == 1 else 1
-        for attempt in range(1, attempts + 1):
-            try:
-                page = await CLIENT.fetch(_review_request(page_url))
-            except ScrapeError as error:
-                status = error.response.status_code if error.response else 0
-                fallback = product_page_url(page_url)
-                if (
-                    page_number == 1
-                    and not fell_back_from_404
-                    and error.code == "HTTP_ERROR"
-                    and status == 404
-                    and fallback.rstrip("/") != page_url.rstrip("/")
-                ):
-                    # B0BCNKKZ91's /product-reviews/ URL is HTTP 404. The product
-                    # page can still carry the review widget for a live ASIN.
-                    log.warning(f"{page_url} returned HTTP 404; falling back to {fallback}")
-                    page_url = fallback
-                    fell_back_from_404 = True
-                    continue
-                raise
-            parsed = parse_reviews(page)
-            if parsed:
-                break
-            log.debug(f"review widget was not rendered, retrying ({attempt}/{attempts})")
-            page = None
-        if page is None:
-            log.warning(f"failed to scrape reviews of {page_url}: Amazon kept gating the review widget")
+        try:
+            page = await _fetch_once_retry(reviews_ajax_request(asin, page_number, referer))
+        except ScrapeError as error:
+            log.warning(f"reviews ajax page {page_number} failed ({error.code})")
             break
-        for review in parse_reviews(page):
-            key = (review["title"], review["text"], review["location_and_date"])
-            if key in seen:
-                continue
-            seen.add(key)
-            reviews.append(review)
+        parsed = parse_review_fragments(page.content)
+        if not parsed:
+            log.warning(f"reviews ajax page {page_number} had no review cards")
+            break
+        _extend_reviews(reviews, seen, parsed)
+    if reviews:
+        log.info(f"scraped {len(reviews)} reviews")
+        return reviews
+
+    for page_url in (reviews_page_url(url), referer):
+        log.info(f"scraping review page: {page_url}")
+        try:
+            page = await CLIENT.fetch(_review_request(page_url))
+        except ScrapeError as error:
+            status = error.response.status_code if error.response else 0
+            log.warning(f"{page_url} failed ({error.code} HTTP {status})")
+            continue
+        parsed = parse_reviews(page)
+        if not parsed:
+            log.warning(f"review widget was not rendered on {page_url}")
+            continue
+        _extend_reviews(reviews, seen, parsed)
         page_url = next_review_page(page)
-        if not page_url:
-            break
+        if page_url and max_pages > 1:
+            try:
+                nxt = await CLIENT.fetch(_review_request(page_url))
+            except ScrapeError as error:
+                log.warning(f"next review page failed ({error.code})")
+            else:
+                _extend_reviews(reviews, seen, parse_reviews(nxt))
+        break
     log.info(f"scraped {len(reviews)} reviews")
     return reviews
 
@@ -296,6 +404,55 @@ def parse_images(html: str) -> List[str]:
     return []
 
 
+_STYLE_LABELS = {"style", "color", "colour", "size", "configuration", "pattern", "edition", "format"}
+
+
+def parse_style(result: Response, asin: str = "") -> Optional[str]:
+    """selected variant label. Empty when this ASIN has no style dimension.
+
+    The inline-twister span is empty on the PS5 slim and the 2024 MacBook.
+    The dimension JSON and the product-overview row still name the variant.
+    """
+    sel = result.selector
+    parts = []
+    css_bits = [
+        "[id^=inline-twister-expanded-dimension-text] ::text",
+        "#variation_style_name .selection ::text",
+        "#variation_color_name .selection ::text",
+        "#variation_size_name .selection ::text",
+        "#variation_configuration .selection ::text",
+        "span[id*=style_name_] ::text",
+    ]
+    for css in css_bits:
+        text = " ".join(piece.strip() for piece in sel.css(css).getall() if piece.strip())
+        if text:
+            parts.append(text)
+    for row in sel.css("#productOverview_feature_div tr, #poExpander tr"):
+        cells = [" ".join(cell.css("::text").getall()).strip() for cell in row.css("td, th")]
+        cells = [cell for cell in cells if cell]
+        if len(cells) < 2:
+            continue
+        label = cells[0].rstrip(":").lower()
+        if label in _STYLE_LABELS and cells[-1] not in parts:
+            parts.append(cells[-1])
+    match = re.search(r'"dimensionValuesDisplayData"\s*:\s*', result.content or "")
+    if match:
+        try:
+            data, _ = json.JSONDecoder().raw_decode(result.content, match.end())
+        except json.JSONDecodeError:
+            data = None
+        values = data.get(asin) if isinstance(data, dict) else None
+        if isinstance(values, list):
+            shown = [str(value).strip() for value in values if str(value).strip()]
+            if shown:
+                parts.append(" / ".join(shown))
+    unique = []
+    for part in parts:
+        if part not in unique:
+            unique.append(part)
+    return " | ".join(unique) or None
+
+
 def parse_product(result) -> Product:
     """parse Amazon's product page (e.g. https://www.amazon.com/dp/B07KR2N2GF) for essential product data"""
     images = parse_images(result.content)
@@ -303,10 +460,13 @@ def parse_product(result) -> Product:
     # the other fields can be extracted with simple css selectors
     # we can define our helper functions to keep our code clean
     sel = result.selector
+    asin = sel.css("input[name=ASIN]::attr(value)").get("").strip()
     parsed = {
         "name": sel.css("#productTitle::text").get("").strip(),
-        "asin": sel.css("input[name=ASIN]::attr(value)").get("").strip(),
-        "style": ''.join(sel.css("[id^=inline-twister-expanded-dimension-text] ::text").getall()).strip(),
+        "asin": asin,
+        # null, not "", when Amazon omits the dimension. The live presence
+        # check treats "" as missing and null as an explicit empty variant.
+        "style": parse_style(result, asin),
         "description": '\n'.join(sel.css("#productDescription p span ::text").getall()).strip(),
         "stars": sel.css("i[data-hook=average-star-rating] ::text").get("").strip(),
         "rating_count": sel.css("span[data-hook=total-review-count] ::text").get("").strip(),
@@ -353,6 +513,12 @@ async def scrape_product(url: str) -> List[Product]:
                 render=True,
                 waitForSelector="#productTitle",
                 timeoutMs=120000,
+                actions=[{
+                    "type": "waitForSelector",
+                    "selector": "#productOverview_feature_div, [id^=inline-twister-expanded-dimension-text], #variation_color_name",
+                    "timeoutMs": 8000,
+                    "optional": True,
+                }],
             )
         )
     except ScrapeError as e:

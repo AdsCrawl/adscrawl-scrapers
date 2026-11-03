@@ -29,7 +29,9 @@ not need to download or launch a local Chromium browser.
 
 Requests set `countryCode` to `IN`. Goibibo is an India marketplace. A US exit leaves the flight search shell idle and the hotel listing call missing.
 
-A failed hotel or flight attempt closes its named browser session before the next attempt. With `ADSCRAWL_CONCURRENCY=1`, leaving that session open makes the retry raise `SESSION_LIMIT`. The 2026-11-03 US-route retest passed hotel and flight only at `ADSCRAWL_CONCURRENCY=2` (concurrency 1: hotel timeout, flight `ERR_HTTP2_PROTOCOL_ERROR` then `SESSION_LIMIT`). The flight stream is retried once on that HTTP/2 error before the rendered fallback. Concurrency 1 has not been re-run live after the session close.
+A failed hotel or flight attempt closes its named browser session before the next attempt. With `ADSCRAWL_CONCURRENCY=1`, leaving that session open makes the retry raise `SESSION_LIMIT`. The first US retest passed hotel and flight only at `ADSCRAWL_CONCURRENCY=2`. After the session close, concurrency 1 still failed: the hotel page timed out waiting for one listing URL, and navigating onto `search-stream-dt` raised `ERR_HTTP2_PROTOCOL_ERROR` before any event.
+
+Hotel capture no longer blocks the navigation on that one URL. Any captured listing body that contains `personalizedSections` is parsed. The flight stream is fetched from the results page with `fetch()` (the page's own call) instead of navigating the browser onto the stream URL. Concurrency 1 has not been re-run live after that change. `countryCode` stays `IN`.
 
 ## Validation
 

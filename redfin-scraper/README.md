@@ -28,15 +28,16 @@ not need to download or launch a local Chromium browser.
 
 ## US route notes (2026-11-03 retest)
 
-Rent and search passed. For-sale HTML navigation timed out, then the stingray
-fallback failed on the first `ERR_TUNNEL_CONNECTION_FAILED` (a later run reported
-a connect failure after the timeouts stacked).
+Rent and search passed. For-sale HTML navigation timed out on the first retest.
+On the tip2 retest the direct stingray call (`render=False`) returned HTTP 403,
+then the property document was the 2 KB noscript shell with no property data.
 
-For-sale now requests the stingray detail APIs first, on the same US route as
-search. `initialInfo` is retried once. If it still fails, `aboveTheFold` is
-called with the property id from the URL (`/home/46456`). `mainHouseInfoPanelInfo`
-and `belowTheFold` are optional. The HTML document is opened only when those
-API calls do not return an address. This order has not been re-run live.
+For-sale now opens the property page on a session first and keeps any
+`aboveTheFold` response the page captured. The detail APIs are then requested
+like the GIS search that passed: a normal US navigation on that session, not
+`render=False`. `initialInfo` and a 403 are retried once. If `initialInfo`
+fails, `aboveTheFold` uses the property id from the URL. This has not been
+re-run live.
 
 ## Validation
 

@@ -328,13 +328,21 @@ def parse_flights(data: Dict) -> List[Flight]:
 
 def parse_listing_call(response: Response):
     """extract the listing API call captured by the browser"""
-    calls = [
-        call
-        for call in response.network
-        if LISTING_API in call["url"] and (call.get("response") or {}).get("body")
-    ]
+    calls = []
+    for call in response.network or []:
+        body = ((call.get("response") or {}).get("body")) or ""
+        url = call.get("url") or ""
+        if not body:
+            continue
+        # the desktop path is the one the page has used; a renamed listing URL
+        # still carries personalizedSections and should not be dropped
+        if LISTING_API in url or "personalizedSections" in body:
+            calls.append(call)
     if not calls:
-        raise RuntimeError("hotel listing API call not found in captured browser data")
+        seen = []
+        for call in (response.network or [])[:8]:
+            seen.append((call.get("url") or "")[:160])
+        raise RuntimeError(f"hotel listing API call not found in captured browser data; network: {seen}")
 
     call = calls[-1]
     data = json.loads(call["response"]["body"])["response"]
@@ -443,13 +451,15 @@ async def scrape_hotel_search(
         # a fresh session per attempt: a timed-out shell must not keep the next try
         session = uuid4().hex
         try:
+            # waitForResponse on the old path timed out the whole navigation at
+            # concurrency 1 even when a listing body was already on the wire.
+            # Scroll, then read whatever listing JSON the page captured.
             page = await CLIENT.fetch(
                 Request(
                     url,
-                    waitMs=5000,
-                    waitForResponse=LISTING_API,
+                    waitMs=8000,
                     session=session,
-                    timeoutMs=120000,
+                    timeoutMs=90000,
                     **BASE_CONFIG,
                 )
             )
@@ -566,15 +576,33 @@ async def _flight_via_preauth(
             origin, destination, departure_date, adults, children, infants, return_date
         )
         headers = build_flight_api_headers(token, device_id=str(uuid4()))
-        request = Request(api_url, session=session, headers=headers, render=False, countryCode="IN")
+        # Navigating the browser onto search-stream-dt fails with
+        # ERR_HTTP2_PROTOCOL_ERROR before any event arrives. The results page
+        # itself fetches that URL; do the same from the page.
+        script = (
+            "const response = await fetch("
+            + json.dumps(api_url)
+            + ", {method: 'GET', credentials: 'include', headers: "
+            + json.dumps(headers)
+            + "});\n"
+            "const text = await response.text();\n"
+            "if (!response.ok) throw new Error('search-stream-dt HTTP ' + response.status);\n"
+            "return text;"
+        )
+        request = Request(
+            page_url, session=session, render=False, countryCode="IN", javascript=script, timeoutMs=60000,
+        )
         try:
             response = await CLIENT.fetch(request)
         except ScrapeError as error:
-            if error.code not in {"ERR_HTTP2_PROTOCOL_ERROR", "ERR_TUNNEL_CONNECTION_FAILED", "ERR_CONNECTION_CLOSED", "TIMEOUT"}:
+            if error.code not in {"ERR_HTTP2_PROTOCOL_ERROR", "ERR_TUNNEL_CONNECTION_FAILED", "ERR_CONNECTION_CLOSED", "TIMEOUT", "BROWSER_ERROR"}:
                 raise
-            log.warning(f"retrying the flight stream once after {error.code}")
+            log.warning(f"retrying the in-page flight stream once after {error.code}")
             response = await CLIENT.fetch(request)
-        return parse_flight_stream(response.content)
+        body = response.javascript if isinstance(response.javascript, str) else ""
+        if "event:" not in body:
+            raise RuntimeError(f"flight stream script returned no SSE body for {page_url}")
+        return parse_flight_stream(body)
     except BaseException:
         await CLIENT.close_session(session)
         raise
