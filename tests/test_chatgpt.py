@@ -60,12 +60,44 @@ GUEST_UC_HTML = """
 """
 
 
+LIVE_CHROME = (
+    "ChatGPT is AI and can make mistakes. ChatGPT New chat Images Plugins "
+    "See plans and pricing Help Deep research Settings"
+)
+
+
 def test_guest_uc_page_without_role_attributes_is_the_paris_reply():
     answer = chatgpt.extract_assistant_answer(GUEST_UC_HTML, "What is the capital of France?")
     assert answer == "The capital of France is Paris. 🇫🇷"
     assert "New chat" not in answer and "Log in" not in answer
     prompt_only = "<body><p>What is the capital of France?</p><div>Ask ChatGPT</div></body>"
     assert chatgpt.extract_assistant_answer(prompt_only, "What is the capital of France?") == ""
+
+
+def test_live_chrome_is_not_returned_as_the_assistant_reply():
+    prompt = "What is the capital of France?"
+    assert chatgpt._is_chrome(LIVE_CHROME)
+    chrome_only = f"<main><p>{prompt}</p><p>{LIVE_CHROME}</p></main>"
+    assert chatgpt.extract_assistant_answer(chrome_only, prompt) == ""
+    with_reply = (
+        f"<main><p>{prompt}</p><p>{LIVE_CHROME}</p>"
+        "<p>The capital of France is Paris.</p></main>"
+    )
+    assert chatgpt.extract_assistant_answer(with_reply, prompt) == "The capital of France is Paris."
+    role_is_chrome = (
+        f'<article data-message-author-role="assistant">{LIVE_CHROME}</article>'
+        f"<main><p>{prompt}</p><p>The capital of France is Paris.</p></main>"
+    )
+    assert chatgpt.extract_assistant_answer(role_is_chrome, prompt) == "The capital of France is Paris."
+    stored = f'<html data-adscrawl-answer="{LIVE_CHROME}">{with_reply}</html>'
+    assert chatgpt.extract_assistant_answer(stored, prompt) == "The capital of France is Paris."
+    mixed = (
+        f'<article data-message-author-role="assistant">{LIVE_CHROME}'
+        " The capital of France is Paris.</article>"
+    )
+    assert chatgpt.extract_assistant_answer(mixed, prompt) == "The capital of France is Paris."
+    helpful = f"<main><p>{prompt}</p><p>I can help. The capital of France is Paris.</p></main>"
+    assert chatgpt.extract_assistant_answer(helpful, prompt) == "I can help. The capital of France is Paris."
 
 
 def test_actions_read_an_answer_already_on_the_page_before_send():
@@ -91,7 +123,9 @@ def test_actions_read_an_answer_already_on_the_page_before_send():
     assert wait["type"] == "evaluate" and wait["timeoutMs"] == chatgpt.ANSWER_WAIT_MS
     assert json.dumps(prompt) in wait["script"]
     assert chatgpt.ASSISTANT_SELECTOR in wait["script"]
-    assert "document.body" in wait["script"] and "Ask ChatGPT" in wait["script"]
+    assert "isChrome" in wait["script"] and "can make mistakes" in wait["script"]
+    assert "querySelector(\"main\")" in wait["script"]
+    assert "still rendering" in wait["script"]
     assert "!stopping" in wait["script"]
     for selector in chatgpt.SEND_BUTTON_SELECTORS:
         assert selector in wait["script"]
@@ -142,6 +176,41 @@ async def test_scrape_conversation_uses_html_when_the_script_result_is_blank(mon
 
     monkeypatch.setattr(chatgpt.CLIENT, "fetch", fetch)
     assert await chatgpt.scrape_conversation("What is the capital of France?") == "The capital of France is Paris."
+
+
+@pytest.mark.asyncio
+async def test_scrape_conversation_ignores_chrome_and_reads_the_reply(monkeypatch):
+    async def fetch(request):
+        html = (
+            "<main><p>What is the capital of France?</p>"
+            f"<p>{LIVE_CHROME}</p><p>The capital of France is Paris.</p></main>"
+        )
+        return Response(url=request.url, content=html, javascript=LIVE_CHROME)
+
+    monkeypatch.setattr(chatgpt.CLIENT, "fetch", fetch)
+    assert await chatgpt.scrape_conversation("What is the capital of France?") == "The capital of France is Paris."
+
+
+def test_find_answer_script_skips_live_chrome():
+    import subprocess
+    script = chatgpt._FIND_ANSWER_JS + r"""
+const prompt = "What is the capital of France?";
+const chrome = "ChatGPT is AI and can make mistakes. ChatGPT New chat Images Plugins See plans and pricing Help Deep research Settings";
+const document = {
+  querySelectorAll: () => [],
+  querySelector: (selector) => selector === "main" ? { innerText: prompt + " " + chrome } : null,
+  body: { innerText: "ignored" },
+};
+if (findAnswer(prompt) !== "") throw new Error("chrome accepted: " + JSON.stringify(findAnswer(prompt)));
+document.querySelector = (selector) => selector === "main"
+  ? { innerText: prompt + " " + chrome + " The capital of France is Paris." }
+  : null;
+const answer = findAnswer(prompt);
+if (answer !== "The capital of France is Paris.") throw new Error("missing reply: " + JSON.stringify(answer));
+document.querySelectorAll = () => [{ innerText: "The capital of France is Paris." }];
+if (findAnswer(prompt) !== "The capital of France is Paris.") throw new Error("role node ignored");
+"""
+    subprocess.run(["node", "-e", script], check=True)
 
 
 @pytest.mark.asyncio

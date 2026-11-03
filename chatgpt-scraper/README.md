@@ -44,10 +44,18 @@ run, so it is not live-verified.
 
 Commit `2669477` was retested on the US route. The guest page already showed
 "The capital of France is Paris." and `live_test` still exited 1 after about
-85s with `ACTION_FAILED` before that reply was returned. Capture now reads a
-reply that is already on the page, including a guest `/uc/` layout without an
-assistant role attribute, and does not require a stop button. That change has
-not been live re-verified.
+85s with `ACTION_FAILED` before that reply was returned. Capture then started
+reading a reply already on the page, including a guest `/uc/` layout without an
+assistant role attribute, and does not require a stop button.
+
+Commit `ef4cc2b` was retested on the US route with `ADSCRAWL_CHATGPT_COUNTRY`
+unset. It exited 1 after about 35s. `scrape_conversation` logged success, and
+`assert "Paris" in result` failed. The returned string was nav and disclaimer
+chrome (`ChatGPT is AI and can make mistakes. ChatGPT New chat Images Plugins
+See plans and pricing Help Deep research Settings`), not the assistant reply.
+There was no `ScrapeError` and no new failure screenshot. Capture after that
+commit ignores that chrome and waits until an assistant reply is stable. That
+change has not been live re-verified.
 
 `countryCode` stays `US` unless `ADSCRAWL_CHATGPT_COUNTRY` is set.
 `ADSCRAWL_DEFAULT_COUNTRY` does not replace it. From the repository root:

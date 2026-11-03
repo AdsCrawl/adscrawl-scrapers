@@ -18,7 +18,9 @@ content using remote browsers, HTML/JSON parsers and bounded concurrency.
 > this re-run (0/1, timeout / empty answer). Commit `ddd17ac` was checked later
 > on the US route and still failed (`ERR_TUNNEL_CONNECTION_FAILED` in about 15s,
 > then `ACTION_FAILED` in about 83s); smoke still passed and the answer-capture
-> change did not run. Other sites were not re-tested
+> change did not run. Commit `ef4cc2b` returned nav and disclaimer chrome in
+> about 35s (the Paris assertion failed; no `ScrapeError`). Capture after that
+> commit is not live-verified. Other sites were not re-tested
 > this round; see [the 2026-10-27 audit](docs/live-verification/2026-10-27.md)
 > for the last full 81-site audit (15 passed, 11 partial, 55 failed). Live
 > results reflect target-site behaviour on that date only.
@@ -37,12 +39,15 @@ route even though the run default was US. The first Bing attempt was 1 pass and
 | [chatgpt](chatgpt-scraper/) | 0/1 on both runs: timeout / empty answer. Not passed |
 | [chatgpt](chatgpt-scraper/) `ddd17ac` | Not passed on the US route. Run 1 `ERR_TUNNEL_CONNECTION_FAILED` (~15s). Run 2 `ACTION_FAILED` (~83s). Answer capture did not run |
 | [chatgpt](chatgpt-scraper/) `2669477` | Not passed. The US guest page already showed "The capital of France is Paris." Then `ACTION_FAILED` after about 85s, before that reply was returned |
+| [chatgpt](chatgpt-scraper/) `ef4cc2b` | Not passed. Exit 1 after about 35s. `scrape_conversation` logged success, then `assert "Paris" in result` failed. The returned string was nav and disclaimer chrome, not the assistant reply. No `ScrapeError` |
 
 Settings for that run: `ADSCRAWL_DEFAULT_COUNTRY=US`, `ADSCRAWL_CONCURRENCY=1`, `--reruns=0`.
 
 A later check of commit `ddd17ac` on 2026-11-03, still on the US route, did not pass ChatGPT. `scripts/smoke.py` still passed, so ordinary sites loaded. `chatgpt-scraper` run 1 exited 1 in about 15s with `ScrapeError` `ERR_TUNNEL_CONNECTION_FAILED`. Run 2 exited 1 in about 83s with `ScrapeError` `ACTION_FAILED`. Direct checks of chatgpt.com hit that tunnel error or a blank page with no chat UI. `EMPTY_ANSWER` did not occur. The answer-capture change did not run, so it is not live-verified.
 
-Commit `2669477` was retested on the same US route. chatgpt.com loaded, and the guest page `https://chatgpt.com/uc/...` already showed "The capital of France is Paris." `SELECTED_SCRAPER=chatgpt-scraper` still exited 1 after about 85s with `ACTION_FAILED` from `perform_actions`, before that reply was returned. Capture was changed after that to read a reply already on the page, including a guest `/uc/` layout with no assistant role attribute. That change has not been live re-verified.
+Commit `2669477` was retested on the same US route. chatgpt.com loaded, and the guest page `https://chatgpt.com/uc/...` already showed "The capital of France is Paris." `SELECTED_SCRAPER=chatgpt-scraper` still exited 1 after about 85s with `ACTION_FAILED` from `perform_actions`, before that reply was returned. Capture was changed after that to read a reply already on the page, including a guest `/uc/` layout with no assistant role attribute.
+
+Commit `ef4cc2b` was retested on the US route with `ADSCRAWL_CHATGPT_COUNTRY` unset. It exited 1 after about 35s. There was no `ERR_*`, `TIMEOUT`, or `ACTION_FAILED`. `scrape_conversation` logged success, and the assertion `assert "Paris" in result` failed. The returned string was only UI chrome: `ChatGPT is AI and can make mistakes. ChatGPT New chat Images Plugins See plans and pricing Help Deep research Settings`. No new `artifacts/scrape-failures` file was written, because this was an assertion failure rather than a `ScrapeError`. Capture after that commit rejects that chrome and waits for a stable assistant reply that is not the nav, disclaimer, or composer. That change has not been live re-verified.
 
 Files in `results/` are historical examples, not output from this re-run.
 The screenshot below is from the 2026-10-27 audit. ChatGPT did not pass on 2026-11-03.
@@ -141,8 +146,11 @@ same day on the US route: smoke still passed, and ChatGPT failed again
 (`ERR_TUNNEL_CONNECTION_FAILED` in about 15s, then `ACTION_FAILED` in about
 83s). The answer-capture change did not run. `EMPTY_ANSWER` did not occur.
 Commit `2669477` later showed the Paris reply on the guest page and still
-failed with `ACTION_FAILED` after about 85s. The capture change after that
-screenshot has not been live re-verified.
+failed with `ACTION_FAILED` after about 85s. Commit `ef4cc2b` then returned
+the nav and disclaimer chrome in about 35s (`scrape_conversation` logged
+success; `assert "Paris" in result` failed; no `ScrapeError`). Capture after
+`ef4cc2b` rejects that chrome and waits for the assistant reply. That change
+has not been live re-verified.
 
 ```bash
 python -m pytest tests -q

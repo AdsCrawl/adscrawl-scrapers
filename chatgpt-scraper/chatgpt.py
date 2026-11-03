@@ -52,12 +52,20 @@ ANSWER_WAIT_MS = 55_000
 _PLACEHOLDER = re.compile(r"^(thinking|generating|hang tight)[.!…\s]*$", re.IGNORECASE)
 # Composer chrome that follows a guest /uc/ reply. Cutting here keeps the
 # sidebar (Log in, New chat), which is rendered before the answer, out of it.
-_CHROME_STOPS = (
+# Phrases from the ef4cc2b US run, which returned this chrome instead of the
+# reply: "ChatGPT is AI and can make mistakes. ChatGPT New chat Images ..."
+_CHROME_PHRASES = (
+    "ChatGPT is AI and can make mistakes",
+    "can make mistakes",
+    "New chat",
+    "See plans and pricing",
+    "Deep research",
     "Ask ChatGPT",
     "Message ChatGPT",
-    "ChatGPT can make mistakes",
+    "Sign up for free",
     "Get responses tailored to you",
 )
+_CHROME_WORDS = ("Images", "Plugins", "Settings", "Help")
 
 # Playwright's `:visible` is resolved when the action runs. Tagging a node and
 # clicking it later loses the mark if React redraws the composer.
@@ -79,24 +87,86 @@ for (let attempt = 0; attempt < 4; attempt += 1) {
 }
 """
 
-# Guest /uc/ replies are visible text after the prompt. They do not always
-# carry data-message-author-role, and the stop control often never appears.
+_CHROME_EDGES = (*_CHROME_WORDS, "ChatGPT")
+
+
+def _chrome_split_pattern() -> str:
+    # Split on the long labels only. Short menu words ("Help", "Settings")
+    # stay inside a sentence such as "I can help" and are peeled off the
+    # edges afterwards. Splitting them out of the live chrome string left
+    # ". ChatGPT", which was then returned as the reply.
+    phrases = [re.escape(part) for part in sorted(_CHROME_PHRASES, key=len, reverse=True)]
+    return "(" + "|".join(phrases) + ")"
+
+
+# Guest /uc/ replies are the assistant message, not the nav or the disclaimer.
+# A stop control often never appears, so its absence is not a reason to read
+# the sidebar instead.
 _FIND_ANSWER_JS = r"""
+function cleanText(value) {
+  return (value || "").replace(/\s+/g, " ").trim();
+}
+function cleanPiece(value) {
+  let text = cleanText(value);
+  const edges = __CHROME_EDGES__;
+  const edge = edges.map((word) => word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
+  const leading = new RegExp("^[\\s.|:;,\u2013\u2014\\-·]*(?:" + edge + ")\\b[\\s.|:;,\u2013\u2014\\-·]*", "i");
+  const trailing = new RegExp("[\\s.|:;,\u2013\u2014\\-·]*\\b(?:" + edge + ")[\\s.|:;,\u2013\u2014\\-·]*$", "i");
+  let previous = "";
+  while (text && text !== previous) {
+    previous = text;
+    text = text.replace(leading, "").replace(trailing, "").replace(/^[\s.|:;,\u2013\u2014\-·]+/, "").trim();
+  }
+  return text;
+}
+function isChrome(value) {
+  const text = cleanText(value).toLowerCase();
+  if (!text) return true;
+  if (text.includes("can make mistakes")) return true;
+  const words = text.match(/[a-z0-9]+/g) || [];
+  if (words.length > 0 && words.every((word) => word === "chatgpt")) return true;
+  const phrases = __CHROME_PHRASES__;
+  const menu = __CHROME_WORDS__;
+  let hits = 0;
+  for (const phrase of phrases) {
+    if (text.includes(phrase.toLowerCase())) hits += 1;
+  }
+  for (const word of menu) {
+    if (new RegExp("\\b" + word.toLowerCase() + "\\b", "i").test(text)) hits += 1;
+  }
+  if (hits >= 2) return true;
+  for (const phrase of phrases) {
+    if (text === phrase.toLowerCase()) return true;
+  }
+  for (const word of menu) {
+    if (text === word.toLowerCase()) return true;
+  }
+  return false;
+}
 function findAnswer(prompt) {
   const prefix = prompt.slice(0, Math.min(prompt.length, 80));
-  const clean = (value) => (value || "").replace(/\s+/g, " ").trim();
-  const placeholder = (value) => /^(thinking|generating|hang tight)[.!…\s]*$/i.test(value);
+  const placeholder = (value) => /^(thinking|generating|hang tight)[.!…\s]*$/i.test(cleanText(value));
   const usable = (value) => {
-    const text = clean(value);
-    return text && !placeholder(text) && text !== prefix && text.length >= 3 ? text : "";
+    if (isChrome(value)) return "";
+    const text = cleanPiece(value);
+    if (!text || placeholder(text) || text === prefix || text.length < 3 || isChrome(text)) return "";
+    return text;
+  };
+  const split = new RegExp(__CHROME_SPLIT__, "i");
+  const fromAfter = (after) => {
+    for (const piece of after.split(split)) {
+      const text = usable(piece);
+      if (text) return text;
+    }
+    return "";
   };
   const roleNodes = [...document.querySelectorAll("__ASSISTANT__")];
   for (let index = roleNodes.length - 1; index >= 0; index -= 1) {
-    const text = usable(roleNodes[index].innerText || roleNodes[index].textContent);
+    const text = fromAfter(roleNodes[index].innerText || roleNodes[index].textContent || "");
     if (text) return text;
   }
-  const body = clean(document.body ? document.body.innerText : "");
-  const stops = ["Ask ChatGPT", "Message ChatGPT", "ChatGPT can make mistakes", "Get responses tailored to you"];
+  const root = document.querySelector("main") || document.body;
+  const body = cleanText(root && (root.innerText || root.textContent));
   let from = 0;
   while (from < body.length) {
     const at = body.indexOf(prefix, from);
@@ -104,23 +174,27 @@ function findAnswer(prompt) {
     let after = body.slice(at + prefix.length);
     const nextPrompt = after.indexOf(prefix);
     if (nextPrompt >= 0) after = after.slice(0, nextPrompt);
-    for (const stop of stops) {
-      const found = after.indexOf(stop);
-      if (found >= 0) after = after.slice(0, found);
-    }
-    const text = usable(after);
+    const text = fromAfter(after);
     if (text) return text;
     from = at + Math.max(prefix.length, 1);
   }
   return "";
 }
-""".replace("__ASSISTANT__", ASSISTANT_SELECTOR)
+""".replace("__ASSISTANT__", ASSISTANT_SELECTOR).replace(
+    "__CHROME_PHRASES__", json.dumps(list(_CHROME_PHRASES))
+).replace(
+    "__CHROME_WORDS__", json.dumps(list(_CHROME_WORDS))
+).replace(
+    "__CHROME_EDGES__", json.dumps(sorted(_CHROME_EDGES, key=len, reverse=True))
+).replace(
+    "__CHROME_SPLIT__", json.dumps(_chrome_split_pattern())
+)
 
 _MARK_TEMPLATE = r"""
 // Capture an answer already on the page before clicking send.
 const prompt = __PROMPT_LITERAL__;
 __FIND_ANSWER__
-const deadline = Date.now() + 12000;
+const deadline = Date.now() + 40000;
 let previous = "";
 let ticks = 0;
 while (Date.now() < deadline) {
@@ -161,7 +235,10 @@ function clickSend() {
   }
   return false;
 }
-if (!findAnswer(prompt)) clickSend();
+const root = document.querySelector("main") || document.body;
+const promptVisible = cleanText(root && (root.innerText || root.textContent)).includes(prompt.slice(0, Math.min(prompt.length, 80)));
+// Do not submit again while a guest reply is still rendering.
+if (!findAnswer(prompt) && !promptVisible) clickSend();
 const deadline = Date.now() + 45000;
 let previous = "";
 let ticks = 0;
@@ -187,10 +264,10 @@ return answer;
 """
 
 _READ_TEMPLATE = r"""
-const stored = document.documentElement.getAttribute("data-adscrawl-answer");
-if (stored && stored.trim()) return stored.trim();
-const prompt = __PROMPT_LITERAL__;
 __FIND_ANSWER__
+const stored = document.documentElement.getAttribute("data-adscrawl-answer");
+const prompt = __PROMPT_LITERAL__;
+if (stored && !isChrome(stored)) return stored.trim();
 return findAnswer(prompt) || "";
 """
 
@@ -236,7 +313,7 @@ def conversation_actions(prompt: str) -> list[dict]:
         {"type": "click", "selector": "#credentials-picker-container #close", "optional": True},
         {"type": "click", "selector": "button[data-testid='close-button']", "optional": True},
         {"type": "click", "selector": "[role='dialog'] button[aria-label='Close']", "optional": True},
-        {"type": "evaluate", "script": _script(_MARK_TEMPLATE, prompt), "timeoutMs": 20_000},
+        {"type": "evaluate", "script": _script(_MARK_TEMPLATE, prompt), "timeoutMs": 50_000},
         {
             "type": "condition",
             "selector": ANSWER_ATTRIBUTE,
@@ -250,6 +327,20 @@ def conversation_actions(prompt: str) -> list[dict]:
     ]
 
 
+def _spaced_html(html: str) -> str:
+    """Put a space at block boundaries so ``Settings</p><p>Paris`` is not one word."""
+    spaced = re.sub(r"(?i)<br\s*/?>", " ", html or "")
+    return re.sub(
+        r"(?i)</(p|div|li|tr|h[1-6]|section|article|button|nav|aside|footer|header|ul|ol|td|th|main)>",
+        r" </\1>",
+        spaced,
+    )
+
+
+def _block_text(html: str) -> str:
+    return Selector(text=_spaced_html(html)).xpath("string(.)").get() or ""
+
+
 def _usable_answer(value: object) -> str:
     if not isinstance(value, str):
         return ""
@@ -259,13 +350,75 @@ def _usable_answer(value: object) -> str:
     return cleaned
 
 
+def _is_chrome(value: str) -> bool:
+    """Nav, disclaimer, and composer labels are not an assistant reply."""
+    lowered = re.sub(r"\s+", " ", value or "").strip().lower()
+    if not lowered:
+        return True
+    if "can make mistakes" in lowered:
+        return True
+    words = re.findall(r"[a-z0-9]+", lowered)
+    if words and all(word == "chatgpt" for word in words):
+        return True
+    hits = 0
+    for phrase in _CHROME_PHRASES:
+        if phrase.lower() in lowered:
+            hits += 1
+    for word in _CHROME_WORDS:
+        if re.search(rf"\b{re.escape(word.lower())}\b", lowered):
+            hits += 1
+    if hits >= 2:
+        return True
+    if any(lowered == phrase.lower() for phrase in _CHROME_PHRASES):
+        return True
+    return any(lowered == word.lower() for word in _CHROME_WORDS)
+
+
+def _clean_piece(value: str) -> str:
+    """Drop menu words and a leftover "ChatGPT" glued to either end."""
+    text = re.sub(r"\s+", " ", value or "").strip()
+    edge = "|".join(re.escape(word) for word in sorted(_CHROME_EDGES, key=len, reverse=True))
+    leading = re.compile(rf"^[\s.·|:;,\-–—]*(?:{edge})\b[\s.·|:;,\-–—]*", re.IGNORECASE)
+    trailing = re.compile(rf"[\s.·|:;,\-–—]*\b(?:{edge})[\s.·|:;,\-–—]*$", re.IGNORECASE)
+    previous = None
+    while text and text != previous:
+        previous = text
+        text = trailing.sub("", leading.sub("", text))
+        text = re.sub(r"^[\s.·|:;,\-–—]+", "", text).strip()
+    return text
+
+
+def _reply_pieces(text: str) -> list[str]:
+    return re.split(_chrome_split_pattern(), text, flags=re.IGNORECASE)
+
+
+def _first_reply(text: str, prefix: str = "") -> str:
+    for piece in _reply_pieces(text):
+        # Classify the raw piece first. Edge-stripping "Ask ChatGPT" would
+        # otherwise leave the word "Ask" and return that as the reply.
+        if _is_chrome(piece):
+            continue
+        answer = _usable_answer(_clean_piece(piece))
+        if answer and answer != prefix and len(answer) >= 3 and not _is_chrome(answer):
+            return answer
+    return ""
+
+
 def extract_guest_reply(html: str, prompt: str) -> str:
-    """Reply text on a guest /uc/ page that has no assistant role attribute."""
+    """Reply text on a guest /uc/ page that has no assistant role attribute.
+
+    The search stays inside ``main`` when that element exists so the sidebar
+    is not the reply. Chrome after the prompt is discarded, and a later
+    sentence on the same page can still be the answer.
+    """
     prefix = re.sub(r"\s+", " ", prompt or "").strip()[:80]
     if not html or not prefix:
         return ""
-    selector = Selector(text=html)
-    raw = selector.xpath("string(//body)").get() or selector.xpath("string(.)").get() or ""
+    selector = Selector(text=_spaced_html(html))
+    mains = selector.xpath("//main")
+    raw = " ".join(node.xpath("string(.)").get() or "" for node in mains) if mains else ""
+    if not raw.strip():
+        raw = selector.xpath("string(//body)").get() or selector.xpath("string(.)").get() or ""
     text = re.sub(r"\s+", " ", raw).strip()
     start = 0
     while start < len(text):
@@ -276,12 +429,8 @@ def extract_guest_reply(html: str, prompt: str) -> str:
         next_prompt = after.find(prefix)
         if next_prompt >= 0:
             after = after[:next_prompt]
-        for stop in _CHROME_STOPS:
-            cut = after.find(stop)
-            if cut >= 0:
-                after = after[:cut]
-        answer = _usable_answer(after)
-        if answer and answer != prefix and len(answer) >= 3:
+        answer = _first_reply(after, prefix)
+        if answer:
             return answer
         start = at + max(len(prefix), 1)
     return ""
@@ -298,22 +447,27 @@ def extract_assistant_answer(html: str, prompt: str = "") -> str:
         return ""
     selector = Selector(text=html)
     stored = _usable_answer(selector.css("[data-adscrawl-answer]::attr(data-adscrawl-answer)").get())
-    if stored:
+    if stored and not _is_chrome(stored):
         return stored
     texts = []
     for node in selector.css(ASSISTANT_SELECTOR):
         # string(.) concatenates descendant text. Joining ::text with spaces
         # turns "<strong>Paris</strong>." into "Paris ."
-        text = _usable_answer(node.xpath("string(.)").get() or "")
-        if text:
-            texts.append(text)
+        # A guest turn can wrap the reply in the same text as the disclaimer.
+        # Keep the sentence and drop the chrome around it.
+        answer = _first_reply(_block_text(node.get() or ""))
+        if answer:
+            texts.append(answer)
     if texts:
         return texts[-1]
     return extract_guest_reply(html, prompt)
 
 
 def answer_from_response(javascript: object, html: str, prompt: str = "") -> str:
-    return _usable_answer(javascript) or extract_assistant_answer(html, prompt)
+    scripted = _usable_answer(javascript)
+    if scripted and not _is_chrome(scripted):
+        return scripted
+    return extract_assistant_answer(html, prompt)
 
 
 @managed
