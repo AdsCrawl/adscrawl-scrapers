@@ -9,5 +9,7 @@ dist/
 .env
 .env.*
 !.env.example
+# Remote-browser failure screenshots and URL/title notes. Do not commit.
+artifacts/
 *.log
 .DS_Store

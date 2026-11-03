@@ -30,6 +30,17 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# Site acceptance modules are named test.py. The default python_files patterns
+# skip that name, so `pytest <site>-scraper` from the repository root collects
+# nothing and exits 5 even though the suite exists.
+python_files = ["test_*.py", "*_test.py", "test.py"]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
+# Every site acceptance module is named test.py. The default prepend importer
+# loads each of them as the top-level module "test", so the second site aborts
+# collection with an import-file mismatch (exit 2, or exit 4 when a node id
+# cannot be collected). importlib gives each file its own module name.
+# Pytest 9 exposes this only as a command-line option, applied here via addopts.
+addopts = "--import-mode=importlib"
+consider_namespace_packages = false
 filterwarnings = ["ignore:invalid escape sequence:SyntaxWarning"]

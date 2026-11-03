@@ -21,5 +21,6 @@ jobs:
       - name: Run selected site
         env:
           ADSCRAWL_API_KEY: ${{ secrets.ADSCRAWL_API_KEY }}
+          ADSCRAWL_DEFAULT_COUNTRY: US
           SELECTED_SCRAPER: ${{ inputs.scraper }}
         run: python scripts/live_test.py

@@ -10,23 +10,54 @@ content using remote browsers, HTML/JSON parsers and bounded concurrency.
 [API documentation](https://www.adscrawl.net/docs/) ·
 [中文](README.zh-CN.md) · [Transport details](docs/MIGRATION.md)
 
-> **All 81 sites have been live-tested** (2026-10-27):
-> 15 fully passed, 11 partially passed, and 55 failed. See the
-> [dated per-site evidence report](docs/live-verification/2026-10-27.md) and
-> [machine-readable results](docs/live-verification/2026-10-27.json).
-> Each status reflects the latest recorded attempt; see the report for scope and remaining failures.
-> Files in `results/` are historical examples, not evidence of current live results.
+> Live re-verification on 2026-11-03 (Asia/Shanghai, PR #1 harness, US default
+> routing, one attempt per run, no reruns): offline tests 47/47 and catalog
+> checks 81/81 passed. The live smoke test (rendered HTML + JSON POST + session
+> cleanup) passed. Live suites passed for **bing** (2/2, on its built-in GB
+> route, second attempt), **shopify** (5/5), and **chatgpt** at commit `3f7a7b4`
+> (1/1 in 70.17s on the US route, `ADSCRAWL_CHATGPT_COUNTRY` unset, exit 0).
+> Earlier the same day ChatGPT failed: the first re-run was 0/1 (timeout / empty
+> answer); `ddd17ac` hit `ERR_TUNNEL_CONNECTION_FAILED` then `ACTION_FAILED`;
+> `ef4cc2b` returned nav and disclaimer chrome. Other sites were not re-tested
+> this round; see [the 2026-10-27 audit](docs/live-verification/2026-10-27.md)
+> for the last full 81-site audit (15 passed, 11 partial, 55 failed). Live
+> results reflect target-site behaviour on that date only.
 
-Verified examples from the current audit: **Bing** returned 30 search results and
-8 keyword suggestions; **ChatGPT** returned the correct answer to the test prompt.
-These checks cover the specific functions recorded in the report, not a blanket
-guarantee for every feature or future request.
+`scripts/live_test.py` sets `ADSCRAWL_DEFAULT_COUNTRY=US` when that variable is
+unset or blank. A site's explicit `countryCode` overrides that default. Bing's
+`BASE_CONFIG` hard-codes `countryCode` `GB`, so both Bing attempts used the GB
+route even though the run default was US. The first Bing attempt was 1 pass and
+1 fail (pagination navigation error); the second attempt was 2/2.
 
-![ChatGPT live verification through AdsCrawl](docs/live-verification/evidence/chatgpt-answer.png)
+| This re-run (2026-11-03) | Result |
+| --- | --- |
+| `scripts/smoke.py` | Passed, exit 0: rendered HTML, JSON POST, session cleanup |
+| [bing](bing-scraper/) | 2/2 on the second attempt, built-in GB route. First attempt 1/2, pagination navigation error |
+| [shopify](shopify-scraper/) | 5/5 passed |
+| [chatgpt](chatgpt-scraper/) | 0/1 on both runs: timeout / empty answer. Not passed |
+| [chatgpt](chatgpt-scraper/) `ddd17ac` | Not passed on the US route. Run 1 `ERR_TUNNEL_CONNECTION_FAILED` (~15s). Run 2 `ACTION_FAILED` (~83s). Answer capture did not run |
+| [chatgpt](chatgpt-scraper/) `2669477` | Not passed. The US guest page already showed "The capital of France is Paris." Then `ACTION_FAILED` after about 85s, before that reply was returned |
+| [chatgpt](chatgpt-scraper/) `ef4cc2b` | Not passed. Exit 1 after about 35s. `scrape_conversation` logged success, then `assert "Paris" in result` failed. The returned string was nav and disclaimer chrome, not the assistant reply. No `ScrapeError` |
+| [chatgpt](chatgpt-scraper/) `3f7a7b4` | Passed. US route, `ADSCRAWL_CHATGPT_COUNTRY` unset. `test_scrape_conversation` passed, 1 passed in 70.17s, exit 0. No `EMPTY_ANSWER`, `ACTION_FAILED`, `TIMEOUT`, or `ERR_*` |
+
+Settings for that run: `ADSCRAWL_DEFAULT_COUNTRY=US`, `ADSCRAWL_CONCURRENCY=1`, `--reruns=0`.
+
+A later check of commit `ddd17ac` on 2026-11-03, still on the US route, did not pass ChatGPT. `scripts/smoke.py` still passed, so ordinary sites loaded. `chatgpt-scraper` run 1 exited 1 in about 15s with `ScrapeError` `ERR_TUNNEL_CONNECTION_FAILED`. Run 2 exited 1 in about 83s with `ScrapeError` `ACTION_FAILED`. Direct checks of chatgpt.com hit that tunnel error or a blank page with no chat UI. `EMPTY_ANSWER` did not occur. The answer-capture change did not run, so it is not live-verified.
+
+Commit `2669477` was retested on the same US route. chatgpt.com loaded, and the guest page `https://chatgpt.com/uc/...` already showed "The capital of France is Paris." `SELECTED_SCRAPER=chatgpt-scraper` still exited 1 after about 85s with `ACTION_FAILED` from `perform_actions`, before that reply was returned. Capture was changed after that to read a reply already on the page, including a guest `/uc/` layout with no assistant role attribute.
+
+Commit `ef4cc2b` was retested on the US route with `ADSCRAWL_CHATGPT_COUNTRY` unset. It exited 1 after about 35s. There was no `ERR_*`, `TIMEOUT`, or `ACTION_FAILED`. `scrape_conversation` logged success, and the assertion `assert "Paris" in result` failed. The returned string was only UI chrome: `ChatGPT is AI and can make mistakes. ChatGPT New chat Images Plugins See plans and pricing Help Deep research Settings`. No new `artifacts/scrape-failures` file was written, because this was an assertion failure rather than a `ScrapeError`. Capture after that commit rejects that chrome and waits for a stable assistant reply that is not the nav, disclaimer, or composer.
+
+Commit `3f7a7b4` passed on the US route. `ADSCRAWL_DEFAULT_COUNTRY=US`, `ADSCRAWL_CONCURRENCY=1`, and `ADSCRAWL_CHATGPT_COUNTRY` was unset. `SELECTED_SCRAPER=chatgpt-scraper python scripts/live_test.py` exited 0. `chatgpt-scraper/test.py::test_scrape_conversation` passed, 1 passed in 70.17s. No `EMPTY_ANSWER`, `ACTION_FAILED`, `TIMEOUT`, or `ERR_*`.
+
+Files in `results/` are historical examples, not output from this re-run.
+The screenshot below is from the 2026-10-27 audit. The 2026-11-03 ChatGPT pass is the `3f7a7b4` live test above, not this image.
+
+![ChatGPT answer from the 2026-10-27 audit](docs/live-verification/evidence/chatgpt-answer.png)
 
 <!-- LIVE_VERIFIED_START -->
 
-Current fully passed live suites (2026-10-27)：
+Full passes recorded on 2026-10-27. Bing, Shopify, and ChatGPT were re-run on 2026-11-03; the other rows were not.
 
 | Scraper | Passed live checks |
 | --- | --- |
@@ -61,6 +92,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e ".[dev]"
 export ADSCRAWL_API_KEY="your_api_key"
+export ADSCRAWL_DEFAULT_COUNTRY=US
 cd amazon-scraper
 python run.py
 ```
@@ -70,8 +102,10 @@ consume AdsCrawl credits. The default limit is two browser sessions per client;
 set `ADSCRAWL_CONCURRENCY` to match your account capacity. No local Chromium
 installation is necessary. Never commit your API key.
 
-Requests default to a **US** browser route when no country or custom proxy is
-specified. Set `ADSCRAWL_DEFAULT_COUNTRY` to change this default. A site's explicit
+Requests use a **US** browser route when no country or custom proxy is
+specified. `scripts/live_test.py` sets `ADSCRAWL_DEFAULT_COUNTRY=US` when that
+variable is unset or blank, and the manual live workflow sets it to `US`.
+Set `ADSCRAWL_DEFAULT_COUNTRY` yourself to choose another route. A site's explicit
 `countryCode` takes precedence; custom proxies are not combined with country routing.
 
 ## How requests run
@@ -101,18 +135,66 @@ run(main())
 
 ## Validation
 
+The 2026-11-03 re-run used the PR harness with `ADSCRAWL_DEFAULT_COUNTRY=US`,
+`ADSCRAWL_CONCURRENCY=1`, and `--reruns=0`. It is not a pass for every site.
+
+Offline on that run: `python -m pytest tests -q` was 47/47, and
+`python scripts/check_catalog.py` was 81/81. `python scripts/smoke.py` exited 0
+(rendered HTML, JSON POST, session cleanup). Live suites: Bing 2/2 on the second
+attempt (built-in GB route; first attempt 1/2), Shopify 5/5. ChatGPT's first
+re-run was 0/1 on both attempts; commit `3f7a7b4` later passed 1/1 in 70.17s.
+No other site suite was re-run. Commit `ddd17ac` was checked later the
+same day on the US route: smoke still passed, and ChatGPT failed again
+(`ERR_TUNNEL_CONNECTION_FAILED` in about 15s, then `ACTION_FAILED` in about
+83s). The answer-capture change did not run. `EMPTY_ANSWER` did not occur.
+Commit `2669477` later showed the Paris reply on the guest page and still
+failed with `ACTION_FAILED` after about 85s. Commit `ef4cc2b` then returned
+the nav and disclaimer chrome in about 35s (`scrape_conversation` logged
+success; `assert "Paris" in result` failed; no `ScrapeError`). Commit `3f7a7b4`
+then passed on the US route with `ADSCRAWL_CHATGPT_COUNTRY` unset:
+`test_scrape_conversation` passed, 1 passed in 70.17s, exit 0. No
+`EMPTY_ANSWER`, `ACTION_FAILED`, `TIMEOUT`, or `ERR_*`.
+
 ```bash
-python -m pytest tests -q          # offline, no key and no credits
-python scripts/check_catalog.py  # imports and request configuration for every site
-# Explicit live testing, with ADSCRAWL_API_KEY set:
-python -m pytest amazon-scraper/test.py -v
+python -m pytest tests -q
+python scripts/check_catalog.py
+export ADSCRAWL_API_KEY="your_api_key"
+export ADSCRAWL_DEFAULT_COUNTRY=US
+export ADSCRAWL_CONCURRENCY=1
+python scripts/smoke.py
+SELECTED_SCRAPER=bing-scraper python scripts/live_test.py
+SELECTED_SCRAPER=shopify-scraper python scripts/live_test.py
+SELECTED_SCRAPER=chatgpt-scraper python scripts/live_test.py
 ```
 
-See [verification results](docs/VERIFICATION.md) for the checks actually run.
+ChatGPT keeps `countryCode` `US` when `ADSCRAWL_CHATGPT_COUNTRY` is unset. `ADSCRAWL_DEFAULT_COUNTRY` does not replace that explicit country. To try another route for ChatGPT only:
 
-CI runs offline tests on pushes and pull requests. Live tests are available only
-through a manual workflow for a selected scraper and require the
-`ADSCRAWL_API_KEY` repository secret. There is no scheduled billable test suite.
+```bash
+export ADSCRAWL_API_KEY="your_api_key"
+export ADSCRAWL_DEFAULT_COUNTRY=US
+export ADSCRAWL_CHATGPT_COUNTRY=GB
+export ADSCRAWL_CONCURRENCY=1
+SELECTED_SCRAPER=chatgpt-scraper python scripts/live_test.py
+```
+
+On `ERR_*`, `TIMEOUT`, and `ACTION_FAILED`, the run writes a redacted page URL, the page title, and a screenshot under `artifacts/scrape-failures/` (gitignored). Pytest failure text includes those three fields. Do not commit that directory.
+
+`live_test.py` sets `ADSCRAWL_DEFAULT_COUNTRY=US` when that variable is unset or
+blank. A site `countryCode` overrides it, which is why Bing still used GB.
+The command exits 2 when `SELECTED_SCRAPER` is not a catalog directory or
+`ADSCRAWL_API_KEY` is missing. A site suite that fails keeps pytest's exit code.
+`scripts/smoke.py` exits 2 with `code` `MISSING_API_KEY` when the key is missing,
+and does not open a browser. Pytest failure text includes a safe `ScrapeError`
+code such as `ERR_*`, `TIMEOUT`, or `ACTION_FAILED`.
+
+The [2026-10-27 verification note](docs/VERIFICATION.md) and the
+[live audit](docs/live-verification/2026-10-27.md) are the earlier full audit.
+They are not the 2026-11-03 re-run.
+
+CI runs the offline tests on pushes and pull requests. Live tests are available
+only through a manual workflow for one selected scraper. That workflow sets
+`ADSCRAWL_DEFAULT_COUNTRY=US` and requires the `ADSCRAWL_API_KEY` repository
+secret. There is no scheduled billable test suite.
 
 ## Scrapers
 

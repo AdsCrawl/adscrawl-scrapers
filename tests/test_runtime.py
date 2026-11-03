@@ -1,5 +1,6 @@
 import asyncio
 import json
+from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
 
@@ -7,6 +8,25 @@ import pytest
 
 from adscrawl_scrapers import Request, Response, ScraperClient, ScrapeError, managed
 from adscrawl_scrapers.runtime import _Session, perform_actions, evaluate_script
+
+
+def test_redact_page_url_drops_userinfo_and_secret_query_values():
+    from adscrawl_scrapers.runtime import redact_page_url
+    url = redact_page_url("https://user:secret@chatgpt.com/path?prompt=Paris&token=secret&api_key=secret#session")
+    assert url == "https://chatgpt.com/path?prompt=Paris&token=REDACTED&api_key=REDACTED"
+    assert "secret" not in url
+    assert redact_page_url("about:blank") == "about:blank"
+    assert redact_page_url("chrome-error://chromewebdata/?token=secret") == "chrome-error://chromewebdata/"
+
+
+def test_scrape_error_failure_text_includes_safe_code():
+    navigation = ScrapeError("Browser navigation or interaction failed", code="ERR_TUNNEL_CONNECTION_FAILED")
+    assert str(navigation) == "Browser navigation or interaction failed [ERR_TUNNEL_CONNECTION_FAILED]"
+    assert str(ScrapeError("Remote browser request failed or timed out", code="TIMEOUT")).endswith("[TIMEOUT]")
+    assert str(ScrapeError("Browser action failed or timed out", code="ACTION_FAILED")).endswith("[ACTION_FAILED]")
+    secret = ScrapeError("Browser navigation failed https://private.invalid/?token=secret", code="not a safe code")
+    assert str(secret) == secret.message
+    assert "not a safe code" not in str(secret)
 
 
 def test_response_html_json_and_redirect_metadata():
@@ -301,16 +321,29 @@ async def test_attachment_preserves_bytes_and_decodes_unicode_json():
     assert page.evaluate.await_args.args[1]['url'] == 'https://itunes.apple.com/lookup'
 
 
-async def test_browser_action_failure_retains_safe_error_code_and_closes_page():
+async def test_browser_action_failure_retains_safe_error_code_and_closes_page(monkeypatch, tmp_path):
     from playwright.async_api import Error
+    monkeypatch.setenv('ADSCRAWL_FAILURE_DIR', str(tmp_path))
     page = FakePage()
+    page.url = 'https://chatgpt.com/'
+
+    async def title():
+        return 'Blank'
+
+    async def screenshot(path, type='png'):
+        Path(path).write_bytes(b'\x89PNG\r\n\x1a\n')
+
+    page.title = title
+    page.screenshot = screenshot
     context = SimpleNamespace(new_page=AsyncMock(return_value=page), cookies=AsyncMock(return_value=[]))
     client = ScraperClient(sdk=object())
     with patch('adscrawl_scrapers.runtime.perform_actions', AsyncMock(side_effect=Error('secret endpoint'))):
         with pytest.raises(ScrapeError) as failure:
-            await client._fetch_page(SimpleNamespace(context=context), Request('https://example.com'))
+            await client._fetch_page(SimpleNamespace(context=context), Request('https://chatgpt.com/'))
     assert failure.value.code == 'ACTION_FAILED'
-    assert 'secret' not in str(failure.value) and page.closed
+    assert 'secret' not in str(failure.value) and 'title="Blank"' in str(failure.value) and page.closed
+    assert failure.value.response.diagnostics['url'] == 'https://chatgpt.com/'
+    assert list(tmp_path.glob('*.png'))
 
 
 async def test_managed_async_generator_reuses_session_without_leaking_scope(fake_sessions):
@@ -368,8 +401,9 @@ async def test_parser_failure_cancels_other_requests_before_leaving_scope(fake_s
     assert not client._active_requests and not client._sessions
 
 
-async def test_navigation_error_reports_safe_network_code_without_secret_url():
+async def test_navigation_error_reports_safe_network_code_without_secret_url(monkeypatch, tmp_path):
     from playwright.async_api import Error
+    monkeypatch.setenv('ADSCRAWL_FAILURE_DIR', str(tmp_path))
     page = FakePage()
     page.goto = AsyncMock(side_effect=Error('Page.goto: net::ERR_TUNNEL_CONNECTION_FAILED https://private.invalid/?token=secret'))
     context = SimpleNamespace(new_page=AsyncMock(return_value=page))
@@ -378,6 +412,57 @@ async def test_navigation_error_reports_safe_network_code_without_secret_url():
     assert caught.value.code == 'ERR_TUNNEL_CONNECTION_FAILED'
     assert caught.value.response.status_code == 0
     assert 'secret' not in str(caught.value) and page.closed
+    note = json.loads(next(tmp_path.glob('*.json')).read_text())
+    assert note['code'] == 'ERR_TUNNEL_CONNECTION_FAILED' and 'secret' not in json.dumps(note)
+
+
+async def test_tunnel_failure_records_redacted_url_title_and_screenshot(monkeypatch, tmp_path):
+    from playwright.async_api import Error
+    monkeypatch.setenv('ADSCRAWL_FAILURE_DIR', str(tmp_path))
+    page = FakePage()
+    page.url = 'https://user:secret@chatgpt.com/?prompt=Paris&token=secret'
+    page.goto = AsyncMock(side_effect=Error('Page.goto: net::ERR_TUNNEL_CONNECTION_FAILED https://cdp.invalid/?token=secret'))
+
+    async def title():
+        return '  ChatGPT \n'
+
+    async def screenshot(path, type='png'):
+        Path(path).write_bytes(b'\x89PNG\r\n\x1a\n')
+
+    page.title = title
+    page.screenshot = screenshot
+    context = SimpleNamespace(new_page=AsyncMock(return_value=page))
+    with pytest.raises(ScrapeError) as caught:
+        await ScraperClient(sdk=object())._fetch_page(SimpleNamespace(context=context), Request('https://chatgpt.com/?prompt=Paris'))
+    text = str(caught.value)
+    assert caught.value.code == 'ERR_TUNNEL_CONNECTION_FAILED'
+    assert 'secret' not in text and 'token=REDACTED' in text and 'prompt=Paris' in text
+    assert 'title="ChatGPT"' in text and 'screenshot=' in text and page.closed
+    note = json.loads(next(tmp_path.glob('*.json')).read_text())
+    image = next(tmp_path.glob('*.png'))
+    assert note['title'] == 'ChatGPT' and note['screenshot'] == image.name
+    assert 'secret' not in json.dumps(note) and image.stat().st_size > 0
+
+
+async def test_navigation_timeout_still_reports_timeout_when_screenshot_fails(monkeypatch, tmp_path):
+    from playwright.async_api import TimeoutError as PlaywrightTimeout
+    monkeypatch.setenv('ADSCRAWL_FAILURE_DIR', str(tmp_path))
+    page = FakePage()
+    page.url = 'about:blank'
+    page.goto = AsyncMock(side_effect=PlaywrightTimeout('Timeout 90000ms exceeded'))
+
+    async def title():
+        return 'timeout'
+
+    page.title = title
+    page.screenshot = AsyncMock(side_effect=PlaywrightTimeout('shot'))
+    context = SimpleNamespace(new_page=AsyncMock(return_value=page))
+    with pytest.raises(ScrapeError) as caught:
+        await ScraperClient(sdk=object())._fetch_page(SimpleNamespace(context=context), Request('https://chatgpt.com/'))
+    assert caught.value.code == 'TIMEOUT'
+    assert 'title="timeout"' in str(caught.value)
+    note = json.loads(next(tmp_path.glob('*.json')).read_text())
+    assert note['url'] == 'about:blank' and note['screenshot'] == '' and not list(tmp_path.glob('*.png'))
 
 
 async def test_stalled_tab_close_does_not_hold_a_completed_request(monkeypatch):
