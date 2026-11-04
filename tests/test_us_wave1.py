@@ -738,16 +738,25 @@ async def test_allegro_requests_use_the_polish_route(monkeypatch):
     assert seen and all(request.countryCode == "PL" and request.locale == "pl-PL" for request in seen)
     assert all(request.headers.get("Accept-Language", "").startswith("pl-PL") for request in seen)
     assert all(request.userAgentOs == "windows" for request in seen)
-    assert all(request.waitUntil == "load" for request in seen)
     listing = next(request for request in seen if "/listing" in request.url)
     home = next(request for request in seen if request.url.rstrip("/") == "https://allegro.pl")
+    offer = next(request for request in seen if "/oferta/" in request.url)
     assert home.timeoutMs == 25000
+    assert home.waitUntil == "load"
+    assert listing.waitUntil == "load"
     assert home.headers.get("Sec-Fetch-Site") == "none"
     assert home.session == listing.session
     assert listing.timeoutMs == 90000
     assert listing.headers.get("Referer") == "https://allegro.pl/"
     assert listing.headers.get("Sec-Fetch-Site") == "same-origin"
     assert listing.headers.get("Cookie") == "wdctx=kept"
+    assert offer.waitUntil == "commit"
+    assert offer.timeoutMs == 60000
+    assert offer.waitForSelector is None
+    assert offer.waitMs == 0
+    assert offer.actions[0]["selector"] == "script[data-serialize-box-id]"
+    assert offer.actions[0]["optional"] is True
+    assert offer.actions[0]["timeoutMs"] == 15000
 
 
 async def test_allegro_403_block_page_is_an_error_and_a_data_body_is_parsed(monkeypatch):

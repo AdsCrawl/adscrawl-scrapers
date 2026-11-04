@@ -32,16 +32,22 @@ This is blocked on the routes that have been tried. A US exit returns HTTP 403.
 The tip2 US retest, already on `countryCode=PL` with locale `pl-PL`, a Polish
 `Accept-Language`, and a homepage session, was still HTTP 403. Tip4
 (`37d4c7d`, concurrency 1) was still HTTP 403 on search after the Windows user
-agent, Referer, and short homepage warmup. The product page timed out. There
-is no residential-proxy field on `Request`.
+agent, Referer, and short homepage warmup. There is no residential-proxy field
+on `Request`.
 
-The listing now waits until `load`, sends document `Sec-Fetch-*` headers, and
-reuses the homepage cookie jar only when that homepage is not a block page.
-A 403 or a timed-out homepage is closed and the listing opens a new session.
-A listing timeout is retried once on a new session. A 403 block page is still
-raised as an anti-bot error and is not an empty catalog or a pass. This
-attempt has not been re-run live. Other sites stay on US unless they document
-a different code.
+Tip5 (`5632fb6`, concurrency 1, no 402) was 0/2 again. The homepage warmup
+returned HTTP 403, so that session was not reused. Search on the fresh session
+was still HTTP 403. Header, locale, and cookie changes are done. Another
+`Sec-Fetch` or user-agent variant will not be added.
+
+The product page timed out twice (`waitUntil=load`, a request-level
+`waitForSelector`, and a 90s outer budget). Offer pages now use
+`waitUntil=commit`, a 60s budget, and a 15s optional wait for
+`script[data-serialize-box-id]`. A 403 body is still raised. This navigation
+change is not a live pass. Other sites stay on US unless they document a
+different code. The listing still waits until `load` and reuses the homepage
+cookie jar only when that homepage is not a block page. A listing timeout is
+retried once on a new session.
 
 ## Validation
 
@@ -53,7 +59,8 @@ python -m pytest allegro-scraper/test.py -v
 ```
 
 Both live tests failed with HTTP 403 on the 2026-11-03 US retest and on tip2.
-Tip4 search was HTTP 403 again, and the product page timed out. Treat a later
+Tip4 and tip5 search were HTTP 403 again. Tip5 confirmed the blocked homepage
+is discarded and the fresh listing session is still blocked. Treat a later
 403 the same way: it is an anti-bot block, not a passing empty scrape.
 Historical files in `results/` are upstream examples, not outputs from those
 retests.

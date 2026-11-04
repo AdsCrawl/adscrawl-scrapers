@@ -102,9 +102,10 @@ def _allegro_block_message(response: Response, url: str) -> str:
     return (
         f"allegro.pl returned HTTP {response.status_code} for {url} on the PL route. "
         "US and PL exits, locale pl-PL, a Polish Accept-Language, a Windows user agent, "
-        "Referer, document Sec-Fetch headers, waitUntil=load, and a homepage warmup "
-        "were tried. Tip4 (37d4c7d) was still HTTP 403 after the shorter warmup. "
-        "A blocked homepage is not reused. Request has no residential-proxy field. "
+        "Referer, document Sec-Fetch headers, and a homepage warmup were tried. "
+        "Tip5 (5632fb6) returned HTTP 403 for the homepage, so that session was not reused, "
+        "and the listing on a fresh session was still HTTP 403. "
+        "Request has no residential-proxy field. Further header changes will not clear this block. "
         "This is an anti-bot block, not an empty catalog, and it is not a live pass."
     )
 
@@ -132,7 +133,7 @@ def _cookie_header(response: Response) -> str:
 
 
 async def _open_allegro(url: str, session: str, *, referer: bool, cookies: str = "", **extra) -> Response:
-    """rendered PL navigation. waitUntil=load matches other hardened browsers in this repo."""
+    """rendered PL navigation. Listings stay on waitUntil=load. Offer pages pass commit."""
     headers = dict(_ALLEGRO_HEADERS)
     headers["Sec-Fetch-Site"] = "same-origin" if referer else "none"
     if referer:
@@ -141,13 +142,13 @@ async def _open_allegro(url: str, session: str, *, referer: bool, cookies: str =
         headers["Cookie"] = cookies
     headers.update(extra.pop("headers", {}) or {})
     extra.setdefault("timeoutMs", 90000)
+    extra.setdefault("waitUntil", "load")
     return await CLIENT.fetch(Request(
         url,
         session=session,
         headers=headers,
         raiseOnHttpError=False,
         userAgentOs="windows",
-        waitUntil="load",
         **BASE_CONFIG,
         **extra,
     ))
@@ -358,12 +359,24 @@ async def scrape_product(urls: list[str]) -> Dict:
     session, cookies = await _warm_allegro(uuid4().hex)
     try:
         for url in urls:
+            # Tip5 timed out twice at the outer 90s budget. waitUntil=load plus a
+            # request-level waitForSelector uses that same budget again after goto,
+            # so a blocked document dies as TIMEOUT. commit returns the status page.
+            # The price script is a short optional wait. No new request headers.
             response = await _fetch_allegro(
                 url,
                 session,
                 cookies,
-                waitMs=5000,
-                waitForSelector='//script[@data-serialize-box-id and contains(text(), "formattedPrice")]',
+                waitUntil="commit",
+                timeoutMs=60000,
+                actions=[
+                    {
+                        "type": "waitForSelector",
+                        "selector": "script[data-serialize-box-id]",
+                        "timeoutMs": 15000,
+                        "optional": True,
+                    },
+                ],
             )
             try:
                 data.append(parse_product(response))
