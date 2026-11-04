@@ -16,7 +16,7 @@ from typing import Dict, List
 from pathlib import Path
 from loguru import logger as log
 from urllib.parse import quote, urlencode
-from adscrawl_scrapers import Request, ScraperClient, Response
+from adscrawl_scrapers import Request, ScraperClient, Response, ScrapeError
 
 
 CLIENT = ScraperClient()
@@ -25,6 +25,25 @@ BASE_CONFIG = {
     # bypass goat.com web scraping blocking(cloudflare)
     'countryCode': "US",
 }
+# The search API navigation dies on about:blank with a tunnel error. One new browser.
+_TRANSIENT = {
+    "ERR_TUNNEL_CONNECTION_FAILED",
+    "ERR_CONNECTION_CLOSED",
+    "ERR_HTTP2_PROTOCOL_ERROR",
+    "CONNECT_FAILED",
+    "BROWSER_ERROR",
+    "TIMEOUT",
+}
+
+
+async def _fetch(request: Request) -> Response:
+    try:
+        return await CLIENT.fetch(request)
+    except ScrapeError as error:
+        if error.code not in _TRANSIENT:
+            raise
+        log.warning(f"retrying {request.url} once after {error.code}")
+        return await CLIENT.fetch(request)
 
 output = Path(__file__).parent / "results"
 output.mkdir(exist_ok=True)
@@ -40,9 +59,9 @@ def find_hidden_data(result: Response) -> dict:
 @managed
 async def scrape_products(urls: List[str]) -> dict:
     """scrape goat.com product pages for product data"""
-    to_scrape = [Request(url, **BASE_CONFIG) for url in urls]
     products = []
-    async for response in CLIENT.fetch_many(to_scrape):
+    for url in urls:
+        response = await _fetch(Request(url, **BASE_CONFIG))
         data = find_hidden_data(response)
         product = data["props"]["pageProps"]["productTemplate"]
         if data["props"]["pageProps"]["offers"]:
@@ -69,7 +88,7 @@ async def scrape_search(query: str, max_pages: int = 10) -> List[Dict]:
 
     url_first_page = make_page_url(page=1)
     log.info(f"Scraping product search with query '{query}'")
-    result_first_page = await CLIENT.fetch(Request(url=url_first_page, **BASE_CONFIG))
+    result_first_page = await _fetch(Request(url=url_first_page, **BASE_CONFIG))
     first_page_data = json.loads(result_first_page.content)["data"]
     results = first_page_data.get("productsList", [])
     total_results = first_page_data.get("totalResults", 0)
@@ -80,8 +99,8 @@ async def scrape_search(query: str, max_pages: int = 10) -> List[Dict]:
         total_pages = max_pages
     if total_pages > 1:
         log.info(f"Scraping search pagination ({total_pages-1} more pages)")
-        to_scrape = [Request(make_page_url(page=page), **BASE_CONFIG) for page in range(2, total_pages + 1)]
-        async for result in CLIENT.fetch_many(to_scrape):
+        for page in range(2, total_pages + 1):
+            result = await _fetch(Request(make_page_url(page=page), **BASE_CONFIG))
             data = json.loads(result.content).get("data", {})
             items = data.get("productsList", [])
             results.extend(items)

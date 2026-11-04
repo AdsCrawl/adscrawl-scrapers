@@ -21,6 +21,27 @@ CLIENT = ScraperClient()
 BASE_CONFIG = {
     'countryCode': "US",
 }
+# Review batchexecute navigations fail on about:blank with BROWSER_ERROR while
+# the app page and search on the same route succeed. One new browser. The body
+# is a read of public reviews, so repeating the POST once is safe.
+_TRANSIENT = {
+    "ERR_TUNNEL_CONNECTION_FAILED",
+    "ERR_CONNECTION_CLOSED",
+    "ERR_HTTP2_PROTOCOL_ERROR",
+    "CONNECT_FAILED",
+    "BROWSER_ERROR",
+    "TIMEOUT",
+}
+
+
+async def _fetch(request: Request) -> Response:
+    try:
+        return await CLIENT.fetch(request)
+    except ScrapeError as error:
+        if error.code not in _TRANSIENT:
+            raise
+        log.warning(f"retrying {request.url} once after {error.code}")
+        return await CLIENT.fetch(request)
 
 MAX_REVIEWS_PER_FETCH = 4500
 
@@ -203,7 +224,8 @@ async def scrape_apps(app_ids: List[str], lang: str = "en", country: str = "us")
         for app_id in app_ids
     ]
     apps = []
-    async for response in CLIENT.fetch_many(to_scrape):
+    for request in to_scrape:
+        response = await _fetch(request)
         if isinstance(response, ScrapeError):
             log.error("failed to scrape app: {}", response.error)
             continue
@@ -234,7 +256,7 @@ async def scrape_reviews(
         filters = [None, filter_score_with, None, None, None, None, None, None, None]
         inner = json.dumps([None, [2, sort.value, pagination, None, filters], [app_id, 7]], separators=(",", ":"))
         body = "f.req=" + quote(json.dumps([[["oCPfdb", inner, None, "generic"]]], separators=(",", ":")) + "\n")
-        response = await CLIENT.fetch(
+        response = await _fetch(
             Request(
                 url=url,
                 method="POST",
@@ -262,7 +284,7 @@ async def scrape_search(query: str, lang: str = "en", country: str = "us") -> Li
     params = urlencode({"q": query, "c": "apps", "hl": lang, "gl": country})
     url = f"https://play.google.com/store/search?{params}"
     print(url)
-    response = await CLIENT.fetch(Request(url, **BASE_CONFIG))
+    response = await _fetch(Request(url, **BASE_CONFIG))
     results = parse_search(response)
     log.success("scraped {} search results for '{}'", len(results), query)
     return results

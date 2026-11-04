@@ -12,6 +12,7 @@ import json
 import math
 import os
 import re
+import uuid
 from collections import defaultdict
 from typing import Dict, List, Optional
 from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
@@ -23,11 +24,85 @@ from adscrawl_scrapers import Response, Request, ScraperClient, ScrapeError
 
 CLIENT = ScraperClient()
 BASE_CONFIG = {
-
-
-    'countryCode': "US",  # change country for geo details like currency and shipping
-    'locale': "en-US",
+    # change country for geo details like currency and shipping
+    "countryCode": "US",
+    "locale": "en-US",
+    # cold item and search navigations are HTTP 403; the homepage in the same
+    # browser sets the cookies the document request is checked against
+    "userAgentOs": "windows",
+    "render": True,
 }
+_HOME = "https://www.ebay.com/"
+_DOCUMENT_HEADERS = {
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Upgrade-Insecure-Requests": "1",
+}
+_RETRYABLE = {
+    "HTTP_ERROR",
+    "SELECTOR_NOT_FOUND",
+    "ERR_TUNNEL_CONNECTION_FAILED",
+    "ERR_CONNECTION_CLOSED",
+    "ERR_HTTP2_PROTOCOL_ERROR",
+    "CONNECT_FAILED",
+    "BROWSER_ERROR",
+    "TIMEOUT",
+}
+
+
+def _challenge(response: Response) -> bool:
+    title = " ".join(response.selector.css("title::text").getall()).strip().lower()
+    if any(phrase in title for phrase in (
+        "access denied", "just a moment", "attention required",
+        "pardon our interruption", "robot check",
+    )):
+        return True
+    url = (response.url or "").lower()
+    return "captcha-delivery" in url or "/blocked" in url or "splashui/challenge" in url
+
+
+async def _fetch_document(url: str, **extra) -> Response:
+    """Homepage, then the document, in one named session. Closed before a retry."""
+    last = None
+    for attempt in range(2):
+        session = f"ebay-{uuid.uuid4().hex}"
+        try:
+            home = await CLIENT.fetch(Request(
+                _HOME,
+                session=session,
+                headers=_DOCUMENT_HEADERS,
+                waitMs=2000,
+                timeoutMs=60_000,
+                **BASE_CONFIG,
+            ))
+            if _challenge(home):
+                raise ScrapeError(
+                    "eBay homepage returned an anti-bot interstitial",
+                    response=home,
+                    code="HTTP_ERROR",
+                )
+            page = await CLIENT.fetch(Request(
+                url,
+                session=session,
+                headers={**_DOCUMENT_HEADERS, "Referer": _HOME},
+                **BASE_CONFIG,
+                **extra,
+            ))
+            if _challenge(page):
+                raise ScrapeError(
+                    "eBay returned an anti-bot interstitial",
+                    response=page,
+                    code="HTTP_ERROR",
+                )
+            return page
+        except ScrapeError as error:
+            last = error
+            if error.code not in _RETRYABLE or attempt == 1:
+                raise
+            log.warning(f"retrying {url} once after {error.code}")
+        finally:
+            await CLIENT.close_session(session)
+    raise last
 
 
 def _find_json_objects(text: str, decoder=json.JSONDecoder()):
@@ -174,13 +249,13 @@ def parse_product(result: Response):
 @managed
 async def scrape_product(url: str) -> Dict:
     """Scrape ebay.com product listing page for product data"""
-    page = await CLIENT.fetch(Request(url, **BASE_CONFIG))
+    page = await _fetch_document(url)
     return parse_product(page)
 
 @managed
 async def scrape_product_variants(url: str) -> List[Dict]:
     """Scrape ebay.com product listing page for variant data (price, stock, quantity, images)"""
-    page = await CLIENT.fetch(Request(url, **BASE_CONFIG))
+    page = await _fetch_document(url)
     return parse_variants(page)
 
 def parse_search(result: Response) -> List[Dict]:
@@ -245,7 +320,7 @@ async def scrape_search(url: str, max_pages: Optional[int] = None) -> List[Dict]
     """Scrape Ebay's search for product preview data for given"""
     log.info("Scraping search for {}", url)
 
-    first_page = await CLIENT.fetch(Request(url, **BASE_CONFIG))
+    first_page = await _fetch_document(url)
     results = parse_search(first_page)
     # find total amount of results for concurrent pagination
     total_results = first_page.selector.css(".srp-controls__count-heading>span::text").get()
@@ -254,17 +329,12 @@ async def scrape_search(url: str, max_pages: Optional[int] = None) -> List[Dict]
     total_pages = math.ceil(total_results / items_per_page)
     if max_pages and total_pages > max_pages:
         total_pages = max_pages
-    other_pages = [
-        Request(_update_url_param(first_page.url, _pgn=i), **BASE_CONFIG)
-        for i in range(2, total_pages + 1)
-    ]
+    other_pages = [_update_url_param(first_page.url, _pgn=i) for i in range(2, total_pages + 1)]
     log.info("Scraping search pagination of {} total pages for {}", len(other_pages), url)
-    async for result in CLIENT.fetch_many(other_pages):
-        if not isinstance(result, ScrapeError):
-            try:
-                results.extend(parse_search(result))
-            except Exception as e:
-                log.error(f"failed to parse search: {result.url}: {e}")
-        else:
-            log.error(f"failed to scrape {result.response.request_url}, got: {result.message}")
+    for page_url in other_pages:
+        try:
+            result = await _fetch_document(page_url)
+            results.extend(parse_search(result))
+        except Exception as e:
+            log.error(f"failed to scrape search page {page_url}: {e}")
     return results

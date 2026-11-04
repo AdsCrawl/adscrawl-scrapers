@@ -32,6 +32,28 @@ CABIN_NAMES = {"Y": "economy", "W": "premium economy", "J": "business", "F": "fi
 output = Path(__file__).parent / "results"
 output.mkdir(exist_ok=True)
 
+# The booking form loads ("Book a flight | Emirates") and then an action times
+# out. One more pass of the same form is enough when the first calendar or
+# suggestion list was not ready.
+_TRANSIENT = {
+    "ACTION_FAILED",
+    "TIMEOUT",
+    "BROWSER_ERROR",
+    "ERR_TUNNEL_CONNECTION_FAILED",
+    "ERR_CONNECTION_CLOSED",
+    "CONNECT_FAILED",
+}
+
+
+async def _fetch(request: Request) -> Response:
+    try:
+        return await CLIENT.fetch(request)
+    except ScrapeError as error:
+        if error.code not in _TRANSIENT:
+            raise
+        log.warning(f"retrying {request.url} once after {error.code}")
+        return await CLIENT.fetch(request)
+
 
 class FarePrice(TypedDict):
     amount: int
@@ -296,7 +318,7 @@ async def scrape_flights(
 ) -> FlightSearch:
     """Scrape flights from emirates.com"""
     try:
-        response = await CLIENT.fetch(
+        response = await _fetch(
             Request(
                 f"https://www.emirates.com/{locale}/book/",
                 **BASE_CONFIG,

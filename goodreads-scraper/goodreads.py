@@ -15,13 +15,33 @@ from urllib.parse import parse_qsl, quote_plus, urlencode, urljoin, urlparse, ur
 
 from loguru import logger as log
 from parsel import Selector
-from adscrawl_scrapers import Request, ScraperClient, Response
+from adscrawl_scrapers import Request, ScraperClient, Response, ScrapeError
 
 CLIENT = ScraperClient()
 BASE_CONFIG = {
 
 
 }
+# Review pages fail on about:blank with a tunnel error while the book page on
+# the same route has already loaded. One new browser.
+_TRANSIENT = {
+    "ERR_TUNNEL_CONNECTION_FAILED",
+    "ERR_CONNECTION_CLOSED",
+    "ERR_HTTP2_PROTOCOL_ERROR",
+    "CONNECT_FAILED",
+    "BROWSER_ERROR",
+    "TIMEOUT",
+}
+
+
+async def _fetch(request: Request) -> Response:
+    try:
+        return await CLIENT.fetch(request)
+    except ScrapeError as error:
+        if error.code not in _TRANSIENT:
+            raise
+        log.warning(f"retrying {request.url} once after {error.code}")
+        return await CLIENT.fetch(request)
 
 # Goodreads timestamps are epoch milliseconds, and go negative for pre 1970 publications
 EPOCH = datetime(1970, 1, 1, tzinfo=timezone.utc)
@@ -254,7 +274,7 @@ def parse_search(response: Response) -> List[Dict]:
 async def scrape_book(url: str) -> Dict:
     """scrape a single book page and return parsed book data"""
     log.info("scraping book {}", url)
-    result = await CLIENT.fetch(Request(url, **BASE_CONFIG))
+    result = await _fetch(Request(url, **BASE_CONFIG))
     return parse_book(result)
 
 
@@ -265,7 +285,7 @@ async def scrape_list(url: str, enrich: bool = False) -> List[Dict]:
     if enrich=True, additionally scrape each book's page for full details.
     """
     log.info("scraping list {}", url)
-    result = await CLIENT.fetch(Request(url, **BASE_CONFIG))
+    result = await _fetch(Request(url, **BASE_CONFIG))
     stubs = parse_list(result)
 
     if not enrich:
@@ -319,7 +339,7 @@ def parse_reviews(response: Response) -> List[Dict]:
 async def scrape_reviews(url: str) -> List[Dict]:
     """scrape the review sample a Goodreads book page ships with"""
     log.info("scraping reviews of {}", url)
-    result = await CLIENT.fetch(Request(url, **BASE_CONFIG))
+    result = await _fetch(Request(url, **BASE_CONFIG))
     return parse_reviews(result)
 
 
@@ -334,13 +354,13 @@ async def scrape_search(query: str, max_pages: int = 2) -> List[Dict]:
     base_url = f"https://www.goodreads.com/search?q={quote_plus(query)}"
 
     log.info(f"scraping the first search page for '{query}'")
-    first_page = await CLIENT.fetch(Request(base_url, **BASE_CONFIG))
+    first_page = await _fetch(Request(base_url, **BASE_CONFIG))
     books = parse_search(first_page)
     total_pages = min(_total_pages(first_page), max_pages)
 
     log.info(f"scraping search pagination, remaining ({total_pages - 1}) more pages")
-    to_scrape = [Request(_page_url(base_url, page), **BASE_CONFIG) for page in range(2, total_pages + 1)]
-    async for result in CLIENT.fetch_many(to_scrape):
+    for page in range(2, total_pages + 1):
+        result = await _fetch(Request(_page_url(base_url, page), **BASE_CONFIG))
         if not isinstance(result, Response):
             continue
         try:

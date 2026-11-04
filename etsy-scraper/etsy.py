@@ -10,16 +10,99 @@ from adscrawl_scrapers import managed
 import os
 import math
 import json
-from adscrawl_scrapers import Request, ScraperClient, Response
+import uuid
+from adscrawl_scrapers import Request, ScraperClient, Response, ScrapeError
 from typing import Dict, List
 from loguru import logger as log
 
 CLIENT = ScraperClient()
 
 BASE_CONFIG = {
-    # bypass Etsy.com web scraping blocking
-    'countryCode': "US",
+    # A cold listing or search navigation is HTTP 403. The homepage in the same
+    # browser has to run first so the document request carries those cookies.
+    # userAgentOs selects the SDK's random desktop fingerprint for that browser.
+    "countryCode": "US",
+    "locale": "en-US",
+    "userAgentOs": "windows",
+    "render": True,
 }
+_HOME = "https://www.etsy.com/"
+_DOCUMENT_HEADERS = {
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Upgrade-Insecure-Requests": "1",
+}
+# One new browser. HTTP 403 is included because the first exit can be blocked.
+_RETRYABLE = {
+    "HTTP_ERROR",
+    "SELECTOR_NOT_FOUND",
+    "ERR_TUNNEL_CONNECTION_FAILED",
+    "ERR_CONNECTION_CLOSED",
+    "ERR_HTTP2_PROTOCOL_ERROR",
+    "CONNECT_FAILED",
+    "BROWSER_ERROR",
+    "TIMEOUT",
+}
+
+
+def _challenge(response: Response) -> bool:
+    """A 200 interstitial is not a storefront. DataDome's script URL is on real pages too, so the title and the final URL are the signal."""
+    title = " ".join(response.selector.css("title::text").getall()).strip().lower()
+    if any(phrase in title for phrase in (
+        "access denied", "just a moment", "attention required",
+        "pardon our interruption", "robot check",
+    )):
+        return True
+    url = (response.url or "").lower()
+    return "captcha-delivery" in url or "/blocked" in url
+
+
+async def _fetch_document(url: str, **extra) -> Response:
+    """Open the homepage, then the document, in one named session.
+
+    The session is closed before a retry. At concurrency 1 a second named
+    session cannot be created while the blocked browser is still held.
+    """
+    last = None
+    for attempt in range(2):
+        session = f"etsy-{uuid.uuid4().hex}"
+        try:
+            home = await CLIENT.fetch(Request(
+                _HOME,
+                session=session,
+                headers=_DOCUMENT_HEADERS,
+                waitMs=2000,
+                timeoutMs=60_000,
+                **BASE_CONFIG,
+            ))
+            if _challenge(home):
+                raise ScrapeError(
+                    "Etsy homepage returned an anti-bot interstitial",
+                    response=home,
+                    code="HTTP_ERROR",
+                )
+            page = await CLIENT.fetch(Request(
+                url,
+                session=session,
+                headers={**_DOCUMENT_HEADERS, "Referer": _HOME},
+                **BASE_CONFIG,
+                **extra,
+            ))
+            if _challenge(page):
+                raise ScrapeError(
+                    "Etsy returned an anti-bot interstitial",
+                    response=page,
+                    code="HTTP_ERROR",
+                )
+            return page
+        except ScrapeError as error:
+            last = error
+            if error.code not in _RETRYABLE or attempt == 1:
+                raise
+            log.warning(f"retrying {url} once after {error.code}")
+        finally:
+            await CLIENT.close_session(session)
+    raise last
 
 
 def strip_text(text):
@@ -107,15 +190,11 @@ def parse_shop_page(response: Response) -> Dict:
 async def scrape_search(url: str, max_pages: int = None) -> List[Dict]:
     """scrape product listing data from Etsy search pages"""
     log.info("scraping the first search page")
-    # etsy search pages are dynaminc, requiring render_js enabled
-    first_page = await CLIENT.fetch(
-        Request(
-            url,
-            waitForSelector="//div[@data-search-pagination]",
-            render=True,
-            autoScroll=True,
-            **BASE_CONFIG,
-        )
+    # etsy search pages are dynamic; the browser has to render them
+    first_page = await _fetch_document(
+        url,
+        waitForSelector="//div[@data-search-pagination]",
+        autoScroll=True,
     )
     data = parse_search(first_page)
     search_data = data["search_data"]
@@ -126,19 +205,12 @@ async def scrape_search(url: str, max_pages: int = None) -> List[Dict]:
         total_pages = max_pages
 
     log.info(f"scraping search pagination ({total_pages - 1} more pages)")
-    # add the remaining search pages in a scraping list
-    other_pages = [
-        Request(
-            url + f"&page={page_number}",
-            waitForSelector="//div[@data-search-pagination]",
-            render=True,
-            **BASE_CONFIG,
-        )
-        for page_number in range(2, total_pages + 1)
-    ]
-    # scrape the remaining search pages concurrently
-    async for response in CLIENT.fetch_many(other_pages):
+    for page_number in range(2, total_pages + 1):
         try:
+            response = await _fetch_document(
+                url + f"&page={page_number}",
+                waitForSelector="//div[@data-search-pagination]",
+            )
             data = parse_search(response)
             search_data.extend(data["search_data"])
         except Exception as e:
@@ -152,12 +224,8 @@ async def scrape_search(url: str, max_pages: int = None) -> List[Dict]:
 async def scrape_product(urls: List[str]) -> List[Dict]:
     """scrape trustpilot company pages"""
     products = []
-    # add the product page URLs to a scraping list
-    to_scrape = [Request(url, **BASE_CONFIG) for url in urls]
-    # scrape all the product pages concurrently
-    async for response in CLIENT.fetch_many(to_scrape):
-        data = parse_product_page(response)
-        products.append(data)
+    for url in urls:
+        products.append(parse_product_page(await _fetch_document(url)))
     log.success(f"scraped {len(products)} product listings from product pages")
     return products
 
@@ -165,10 +233,8 @@ async def scrape_product(urls: List[str]) -> List[Dict]:
 @managed
 async def scrape_shop(urls: List[str]) -> List[Dict]:
     shops = []
-    # add the shop page URLs to a scraping list
-    to_scrape = [Request(url, **BASE_CONFIG) for url in urls]
-    # scrape all the shop pages concurrently
-    async for response in CLIENT.fetch_many(to_scrape):
+    for url in urls:
+        response = await _fetch_document(url)
         data = parse_shop_page(response)
         data["url"] = response.url
         shops.append(data)
