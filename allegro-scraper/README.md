@@ -25,9 +25,29 @@ not need to download or launch a local Chromium browser.
 - `scrape_search`
 - `scrape_product`
 
-Requests set `countryCode` to `PL`. Allegro is a Poland-only marketplace
-(`allegro.pl`); the US route answers HTTP 403 for product and search. Other
-sites in this repository stay on US unless they document a different code.
+Requests set `countryCode` to `PL` and `locale` to `pl-PL`, and send
+`Accept-Language: pl-PL`. Allegro is a Poland-only marketplace (`allegro.pl`).
+
+This is blocked on the routes that have been tried. A US exit returns HTTP 403.
+The tip2 US retest, already on `countryCode=PL` with locale `pl-PL`, a Polish
+`Accept-Language`, and a homepage session, was still HTTP 403. Tip4
+(`37d4c7d`, concurrency 1) was still HTTP 403 on search after the Windows user
+agent, Referer, and short homepage warmup. There is no residential-proxy field
+on `Request`.
+
+Tip5 (`5632fb6`, concurrency 1, no 402) was 0/2 again. The homepage warmup
+returned HTTP 403, so that session was not reused. Search on the fresh session
+was still HTTP 403. Header, locale, and cookie changes are done. Another
+`Sec-Fetch` or user-agent variant will not be added.
+
+The product page timed out twice (`waitUntil=load`, a request-level
+`waitForSelector`, and a 90s outer budget). Offer pages now use
+`waitUntil=commit`, a 60s budget, and a 15s optional wait for
+`script[data-serialize-box-id]`. A 403 body is still raised. This navigation
+change is not a live pass. Other sites stay on US unless they document a
+different code. The listing still waits until `load` and reuses the homepage
+cookie jar only when that homepage is not a block page. A listing timeout is
+retried once on a new session.
 
 ## Validation
 
@@ -38,10 +58,12 @@ To run this site's **live** tests (uses AdsCrawl credits):
 python -m pytest allegro-scraper/test.py -v
 ```
 
-This site has been migrated at source level. Live website behavior is **not yet
-verified** with AdsCrawl. Websites can change selectors, require sign-in, or
-reject a browser session. Historical files in `results/` are upstream examples,
-not outputs from a verified AdsCrawl run. Review URLs and dates in `run.py` first.
+Both live tests failed with HTTP 403 on the 2026-11-03 US retest and on tip2.
+Tip4 and tip5 search were HTTP 403 again. Tip5 confirmed the blocked homepage
+is discarded and the fresh listing session is still blocked. Treat a later
+403 the same way: it is an anti-bot block, not a passing empty scrape.
+Historical files in `results/` are upstream examples, not outputs from those
+retests.
 
 ## Source and license
 

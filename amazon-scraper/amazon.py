@@ -11,8 +11,10 @@ import json
 import math
 import os
 import re
+from dataclasses import replace
 from typing import Dict, List, TypedDict, Optional
 from urllib.parse import urljoin, urlparse, parse_qsl, urlencode, urlunparse
+from uuid import uuid4
 
 from loguru import logger as log
 from adscrawl_scrapers import Response, Request, ScraperClient, ScrapeError
@@ -77,26 +79,204 @@ async def scrape_search(url: str, max_pages: Optional[int] = None) -> List[Produ
     """Scrape amazon search pages product previews"""
     log.info(f"{url}: scraping first page")
 
-    # first, scrape the first page and find total pages:
-    first_result = await _fetch_once_retry(Request(url, **BASE_CONFIG))
-    results = parse_search(first_result)
-    _paging_meta = first_result.selector.xpath("//*[@cel_widget_id='UPPER-RESULT_INFO_BAR-0']//span/text()").get()
-    _total_results = int(re.findall(r"(?:over\s+)?([\d,]+)\s+results", _paging_meta)[0].replace(',', ''))
-    _results_per_page = int(re.findall(r"\d+-(\d+)", _paging_meta)[0])
-    total_pages = math.ceil(_total_results / _results_per_page)
-    if max_pages and total_pages > max_pages:
-        total_pages = max_pages
-
-    # now we can scrape remaining pages concurrently
-    log.info(f"{url}: found total results: {_total_results}, scraping {total_pages} pages concurrently")
-    for page in range(2, total_pages + 1):
-        result = await _fetch_once_retry(
-            Request(_add_or_replace_url_parameters(first_result.url, page=page), **BASE_CONFIG)
-        )
-        results.extend(parse_search(result))
+    # Later pages stay on the first page's session. A cold browser for page 2
+    # was HTTP 503 on the 2026-11-03 tip2 retest after the one retry.
+    session = uuid4().hex
+    try:
+        first_result, session = await _first_search_page(url, session)
+        results = _search_previews(first_result)
+        if not results:
+            raise RuntimeError(f"amazon search returned no products for {url}")
+        total_pages = _search_page_count(first_result, max_pages)
+        log.info(f"{url}: scraping {total_pages} search pages ({len(results)} previews on the first)")
+        referer = str(first_result.url)
+        for page in range(2, total_pages + 1):
+            page_url = _next_search_page(first_result) or _add_or_replace_url_parameters(referer, page=page)
+            try:
+                result = await _later_search_page(url, page_url, session, referer, page)
+            except ScrapeError as error:
+                # A later 503 must not throw away a first page that already parsed.
+                log.warning(f"stopping after {len(results)} previews; search page {page} failed ({error.code})")
+                break
+            session = result[1]
+            batch = _search_previews(result[0])
+            if not batch:
+                break
+            results.extend(batch)
+            first_result = result[0]
+            referer = str(first_result.url)
+    finally:
+        await CLIENT.close_session(session)
 
     log.info(f"{url}: found total of {len(results)} product previews")
     return results
+
+
+def _search_keyword(url: str) -> str:
+    return dict(parse_qsl(urlparse(url).query, keep_blank_values=True)).get("k") or "kindle"
+
+
+def _search_query_url(url: str, page: int) -> str:
+    """the XHR the search page uses when the HTML document is HTTP 503"""
+    return "https://www.amazon.com/s/query?" + urlencode({
+        "k": _search_keyword(url),
+        "page": str(page),
+        "ref": f"sr_pg_{page}",
+    })
+
+
+def _search_previews(result: Response) -> List[ProductPreview]:
+    content = result.content or ""
+    if content.lstrip().startswith("<"):
+        parsed = parse_search(result)
+        if parsed:
+            return parsed
+    return parse_search_payload(content, str(result.url))
+
+
+def parse_search_payload(content: str, url: str) -> List[ProductPreview]:
+    """product cards buried in an /s/query `&&&` or JSON body"""
+    blobs: List[str] = []
+
+    def take(value) -> None:
+        if isinstance(value, str) and "s-search-result" in value:
+            blobs.append(value)
+        elif isinstance(value, list):
+            for item in value:
+                take(item)
+        elif isinstance(value, dict):
+            for item in value.values():
+                take(item)
+
+    for chunk in re.split(r"\s*&&&\s*", content or ""):
+        chunk = chunk.strip()
+        if not chunk:
+            continue
+        try:
+            take(json.loads(chunk))
+        except json.JSONDecodeError:
+            if "s-search-result" in chunk:
+                blobs.append(chunk)
+    previews: List[ProductPreview] = []
+    seen = set()
+    for blob in blobs:
+        for item in parse_search(Response(url, blob)):
+            if item["url"] in seen:
+                continue
+            seen.add(item["url"])
+            previews.append(item)
+    return previews
+
+
+def _search_page_count(result: Response, max_pages: Optional[int]) -> int:
+    meta = result.selector.xpath("//*[@cel_widget_id='UPPER-RESULT_INFO_BAR-0']//span/text()").get() or ""
+    if not meta:
+        match = re.search(r"\d+-\d+\s+of\s+(?:over\s+)?[\d,]+\s+results", result.content or "")
+        meta = match.group(0) if match else ""
+    try:
+        total = int(re.findall(r"(?:over\s+)?([\d,]+)\s+results", meta)[0].replace(",", ""))
+        per_page = int(re.findall(r"\d+-(\d+)", meta)[0])
+        pages = max(1, math.ceil(total / per_page))
+    except (IndexError, ValueError, ZeroDivisionError):
+        pages = 1
+    if max_pages and pages > max_pages:
+        pages = max_pages
+    return pages
+
+
+async def _warm_amazon_home(session: str) -> None:
+    """a cold /s document was HTTP 503 three times on tip5. Plant the homepage cookies first."""
+    try:
+        await CLIENT.fetch(Request(
+            "https://www.amazon.com/",
+            session=session,
+            countryCode="US",
+            waitUntil="commit",
+            timeoutMs=20000,
+            raiseOnHttpError=False,
+        ))
+    except ScrapeError as error:
+        log.warning(f"amazon.com homepage did not finish ({error.code}); searching anyway")
+
+
+async def _fetch_search_query(url: str, session: str, page: int) -> Response:
+    return await CLIENT.fetch(Request(
+        _search_query_url(url, page),
+        **BASE_CONFIG,
+        session=session,
+        render=False,
+        headers={
+            "accept": "text/html,*/*",
+            "x-requested-with": "XMLHttpRequest",
+            "referer": "https://www.amazon.com/",
+        },
+    ))
+
+
+async def _first_search_page(url: str, session: str):
+    await _warm_amazon_home(session)
+    try:
+        return await _fetch_search_page(url, session), session
+    except ScrapeError as error:
+        if not _transient_failure(error):
+            raise
+        log.warning(f"search first page still failed ({error.code}); one fresh session")
+        await CLIENT.close_session(session)
+        session = uuid4().hex
+        await _warm_amazon_home(session)
+        try:
+            page = await CLIENT.fetch(Request(_alternate_search_url(url), **BASE_CONFIG, session=session))
+        except ScrapeError as again:
+            if not _transient_failure(again):
+                raise
+            log.warning(f"search HTML still failed ({again.code}); requesting /s/query")
+            page = await _fetch_search_query(url, session, 1)
+        return page, session
+
+
+async def _later_search_page(url: str, page_url: str, session: str, referer: str, page: int):
+    try:
+        return await _fetch_search_page(page_url, session, referer=referer), session
+    except ScrapeError as error:
+        if not _transient_failure(error):
+            raise
+        log.warning(f"search page {page} still failed ({error.code}); one fresh session")
+        await CLIENT.close_session(session)
+        session = uuid4().hex
+        try:
+            return await _fetch_search_page(page_url, session, referer=referer), session
+        except ScrapeError as again:
+            if not _transient_failure(again):
+                raise
+            log.warning(f"search page {page} HTML failed ({again.code}); requesting /s/query")
+            return await _fetch_search_query(url, session, page), session
+
+
+def _alternate_search_url(url: str) -> str:
+    """the other search document Amazon still answers when /s is HTTP 503"""
+    parsed = urlparse(url)
+    path = parsed.path.rstrip("/") or "/s"
+    if path == "/gp/search":
+        path = "/s"
+    else:
+        path = "/gp/search"
+    query = dict(parse_qsl(parsed.query, keep_blank_values=True))
+    query.setdefault("ref", "nb_sb_noss")
+    return urlunparse(parsed._replace(path=path, query=urlencode(query)))
+
+
+def _next_search_page(result: Response) -> Optional[str]:
+    href = result.selector.css(
+        "a.s-pagination-next::attr(href), a[aria-label='Go to next page']::attr(href)"
+    ).get()
+    if not href:
+        return None
+    return urljoin("https://www.amazon.com/", href)
+
+
+async def _fetch_search_page(url: str, session: str, referer: Optional[str] = None) -> Response:
+    headers = {"Referer": referer} if referer else {}
+    return await _fetch_once_retry(Request(url, **BASE_CONFIG, session=session, headers=headers))
 
 class Review(TypedDict):
     title: str
@@ -121,10 +301,10 @@ def parse_reviews(result: Response) -> List[Review]:
     Current cards use data-hook review-title and review-body. Older cards use
     reviewTitle and reviewRichContentContainer. Both are accepted.
     """
-    review_boxes = result.selector.css("[data-hook=review]")
+    review_boxes = result.selector.css("[data-hook=review], [data-hook=review-card]")
     parsed = []
     for box in review_boxes:
-        rating = box.css("[data-hook*=review-star-rating] ::text").re_first(r"(\d+\.*\d*) out")
+        rating = box.css("[data-hook*=review-star-rating] ::text, .a-icon-alt::text").re_first(r"(\d+\.*\d*) out")
         if not rating:
             continue
         text = "".join(
@@ -142,13 +322,28 @@ def parse_reviews(result: Response) -> List[Review]:
     return parsed
 
 
+def _asin_from_url(url: str) -> str:
+    match = re.search(r"/(?:dp|gp/product|product-reviews)/([A-Z0-9]{10})", url, re.I)
+    return match.group(1) if match else url.rstrip("/").split("/")[-1].split("?")[0]
+
+
 def reviews_page_url(url: str) -> str:
-    """the dedicated reviews document. Product pages often never render the review cards."""
+    """the dedicated reviews document. Product pages often never render the review cards.
+
+    The bare `/product-reviews/{asin}/` URL was HTTP 404 for Atomic Habits on tip5.
+    The "see all reviews" link Amazon prints on the product page includes the ref.
+    """
     if "/product-reviews/" in url:
         return url.split("?")[0]
-    match = re.search(r"/(?:dp|gp/product)/([A-Z0-9]{10})", url)
-    asin = match.group(1) if match else url.rstrip("/").split("/")[-1].split("?")[0]
-    return f"https://www.amazon.com/product-reviews/{asin}/"
+    asin = _asin_from_url(url)
+    return (
+        f"https://www.amazon.com/product-reviews/{asin}/ref=cm_cr_dp_d_show_all_btm"
+        "?ie=UTF8&reviewerType=all_reviews"
+    )
+
+
+def product_page_url(url: str) -> str:
+    return f"https://www.amazon.com/dp/{_asin_from_url(url)}"
 
 
 def next_review_page(result: Response) -> Optional[str]:
@@ -162,6 +357,7 @@ _TRANSIENT_CODES = {
     "ERR_TUNNEL_CONNECTION_FAILED",
     "ERR_CONNECTION_CLOSED",
     "ERR_HTTP2_PROTOCOL_ERROR",
+    "ERR_HTTP_RESPONSE_CODE_FAILURE",
     "TIMEOUT",
 }
 
@@ -174,55 +370,400 @@ def _transient_failure(error: ScrapeError) -> bool:
 
 
 async def _fetch_once_retry(request: Request) -> Response:
-    """one extra attempt for a tunnel drop or a 503, matching the site's existing retry style"""
+    """one extra attempt for a tunnel drop, a timeout, or a 503.
+
+    CLEANUP_FAILED means the browser slot was left behind. Reset the shared
+    client before the extra attempt so a later test on a new event loop can run.
+    """
     try:
         return await CLIENT.fetch(request)
     except ScrapeError as error:
-        if not _transient_failure(error):
+        if error.code == "CLEANUP_FAILED":
+            await CLIENT.reset()
+        if not _transient_failure(error) and error.code != "CLEANUP_FAILED":
             raise
         log.warning(f"retrying {request.url} once after {error.code}")
         return await CLIENT.fetch(request)
 
 
-@managed
-async def scrape_reviews(url: str, max_pages: int = 2) -> List[Review]:
-    """scrape product reviews of a given Amazon product URL"""
-    page_url = reviews_page_url(url)
-    log.info(f"scraping review page: {page_url}")
+REVIEWS_AJAX = "https://www.amazon.com/hz/reviews-render/ajax/reviews/get/ref=cm_cr_arp_d_viewopt_srt"
+REVIEWS_MEDLEY = "https://www.amazon.com/hz/reviews-render/ajax/medley-filtered-reviews/get/ref=cm_cr_dp_d_fltrs_srt"
+
+
+def reviews_ajax_fields(asin: str, page: int) -> Dict[str, str]:
+    return {
+        "sortBy": "recent",
+        "reviewerType": "all_reviews",
+        "formatType": "",
+        "mediaType": "",
+        "filterByStar": "",
+        "filterByAge": "",
+        "filterByLanguage": "",
+        "filterByKeyword": "",
+        "shouldAppend": "undefined",
+        "deviceType": "desktop",
+        "canShowIntHeader": "undefined",
+        "pageSize": "20",
+        "asin": asin,
+        "pageNumber": str(page),
+        "scope": f"reviewsAjax{page}",
+    }
+
+
+def reviews_ajax_script(asin: str, page: int) -> str:
+    """POST the reviews XHR from an amazon.com document.
+
+    Navigating the browser onto /hz/reviews-render/ itself raised
+    ERR_HTTP_RESPONSE_CODE_FAILURE before any card was returned. The product
+    page issues this call; do the same with fetch() so a non-200 stays a body
+    instead of a failed navigation. Origin and Referer are forbidden fetch
+    headers and are left for the browser to set.
+
+    Tip6's script had no abort. The first product-page evaluate did not return
+    for about eight minutes, and the retry on that same browser then hit the
+    outer 90s timeout. Each endpoint now aborts after 8s so the browser is
+    released.
+    """
+    endpoints = json.dumps([REVIEWS_AJAX, REVIEWS_MEDLEY])
+    fields = json.dumps(reviews_ajax_fields(asin, page))
+    return (
+        "const body = new URLSearchParams(" + fields + ");\n"
+        "const endpoints = " + endpoints + ";\n"
+        "let last = {status: 0, text: ''};\n"
+        "for (const endpoint of endpoints) {\n"
+        "  const controller = new AbortController();\n"
+        "  const timer = setTimeout(() => controller.abort(), 8000);\n"
+        "  try {\n"
+        "    const response = await fetch(endpoint, {method: 'POST', credentials: 'include', signal: controller.signal, headers: {\n"
+        "      'content-type': 'application/x-www-form-urlencoded;charset=UTF-8',\n"
+        "      'accept': 'text/html,*/*',\n"
+        "      'x-requested-with': 'XMLHttpRequest'\n"
+        "    }, body: body.toString()});\n"
+        "    const text = await response.text();\n"
+        "    last = {status: response.status, text: text};\n"
+        "    if (text.includes('data-hook=\"review\"') || text.includes('\"reviewBody\"') || text.includes('\"reviewText\"')) {\n"
+        "      return JSON.stringify(last);\n"
+        "    }\n"
+        "  } catch (error) {\n"
+        "    last = {status: 0, text: ''};\n"
+        "  } finally {\n"
+        "    clearTimeout(timer);\n"
+        "  }\n"
+        "}\n"
+        "return JSON.stringify(last);"
+    )
+
+
+def reviews_ajax_body(value) -> str:
+    """script result is {status, text}. A raw ajax body is accepted too."""
+    if not isinstance(value, str) or not value:
+        return ""
+    try:
+        payload = json.loads(value)
+    except json.JSONDecodeError:
+        return value
+    if isinstance(payload, dict) and isinstance(payload.get("text"), str):
+        return payload["text"]
+    return value
+
+
+def parse_jsonld_reviews(result: Response) -> List[Review]:
+    """Review nodes Amazon embeds when the review widget itself is not painted."""
+    parsed: List[Review] = []
+
+    def walk(node) -> None:
+        if isinstance(node, list):
+            for item in node:
+                walk(item)
+            return
+        if not isinstance(node, dict):
+            return
+        types = node.get("@type") or []
+        if isinstance(types, str):
+            types = [types]
+        if "Review" in types:
+            rating = node.get("reviewRating") if isinstance(node.get("reviewRating"), dict) else {}
+            try:
+                score = float(rating.get("ratingValue"))
+            except (TypeError, ValueError):
+                score = None
+            if score is not None:
+                author = node.get("author")
+                author_name = author.get("name") if isinstance(author, dict) else author if isinstance(author, str) else ""
+                published = str(node.get("datePublished") or "").strip()
+                where = f"{author_name} on {published}".strip() if author_name or published else ""
+                parsed.append(
+                    {
+                        "text": " ".join(str(node.get("reviewBody") or "").split()),
+                        "title": " ".join(str(node.get("name") or node.get("headline") or "").split()),
+                        "location_and_date": where,
+                        "verified": False,
+                        "rating": score,
+                    }
+                )
+            return
+        for value in node.values():
+            if isinstance(value, (dict, list)):
+                walk(value)
+
+    for script in result.selector.css('script[type="application/ld+json"]::text').getall():
+        try:
+            walk(json.loads(script))
+        except json.JSONDecodeError:
+            continue
+    return parsed
+
+
+def parse_review_fragments(content: str) -> List[Review]:
+    """reviews ajax answers are `&&&` separated JSON chunks whose strings hold the cards"""
+    pieces = []
+    for chunk in re.split(r"\s*&&&\s*", content or ""):
+        chunk = chunk.strip()
+        if not chunk:
+            continue
+        try:
+            payload = json.loads(chunk)
+        except json.JSONDecodeError:
+            if "data-hook" in chunk:
+                pieces.append(chunk)
+            continue
+        if isinstance(payload, list):
+            pieces.extend(str(item) for item in payload if isinstance(item, str) and "data-hook" in item)
+        elif isinstance(payload, str) and "data-hook" in payload:
+            pieces.append(payload)
+    if not pieces and content and 'data-hook="review"' in content:
+        pieces.append(content)
     reviews: List[Review] = []
     seen = set()
-    for page_number in range(1, max_pages + 1):
-        page = None
-        attempts = 6 if page_number == 1 else 1
-        for attempt in range(1, attempts + 1):
-            page = await CLIENT.fetch(
-                Request(
-                    page_url,
-                    render=True,
-                    autoScroll=True,
-                    actions=[
-                        {"type": "waitForSelector", "selector": "[data-hook=review]", "timeoutMs": 12000, "optional": True},
-                    ],
-                    **BASE_CONFIG,
-                )
-            )
-            parsed = parse_reviews(page)
-            if parsed:
-                break
-            log.debug(f"review widget was not rendered, retrying ({attempt}/{attempts})")
-            page = None
-        if page is None:
-            log.warning(f"failed to scrape reviews of {page_url}: Amazon kept gating the review widget")
-            break
-        for review in parse_reviews(page):
+    for html in pieces:
+        for review in parse_reviews(Response(REVIEWS_AJAX, html)):
             key = (review["title"], review["text"], review["location_and_date"])
             if key in seen:
                 continue
             seen.add(key)
             reviews.append(review)
-        page_url = next_review_page(page)
-        if not page_url:
-            break
+    return reviews
+
+
+_REVIEWS_TIMEOUT_MS = 45_000
+
+
+def _review_request(page_url: str, session: Optional[str] = None) -> Request:
+    """the dedicated reviews document.
+
+    Tip6 waited for domcontentloaded for 90s, scrolled, and timed out twice
+    (HTTP 0). commit is the navigation that already returned Amazon product
+    pages in this run. A missing widget must not consume the whole budget.
+    """
+    return Request(
+        page_url,
+        session=session,
+        render=True,
+        waitUntil="commit",
+        timeoutMs=_REVIEWS_TIMEOUT_MS,
+        actions=[
+            {
+                "type": "waitForSelector",
+                "selector": "[data-hook=review], [data-hook=review-card]",
+                "timeoutMs": 8000,
+                "optional": True,
+            },
+        ],
+        **BASE_CONFIG,
+    )
+
+
+async def _fetch_reviews_document(request: Request) -> tuple[Optional[Response], str]:
+    """one reviews navigation, retried once on a new browser.
+
+    A timed-out evaluate leaves the named session wedged. The extra attempt
+    must not reuse it. `_fetch_once_retry` retries the same session and stays
+    on the product and search paths that passed.
+    """
+    session = request.session or uuid4().hex
+    try:
+        return await CLIENT.fetch(request), session
+    except ScrapeError as error:
+        if error.code == "CLEANUP_FAILED":
+            await CLIENT.reset()
+        retryable = error.code in {"TIMEOUT", "BROWSER_ERROR", "CLEANUP_FAILED"} or _transient_failure(error)
+        if not retryable:
+            log.warning(f"reviews {request.url} failed ({error.code})")
+            return None, session
+        log.warning(f"reviews {request.url} failed ({error.code}); one fresh session")
+        try:
+            await CLIENT.close_session(session)
+        except ScrapeError as close_error:
+            log.warning(f"reviews session close failed ({close_error.code})")
+        session = uuid4().hex
+        try:
+            return await CLIENT.fetch(replace(request, session=session)), session
+        except ScrapeError as again:
+            if again.code == "CLEANUP_FAILED":
+                await CLIENT.reset()
+            status = again.response.status_code if again.response else 0
+            log.warning(f"reviews {request.url} failed ({again.code} HTTP {status})")
+            return None, session
+
+
+def _extend_reviews(reviews: List[Review], seen: set, parsed: List[Review]) -> None:
+    for review in parsed:
+        key = (review["title"], review["text"], review["location_and_date"])
+        if key in seen:
+            continue
+        seen.add(key)
+        reviews.append(review)
+
+
+def parse_structured_reviews(content: str) -> List[Review]:
+    """review objects in an ajax or embedded JSON body that never become HTML cards"""
+    parsed: List[Review] = []
+
+    def walk(node) -> None:
+        if isinstance(node, list):
+            for item in node:
+                walk(item)
+            return
+        if not isinstance(node, dict):
+            return
+        text = node.get("reviewText") if isinstance(node.get("reviewText"), str) else node.get("reviewBody")
+        rating = node.get("rating")
+        if rating is None and isinstance(node.get("reviewRating"), dict):
+            rating = node["reviewRating"].get("ratingValue")
+        try:
+            score = float(rating)
+        except (TypeError, ValueError):
+            score = None
+        if isinstance(text, str) and text.strip() and score is not None and 0 < score <= 5:
+            title = node.get("reviewTitle") or node.get("title") or node.get("name") or ""
+            published = str(node.get("datePublished") or node.get("submissionDate") or "").strip()
+            parsed.append(
+                {
+                    "text": " ".join(text.split()),
+                    "title": " ".join(str(title).split()),
+                    "location_and_date": published,
+                    "verified": bool(node.get("verified") or node.get("verifiedPurchase")),
+                    "rating": score,
+                }
+            )
+            return
+        for value in node.values():
+            if isinstance(value, (dict, list)):
+                walk(value)
+
+    for chunk in re.split(r"\s*&&&\s*", content or ""):
+        chunk = chunk.strip()
+        if not chunk:
+            continue
+        try:
+            walk(json.loads(chunk))
+        except json.JSONDecodeError:
+            continue
+    if not parsed and content:
+        try:
+            walk(json.loads(content))
+        except json.JSONDecodeError:
+            pass
+    return parsed
+
+
+def _ajax_status(value) -> int:
+    if not isinstance(value, str) or not value:
+        return 0
+    try:
+        payload = json.loads(value)
+    except json.JSONDecodeError:
+        return 0
+    if isinstance(payload, dict):
+        try:
+            return int(payload.get("status") or 0)
+        except (TypeError, ValueError):
+            return 0
+    return 0
+
+
+def _collect_page_reviews(page: Response) -> List[Review]:
+    body = reviews_ajax_body(page.javascript)
+    parsed = parse_review_fragments(body)
+    parsed.extend(parse_structured_reviews(body))
+    parsed.extend(parse_reviews(page))
+    parsed.extend(parse_jsonld_reviews(page))
+    parsed.extend(parse_structured_reviews(page.content or ""))
+    return parsed
+
+
+@managed
+async def scrape_reviews(url: str, max_pages: int = 2) -> List[Review]:
+    """scrape product reviews of a given Amazon product URL.
+
+    The reviews XHR is fetched from the product document. Navigating onto
+    /hz/reviews-render/ raised ERR_HTTP_RESPONSE_CODE_FAILURE for Atomic Habits
+    (0735211299), and both the reviews URL and the product page rendered zero
+    [data-hook=review] cards. Cards in that script body, in the product HTML,
+    or in JSON-LD Review nodes are all kept. Tip6 product and search passed.
+    The reviews evaluate hung, so this path uses commit, a 45s budget, and an
+    aborted XHR. Product and search fetches are unchanged.
+    """
+    asin = _asin_from_url(url)
+    referer = product_page_url(url)
+    log.info(f"scraping reviews for {asin} from the product page reviews request")
+    reviews: List[Review] = []
+    seen = set()
+    session = uuid4().hex
+    try:
+        for page_number in range(1, max_pages + 1):
+            request = Request(
+                referer,
+                session=session,
+                countryCode="US",
+                render=True,
+                waitUntil="commit",
+                timeoutMs=_REVIEWS_TIMEOUT_MS,
+                javascript=reviews_ajax_script(asin, page_number),
+            )
+            page, session = await _fetch_reviews_document(request)
+            if page is None:
+                break
+            parsed = _collect_page_reviews(page)
+            if not parsed:
+                ajax_body = reviews_ajax_body(page.javascript)
+                log.warning(
+                    f"reviews page {page_number} had no review cards "
+                    f"(ajax HTTP {_ajax_status(page.javascript)}, {len(ajax_body)} bytes)"
+                )
+                break
+            _extend_reviews(reviews, seen, parsed)
+        if reviews:
+            log.info(f"scraped {len(reviews)} reviews")
+            return reviews
+
+        page_url = reviews_page_url(url)
+        log.info(f"scraping review page: {page_url}")
+        page, session = await _fetch_reviews_document(_review_request(page_url, session))
+        if page is not None:
+            parsed = (
+                parse_reviews(page)
+                or parse_jsonld_reviews(page)
+                or parse_structured_reviews(page.content or "")
+            )
+            if parsed:
+                _extend_reviews(reviews, seen, parsed)
+                nxt_url = next_review_page(page)
+                if nxt_url and max_pages > 1:
+                    try:
+                        nxt = await CLIENT.fetch(_review_request(nxt_url, session))
+                    except ScrapeError as error:
+                        log.warning(f"next review page failed ({error.code})")
+                    else:
+                        _extend_reviews(
+                            reviews,
+                            seen,
+                            parse_reviews(nxt) or parse_structured_reviews(nxt.content or ""),
+                        )
+            else:
+                log.warning(f"review widget was not rendered on {page_url}")
+    finally:
+        await CLIENT.close_session(session)
     log.info(f"scraped {len(reviews)} reviews")
     return reviews
 
@@ -268,6 +809,153 @@ def parse_images(html: str) -> List[str]:
     return []
 
 
+_STYLE_LABELS = {"style", "color", "colour", "size", "configuration", "pattern", "edition", "format"}
+
+
+def parse_style(result: Response, asin: str = "") -> Optional[str]:
+    """selected variant label. Empty when this ASIN has no style dimension.
+
+    The inline-twister span is empty on the PS5 slim and the 2024 MacBook.
+    The dimension JSON and the product-overview row still name the variant.
+    """
+    sel = result.selector
+    parts = []
+    css_bits = [
+        "[id^=inline-twister-expanded-dimension-text] ::text",
+        "#variation_style_name .selection ::text",
+        "#variation_color_name .selection ::text",
+        "#variation_size_name .selection ::text",
+        "#variation_configuration .selection ::text",
+        "span[id*=style_name_] ::text",
+    ]
+    for css in css_bits:
+        text = " ".join(piece.strip() for piece in sel.css(css).getall() if piece.strip())
+        if text:
+            parts.append(text)
+    for row in sel.css("#productOverview_feature_div tr, #poExpander tr"):
+        cells = [" ".join(cell.css("::text").getall()).strip() for cell in row.css("td, th")]
+        cells = [cell for cell in cells if cell]
+        if len(cells) < 2:
+            continue
+        label = cells[0].rstrip(":").lower()
+        if label in _STYLE_LABELS and cells[-1] not in parts:
+            parts.append(cells[-1])
+    match = re.search(r'"dimensionValuesDisplayData"\s*:\s*', result.content or "")
+    if match:
+        try:
+            data, _ = json.JSONDecoder().raw_decode(result.content, match.end())
+        except json.JSONDecodeError:
+            data = None
+        values = data.get(asin) if isinstance(data, dict) else None
+        if isinstance(values, list):
+            shown = [str(value).strip() for value in values if str(value).strip()]
+            if shown:
+                parts.append(" / ".join(shown))
+    unique = []
+    for part in parts:
+        if part not in unique:
+            unique.append(part)
+    return " | ".join(unique) or None
+
+
+_DESCRIPTION_NOISE = {
+    "product description",
+    "product details",
+    "from the manufacturer",
+    "about this item",
+    "read more",
+    "see more",
+    "see less",
+    "show more",
+    "show less",
+    "click to expand",
+}
+
+
+def _description_text(chunks: List[str]) -> str:
+    parts = []
+    for piece in chunks:
+        text = " ".join(piece.split())
+        if not text or text.lower() in _DESCRIPTION_NOISE:
+            continue
+        parts.append(text)
+    return "\n".join(parts).strip()
+
+
+def _jsonld_product_description(script: str) -> str:
+    try:
+        data = json.loads(script)
+    except json.JSONDecodeError:
+        return ""
+    found = []
+
+    def walk(node) -> None:
+        if isinstance(node, list):
+            for item in node:
+                walk(item)
+            return
+        if not isinstance(node, dict):
+            return
+        types = node.get("@type") or []
+        if isinstance(types, str):
+            types = [types]
+        if any(kind in types for kind in ("Product", "Book")):
+            desc = node.get("description")
+            if isinstance(desc, str):
+                text = " ".join(desc.split())
+                if len(text) >= 25:
+                    found.append(text)
+        for value in node.values():
+            if isinstance(value, (dict, list)):
+                walk(value)
+
+    walk(data)
+    return found[0] if found else ""
+
+
+def _embedded_product_description(html: str) -> str:
+    match = re.search(r'"productDescription"\s*:\s*"((?:\\.|[^"\\])*)"', html or "")
+    if not match:
+        return ""
+    try:
+        text = json.loads(f'"{match.group(1)}"')
+    except json.JSONDecodeError:
+        text = match.group(1)
+    text = " ".join(re.sub(r"<[^>]+>", " ", str(text)).split())
+    return text if len(text) >= 25 else ""
+
+
+def parse_description(result: Response) -> str:
+    """product copy. #productDescription p span is empty on current electronics pages.
+
+    The text is a bare paragraph, an A+ module, JSON-LD, or a productDescription
+    string in the page state. Feature bullets stay on `features` and are not copied here.
+    """
+    sel = result.selector
+    for css in (
+        "#productDescription",
+        "#bookDescription_feature_div",
+        "#editorialReviews_feature_div",
+        "#dpx-aplus-product-description_feature_div",
+    ):
+        text = _description_text(sel.css(f"{css} ::text").getall())
+        if len(text) >= 25:
+            return text[:8000]
+    embedded = _embedded_product_description(result.content or "")
+    if embedded:
+        return embedded[:8000]
+    for script in sel.css('script[type="application/ld+json"]::text').getall():
+        text = _jsonld_product_description(script)
+        if text:
+            return text[:8000]
+    aplus = _description_text(sel.css(
+        "#aplus_feature_div p ::text, #aplus p ::text, .aplus-v2 p ::text, #aplusBrandStory_feature_div p ::text"
+    ).getall())
+    if len(aplus) >= 25:
+        return aplus[:8000]
+    return ""
+
+
 def parse_product(result) -> Product:
     """parse Amazon's product page (e.g. https://www.amazon.com/dp/B07KR2N2GF) for essential product data"""
     images = parse_images(result.content)
@@ -275,11 +963,14 @@ def parse_product(result) -> Product:
     # the other fields can be extracted with simple css selectors
     # we can define our helper functions to keep our code clean
     sel = result.selector
+    asin = sel.css("input[name=ASIN]::attr(value)").get("").strip()
     parsed = {
         "name": sel.css("#productTitle::text").get("").strip(),
-        "asin": sel.css("input[name=ASIN]::attr(value)").get("").strip(),
-        "style": ''.join(sel.css("[id^=inline-twister-expanded-dimension-text] ::text").getall()).strip(),
-        "description": '\n'.join(sel.css("#productDescription p span ::text").getall()).strip(),
+        "asin": asin,
+        # null, not "", when Amazon omits the dimension. The live presence
+        # check treats "" as missing and null as an explicit empty variant.
+        "style": parse_style(result, asin),
+        "description": parse_description(result),
         "stars": sel.css("i[data-hook=average-star-rating] ::text").get("").strip(),
         "rating_count": sel.css("span[data-hook=total-review-count] ::text").get("").strip(),
         "features": [value.strip() for value in sel.css("#feature-bullets li ::text").getall()],
@@ -311,45 +1002,103 @@ def _page_summary(result: Response) -> str:
     return f"a page without product data ({title!r} {heading!r})"
 
 
+def _product_request(url: str) -> Request:
+    """one product navigation.
+
+    Tip5's MacBook (`B0CX22ZW1T`) died as TIMEOUT at ~128s twice. The request
+    set `waitForSelector=#productTitle` with `timeoutMs=120000`, and that wait
+    starts after goto while the outer budget is the same 120s, so a slow
+    document is TIMEOUT rather than a missing title. The title wait is now a
+    short optional action inside a 60s commit navigation. The caller retries.
+    """
+    return Request(
+        product_page_url(url),
+        **BASE_CONFIG,
+        render=True,
+        waitUntil="commit",
+        timeoutMs=60000,
+        actions=[
+            {
+                "type": "waitForSelector",
+                "selector": "#productTitle",
+                "timeoutMs": 20000,
+                "optional": True,
+            },
+            {
+                "type": "waitForSelector",
+                "selector": "#productOverview_feature_div, [id^=inline-twister-expanded-dimension-text], #variation_color_name",
+                "timeoutMs": 8000,
+                "optional": True,
+            },
+            {
+                "type": "click",
+                "selector": "#productDescription_feature_div .a-expander-header, #bookDescription_feature_div .a-expander-header",
+                "optional": True,
+            },
+        ],
+    )
+
+
+async def _fetch_product_page(url: str) -> Response:
+    """up to three fresh navigations. The second runs only after the first fails."""
+    canonical = product_page_url(url)
+    last_page: Optional[Response] = None
+    last_error: Optional[ScrapeError] = None
+    for attempt in range(1, 4):
+        try:
+            page = await CLIENT.fetch(_product_request(url))
+        except ScrapeError as error:
+            if error.code == "CLEANUP_FAILED":
+                await CLIENT.reset()
+            last_error = error
+            if attempt == 3 or (error.code != "CLEANUP_FAILED" and not _transient_failure(error)):
+                if error.code == "SELECTOR_NOT_FOUND" and error.response is not None:
+                    raise ValueError(
+                        f"amazon.com returned {_page_summary(error.response)} instead of the product page {canonical}"
+                    ) from error
+                raise
+            log.warning(f"retrying {canonical} after {error.code} ({attempt}/3)")
+            continue
+        if NOTICE_TEXT in (page.content or ""):
+            raise ValueError(
+                f"amazon.com returned {_page_summary(page)} instead of the product page {canonical}"
+            )
+        if page.selector.css("#productTitle"):
+            return page
+        last_page = page
+        log.warning(f"{canonical} had no #productTitle ({attempt}/3)")
+    if last_page is not None:
+        raise ValueError(
+            f"amazon.com returned {_page_summary(last_page)} instead of the product page {canonical}"
+        )
+    raise last_error  # pragma: no cover - the loop raises on the last error
+
+
 @managed
 async def scrape_product(url: str) -> List[Product]:
     """scrape Amazon.com product"""
-    url = url.split("/ref=")[0]
-    asin = url.split("/dp/")[-1]
-    log.info(f"scraping product {url}")
-    try:
-        product_result = await _fetch_once_retry(
-            Request(
-                url,
-                **BASE_CONFIG,
-                render=True,
-                waitForSelector="#productTitle",
-            )
-        )
-    except ScrapeError as e:
-        # amazon sometimes answers with a short page without product data (e.g. a notice) instead of the product
-        if e.code != "SELECTOR_NOT_FOUND" or not e.response:
-            raise
-        raise ValueError(
-            f"amazon.com returned {_page_summary(e.response)} instead of the product page {url}"
-        ) from e
+    asin = _asin_from_url(url)
+    canonical = product_page_url(url)
+    log.info(f"scraping product {canonical}")
+    product_result = await _fetch_product_page(url)
     variants = [parse_product(product_result)]
 
     # if product has variants - we want to scrape all of them
     _variation_data = re.findall(r'dimensionValuesDisplayData"\s*:\s*({.+?}),\n', product_result.content)
     if _variation_data:
         variant_asins = [variant_asin for variant_asin in json.loads(_variation_data[0]) if variant_asin != asin]
+        # a multipack can list dozens of ASINs. two is enough to prove the variant
+        # path; fetching every one stacked timeouts on the 2026-11-03 US retest.
+        if len(variant_asins) > 2:
+            log.info(f"limiting variants from {len(variant_asins)} to 2")
+            variant_asins = variant_asins[:2]
         log.info(f"scraping {len(variant_asins)} variants: {variant_asins}")
         for variant_asin in variant_asins:
             variant_url = f"https://www.amazon.com/dp/{variant_asin}"
             try:
-                result = await _fetch_once_retry(Request(variant_url, **BASE_CONFIG))
-            except ScrapeError as error:
+                result = await _fetch_product_page(variant_url)
+            except (ScrapeError, ValueError) as error:
                 log.warning(f"skipping variant {variant_url}: {error}")
-                continue
-            # skip variant pages that came back as the notice page (or any page without product data)
-            if not result.selector.css("#productTitle"):
-                log.warning(f"skipping variant {result.url}: amazon.com returned {_page_summary(result)}")
                 continue
             variants.append(parse_product(result))
     return variants

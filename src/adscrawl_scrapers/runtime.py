@@ -333,9 +333,13 @@ class _Session:
                 pass
             self.browser = None
         if self.info:
+            # Drop the id before DELETE. A failed DELETE must not leave this
+            # object looking open: callers then keep it in the pool, and the
+            # next pytest loop refuses to run.
+            session_id = self.info["sessionId"]
+            self.info = None
             try:
-                await self.sdk.cdp.close(self.info["sessionId"], timeout_ms=30_000)
-                self.info = None
+                await self.sdk.cdp.close(session_id, timeout_ms=30_000)
             except Exception:
                 failures.append("AdsCrawl session cleanup failed; inspect active sessions before retrying")
         if self.playwright:
@@ -356,6 +360,7 @@ class ScraperClient:
     def __init__(self, *, api_key=None, concurrency=None, sdk=None):
         self._api_key = api_key
         self._sdk = sdk
+        self._external_sdk = sdk is not None
         self.concurrency = int(concurrency or os.getenv("ADSCRAWL_CONCURRENCY", "2"))
         if self.concurrency < 1:
             raise ValueError("Concurrency must be positive")
@@ -370,12 +375,41 @@ class ScraperClient:
         loop = asyncio.get_running_loop()
         if self._loop is not loop:
             if self._sessions:
-                raise RuntimeError("Close the client before using it on another event loop")
+                previous = self._loop
+                # A still-running loop owns these browsers. A closed loop is a
+                # finished pytest test: the sessions are leftovers from a failed
+                # cleanup and cannot be awaited there.
+                if previous is not None and not previous.is_closed():
+                    raise RuntimeError("Close the client before using it on another event loop")
+                log.warning("dropping browser sessions left on a closed event loop")
+                self._sessions.clear()
+                if not self._external_sdk:
+                    self._sdk = None
             self._loop = loop
             self._gate = asyncio.Semaphore(self.concurrency)
             self._pool_lock = asyncio.Lock()
         if self._sdk is None:
             self._sdk = AsyncAdsCrawl(api_key=self._api_key)
+
+    async def reset(self):
+        """Drop every tracked browser and the SDK binding.
+
+        The next fetch opens a new client on the running loop. A remote DELETE
+        that already failed is not retried; that browser expires on its idle
+        timeout instead of blocking later tests.
+        """
+        sessions = list(self._sessions.values())
+        self._sessions.clear()
+        for session in sessions:
+            try:
+                await _finish(session.close())
+            except Exception as error:
+                log.warning(f"browser session reset skipped a failed close ({error})")
+        self._loop = None
+        self._gate = None
+        self._pool_lock = None
+        if not self._external_sdk:
+            self._sdk = None
 
     async def __aenter__(self):
         self._bind_loop()
@@ -390,19 +424,23 @@ class ScraperClient:
         for key, session in sessions:
             try:
                 await _finish(session.close())
-                self._sessions.pop(key, None)
             except Exception as error:
                 failures.append(error)
+            finally:
+                self._sessions.pop(key, None)
         if failures:
             raise failures[0]
 
     async def close_session(self, name):
         name = (_SCOPE.get(), name)
-        if name in self._sessions:
-            session = self._sessions[name]
+        session = self._sessions.get(name)
+        if session is None:
+            return
+        try:
             async with session.lock:
                 await _finish(session.close())
-                self._sessions.pop(name, None)
+        finally:
+            self._sessions.pop(name, None)
 
     async def fetch(self, request: Request) -> Response:
         task = asyncio.current_task()
@@ -834,9 +872,10 @@ async def _close_scope(scope):
             if isinstance(key, tuple) and key[0] is scope:
                 try:
                     await _finish(session.close())
-                    client._sessions.pop(key, None)
                 except Exception as error:
                     errors.append(error)
+                finally:
+                    client._sessions.pop(key, None)
     if errors:
         raise errors[0]
 

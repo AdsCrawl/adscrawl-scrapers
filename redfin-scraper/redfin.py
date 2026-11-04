@@ -13,6 +13,7 @@ import re
 from html import unescape
 from typing import List, Dict, Optional
 from urllib.parse import quote, urlsplit
+from uuid import uuid4
 from loguru import logger as log
 from adscrawl_scrapers import Request, ScraperClient, Response, ScrapeError
 
@@ -216,51 +217,138 @@ def _property_id_from_url(url: str) -> Optional[str]:
     return tail if tail.isdigit() else None
 
 
-async def _property_from_apis(url: str) -> Response:
-    """the same stingray calls the property page makes, used when the HTML shell has no cache"""
+_STINGRAY_RETRY = {
+    "ERR_TUNNEL_CONNECTION_FAILED",
+    "ERR_CONNECTION_CLOSED",
+    "ERR_CONNECTION_FAILED",
+    "ERR_CONNECTION_RESET",
+    "ERR_TIMED_OUT",
+    "ERR_HTTP2_PROTOCOL_ERROR",
+    "ERR_EMPTY_RESPONSE",
+    "TIMEOUT",
+    "BROWSER_ERROR",
+}
+
+
+def _stingray_retryable(error: ScrapeError) -> bool:
+    code = error.code or ""
+    return code in _STINGRAY_RETRY or "CONNECT" in code or "TUNNEL" in code
+
+
+async def _stingray_get(url: str, session: Optional[str] = None) -> Response:
+    """one JSON stingray call, same shape as the GIS search that already passes.
+
+    render=False plus an Accept/Referer override was HTTP 403 on initialInfo.
+    Search uses a normal US document navigation and does not.
+    """
+    request = Request(url, countryCode="US", session=session, timeoutMs=45000)
+    try:
+        return await CLIENT.fetch(request)
+    except ScrapeError as error:
+        status = error.response.status_code if error.response else 0
+        blocked = error.code == "HTTP_ERROR" and status in {403, 429, 503}
+        if not _stingray_retryable(error) and not blocked:
+            raise
+        log.warning(f"retrying stingray once after {error.code} HTTP {status}: {url}")
+        return await CLIENT.fetch(request)
+
+
+def _detail_queries(property_id, listing_id) -> List[str]:
+    if listing_id:
+        return [f"propertyId={property_id}&listingId={listing_id}&accessLevel=1"]
+    # initialInfo is what normally supplies listingId. The URL still has propertyId,
+    # and aboveTheFold accepts that alone; listingId=propertyId is the second try.
+    return [
+        f"propertyId={property_id}&accessLevel=1",
+        f"propertyId={property_id}&listingId={property_id}&accessLevel=1",
+    ]
+
+
+def _usable_above(payload: Dict) -> bool:
+    info = payload.get("addressSectionInfo") if isinstance(payload, dict) else None
+    return isinstance(info, dict) and bool(info.get("streetAddress"))
+
+
+async def _property_from_apis(url: str, session: Optional[str] = None) -> Response:
+    """stingray detail calls. initialInfo is optional: the sale URL ends in the property id."""
     path = urlsplit(url).path
-    initial = await CLIENT.fetch(
-        Request(
+    property_id = _property_id_from_url(url)
+    listing_id = None
+    try:
+        initial = await _stingray_get(
             "https://www.redfin.com/stingray/api/home/details/initialInfo?path=" + quote(path),
-            countryCode="US",
-            render=False,
+            session=session,
         )
-    )
-    payload = _payload_from_text(initial.content)
-    property_id = _nested_id(payload, "propertyId") or _property_id_from_url(url)
-    listing_id = _nested_id(payload, "listingId")
-    if not property_id or not listing_id:
-        raise ValueError(
-            f"redfin.com initialInfo has no propertyId/listingId for {url} "
-            f"(propertyId={property_id}, listingId={listing_id})"
-        )
-    query = f"propertyId={property_id}&listingId={listing_id}&accessLevel=1"
-    endpoints = {
-        "/stingray/api/home/details/aboveTheFold": f"https://www.redfin.com/stingray/api/home/details/aboveTheFold?{query}",
-        "/stingray/api/home/details/mainHouseInfoPanelInfo": f"https://www.redfin.com/stingray/api/home/details/mainHouseInfoPanelInfo?{query}",
-        "/stingray/api/v1/home/details/belowTheFold": f"https://www.redfin.com/stingray/api/v1/home/details/belowTheFold?{query}",
-    }
-    network = []
-    for key, api_url in endpoints.items():
-        api_response = await CLIENT.fetch(Request(api_url, countryCode="US", render=False))
+        payload = _payload_from_text(initial.content)
+        property_id = _nested_id(payload, "propertyId") or property_id
+        listing_id = _nested_id(payload, "listingId")
+    except (ScrapeError, json.JSONDecodeError, ValueError) as error:
+        log.warning(f"initialInfo failed ({error}); using property id {property_id} from {url}")
+    if not property_id:
+        raise ValueError(f"redfin.com has no property id for {url}")
+
+    chosen = None
+    above_body = None
+    last_error: Optional[BaseException] = None
+    for query in _detail_queries(property_id, listing_id):
+        api_url = f"https://www.redfin.com/stingray/api/home/details/aboveTheFold?{query}"
+        try:
+            above = await _stingray_get(api_url, session=session)
+            payload = _payload_from_text(above.content)
+        except (ScrapeError, json.JSONDecodeError, ValueError) as error:
+            last_error = error
+            continue
+        if _usable_above(payload):
+            chosen = query
+            above_body = above.content
+            break
+        last_error = ValueError(f"aboveTheFold had no address for {api_url}")
+    if not chosen or above_body is None:
+        raise ValueError(f"redfin.com aboveTheFold had no property details for {url}") from last_error
+
+    network = [{
+        "url": "https://www.redfin.com/stingray/api/home/details/aboveTheFold",
+        "response": {"body": above_body},
+    }]
+    for key in (
+        "/stingray/api/home/details/mainHouseInfoPanelInfo",
+        "/stingray/api/v1/home/details/belowTheFold",
+    ):
+        api_url = f"https://www.redfin.com{key}?{chosen}"
+        try:
+            api_response = await _stingray_get(api_url, session=session)
+        except ScrapeError as error:
+            log.warning(f"stingray {key} failed ({error.code}); continuing with aboveTheFold")
+            continue
         network.append({"url": "https://www.redfin.com" + key, "response": {"body": api_response.content}})
     return Response(url, content="", network=network)
 
 
 async def _load_sale_page(url: str) -> Response:
+    # Direct stingray (render=False) returned HTTP 403, then the HTML document
+    # was the 2 KB noscript shell. Open the property page on a session first so
+    # its cookies and any aboveTheFold XHR are kept, and call the detail APIs
+    # the same way search calls GIS.
+    session = uuid4().hex
     try:
-        response = await CLIENT.fetch(
-            Request(url, **BASE_CONFIG, actions=_SALE_ACTIONS, timeoutMs=60000)
-        )
-    except ScrapeError as error:
-        log.warning(f"property page navigation failed ({error.code}); requesting stingray details for {url}")
-        return await _property_from_apis(url)
-    try:
-        parse_data_cache(response)
-    except ValueError as error:
-        log.warning(f"{error}; requesting stingray details for {url}")
-        return await _property_from_apis(url)
-    return response
+        page = None
+        try:
+            page = await CLIENT.fetch(
+                Request(url, **BASE_CONFIG, session=session, actions=_SALE_ACTIONS, timeoutMs=45000)
+            )
+        except ScrapeError as error:
+            log.warning(f"property page navigation failed ({error.code}); requesting stingray on the same session")
+            if error.response and (error.response.network or error.response.content):
+                page = error.response
+        if page is not None:
+            try:
+                parse_data_cache(page)
+                return page
+            except ValueError as error:
+                log.warning(f"{error}; requesting stingray details for {url}")
+        return await _property_from_apis(url, session=session)
+    finally:
+        await CLIENT.close_session(session)
 
 
 @managed
