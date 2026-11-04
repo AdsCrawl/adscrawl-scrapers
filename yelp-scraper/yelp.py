@@ -22,9 +22,9 @@ from adscrawl_scrapers import Request, ScraperClient, Response, ScrapeError
 CLIENT = ScraperClient()
 
 BASE_CONFIG = {
-    # A cold business or search navigation is HTTP 403, and session setup can
-    # also fail with CONNECT_FAILED. The SDK fingerprint is the desktop OS
-    # below. The homepage in the same browser still runs first.
+    # A document navigation is HTTP 403 even after a same-session reload.
+    # Pages are read with an in-page fetch. The review POST uses the same
+    # browser so it sends the page cookies. The SDK fingerprint is the OS below.
     "countryCode": "US",
     "locale": "en-US",
     "userAgentOs": "windows",
@@ -59,85 +59,34 @@ def _challenge(response: Response) -> bool:
     return "captcha-delivery" in url or "/blocked" in url
 
 
-# Applied only after the probe. On a 403 page, wait_for_selector would sit until
-# timeoutMs and the same-session reload would never run.
-_READY = {"waitForSelector", "autoScroll", "actions", "waitForResponse", "javascript"}
+async def _get(session: str, url: str, **extra) -> Response:
+    """Read a Yelp document without navigating the tab to it.
 
-
-def _usable(response: Response) -> bool:
-    """A solved interstitial keeps the original 403 on the navigation response."""
-    if _challenge(response):
-        return False
-    if response.status_code < 400:
-        return True
-    title = " ".join(response.selector.css("title::text").getall()).strip()
-    return bool(title) and len(response.content or "") > 1500
-
-
-async def _navigate(session: str, url: str, referer: str = None, **extra) -> Response:
-    """Open a document and let a 403 interstitial run.
-
-    The fetch raises HTTP_ERROR at the navigation status, before waitMs, when
-    raiseOnHttpError stays on. The homepage warm-up still returned 403 live
-    because the challenge script never ran. The review GraphQL POST is separate
-    and still uses the default error check.
+    The homepage and the reload both still returned HTTP 403. Selectors are
+    ignored: an in-page fetch returns the response body, which is what the
+    parsers read (apollo state, biz id, the business markup).
     """
-    headers = dict(_DOCUMENT_HEADERS)
-    if referer:
-        headers["Referer"] = referer
-    probe = {key: value for key, value in extra.items() if key not in _READY}
-    wait_ms = probe.pop("waitMs", 4_000)
-    timeout_ms = probe.pop("timeoutMs", 60_000)
-
-    async def load(**more) -> Response:
-        return await CLIENT.fetch(Request(
-            url,
-            session=session,
-            headers=headers,
-            raiseOnHttpError=False,
-            waitMs=wait_ms,
-            timeoutMs=timeout_ms,
-            **BASE_CONFIG,
-            **probe,
-            **more,
-        ))
-
-    page = await load()
-    if not _usable(page):
-        log.info(f"reloading {url} once in the same session after HTTP {page.status_code}")
-        page = await load()
-    if not _usable(page):
+    extra.pop("waitForSelector", None)
+    extra.pop("autoScroll", None)
+    extra.pop("actions", None)
+    extra.pop("waitMs", None)
+    page = await CLIENT.fetch(Request(
+        url,
+        session=session,
+        headers={**_DOCUMENT_HEADERS, "Referer": _HOME},
+        binary=True,
+        timeoutMs=45_000,
+        raiseOnHttpError=False,
+        **BASE_CONFIG,
+        **extra,
+    ))
+    if page.status_code >= 400 or _challenge(page):
         raise ScrapeError(
             f"Target returned HTTP {page.status_code}",
             response=page,
             code="HTTP_ERROR",
         )
-    if not _READY.intersection(extra):
-        return page
-    ready = await CLIENT.fetch(Request(
-        url,
-        session=session,
-        headers=headers,
-        raiseOnHttpError=False,
-        timeoutMs=timeout_ms,
-        **BASE_CONFIG,
-        **extra,
-    ))
-    if not _usable(ready):
-        raise ScrapeError(
-            f"Target returned HTTP {ready.status_code}",
-            response=ready,
-            code="HTTP_ERROR",
-        )
-    return ready
-
-
-async def _open_home(session: str) -> None:
-    await _navigate(session, _HOME)
-
-
-async def _get(session: str, url: str, **extra) -> Response:
-    return await _navigate(session, url, referer=_HOME, **extra)
+    return page
 
 
 async def _attempt(work):
@@ -315,7 +264,6 @@ async def scrape_pages(urls: List[str]) -> List[Dict]:
     result = []
     for url in urls:
         async def read(session, page_url=url):
-            await _open_home(session)
             return await _get(session, page_url)
         result.append(parse_page(await _attempt(read)))
     log.success(f"scraped {len(result)} business pages")
@@ -379,6 +327,8 @@ async def request_reviews_api(url: str, start_index: int, business_id, session: 
             body=payload,
             method="POST",
             session=session,
+            binary=True,
+            timeoutMs=45_000,
             countryCode="US",
             locale="en-US",
             userAgentOs="windows",
@@ -392,7 +342,6 @@ async def scrape_reviews(url: str, max_reviews: int = None) -> List[Review]:
     # first find business ID from business URL
     async def read(session):
         log.info("scraping the business id from the business page")
-        await _open_home(session)
         response_business = await _get(session, url)
         business_id = parse_business_id(response_business)
         if not business_id:
@@ -443,7 +392,6 @@ async def scrape_search(keyword: str, location: str, max_pages: int = None):
 
     async def read(session):
         log.info("scraping the first search page")
-        await _open_home(session)
         first_page = await _get(session, make_search_url(1))
         data = parse_search(first_page)
         search_data = data["search_data"]

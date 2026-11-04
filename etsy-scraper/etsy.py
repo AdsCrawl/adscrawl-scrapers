@@ -10,7 +10,6 @@ from adscrawl_scrapers import managed
 import os
 import math
 import json
-import uuid
 from adscrawl_scrapers import Request, ScraperClient, Response, ScrapeError
 from typing import Dict, List
 from loguru import logger as log
@@ -18,9 +17,8 @@ from loguru import logger as log
 CLIENT = ScraperClient()
 
 BASE_CONFIG = {
-    # Etsy answers a cold document with HTTP 403. The SDK fingerprint is the
-    # desktop OS below; there is no separate stealth switch. The homepage in
-    # the same browser still runs first so a later navigation can send its cookies.
+    # Document navigations stay HTTP 403. The listing is read with binary=True
+    # (in-page fetch). The SDK fingerprint is the desktop OS below.
     "countryCode": "US",
     "locale": "en-US",
     "userAgentOs": "windows",
@@ -57,103 +55,46 @@ def _challenge(response: Response) -> bool:
     return "captcha-delivery" in url or "/blocked" in url
 
 
-# Applied only after the probe. On a 403 page, wait_for_selector would sit until
-# timeoutMs and the same-session reload would never run.
-_READY = {"waitForSelector", "autoScroll", "actions", "waitForResponse", "javascript"}
-
-
-def _usable(response: Response) -> bool:
-    """A solved interstitial keeps the original 403 on the navigation response.
-
-    runtime records that status and does not update it when the document is
-    rewritten. A large page with a normal title is the storefront. A known
-    challenge title is not, whatever the status is.
-    """
-    if _challenge(response):
-        return False
-    if response.status_code < 400:
-        return True
-    title = " ".join(response.selector.css("title::text").getall()).strip()
-    return bool(title) and len(response.content or "") > 1500
-
-
-async def _navigate(session: str, url: str, referer: str = None, **extra) -> Response:
-    """Open a document and let a 403 interstitial run.
-
-    The fetch raises HTTP_ERROR at the navigation status, before waitMs, when
-    raiseOnHttpError stays on. That is why the homepage warm-up still failed
-    live: the challenge script never ran. Opt out, wait, and reload once in
-    this session so the second request can send the cookie the first one set.
-    """
-    headers = dict(_DOCUMENT_HEADERS)
-    if referer:
-        headers["Referer"] = referer
-    probe = {key: value for key, value in extra.items() if key not in _READY}
-    wait_ms = probe.pop("waitMs", 4_000)
-    timeout_ms = probe.pop("timeoutMs", 60_000)
-
-    async def load(**more) -> Response:
-        return await CLIENT.fetch(Request(
-            url,
-            session=session,
-            headers=headers,
-            raiseOnHttpError=False,
-            waitMs=wait_ms,
-            timeoutMs=timeout_ms,
-            **BASE_CONFIG,
-            **probe,
-            **more,
-        ))
-
-    page = await load()
-    if not _usable(page):
-        log.info(f"reloading {url} once in the same session after HTTP {page.status_code}")
-        page = await load()
-    if not _usable(page):
-        raise ScrapeError(
-            f"Target returned HTTP {page.status_code}",
-            response=page,
-            code="HTTP_ERROR",
-        )
-    if not _READY.intersection(extra):
-        return page
-    ready = await CLIENT.fetch(Request(
-        url,
-        session=session,
-        headers=headers,
-        raiseOnHttpError=False,
-        timeoutMs=timeout_ms,
-        **BASE_CONFIG,
-        **extra,
-    ))
-    if not _usable(ready):
-        raise ScrapeError(
-            f"Target returned HTTP {ready.status_code}",
-            response=ready,
-            code="HTTP_ERROR",
-        )
-    return ready
+# These need a real document. The live reload still returned HTTP 403, and the
+# follow-up navigation that applied them hung until the fetch deadline.
+_DOCUMENT_ONLY = {"waitForSelector", "autoScroll", "actions", "waitForResponse", "javascript", "waitMs"}
 
 
 async def _fetch_document(url: str, **extra) -> Response:
-    """Homepage, then the document, in one named session.
+    """Read the HTML with an in-page fetch. Do not navigate the tab to Etsy.
 
-    The session is closed before a retry. At concurrency 1 a second named
-    session cannot be created while the blocked browser is still held.
+    Homepage warm-up and a same-session reload both still got HTTP 403, and
+    this repo has no other Etsy API. Parsers read JSON-LD and listing markup
+    from the response body. A document navigation is what the block answers.
+    One new browser if that body is still a block. No named session, so a
+    cancelled navigation cannot hold the only browser.
     """
+    for key in _DOCUMENT_ONLY:
+        extra.pop(key, None)
     last = None
     for attempt in range(2):
-        session = f"etsy-{uuid.uuid4().hex}"
         try:
-            await _navigate(session, _HOME)
-            return await _navigate(session, url, referer=_HOME, **extra)
+            page = await CLIENT.fetch(Request(
+                url,
+                headers={**_DOCUMENT_HEADERS, "Referer": _HOME},
+                binary=True,
+                timeoutMs=45_000,
+                raiseOnHttpError=False,
+                **BASE_CONFIG,
+                **extra,
+            ))
+            if page.status_code >= 400 or _challenge(page):
+                raise ScrapeError(
+                    f"Target returned HTTP {page.status_code}",
+                    response=page,
+                    code="HTTP_ERROR",
+                )
+            return page
         except ScrapeError as error:
             last = error
             if error.code not in _RETRYABLE or attempt == 1:
                 raise
             log.warning(f"retrying {url} once after {error.code}")
-        finally:
-            await CLIENT.close_session(session)
     raise last
 
 

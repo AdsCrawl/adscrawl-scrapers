@@ -10,6 +10,7 @@ from adscrawl_scrapers import managed
 import base64
 import json
 import os
+import uuid
 from datetime import datetime
 from pathlib import Path
 from typing import List, Optional, TypedDict
@@ -33,9 +34,10 @@ CABIN_NAMES = {"Y": "economy", "W": "premium economy", "J": "business", "F": "fi
 output = Path(__file__).parent / "results"
 output.mkdir(exist_ok=True)
 
-# The booking form loads ("Book a flight | Emirates") and then a later action
-# times out. Repeating that scenario failed live. The widget itself leaves the
-# form by assigning /booking/search-results/?searchRequest=<base64 json>.
+# A cold /booking/search-results/ URL is redirected to /error/accessrestricted.html.
+# The book page is opened first in the same browser so that navigation sends
+# its cookies, then the widget search URL is opened with that page as referer.
+# One new browser if the exit is still restricted.
 _TRANSIENT = {
     "ACTION_FAILED",
     "TIMEOUT",
@@ -359,29 +361,63 @@ async def scrape_flights(
 ) -> FlightSearch:
     """Scrape flights from emirates.com.
 
-    locale selects the book-page market. The widget navigates to the
-    site-root search-results path, not back through /{locale}/book/.
+    locale is the book-page market. That page is opened first. The widget
+    then assigns the site-root search-results path, which is requested in
+    the same browser with the book page as referer.
     """
     log.info(f"scraping {origin}-{destination} for market {locale}")
-    try:
-        response = await _fetch(
-            Request(
-                _search_results_url(origin, destination, departure_date, return_date),
+    book_url = f"https://www.emirates.com/{locale}/book/"
+    results_url = _search_results_url(origin, destination, departure_date, return_date)
+    last_error = None
+    for attempt in range(2):
+        session = f"emirates-{uuid.uuid4().hex}"
+        try:
+            await CLIENT.fetch(Request(
+                book_url,
+                session=session,
                 **BASE_CONFIG,
-                timeoutMs=70_000,
+                timeoutMs=35_000,
+                raiseOnHttpError=False,
                 actions=[
-                    {"type": "click", "selector": "button[id*='onetrust-accept']", "timeoutMs": 5000, "optional": True},
-                    {"type": "wait", "milliseconds": 12000},
+                    {"type": "click", "selector": "button[id*='onetrust-accept']", "timeoutMs": 4000, "optional": True},
+                    {"type": "wait", "milliseconds": 2000},
                 ],
-            )
-        )
-    except ScrapeError as e:
-        # emirates can send the browser to its access restricted page during the search
-        result = ({"url": e.response.url} if e.response else {})
-        if "accessrestricted" in (result.get("url") or ""):
-            raise ValueError("emirates.com redirected the search to its access restricted page") from e
-        raise
-    data = parse_branded_fares(response)
+            ))
+            response = await CLIENT.fetch(Request(
+                results_url,
+                session=session,
+                headers={"Referer": book_url},
+                **BASE_CONFIG,
+                timeoutMs=50_000,
+                actions=[
+                    {"type": "click", "selector": "button[id*='onetrust-accept']", "timeoutMs": 4000, "optional": True},
+                    {"type": "wait", "milliseconds": 10000},
+                ],
+            ))
+            if "accessrestricted" in (response.url or ""):
+                raise ScrapeError(
+                    "emirates.com redirected the search to its access restricted page",
+                    response=response,
+                    code="HTTP_ERROR",
+                )
+            data = parse_branded_fares(response)
+            break
+        except ScrapeError as error:
+            last_error = error
+            if error.code not in {*_TRANSIENT, "HTTP_ERROR"} or attempt == 1:
+                if error.response and "accessrestricted" in (error.response.url or ""):
+                    raise ValueError("emirates.com redirected the search to its access restricted page") from error
+                raise
+            log.warning(f"retrying emirates once after {error.code}")
+        except ValueError as error:
+            last_error = error
+            if attempt == 1:
+                raise
+            log.warning(f"retrying emirates once after {error}")
+        finally:
+            await CLIENT.close_session(session)
+    else:
+        raise last_error
     return FlightSearch(
         locale=locale,
         trip_type="return" if return_date else "one-way",

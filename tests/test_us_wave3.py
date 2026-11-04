@@ -31,55 +31,27 @@ def _html(title="Store"):
     return Response("https://example.com/final", f"<html><title>{title}</title></html>", status_code=200)
 
 
-async def test_etsy_reloads_a_403_in_the_same_session(monkeypatch):
+async def test_etsy_reads_the_document_without_navigating_to_it(monkeypatch):
     module = load_module(ROOT / "etsy-scraper/etsy.py")
     listing = "https://www.etsy.com/listing/971370843"
     calls = []
 
     async def fetch(request):
         calls.append(request)
-        assert request.raiseOnHttpError is False
-        assert request.waitMs >= 1000
-        documents = [item for item in calls if item.url == listing]
-        if request.url == listing and len(documents) == 1:
+        if len(calls) == 1:
             return Response(request.url, "<html><title>Access denied</title></html>", status_code=403)
         return _html("Etsy")
 
     monkeypatch.setattr(module.CLIENT, "fetch", fetch)
-    closed = AsyncMock()
-    monkeypatch.setattr(module.CLIENT, "close_session", closed)
-
-    page = await module._fetch_document(listing)
+    page = await module._fetch_document(listing, waitForSelector="//div[@data-search-pagination]", autoScroll=True)
     assert page.status_code == 200
-    assert [item.url for item in calls] == [module._HOME, listing, listing]
-    assert len({item.session for item in calls}) == 1
-    assert calls[1].headers["Referer"] == module._HOME
+    assert [item.url for item in calls] == [listing, listing]
+    assert calls[0].binary is True and calls[1].binary is True
+    assert calls[0].session is None and calls[1].session is None
+    assert calls[0].waitForSelector is None and calls[0].autoScroll is False
+    assert calls[0].headers["Referer"] == module._HOME
     assert calls[0].userAgentOs == "windows"
-    assert calls[1].waitForSelector is None
-    assert closed.await_count == 1
-
-
-async def test_etsy_hard_block_opens_one_new_browser(monkeypatch):
-    module = load_module(ROOT / "etsy-scraper/etsy.py")
-    listing = "https://www.etsy.com/listing/971370843"
-    calls = []
-
-    async def fetch(request):
-        calls.append(request)
-        if len(calls) <= 2:
-            return Response(request.url, "<html><title>Access denied</title></html>", status_code=403)
-        return _html("Etsy")
-
-    monkeypatch.setattr(module.CLIENT, "fetch", fetch)
-    closed = AsyncMock()
-    monkeypatch.setattr(module.CLIENT, "close_session", closed)
-    page = await module._fetch_document(listing)
-    assert page.status_code == 200
-    assert [item.url for item in calls] == [module._HOME, module._HOME, module._HOME, listing]
-    assert calls[0].session == calls[1].session
-    assert calls[2].session == calls[3].session
-    assert calls[0].session != calls[2].session
-    assert closed.await_count == 2
+    assert calls[0].timeoutMs == 45_000
 
 
 async def test_ebay_document_uses_one_session_for_homepage_and_item(monkeypatch):
@@ -100,7 +72,7 @@ async def test_ebay_document_uses_one_session_for_homepage_and_item(monkeypatch)
     assert calls[0].raiseOnHttpError is False and calls[1].raiseOnHttpError is False
 
 
-async def test_yelp_reviews_share_the_homepage_session_and_retry_connect(monkeypatch):
+async def test_yelp_reviews_fetch_in_page_and_retry_connect(monkeypatch):
     module = load_module(ROOT / "yelp-scraper/yelp.py")
     biz = "https://www.yelp.com/biz/vons-1000-spirits-seattle-4"
     biz_html = '<html><title>Vons</title><meta name="yelp-biz-id" content="biz123"></html>'
@@ -121,15 +93,13 @@ async def test_yelp_reviews_share_the_homepage_session_and_retry_connect(monkeyp
     closed = AsyncMock()
     monkeypatch.setattr(module.CLIENT, "close_session", closed)
     assert await module.scrape_reviews(biz, max_reviews=10) == []
-    assert calls[0].url == module._HOME
-    assert calls[1].url == module._HOME
-    assert calls[2].url == biz
-    assert "gql/batch" in calls[3].url and calls[3].method == "POST"
-    assert calls[1].session == calls[2].session == calls[3].session
+    assert calls[0].url == biz and calls[0].binary is True
+    assert calls[1].url == biz and calls[1].binary is True
+    assert "gql/batch" in calls[2].url and calls[2].method == "POST" and calls[2].binary is True
+    assert calls[1].session == calls[2].session
     assert calls[0].session != calls[1].session
-    assert calls[1].raiseOnHttpError is False
-    assert calls[2].raiseOnHttpError is False
-    assert calls[3].raiseOnHttpError is True
+    assert module._HOME not in [item.url for item in calls]
+    assert calls[2].timeoutMs == 45_000
     assert closed.await_count == 2
 
 
@@ -284,14 +254,12 @@ async def test_google_play_reviews_use_an_in_page_fetch(monkeypatch):
     assert "f.req=" in calls[0].body
 
 
-async def test_airbnb_property_timeout_does_not_retry_the_reviews_wait(monkeypatch):
+async def test_airbnb_property_loads_without_waiting_for_reviews(monkeypatch):
     module = load_module(ROOT / "airbnb-scraper/airbnb.py")
     calls = []
 
     async def fetch(request):
         calls.append(request)
-        if request.waitForResponse:
-            raise ScrapeError("Remote browser request failed or timed out", code="TIMEOUT")
         return Response(request.url, "<html></html>", status_code=200)
 
     monkeypatch.setattr(module.CLIENT, "fetch", fetch)
@@ -301,10 +269,11 @@ async def test_airbnb_property_timeout_does_not_retry_the_reviews_wait(monkeypat
         check_in="2026-11-04",
         check_out="2026-11-11",
     )
-    assert result == [{"url": calls[-1].url, "id": "1"}]
-    assert [item.waitForResponse for item in calls] == ["StaysPdpReviewsQuery", None]
-    assert calls[0].timeoutMs == 25_000
-    assert calls[1].timeoutMs == 60_000
+    assert result == [{"url": calls[0].url, "id": "1"}]
+    assert len(calls) == 1
+    assert calls[0].waitForResponse is None
+    assert calls[0].waitMs == 8000
+    assert "check_in=2026-11-04" in calls[0].url
 
 
 def test_emirates_search_url_matches_the_widget_payload():
@@ -330,28 +299,43 @@ def test_emirates_search_url_matches_the_widget_payload():
     assert len(one_way_payload["segments"]) == 1
 
 
-async def test_emirates_opens_search_results_instead_of_the_book_form(monkeypatch):
+async def test_emirates_warms_the_book_page_before_search_results(monkeypatch):
     module = load_module(ROOT / "emirates-scraper/emirates.py")
     calls = []
 
     async def fetch(request):
         calls.append(request)
-        if len(calls) == 1:
-            raise ScrapeError("Browser action failed or timed out", code="ACTION_FAILED")
+        searches = [item for item in calls if "search-results" in item.url]
+        if "search-results" in request.url and len(searches) == 1:
+            return Response(
+                "https://www.emirates.com/error/accessrestricted.html",
+                "<html></html>",
+                status_code=200,
+            )
         return Response(request.url, "<html></html>", status_code=200)
 
     monkeypatch.setattr(module.CLIENT, "fetch", fetch)
+    closed = AsyncMock()
+    monkeypatch.setattr(module.CLIENT, "close_session", closed)
     monkeypatch.setattr(module, "parse_branded_fares", lambda response: {
         "currency": {"sale": {"code": "USD"}},
         "lowestFare": {"total": [{"amount": 10}]},
         "bounds": [],
     })
     result = await module.scrape_flights("JFK", "DXB", "2026-12-01", return_date="2026-12-08")
-    assert len(calls) == 2
-    assert calls[0].url == calls[1].url
-    assert "/booking/search-results/" in calls[0].url
-    assert "/book/" not in calls[0].url
+    assert [item.url for item in calls[:2]] == [
+        "https://www.emirates.com/us/english/book/",
+        calls[1].url,
+    ]
+    assert "/booking/search-results/" in calls[1].url
+    assert calls[0].session == calls[1].session
+    assert calls[2].url == calls[0].url
+    assert "/booking/search-results/" in calls[3].url
+    assert calls[2].session == calls[3].session
+    assert calls[0].session != calls[2].session
+    assert calls[1].headers["Referer"] == "https://www.emirates.com/us/english/book/"
     assert all(action.get("selector") != "button.rsw-submit-button" for action in calls[0].actions)
+    assert closed.await_count == 2
     assert result["origin"] == "JFK" and result["flights"] == []
 
 
