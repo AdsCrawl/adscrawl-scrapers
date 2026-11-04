@@ -26,39 +26,42 @@ not need to download or launch a local Chromium browser.
 - `scrape_reviews`
 - `scrape_product`
 
-## US route notes (through tip4, `37d4c7d`)
+## US route notes (through tip6, not live-verified)
 
 Product pages are fetched one at a time. The live product set is the PS5 slim
-`B0CL61F39H` and the 2024 MacBook `B0CX22ZW1T`. On the tip3 retest both pages
-scraped. `style` is fixed (`Space Gray` on the MacBook, `null` on the PS5).
-`description` was still `""` on both: the old selector only read
-`#productDescription p span`. Description now also reads a bare
-`#productDescription` paragraph, the book description block, a
-`productDescription` string in the page, Product/Book JSON-LD, and A+
-paragraphs. Feature bullets stay on `features`. `min_presence` for description
-stays 0.01. This parser has not been re-run live.
+`B0CL61F39H` and the 2024 MacBook `B0CX22ZW1T`. `style` is `Space Gray` on the
+MacBook and `null` on the PS5. Description reads `#productDescription` (including
+a bare paragraph), the book description block, a `productDescription` string in
+the page, Product/Book JSON-LD, and A+ paragraphs. Feature bullets stay on
+`features`. `min_presence` for description stays 0.01.
 
-Search page 1 of `k=kindle` was HTTP 503 after the one same-session retry.
-That first page now gets one more attempt on a new session, against
-`/gp/search` with `ref=nb_sb_noss`. Later pages still reuse the session and
-rotate once if that session stays blocked. `len(result) > 30` is unchanged.
-Not re-run live.
+On tip5 (`5632fb6`, concurrency 1, US, no 402) the shared-client poison from
+tip4 was gone. Search and reviews ran after the product failure. There was no
+`Close the client before using it on another event loop` error. The three
+failures were independent:
 
-Reviews for Atomic Habits `0735211299` navigated onto
-`/hz/reviews-render/ajax/reviews/get/` and failed with
-`ERR_HTTP_RESPONSE_CODE_FAILURE`. The reviews HTML pages then rendered zero
-cards. The XHR is now `fetch()`'d from the product document, and JSON-LD
-`Review` nodes count when the widget is absent. `assert len(result) != 0`
-stays.
-
-On the tip4 retest the PS5 product page hit a remote-browser TIMEOUT. Closing
-that browser then failed (`CLEANUP_FAILED`) and the shared client stayed bound
-to the dead pytest loop, so search and reviews raised `Close the client before
-using it on another event loop` without running. A failed one-shot close now
-drops the session and keeps the original TIMEOUT, which is retried once.
-`CLEANUP_FAILED` resets the client before that retry. Product navigation uses
-`waitUntil=commit` and still waits for `#productTitle`. This has not been
-re-run live.
+- PS5 finished in about 24s. MacBook `B0CX22ZW1T` timed out twice at about 128s.
+  The request waited for `#productTitle` with the same 120s budget as the outer
+  navigation, so a slow document died as `TIMEOUT`. Product fetches now open
+  `https://www.amazon.com/dp/{asin}` with `waitUntil=commit`, `timeoutMs=60000`,
+  and no request-level `waitForSelector`. `#productTitle` is a 20s optional
+  action. A timeout, tunnel error, or `CLEANUP_FAILED` (after `CLIENT.reset()`)
+  is retried, up to three navigations. A page that loads without a title is
+  retried the same way. This has not been re-run live.
+- Search `k=kindle` was HTTP 503 on `/s` (including the same-session retry) and
+  again on `/gp/search?k=kindle&ref=nb_sb_noss`. The first page now warms
+  `https://www.amazon.com/` on the session, keeps that `/s` plus `/gp/search`
+  path, then requests `/s/query` (`render=False`, `X-Requested-With`) and parses
+  `s-search-result` cards out of the `&&&` body. A later page that still fails
+  keeps the previews already parsed. `len(result) > 30` is unchanged. Not
+  re-run live. If `/s/query` is also HTTP 503, search still fails.
+- Reviews for Atomic Habits `0735211299` loaded the product page in about 10s
+  and found no `[data-hook=review]` cards. `/product-reviews/0735211299/` was
+  then HTTP 404. The in-page script now also POSTs the reviews medley endpoint
+  and keeps `review-card` HTML plus JSON objects with `reviewText` or
+  `reviewBody`. The fallback reviews URL is the product page's "see all reviews"
+  link and reuses the product session. `assert len(result) != 0` stays. Not
+  re-run live.
 
 ## Validation
 
@@ -69,9 +72,10 @@ To run this site's **live** tests (uses AdsCrawl credits):
 python -m pytest amazon-scraper/test.py -v
 ```
 
-Search passed on the first 2026-11-03 US-route retest and failed on tip3
-(page 1 HTTP 503). Tip4 did not reach search or reviews: the product timeout
-poisoned the shared client. The client reset above is not a live pass.
+Search passed on the first 2026-11-03 US-route retest and was HTTP 503 on
+tip3 and tip5. Tip4 did not reach search or reviews because the product timeout
+poisoned the shared client. Tip5 showed that reset worked and that the three
+checks fail on their own. The tip6 request changes above are not a live pass.
 Historical files in `results/` are upstream examples, not outputs from those
 retests.
 

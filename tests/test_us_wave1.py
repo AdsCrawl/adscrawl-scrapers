@@ -345,6 +345,7 @@ async def test_amazon_reviews_use_ajax_pages(monkeypatch):
     assert opened.url == "https://www.amazon.com/dp/0735211299"
     assert opened.method == "GET"
     assert amazon.REVIEWS_AJAX in (opened.javascript or "")
+    assert amazon.REVIEWS_MEDLEY in (opened.javascript or "")
     assert '"asin": "0735211299"' in (opened.javascript or "")
     assert '"pageNumber": "1"' in (opened.javascript or "")
     assert '"pageNumber": "2"' in (fetch.await_args_list[1].args[0].javascript or "")
@@ -463,25 +464,95 @@ async def test_amazon_product_and_search_retry_tunnel_and_503_once(monkeypatch):
     assert sum(1 for url in search_calls if "page=2" in url) == 2
 
 
-async def test_amazon_search_first_page_503_rotates_session_and_path(monkeypatch):
-    search_html = '''<div cel_widget_id="UPPER-RESULT_INFO_BAR-0"><span>1-16 of 48 results</span></div>
+def _search_card_html() -> str:
+    return '''<div cel_widget_id="UPPER-RESULT_INFO_BAR-0"><span>1-16 of 48 results</span></div>
     <div class="s-result-item" data-component-type="s-search-result"><div><a href="/dp/ASINONE"><h2 aria-label="Kindle"></h2></a></div></div>'''
+
+
+def _is_amazon_home(url: str) -> bool:
+    return url.rstrip("/") == "https://www.amazon.com"
+
+
+async def test_amazon_search_first_page_503_rotates_session_and_path(monkeypatch):
     calls = []
 
     async def fetch(request):
         calls.append(request)
-        if len(calls) <= 2:
-            raise ScrapeError("busy", response=Response(request.url, status_code=503), code="HTTP_ERROR")
-        return Response(request.url, search_html)
+        if _is_amazon_home(request.url):
+            return Response(request.url, "<html></html>")
+        if "/gp/search" in request.url:
+            return Response(request.url, _search_card_html())
+        raise ScrapeError("busy", response=Response(request.url, status_code=503), code="HTTP_ERROR")
 
     monkeypatch.setattr(amazon.CLIENT, "fetch", fetch)
     found = await amazon.scrape_search("https://www.amazon.com/s?k=kindle", max_pages=1)
     assert len(found) == 1
-    assert calls[2].session != calls[0].session
-    assert calls[0].session == calls[1].session
-    assert "/gp/search" in calls[2].url
-    assert "k=kindle" in calls[2].url
-    assert "ref=nb_sb_noss" in calls[2].url
+    homes = [call for call in calls if _is_amazon_home(call.url)]
+    documents = [call for call in calls if "/s?" in call.url]
+    alternate = [call for call in calls if "/gp/search" in call.url]
+    assert len(homes) == 2
+    assert len(documents) == 2
+    assert len(alternate) == 1
+    assert homes[0].session == documents[0].session == documents[1].session
+    assert homes[1].session == alternate[0].session
+    assert homes[0].session != homes[1].session
+    assert "k=kindle" in alternate[0].url
+    assert "ref=nb_sb_noss" in alternate[0].url
+
+
+async def test_amazon_search_query_fallback_parses_cards_when_html_is_503(monkeypatch):
+    card = (
+        '<div class="s-result-item" data-component-type="s-search-result">'
+        '<div><a href="/dp/ASINONE"><h2 aria-label="Kindle"></h2></a></div></div>'
+    )
+    payload = "&&&" + json.dumps(["append", "#search", card])
+    calls = []
+
+    async def fetch(request):
+        calls.append(request)
+        if _is_amazon_home(request.url):
+            return Response(request.url, "<html></html>")
+        if "/s/query" in request.url:
+            return Response(request.url, payload)
+        raise ScrapeError("busy", response=Response(request.url, status_code=503), code="HTTP_ERROR")
+
+    monkeypatch.setattr(amazon.CLIENT, "fetch", fetch)
+    found = await amazon.scrape_search("https://www.amazon.com/s?k=kindle", max_pages=1)
+    assert [item["title"] for item in found] == ["Kindle"]
+    query = [call for call in calls if "/s/query" in call.url]
+    assert len(query) == 1
+    assert query[0].render is False
+    assert "k=kindle" in query[0].url
+    assert query[0].headers.get("x-requested-with") == "XMLHttpRequest"
+
+
+def test_amazon_search_payload_reads_cards_inside_query_chunks():
+    card = (
+        '<div class="s-result-item" data-component-type="s-search-result">'
+        '<div><a href="/dp/ASINONE"><h2 aria-label="Kindle"></h2></a></div></div>'
+    )
+    parsed = amazon.parse_search_payload(
+        "&&&" + json.dumps(["replace", "#s-result", card]),
+        "https://www.amazon.com/s/query?k=kindle",
+    )
+    assert parsed[0]["title"] == "Kindle"
+    assert parsed[0]["url"].endswith("/dp/ASINONE")
+
+
+def test_amazon_structured_reviews_read_review_text_objects():
+    body = json.dumps({
+        "reviews": [{
+            "reviewText": "Kept the habit.",
+            "reviewTitle": "Useful",
+            "rating": 5,
+            "verifiedPurchase": True,
+        }]
+    })
+    parsed = amazon.parse_structured_reviews(body)
+    assert parsed[0]["title"] == "Useful"
+    assert parsed[0]["text"] == "Kept the habit."
+    assert parsed[0]["rating"] == 5.0
+    assert parsed[0]["verified"] is True
 
 
 async def test_amazon_product_timeout_cleanup_retries_on_a_reset_client(monkeypatch):
@@ -502,8 +573,45 @@ async def test_amazon_product_timeout_cleanup_retries_on_a_reset_client(monkeypa
     products = await amazon.scrape_product("https://www.amazon.com/dp/B000000000")
     assert products[0]["name"] == "Example"
     assert resets == [True]
+    assert len(seen) == 2
     assert seen[0].waitUntil == "commit"
-    assert seen[1].url == seen[0].url
+    assert seen[0].waitForSelector is None
+    assert seen[0].timeoutMs == 60000
+    assert seen[1].url == seen[0].url == "https://www.amazon.com/dp/B000000000"
+
+
+async def test_amazon_product_timeout_retries_up_to_three_fresh_navigations(monkeypatch):
+    seen = []
+
+    async def fetch(request):
+        seen.append(request)
+        if len(seen) < 3:
+            raise ScrapeError("slow", code="TIMEOUT")
+        return Response(
+            request.url,
+            "<html><span id='productTitle'>MacBook</span><input name='ASIN' value='B0CX22ZW1T'></html>",
+        )
+
+    monkeypatch.setattr(amazon.CLIENT, "fetch", fetch)
+    products = await amazon.scrape_product(
+        "https://www.amazon.com/Apple-2024-MacBook-13-inch-Laptop/dp/B0CX22ZW1T"
+    )
+    assert products[0]["name"] == "MacBook"
+    assert len(seen) == 3
+    assert all(request.url == "https://www.amazon.com/dp/B0CX22ZW1T" for request in seen)
+    assert all(request.waitForSelector is None and request.timeoutMs == 60000 for request in seen)
+
+
+async def test_amazon_product_missing_title_is_retried(monkeypatch):
+    pages = [
+        Response("https://www.amazon.com/dp/B0CX22ZW1T", "<html><title>Robot Check</title></html>"),
+        Response("https://www.amazon.com/dp/B0CX22ZW1T", "<html><span id='productTitle'>MacBook</span></html>"),
+    ]
+    fetch = AsyncMock(side_effect=pages)
+    monkeypatch.setattr(amazon.CLIENT, "fetch", fetch)
+    products = await amazon.scrape_product("https://www.amazon.com/dp/B0CX22ZW1T")
+    assert products[0]["name"] == "MacBook"
+    assert fetch.await_count == 2
 
 
 def test_booking_graphql_pages_keep_distinct_offsets():
