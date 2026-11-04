@@ -484,6 +484,28 @@ async def test_amazon_search_first_page_503_rotates_session_and_path(monkeypatch
     assert "ref=nb_sb_noss" in calls[2].url
 
 
+async def test_amazon_product_timeout_cleanup_retries_on_a_reset_client(monkeypatch):
+    seen = []
+    resets = []
+
+    async def fetch(request):
+        seen.append(request)
+        if len(seen) == 1:
+            raise ScrapeError("cleanup", code="CLEANUP_FAILED")
+        return Response(request.url, "<html><span id='productTitle'>Example</span><input name='ASIN' value='B000000000'></html>")
+
+    async def reset():
+        resets.append(True)
+
+    monkeypatch.setattr(amazon.CLIENT, "fetch", fetch)
+    monkeypatch.setattr(amazon.CLIENT, "reset", reset)
+    products = await amazon.scrape_product("https://www.amazon.com/dp/B000000000")
+    assert products[0]["name"] == "Example"
+    assert resets == [True]
+    assert seen[0].waitUntil == "commit"
+    assert seen[1].url == seen[0].url
+
+
 def test_booking_graphql_pages_keep_distinct_offsets():
     body = {"variables": {"input": {"pagination": {"offset": 0, "rowsPerPage": 25}}}, "query": "q"}
     requests = [bookingcom.generate_graphql_request("ss=Malta", body, offset) for offset in (0, 25, 50)]
@@ -593,11 +615,14 @@ async def test_allegro_requests_use_the_polish_route(monkeypatch):
 
     async def fetch(request):
         seen.append(request)
-        return Response(
+        response = Response(
             request.url,
             '<html><script data-serialize-box-id="search">{"props":{"searchMeta":{"lastAvailablePage":1,"totalCount":30}}}</script>'
             '<script data-serialize-box-id="price">{"price":{"formattedPrice":"10 zl"}}</script></html>',
         )
+        if request.url.rstrip("/") == "https://allegro.pl":
+            response.cookies = [{"name": "wdctx", "value": "kept"}]
+        return response
 
     monkeypatch.setattr(allegro.CLIENT, "fetch", fetch)
     await allegro.scrape_search("Cooler CPU")
@@ -605,20 +630,32 @@ async def test_allegro_requests_use_the_polish_route(monkeypatch):
     assert seen and all(request.countryCode == "PL" and request.locale == "pl-PL" for request in seen)
     assert all(request.headers.get("Accept-Language", "").startswith("pl-PL") for request in seen)
     assert all(request.userAgentOs == "windows" for request in seen)
+    assert all(request.waitUntil == "load" for request in seen)
     listing = next(request for request in seen if "/listing" in request.url)
     home = next(request for request in seen if request.url.rstrip("/") == "https://allegro.pl")
-    assert home.timeoutMs == 20000
+    assert home.timeoutMs == 25000
+    assert home.headers.get("Sec-Fetch-Site") == "none"
     assert home.session == listing.session
+    assert listing.timeoutMs == 90000
     assert listing.headers.get("Referer") == "https://allegro.pl/"
+    assert listing.headers.get("Sec-Fetch-Site") == "same-origin"
+    assert listing.headers.get("Cookie") == "wdctx=kept"
 
 
 async def test_allegro_403_block_page_is_an_error_and_a_data_body_is_parsed(monkeypatch):
+    calls = []
+
     async def blocked(request):
+        calls.append(request)
         return Response(request.url, "<html><title>Access denied</title></html>", status_code=403)
 
     monkeypatch.setattr(allegro.CLIENT, "fetch", blocked)
     with pytest.raises(ScrapeError, match="anti-bot"):
         await allegro.scrape_search("Cooler CPU")
+    assert calls[0].url.rstrip("/") == "https://allegro.pl"
+    assert "/listing" in calls[1].url
+    assert calls[1].session != calls[0].session
+    assert "Cookie" not in calls[1].headers
 
     html = (
         '<html><script data-serialize-box-id="search">'
@@ -651,4 +688,4 @@ async def test_allegro_listing_continues_after_a_homepage_timeout(monkeypatch):
     assert data["total_count"] == 30
     assert calls[0].url.rstrip("/") == "https://allegro.pl"
     assert "/listing" in calls[1].url
-    assert calls[1].session == calls[0].session
+    assert calls[1].session != calls[0].session

@@ -235,11 +235,17 @@ def _transient_failure(error: ScrapeError) -> bool:
 
 
 async def _fetch_once_retry(request: Request) -> Response:
-    """one extra attempt for a tunnel drop or a 503, matching the site's existing retry style"""
+    """one extra attempt for a tunnel drop, a timeout, or a 503.
+
+    CLEANUP_FAILED means the browser slot was left behind. Reset the shared
+    client before the extra attempt so a later test on a new event loop can run.
+    """
     try:
         return await CLIENT.fetch(request)
     except ScrapeError as error:
-        if not _transient_failure(error):
+        if error.code == "CLEANUP_FAILED":
+            await CLIENT.reset()
+        if not _transient_failure(error) and error.code != "CLEANUP_FAILED":
             raise
         log.warning(f"retrying {request.url} once after {error.code}")
         return await CLIENT.fetch(request)
@@ -724,6 +730,10 @@ async def scrape_product(url: str) -> List[Product]:
                 url,
                 **BASE_CONFIG,
                 render=True,
+                # domcontentloaded waits for every subresource. Amazon product
+                # documents often never reach it inside the timeout; commit
+                # returns the document and the title selector still has to appear.
+                waitUntil="commit",
                 waitForSelector="#productTitle",
                 timeoutMs=120000,
                 actions=[

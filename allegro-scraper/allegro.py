@@ -30,7 +30,12 @@ BASE_CONFIG = {
 }
 _ALLEGRO_HEADERS = {
     "Accept-Language": "pl-PL,pl;q=0.9,en-US;q=0.8,en;q=0.7",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+    "Upgrade-Insecure-Requests": "1",
+    "Sec-Fetch-Dest": "document",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-User": "?1",
+    "Cache-Control": "max-age=0",
 }
 _LISTING_MARKERS = ("searchMeta", "formattedPrice", "__listing_StoreState")
 
@@ -97,9 +102,10 @@ def _allegro_block_message(response: Response, url: str) -> str:
     return (
         f"allegro.pl returned HTTP {response.status_code} for {url} on the PL route. "
         "US and PL exits, locale pl-PL, a Polish Accept-Language, a Windows user agent, "
-        "and a short homepage cookie warmup were tried. The tip2 retest was still HTTP 403 "
-        "before this warmup. This is an anti-bot block, not an empty catalog, and it is "
-        "not a live pass."
+        "Referer, document Sec-Fetch headers, waitUntil=load, and a homepage warmup "
+        "were tried. Tip4 (37d4c7d) was still HTTP 403 after the shorter warmup. "
+        "A blocked homepage is not reused. Request has no residential-proxy field. "
+        "This is an anti-bot block, not an empty catalog, and it is not a live pass."
     )
 
 
@@ -108,45 +114,83 @@ def _document_has_listing(response: Response) -> bool:
     return any(marker in html for marker in _LISTING_MARKERS)
 
 
-async def _warm_allegro(session: str) -> None:
-    """short homepage hit on the listing session.
+async def _drop_allegro_session(session: str) -> None:
+    try:
+        await CLIENT.close_session(session)
+    except ScrapeError as error:
+        log.warning(f"allegro.pl session close failed ({error.code}); continuing on a new session")
 
-    The tip2 warmup used a full timeout and the listing was still HTTP 403.
-    This one is bounded, and a timeout or block does not skip the listing.
-    There is no residential-proxy field on Request; countryCode stays PL.
+
+def _cookie_header(response: Response) -> str:
+    parts = []
+    for cookie in response.cookies or []:
+        name = cookie.get("name")
+        value = cookie.get("value")
+        if name and value is not None and value != "":
+            parts.append(f"{name}={value}")
+    return "; ".join(parts)
+
+
+async def _open_allegro(url: str, session: str, *, referer: bool, cookies: str = "", **extra) -> Response:
+    """rendered PL navigation. waitUntil=load matches other hardened browsers in this repo."""
+    headers = dict(_ALLEGRO_HEADERS)
+    headers["Sec-Fetch-Site"] = "same-origin" if referer else "none"
+    if referer:
+        headers["Referer"] = "https://allegro.pl/"
+    if cookies:
+        headers["Cookie"] = cookies
+    headers.update(extra.pop("headers", {}) or {})
+    extra.setdefault("timeoutMs", 90000)
+    return await CLIENT.fetch(Request(
+        url,
+        session=session,
+        headers=headers,
+        raiseOnHttpError=False,
+        userAgentOs="windows",
+        waitUntil="load",
+        **BASE_CONFIG,
+        **extra,
+    ))
+
+
+async def _warm_allegro(session: str) -> tuple[str, str]:
+    """homepage on its own browser. Return (session, cookie header) for the listing.
+
+    A 200 homepage keeps that browser and its cookie jar. A 403 or a timeout
+    closes it. Reusing the block cookie was the tip4 warmup. There is no
+    residential-proxy field on Request; countryCode stays PL.
     """
     try:
-        await CLIENT.fetch(Request(
-            "https://allegro.pl/",
-            session=session,
-            timeoutMs=20000,
-            raiseOnHttpError=False,
-            headers=_ALLEGRO_HEADERS,
-            userAgentOs="windows",
-            **BASE_CONFIG,
-        ))
+        page = await _open_allegro("https://allegro.pl/", session, referer=False, timeoutMs=25000)
     except ScrapeError as error:
-        log.warning(f"allegro.pl homepage warmup did not finish ({error.code}); requesting the listing anyway")
+        log.warning(f"allegro.pl homepage warmup did not finish ({error.code}); listing will use a new session")
+        await _drop_allegro_session(session)
+        return uuid4().hex, ""
+    if page.status_code >= 400 and not _document_has_listing(page):
+        log.warning(
+            f"allegro.pl homepage returned HTTP {page.status_code}; not reusing that browser for the listing"
+        )
+        await _drop_allegro_session(session)
+        return uuid4().hex, ""
+    return session, _cookie_header(page)
 
 
-async def _fetch_allegro(url: str, **extra) -> Response:
-    """one rendered PL request.
+async def _fetch_allegro(url: str, session: str, cookies: str = "", **extra) -> Response:
+    """one rendered PL request, retried once on a timeout with a new browser.
 
     A 403 body that actually contains listing JSON is parsed. A 403 block page
     is raised, not turned into an empty catalog.
     """
-    extra.setdefault("timeoutMs", 60000)
-    extra.setdefault("userAgentOs", "windows")
-    headers = dict(_ALLEGRO_HEADERS)
-    headers.update(extra.pop("headers", {}) or {})
-    headers.setdefault("Referer", "https://allegro.pl/")
-    response = await CLIENT.fetch(Request(
-        url,
-        headers=headers,
-        raiseOnHttpError=False,
-        **BASE_CONFIG,
-        **extra,
-    ))
+    try:
+        response = await _open_allegro(url, session, referer=True, cookies=cookies, **extra)
+    except ScrapeError as error:
+        if error.code not in {"TIMEOUT", "BROWSER_ERROR", "CLEANUP_FAILED"}:
+            raise
+        if error.code == "CLEANUP_FAILED":
+            await CLIENT.reset()
+        log.warning(f"allegro.pl {url} failed ({error.code}); one fresh session")
+        await _drop_allegro_session(session)
+        response = await _open_allegro(url, uuid4().hex, referer=True, **extra)
     if response.status_code >= 400 and not _document_has_listing(response):
         raise ScrapeError(_allegro_block_message(response, url), response=response, code="HTTP_ERROR")
     if response.status_code >= 400:
@@ -169,10 +213,9 @@ async def scrape_search(query: str, max_pages: int = 3, scrape_all_pages: bool =
     encoded_query = urllib.parse.quote(query)
     base_url = f"https://allegro.pl/listing?string={encoded_query}"
     log.info(f"scraping base url {base_url}")
-    session = uuid4().hex
+    session, cookies = await _warm_allegro(uuid4().hex)
     try:
-        await _warm_allegro(session)
-        first_page = await _fetch_allegro(base_url, session=session)
+        first_page = await _fetch_allegro(base_url, session, cookies)
 
         # Parse first page
         first_page_data = parse_search(first_page)
@@ -191,7 +234,7 @@ async def scrape_search(query: str, max_pages: int = 3, scrape_all_pages: bool =
             log.info(f"Scraping {pages_to_scrape - 1} additional pages")
             for page in range(2, pages_to_scrape + 1):
                 try:
-                    result = await _fetch_allegro(f"{base_url}&p={page}", session=session)
+                    result = await _fetch_allegro(f"{base_url}&p={page}", session, cookies)
                 except ScrapeError as error:
                     log.error(f"allegro listing page {page} failed: {error}")
                     break
@@ -212,7 +255,7 @@ async def scrape_search(query: str, max_pages: int = 3, scrape_all_pages: bool =
         }
         return data
     finally:
-        await CLIENT.close_session(session)
+        await _drop_allegro_session(session)
 
 def parse_product(result: Response) -> Dict:
     """Parse Allegro product page for product data"""
@@ -312,13 +355,13 @@ def parse_product(result: Response) -> Dict:
 async def scrape_product(urls: list[str]) -> Dict:
     """scrape Allegro product pages. A block-page 403 is raised, not returned as an empty list."""
     data = []
-    session = uuid4().hex
+    session, cookies = await _warm_allegro(uuid4().hex)
     try:
-        await _warm_allegro(session)
         for url in urls:
             response = await _fetch_allegro(
                 url,
-                session=session,
+                session,
+                cookies,
                 waitMs=5000,
                 waitForSelector='//script[@data-serialize-box-id and contains(text(), "formattedPrice")]',
             )
@@ -328,6 +371,6 @@ async def scrape_product(urls: list[str]) -> Dict:
                 log.error(f"Error parsing Allegro product: {e}")
                 continue
     finally:
-        await CLIENT.close_session(session)
+        await _drop_allegro_session(session)
     log.success(f"scraped {len(data)} products from product pages")
     return data

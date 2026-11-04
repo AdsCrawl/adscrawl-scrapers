@@ -26,7 +26,7 @@ not need to download or launch a local Chromium browser.
 - `scrape_reviews`
 - `scrape_product`
 
-## US route notes (2026-11-03 retests, tip c2d2551)
+## US route notes (through tip4, `37d4c7d`)
 
 Product pages are fetched one at a time. The live product set is the PS5 slim
 `B0CL61F39H` and the 2024 MacBook `B0CX22ZW1T`. On the tip3 retest both pages
@@ -49,7 +49,16 @@ Reviews for Atomic Habits `0735211299` navigated onto
 `ERR_HTTP_RESPONSE_CODE_FAILURE`. The reviews HTML pages then rendered zero
 cards. The XHR is now `fetch()`'d from the product document, and JSON-LD
 `Review` nodes count when the widget is absent. `assert len(result) != 0`
-stays. Not re-run live.
+stays.
+
+On the tip4 retest the PS5 product page hit a remote-browser TIMEOUT. Closing
+that browser then failed (`CLEANUP_FAILED`) and the shared client stayed bound
+to the dead pytest loop, so search and reviews raised `Close the client before
+using it on another event loop` without running. A failed one-shot close now
+drops the session and keeps the original TIMEOUT, which is retried once.
+`CLEANUP_FAILED` resets the client before that retry. Product navigation uses
+`waitUntil=commit` and still waits for `#productTitle`. This has not been
+re-run live.
 
 ## Validation
 
@@ -60,10 +69,11 @@ To run this site's **live** tests (uses AdsCrawl credits):
 python -m pytest amazon-scraper/test.py -v
 ```
 
-Search passed on the first 2026-11-03 US-route retest and failed again on tip3
-(page 1 HTTP 503). Product style passed on tip3; description, search, and
-reviews did not. The changes above are not a live pass. Historical files in
-`results/` are upstream examples, not outputs from those retests.
+Search passed on the first 2026-11-03 US-route retest and failed on tip3
+(page 1 HTTP 503). Tip4 did not reach search or reviews: the product timeout
+poisoned the shared client. The client reset above is not a live pass.
+Historical files in `results/` are upstream examples, not outputs from those
+retests.
 
 ## Source and license
 
