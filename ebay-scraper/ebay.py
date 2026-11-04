@@ -27,8 +27,9 @@ BASE_CONFIG = {
     # change country for geo details like currency and shipping
     "countryCode": "US",
     "locale": "en-US",
-    # cold item and search navigations are HTTP 403; the homepage in the same
-    # browser sets the cookies the document request is checked against
+    # Cold item and search navigations are HTTP 403. The SDK fingerprint is
+    # this desktop OS; there is no further stealth switch. The homepage in the
+    # same browser still runs first.
     "userAgentOs": "windows",
     "render": True,
 }
@@ -61,40 +62,92 @@ def _challenge(response: Response) -> bool:
     return "captcha-delivery" in url or "/blocked" in url or "splashui/challenge" in url
 
 
+# Applied only after the probe. On a 403 page, wait_for_selector would sit until
+# timeoutMs and the same-session reload would never run.
+_READY = {"waitForSelector", "autoScroll", "actions", "waitForResponse", "javascript"}
+
+
+def _usable(response: Response) -> bool:
+    """A solved interstitial keeps the original 403 on the navigation response.
+
+    runtime records that status and does not update it when the document is
+    rewritten. A large page with a normal title is the storefront.
+    """
+    if _challenge(response):
+        return False
+    if response.status_code < 400:
+        return True
+    title = " ".join(response.selector.css("title::text").getall()).strip()
+    return bool(title) and len(response.content or "") > 1500
+
+
+async def _navigate(session: str, url: str, referer: str = None, **extra) -> Response:
+    """Open a document and let a 403 interstitial run.
+
+    The fetch raises HTTP_ERROR at the navigation status, before waitMs, when
+    raiseOnHttpError stays on. The homepage warm-up still returned 403 live
+    because the challenge script never ran. Opt out, wait, and reload once in
+    this session. A 200 page is returned as-is, which is the product path that
+    already passed.
+    """
+    headers = dict(_DOCUMENT_HEADERS)
+    if referer:
+        headers["Referer"] = referer
+    probe = {key: value for key, value in extra.items() if key not in _READY}
+    wait_ms = probe.pop("waitMs", 4_000)
+    timeout_ms = probe.pop("timeoutMs", 60_000)
+
+    async def load(**more) -> Response:
+        return await CLIENT.fetch(Request(
+            url,
+            session=session,
+            headers=headers,
+            raiseOnHttpError=False,
+            waitMs=wait_ms,
+            timeoutMs=timeout_ms,
+            **BASE_CONFIG,
+            **probe,
+            **more,
+        ))
+
+    page = await load()
+    if not _usable(page):
+        log.info(f"reloading {url} once in the same session after HTTP {page.status_code}")
+        page = await load()
+    if not _usable(page):
+        raise ScrapeError(
+            f"Target returned HTTP {page.status_code}",
+            response=page,
+            code="HTTP_ERROR",
+        )
+    if not _READY.intersection(extra):
+        return page
+    ready = await CLIENT.fetch(Request(
+        url,
+        session=session,
+        headers=headers,
+        raiseOnHttpError=False,
+        timeoutMs=timeout_ms,
+        **BASE_CONFIG,
+        **extra,
+    ))
+    if not _usable(ready):
+        raise ScrapeError(
+            f"Target returned HTTP {ready.status_code}",
+            response=ready,
+            code="HTTP_ERROR",
+        )
+    return ready
+
+
 async def _fetch_document(url: str, **extra) -> Response:
     """Homepage, then the document, in one named session. Closed before a retry."""
     last = None
     for attempt in range(2):
         session = f"ebay-{uuid.uuid4().hex}"
         try:
-            home = await CLIENT.fetch(Request(
-                _HOME,
-                session=session,
-                headers=_DOCUMENT_HEADERS,
-                waitMs=2000,
-                timeoutMs=60_000,
-                **BASE_CONFIG,
-            ))
-            if _challenge(home):
-                raise ScrapeError(
-                    "eBay homepage returned an anti-bot interstitial",
-                    response=home,
-                    code="HTTP_ERROR",
-                )
-            page = await CLIENT.fetch(Request(
-                url,
-                session=session,
-                headers={**_DOCUMENT_HEADERS, "Referer": _HOME},
-                **BASE_CONFIG,
-                **extra,
-            ))
-            if _challenge(page):
-                raise ScrapeError(
-                    "eBay returned an anti-bot interstitial",
-                    response=page,
-                    code="HTTP_ERROR",
-                )
-            return page
+            await _navigate(session, _HOME)
+            return await _navigate(session, url, referer=_HOME, **extra)
         except ScrapeError as error:
             last = error
             if error.code not in _RETRYABLE or attempt == 1:

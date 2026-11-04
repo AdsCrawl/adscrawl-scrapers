@@ -21,9 +21,10 @@ CLIENT = ScraperClient()
 BASE_CONFIG = {
     'countryCode': "US",
 }
-# Review batchexecute navigations fail on about:blank with BROWSER_ERROR while
-# the app page and search on the same route succeed. One new browser. The body
-# is a read of public reviews, so repeating the POST once is safe.
+# A document navigation of the reviews POST dies on about:blank with
+# BROWSER_ERROR. Repeating that navigation does not help. The POST is issued
+# with binary=True, which fetches it from a same-origin document instead of
+# navigating the tab. App and search stay ordinary GET documents.
 _TRANSIENT = {
     "ERR_TUNNEL_CONNECTION_FAILED",
     "ERR_CONNECTION_CLOSED",
@@ -260,8 +261,14 @@ async def scrape_reviews(
             Request(
                 url=url,
                 method="POST",
-                headers={"content-type": "application/x-www-form-urlencoded"},
+                headers={
+                    "content-type": "application/x-www-form-urlencoded;charset=UTF-8",
+                    "accept": "*/*",
+                    "origin": "https://play.google.com",
+                    "referer": f"https://play.google.com/store/apps/details?id={app_id}&hl={lang}&gl={country}",
+                },
                 body=body,
+                binary=True,
                 **BASE_CONFIG,
             )
         )

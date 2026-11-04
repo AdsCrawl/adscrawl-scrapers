@@ -31,16 +31,18 @@ def _html(title="Store"):
     return Response("https://example.com/final", f"<html><title>{title}</title></html>", status_code=200)
 
 
-async def test_etsy_warms_homepage_and_retries_one_403(monkeypatch):
+async def test_etsy_reloads_a_403_in_the_same_session(monkeypatch):
     module = load_module(ROOT / "etsy-scraper/etsy.py")
     listing = "https://www.etsy.com/listing/971370843"
     calls = []
 
     async def fetch(request):
         calls.append(request)
-        document_attempts = [item for item in calls if item.url == listing]
-        if request.url == listing and len(document_attempts) == 1:
-            raise ScrapeError("Target returned HTTP 403", code="HTTP_ERROR")
+        assert request.raiseOnHttpError is False
+        assert request.waitMs >= 1000
+        documents = [item for item in calls if item.url == listing]
+        if request.url == listing and len(documents) == 1:
+            return Response(request.url, "<html><title>Access denied</title></html>", status_code=403)
         return _html("Etsy")
 
     monkeypatch.setattr(module.CLIENT, "fetch", fetch)
@@ -49,15 +51,35 @@ async def test_etsy_warms_homepage_and_retries_one_403(monkeypatch):
 
     page = await module._fetch_document(listing)
     assert page.status_code == 200
-    assert [item.url for item in calls] == [module._HOME, listing, module._HOME, listing]
+    assert [item.url for item in calls] == [module._HOME, listing, listing]
+    assert len({item.session for item in calls}) == 1
+    assert calls[1].headers["Referer"] == module._HOME
+    assert calls[0].userAgentOs == "windows"
+    assert calls[1].waitForSelector is None
+    assert closed.await_count == 1
+
+
+async def test_etsy_hard_block_opens_one_new_browser(monkeypatch):
+    module = load_module(ROOT / "etsy-scraper/etsy.py")
+    listing = "https://www.etsy.com/listing/971370843"
+    calls = []
+
+    async def fetch(request):
+        calls.append(request)
+        if len(calls) <= 2:
+            return Response(request.url, "<html><title>Access denied</title></html>", status_code=403)
+        return _html("Etsy")
+
+    monkeypatch.setattr(module.CLIENT, "fetch", fetch)
+    closed = AsyncMock()
+    monkeypatch.setattr(module.CLIENT, "close_session", closed)
+    page = await module._fetch_document(listing)
+    assert page.status_code == 200
+    assert [item.url for item in calls] == [module._HOME, module._HOME, module._HOME, listing]
     assert calls[0].session == calls[1].session
     assert calls[2].session == calls[3].session
     assert calls[0].session != calls[2].session
-    assert calls[1].headers["Referer"] == module._HOME
-    assert calls[0].userAgentOs == "windows"
     assert closed.await_count == 2
-    assert closed.await_args_list[0].args[0] == calls[0].session
-    assert closed.await_args_list[1].args[0] == calls[2].session
 
 
 async def test_ebay_document_uses_one_session_for_homepage_and_item(monkeypatch):
@@ -75,6 +97,7 @@ async def test_ebay_document_uses_one_session_for_homepage_and_item(monkeypatch)
     assert [item.url for item in calls] == [module._HOME, item]
     assert calls[0].session and calls[0].session == calls[1].session
     assert calls[1].headers["Referer"] == module._HOME
+    assert calls[0].raiseOnHttpError is False and calls[1].raiseOnHttpError is False
 
 
 async def test_yelp_reviews_share_the_homepage_session_and_retry_connect(monkeypatch):
@@ -104,6 +127,9 @@ async def test_yelp_reviews_share_the_homepage_session_and_retry_connect(monkeyp
     assert "gql/batch" in calls[3].url and calls[3].method == "POST"
     assert calls[1].session == calls[2].session == calls[3].session
     assert calls[0].session != calls[1].session
+    assert calls[1].raiseOnHttpError is False
+    assert calls[2].raiseOnHttpError is False
+    assert calls[3].raiseOnHttpError is True
     assert closed.await_count == 2
 
 
@@ -241,13 +267,76 @@ async def test_tunnel_gets_one_new_browser(monkeypatch):
         assert seen["n"] == 2, path.name
 
 
-async def test_emirates_retries_one_action_timeout(monkeypatch):
-    module = load_module(ROOT / "emirates-scraper/emirates.py")
-    seen = {"n": 0}
+async def test_google_play_reviews_use_an_in_page_fetch(monkeypatch):
+    module = load_module(ROOT / "google-play-scraper/google_play.py")
+    calls = []
 
     async def fetch(request):
-        seen["n"] += 1
-        if seen["n"] == 1:
+        calls.append(request)
+        return Response(request.url, "", status_code=200)
+
+    monkeypatch.setattr(module.CLIENT, "fetch", fetch)
+    assert await module.scrape_reviews("com.whatsapp", max_reviews=1) == []
+    assert len(calls) == 1
+    assert calls[0].method == "POST"
+    assert calls[0].binary is True
+    assert calls[0].url.startswith("https://play.google.com/_/PlayStoreUi/data/batchexecute")
+    assert "f.req=" in calls[0].body
+
+
+async def test_airbnb_property_timeout_does_not_retry_the_reviews_wait(monkeypatch):
+    module = load_module(ROOT / "airbnb-scraper/airbnb.py")
+    calls = []
+
+    async def fetch(request):
+        calls.append(request)
+        if request.waitForResponse:
+            raise ScrapeError("Remote browser request failed or timed out", code="TIMEOUT")
+        return Response(request.url, "<html></html>", status_code=200)
+
+    monkeypatch.setattr(module.CLIENT, "fetch", fetch)
+    monkeypatch.setattr(module, "parse_property", lambda response: {"url": response.url, "id": "1"})
+    result = await module.scrape_properties(
+        ["https://www.airbnb.com/rooms/1"],
+        check_in="2026-11-04",
+        check_out="2026-11-11",
+    )
+    assert result == [{"url": calls[-1].url, "id": "1"}]
+    assert [item.waitForResponse for item in calls] == ["StaysPdpReviewsQuery", None]
+    assert calls[0].timeoutMs == 25_000
+    assert calls[1].timeoutMs == 60_000
+
+
+def test_emirates_search_url_matches_the_widget_payload():
+    import base64
+    from urllib.parse import unquote
+
+    module = load_module(ROOT / "emirates-scraper/emirates.py")
+    url = module._search_results_url("JFK", "DXB", "2026-11-04", "2026-11-11")
+    assert url.startswith("https://www.emirates.com/booking/search-results/?searchRequest=")
+    payload = json.loads(base64.b64decode(unquote(url.split("searchRequest=", 1)[1])))
+    assert payload == {
+        "journeyType": "RETURN",
+        "bookingType": "REVENUE",
+        "passengers": [{"type": "ADT", "count": 1}],
+        "segments": [
+            {"departure": "JFK", "arrival": "DXB", "travelDate": "2026-11-04", "cabinClass": "Y"},
+            {"departure": "DXB", "arrival": "JFK", "travelDate": "2026-11-11", "cabinClass": "Y"},
+        ],
+    }
+    one_way = module._search_results_url("JFK", "DXB", "2026-11-04")
+    one_way_payload = json.loads(base64.b64decode(unquote(one_way.split("searchRequest=", 1)[1])))
+    assert one_way_payload["journeyType"] == "ONEWAY"
+    assert len(one_way_payload["segments"]) == 1
+
+
+async def test_emirates_opens_search_results_instead_of_the_book_form(monkeypatch):
+    module = load_module(ROOT / "emirates-scraper/emirates.py")
+    calls = []
+
+    async def fetch(request):
+        calls.append(request)
+        if len(calls) == 1:
             raise ScrapeError("Browser action failed or timed out", code="ACTION_FAILED")
         return Response(request.url, "<html></html>", status_code=200)
 
@@ -257,8 +346,12 @@ async def test_emirates_retries_one_action_timeout(monkeypatch):
         "lowestFare": {"total": [{"amount": 10}]},
         "bounds": [],
     })
-    result = await module.scrape_flights("JFK", "DXB", "2026-12-01")
-    assert seen["n"] == 2
+    result = await module.scrape_flights("JFK", "DXB", "2026-12-01", return_date="2026-12-08")
+    assert len(calls) == 2
+    assert calls[0].url == calls[1].url
+    assert "/booking/search-results/" in calls[0].url
+    assert "/book/" not in calls[0].url
+    assert all(action.get("selector") != "button.rsw-submit-button" for action in calls[0].actions)
     assert result["origin"] == "JFK" and result["flights"] == []
 
 

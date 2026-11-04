@@ -18,9 +18,9 @@ from loguru import logger as log
 CLIENT = ScraperClient()
 
 BASE_CONFIG = {
-    # A cold listing or search navigation is HTTP 403. The homepage in the same
-    # browser has to run first so the document request carries those cookies.
-    # userAgentOs selects the SDK's random desktop fingerprint for that browser.
+    # Etsy answers a cold document with HTTP 403. The SDK fingerprint is the
+    # desktop OS below; there is no separate stealth switch. The homepage in
+    # the same browser still runs first so a later navigation can send its cookies.
     "countryCode": "US",
     "locale": "en-US",
     "userAgentOs": "windows",
@@ -57,8 +57,86 @@ def _challenge(response: Response) -> bool:
     return "captcha-delivery" in url or "/blocked" in url
 
 
+# Applied only after the probe. On a 403 page, wait_for_selector would sit until
+# timeoutMs and the same-session reload would never run.
+_READY = {"waitForSelector", "autoScroll", "actions", "waitForResponse", "javascript"}
+
+
+def _usable(response: Response) -> bool:
+    """A solved interstitial keeps the original 403 on the navigation response.
+
+    runtime records that status and does not update it when the document is
+    rewritten. A large page with a normal title is the storefront. A known
+    challenge title is not, whatever the status is.
+    """
+    if _challenge(response):
+        return False
+    if response.status_code < 400:
+        return True
+    title = " ".join(response.selector.css("title::text").getall()).strip()
+    return bool(title) and len(response.content or "") > 1500
+
+
+async def _navigate(session: str, url: str, referer: str = None, **extra) -> Response:
+    """Open a document and let a 403 interstitial run.
+
+    The fetch raises HTTP_ERROR at the navigation status, before waitMs, when
+    raiseOnHttpError stays on. That is why the homepage warm-up still failed
+    live: the challenge script never ran. Opt out, wait, and reload once in
+    this session so the second request can send the cookie the first one set.
+    """
+    headers = dict(_DOCUMENT_HEADERS)
+    if referer:
+        headers["Referer"] = referer
+    probe = {key: value for key, value in extra.items() if key not in _READY}
+    wait_ms = probe.pop("waitMs", 4_000)
+    timeout_ms = probe.pop("timeoutMs", 60_000)
+
+    async def load(**more) -> Response:
+        return await CLIENT.fetch(Request(
+            url,
+            session=session,
+            headers=headers,
+            raiseOnHttpError=False,
+            waitMs=wait_ms,
+            timeoutMs=timeout_ms,
+            **BASE_CONFIG,
+            **probe,
+            **more,
+        ))
+
+    page = await load()
+    if not _usable(page):
+        log.info(f"reloading {url} once in the same session after HTTP {page.status_code}")
+        page = await load()
+    if not _usable(page):
+        raise ScrapeError(
+            f"Target returned HTTP {page.status_code}",
+            response=page,
+            code="HTTP_ERROR",
+        )
+    if not _READY.intersection(extra):
+        return page
+    ready = await CLIENT.fetch(Request(
+        url,
+        session=session,
+        headers=headers,
+        raiseOnHttpError=False,
+        timeoutMs=timeout_ms,
+        **BASE_CONFIG,
+        **extra,
+    ))
+    if not _usable(ready):
+        raise ScrapeError(
+            f"Target returned HTTP {ready.status_code}",
+            response=ready,
+            code="HTTP_ERROR",
+        )
+    return ready
+
+
 async def _fetch_document(url: str, **extra) -> Response:
-    """Open the homepage, then the document, in one named session.
+    """Homepage, then the document, in one named session.
 
     The session is closed before a retry. At concurrency 1 a second named
     session cannot be created while the blocked browser is still held.
@@ -67,34 +145,8 @@ async def _fetch_document(url: str, **extra) -> Response:
     for attempt in range(2):
         session = f"etsy-{uuid.uuid4().hex}"
         try:
-            home = await CLIENT.fetch(Request(
-                _HOME,
-                session=session,
-                headers=_DOCUMENT_HEADERS,
-                waitMs=2000,
-                timeoutMs=60_000,
-                **BASE_CONFIG,
-            ))
-            if _challenge(home):
-                raise ScrapeError(
-                    "Etsy homepage returned an anti-bot interstitial",
-                    response=home,
-                    code="HTTP_ERROR",
-                )
-            page = await CLIENT.fetch(Request(
-                url,
-                session=session,
-                headers={**_DOCUMENT_HEADERS, "Referer": _HOME},
-                **BASE_CONFIG,
-                **extra,
-            ))
-            if _challenge(page):
-                raise ScrapeError(
-                    "Etsy returned an anti-bot interstitial",
-                    response=page,
-                    code="HTTP_ERROR",
-                )
-            return page
+            await _navigate(session, _HOME)
+            return await _navigate(session, url, referer=_HOME, **extra)
         except ScrapeError as error:
             last = error
             if error.code not in _RETRYABLE or attempt == 1:

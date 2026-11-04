@@ -23,7 +23,8 @@ CLIENT = ScraperClient()
 
 BASE_CONFIG = {
     # A cold business or search navigation is HTTP 403, and session setup can
-    # also fail with CONNECT_FAILED. The homepage in the same browser runs first.
+    # also fail with CONNECT_FAILED. The SDK fingerprint is the desktop OS
+    # below. The homepage in the same browser still runs first.
     "countryCode": "US",
     "locale": "en-US",
     "userAgentOs": "windows",
@@ -58,30 +59,85 @@ def _challenge(response: Response) -> bool:
     return "captcha-delivery" in url or "/blocked" in url
 
 
-async def _open_home(session: str) -> None:
-    home = await CLIENT.fetch(Request(
-        _HOME,
-        session=session,
-        headers=_DOCUMENT_HEADERS,
-        waitMs=2000,
-        timeoutMs=60_000,
-        **BASE_CONFIG,
-    ))
-    if _challenge(home):
-        raise ScrapeError("Yelp homepage returned an anti-bot interstitial", response=home, code="HTTP_ERROR")
+# Applied only after the probe. On a 403 page, wait_for_selector would sit until
+# timeoutMs and the same-session reload would never run.
+_READY = {"waitForSelector", "autoScroll", "actions", "waitForResponse", "javascript"}
 
 
-async def _get(session: str, url: str, **extra) -> Response:
-    page = await CLIENT.fetch(Request(
+def _usable(response: Response) -> bool:
+    """A solved interstitial keeps the original 403 on the navigation response."""
+    if _challenge(response):
+        return False
+    if response.status_code < 400:
+        return True
+    title = " ".join(response.selector.css("title::text").getall()).strip()
+    return bool(title) and len(response.content or "") > 1500
+
+
+async def _navigate(session: str, url: str, referer: str = None, **extra) -> Response:
+    """Open a document and let a 403 interstitial run.
+
+    The fetch raises HTTP_ERROR at the navigation status, before waitMs, when
+    raiseOnHttpError stays on. The homepage warm-up still returned 403 live
+    because the challenge script never ran. The review GraphQL POST is separate
+    and still uses the default error check.
+    """
+    headers = dict(_DOCUMENT_HEADERS)
+    if referer:
+        headers["Referer"] = referer
+    probe = {key: value for key, value in extra.items() if key not in _READY}
+    wait_ms = probe.pop("waitMs", 4_000)
+    timeout_ms = probe.pop("timeoutMs", 60_000)
+
+    async def load(**more) -> Response:
+        return await CLIENT.fetch(Request(
+            url,
+            session=session,
+            headers=headers,
+            raiseOnHttpError=False,
+            waitMs=wait_ms,
+            timeoutMs=timeout_ms,
+            **BASE_CONFIG,
+            **probe,
+            **more,
+        ))
+
+    page = await load()
+    if not _usable(page):
+        log.info(f"reloading {url} once in the same session after HTTP {page.status_code}")
+        page = await load()
+    if not _usable(page):
+        raise ScrapeError(
+            f"Target returned HTTP {page.status_code}",
+            response=page,
+            code="HTTP_ERROR",
+        )
+    if not _READY.intersection(extra):
+        return page
+    ready = await CLIENT.fetch(Request(
         url,
         session=session,
-        headers={**_DOCUMENT_HEADERS, "Referer": _HOME},
+        headers=headers,
+        raiseOnHttpError=False,
+        timeoutMs=timeout_ms,
         **BASE_CONFIG,
         **extra,
     ))
-    if _challenge(page):
-        raise ScrapeError("Yelp returned an anti-bot interstitial", response=page, code="HTTP_ERROR")
-    return page
+    if not _usable(ready):
+        raise ScrapeError(
+            f"Target returned HTTP {ready.status_code}",
+            response=ready,
+            code="HTTP_ERROR",
+        )
+    return ready
+
+
+async def _open_home(session: str) -> None:
+    await _navigate(session, _HOME)
+
+
+async def _get(session: str, url: str, **extra) -> Response:
+    return await _navigate(session, url, referer=_HOME, **extra)
 
 
 async def _attempt(work):

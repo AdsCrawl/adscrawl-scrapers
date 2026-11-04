@@ -397,20 +397,25 @@ async def scrape_properties(
             params["check_out"] = check_out
         full_url = url + ("&" if "?" in url else "?") + urlencode(params)
         log.info(f"scraping property page: {full_url}")
+        # Reviews are optional. waitForResponse uses the same timeout as the
+        # outer fetch, so a query that never arrives becomes TIMEOUT at the
+        # fetch deadline and the old SELECTOR_NOT_FOUND fallback never runs.
+        # Do not retry that wait: the listing itself is the page below it.
         try:
-            response = await _fetch(
+            response = await CLIENT.fetch(
                 Request(
                     full_url,
                     **BASE_CONFIG,
-                    waitMs=15000,
+                    waitMs=5000,
                     waitForResponse="StaysPdpReviewsQuery",
+                    timeoutMs=25_000,
                 )
             )
-        except ScrapeError as e:
-            if e.code != "SELECTOR_NOT_FOUND":
+        except ScrapeError as error:
+            if error.code not in _TRANSIENT and error.code != "SELECTOR_NOT_FOUND":
                 raise
-            log.warning(f"no reviews XHR on {url}, scraping without reviews")
-            response = await _fetch(Request(full_url, **BASE_CONFIG, waitMs=15000))
+            log.warning(f"no reviews XHR on {full_url} after {error.code}, scraping the listing")
+            response = await _fetch(Request(full_url, **BASE_CONFIG, waitMs=12000, timeoutMs=60_000))
 
         results.append(parse_property(response))
     return results

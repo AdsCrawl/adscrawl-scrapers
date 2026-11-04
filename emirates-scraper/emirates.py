@@ -7,12 +7,13 @@ $ export ADSCRAWL_API_KEY="your key from https://app.adscrawl.net/dashboard/keys
 """
 from adscrawl_scrapers import managed
 
+import base64
 import json
 import os
 from datetime import datetime
 from pathlib import Path
 from typing import List, Optional, TypedDict
-from urllib.parse import urlparse
+from urllib.parse import quote, urlparse
 
 from loguru import logger as log
 from adscrawl_scrapers import Response, Request, ScraperClient, ScrapeError
@@ -32,9 +33,9 @@ CABIN_NAMES = {"Y": "economy", "W": "premium economy", "J": "business", "F": "fi
 output = Path(__file__).parent / "results"
 output.mkdir(exist_ok=True)
 
-# The booking form loads ("Book a flight | Emirates") and then an action times
-# out. One more pass of the same form is enough when the first calendar or
-# suggestion list was not ready.
+# The booking form loads ("Book a flight | Emirates") and then a later action
+# times out. Repeating that scenario failed live. The widget itself leaves the
+# form by assigning /booking/search-results/?searchRequest=<base64 json>.
 _TRANSIENT = {
     "ACTION_FAILED",
     "TIMEOUT",
@@ -159,6 +160,8 @@ def _select_date(date_iso: str, field: str, picker: str = "") -> list:
     ]
 
 
+# The book-page scenario below is what timed out live (title stayed
+# "Book a flight | Emirates" on both attempts). scrape_flights does not call it.
 def _build_search_scenario(
     origin: str,
     destination: str,
@@ -308,6 +311,44 @@ def parse_flight_offers(data: dict) -> List[FlightResult]:
     log.success(f"parsed {len(flights)} flight offers")
     return flights
 
+def _search_results_url(
+    origin: str,
+    destination: str,
+    departure_date: str,
+    return_date: Optional[str] = None,
+) -> str:
+    """The URL the booking widget assigns, from getSearchParams in the widget bundle.
+
+    False flags (familyBooking, partnerRedemption, flexiSearch) are omitted.
+    Dates stay YYYY-MM-DD. Cabin Y and one adult are the widget defaults when
+    there is no search history. The token is standard base64 of that JSON,
+    which matches btoa() for this ASCII payload.
+    """
+    segments = [{
+        "departure": origin,
+        "arrival": destination,
+        "travelDate": departure_date,
+        "cabinClass": "Y",
+    }]
+    journey = "ONEWAY"
+    if return_date:
+        journey = "RETURN"
+        segments.append({
+            "departure": destination,
+            "arrival": origin,
+            "travelDate": return_date,
+            "cabinClass": "Y",
+        })
+    payload = {
+        "journeyType": journey,
+        "bookingType": "REVENUE",
+        "passengers": [{"type": "ADT", "count": 1}],
+        "segments": segments,
+    }
+    token = base64.b64encode(json.dumps(payload, separators=(",", ":")).encode()).decode()
+    return "https://www.emirates.com/booking/search-results/?searchRequest=" + quote(token, safe="")
+
+
 @managed
 async def scrape_flights(
     origin: str,
@@ -316,18 +357,26 @@ async def scrape_flights(
     return_date: Optional[str] = None,
     locale: str = "us/english",
 ) -> FlightSearch:
-    """Scrape flights from emirates.com"""
+    """Scrape flights from emirates.com.
+
+    locale selects the book-page market. The widget navigates to the
+    site-root search-results path, not back through /{locale}/book/.
+    """
+    log.info(f"scraping {origin}-{destination} for market {locale}")
     try:
         response = await _fetch(
             Request(
-                f"https://www.emirates.com/{locale}/book/",
+                _search_results_url(origin, destination, departure_date, return_date),
                 **BASE_CONFIG,
-                actions=_build_search_scenario(origin, destination, departure_date, return_date),
+                timeoutMs=70_000,
+                actions=[
+                    {"type": "click", "selector": "button[id*='onetrust-accept']", "timeoutMs": 5000, "optional": True},
+                    {"type": "wait", "milliseconds": 12000},
+                ],
             )
         )
     except ScrapeError as e:
-        # emirates can send the browser to its access restricted page during the search,
-        # the next scenario step then fails because the search form is gone
+        # emirates can send the browser to its access restricted page during the search
         result = ({"url": e.response.url} if e.response else {})
         if "accessrestricted" in (result.get("url") or ""):
             raise ValueError("emirates.com redirected the search to its access restricted page") from e
