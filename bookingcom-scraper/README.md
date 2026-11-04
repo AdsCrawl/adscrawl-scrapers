@@ -27,6 +27,15 @@ not need to download or launch a local Chromium browser.
 - `scrape_hotel`
 - `scrape_hotel_reviews`
 
+## US route notes (2026-11-03 retest)
+
+Hotel and hotel-review tests passed. Search for Malta returned 25 unique hotels
+while the test requires at least 50. Three GraphQL pages were requested, but
+every page shared one request body, so each page used the last offset. Each
+offset is now its own body, pages are requested in order, and a later page that
+only repeats hotels already scraped stops the loop. The `>= 50` assertion is
+unchanged. This pagination fix has not been re-run live.
+
 ## Validation
 
 Run the credential-free repository checks with `python -m pytest tests` from the root.
@@ -36,10 +45,9 @@ To run this site's **live** tests (uses AdsCrawl credits):
 python -m pytest bookingcom-scraper/test.py -v
 ```
 
-This site has been migrated at source level. Live website behavior is **not yet
-verified** with AdsCrawl. Websites can change selectors, require sign-in, or
-reject a browser session. Historical files in `results/` are upstream examples,
-not outputs from a verified AdsCrawl run. Review URLs and dates in `run.py` first.
+Hotel and hotel reviews passed on the 2026-11-03 US-route retest. Search did
+not; see the notes above. Historical files in `results/` are upstream examples,
+not outputs from that retest.
 
 ## Source and license
 

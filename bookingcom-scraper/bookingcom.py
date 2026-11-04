@@ -14,12 +14,13 @@ import os
 import re
 import math
 from collections import defaultdict
+from copy import deepcopy
 from typing import Dict, List, Optional, TypedDict
 from urllib.parse import urlencode
 from uuid import uuid4
 
 from loguru import logger as log
-from adscrawl_scrapers import Response, Request, ScraperClient
+from adscrawl_scrapers import Response, Request, ScraperClient, ScrapeError
 
 CLIENT = ScraperClient()
 BASE_CONFIG = {
@@ -136,10 +137,89 @@ async def search_location_suggestions(query: str) -> LocationSuggestions:
     return {"results": results}
 
 
+_CHALLENGE_MARKERS = (
+    "aws-waf",
+    "captcha-delivery",
+    "challenge-container",
+    "px-captcha",
+    "g-recaptcha",
+    "/cdn-cgi/challenge",
+    "just a moment",
+)
+
+
+def _page_title(result: Response) -> str:
+    return result.selector.xpath("//title/text()").get("").strip()
+
+
+def apollo_script(result: Response) -> Optional[str]:
+    """apollo store from its script attribute, or from any script that embeds ROOT_QUERY"""
+    text = result.selector.xpath("//script[@data-capla-store-data='apollo']/text()").get()
+    if text:
+        return text
+    for script in result.selector.xpath("//script/text()").getall():
+        if "ROOT_QUERY" not in script or "searchQueries" not in script:
+            continue
+        start = script.find("{")
+        if start < 0:
+            continue
+        try:
+            json.JSONDecoder().raw_decode(script, start)
+        except json.JSONDecodeError:
+            continue
+        return script[start:]
+    return None
+
+
+def search_payload_from_network(result: Response) -> Optional[Dict]:
+    """FullSearch JSON captured from the page when the apollo script is missing"""
+    for call in result.network or []:
+        body = ((call.get("response") or {}).get("body")) or ""
+        if "searchQueries" not in body:
+            continue
+        try:
+            data = json.loads(body)
+        except json.JSONDecodeError:
+            continue
+        search = ((data.get("data") or {}).get("searchQueries") or {}).get("search")
+        if isinstance(search, dict) and (search.get("results") or search.get("pagination")):
+            return search
+    return None
+
+
+def graphql_body_from_network(result: Response) -> Optional[Dict]:
+    for call in result.network or []:
+        raw = call.get("body") or ""
+        if "searchQueries" not in raw and "FullSearch" not in raw:
+            continue
+        try:
+            data = json.loads(raw)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(data, dict) and isinstance((data.get("variables") or {}).get("input"), dict):
+            return data
+    return None
+
+
+def describe_search_failure(result: Response) -> str:
+    title = _page_title(result)
+    html = (result.content or "").lower()
+    kind = "an anti-bot challenge page" if any(marker in html for marker in _CHALLENGE_MARKERS) else "a page without search results"
+    loading = " (page still on its loading shell)" if title.lower().startswith("loading") else ""
+    return (
+        f"booking.com returned {kind} instead of search results{loading} "
+        f"(title: {title!r}, {len(result.content or ''):,} characters, url: {result.url})"
+    )
+
+
 def retrieve_graphql_body(result: Response) -> List[Dict]:
     """parse the graphql search query from the HTML and return the full graphql body"""
-    selector = result.selector
-    script_data = selector.xpath("//script[@data-capla-store-data='apollo']/text()").get()
+    script_data = apollo_script(result)
+    if not script_data:
+        network_body = graphql_body_from_network(result)
+        if network_body:
+            return network_body
+        raise ValueError(describe_search_failure(result))
     json_script_data = json.loads(script_data)
     keys_list = list(json_script_data["ROOT_QUERY"]["searchQueries"].keys())
     second_key = keys_list[1]
@@ -158,7 +238,12 @@ def retrieve_graphql_body(result: Response) -> List[Dict]:
 
 def retrieve_search_data(result: Response) -> Dict:
     """parse the first page search data (results and pagination) from the apollo data store embedded in the page"""
-    script_data = result.selector.xpath("//script[@data-capla-store-data='apollo']/text()").get()
+    script_data = apollo_script(result)
+    if not script_data:
+        network_search = search_payload_from_network(result)
+        if network_search:
+            return network_search
+        raise ValueError(describe_search_failure(result))
     apollo = json.loads(script_data)
     keys_list = list(apollo["ROOT_QUERY"]["searchQueries"].keys())
     # the second key holds the actual search query result (same convention as retrieve_graphql_body)
@@ -166,8 +251,15 @@ def retrieve_search_data(result: Response) -> Dict:
 
 
 def generate_graphql_request(url_params: str, body: Dict, offset: int, session: Optional[str] = None):
-    """create a scrape config for the search graphql request"""
-    body["variables"]["input"]["pagination"]["offset"] = offset
+    """create a scrape config for one search graphql page.
+
+    Each page needs its own body. The caller reuses one template, and a shared
+    dict would leave every request on the last offset (the 2026-11-03 US retest
+    asked for 3 pages and kept 25 unique hotels).
+    """
+    body = deepcopy(body)
+    pagination = body.setdefault("variables", {}).setdefault("input", {}).setdefault("pagination", {})
+    pagination["offset"] = offset
     return Request(
         "https://www.booking.com/dml/graphql?" + url_params,
             headers={
@@ -231,14 +323,50 @@ async def scrape_search(
     # first scrape the first page and find total amount of pages
     # use a session so the graphql pages share the first page's cookies and IP,
     # otherwise booking.com ranks results differently per request and pages overlap
-    session = uuid4().hex
-    first_page = await CLIENT.fetch(Request(search_url, session=session, **BASE_CONFIG))
+    first_page = None
+    session = None
+    last_error: Optional[BaseException] = None
+    for attempt in range(2):
+        session = uuid4().hex
+        try:
+            first_page = await CLIENT.fetch(
+                Request(
+                    search_url,
+                    session=session,
+                    actions=[
+                        {
+                            "type": "waitForSelector",
+                            "selector": "script[data-capla-store-data='apollo']",
+                            "timeoutMs": 20000,
+                            "optional": True,
+                        },
+                    ],
+                    timeoutMs=90000,
+                    **BASE_CONFIG,
+                )
+            )
+            apollo_data = apollo_script(first_page) or ""
+            if not apollo_data and not search_payload_from_network(first_page):
+                raise Exception(describe_search_failure(first_page))
+            break
+        except (Exception, ScrapeError) as error:
+            last_error = error
+            if attempt == 1 or not isinstance(error, (Exception, ScrapeError)):
+                raise
+            # one fresh session: a challenge cookie must not be reused
+            if isinstance(error, ScrapeError) and error.code not in {
+                "BROWSER_ERROR", "TIMEOUT", "SELECTOR_NOT_FOUND", "ERR_TUNNEL_CONNECTION_FAILED",
+            }:
+                raise
+            log.warning(f"booking search page was not usable ({error}); retrying once")
+    else:
+        raise last_error or Exception("booking.com search page was not usable")
+    apollo_data = apollo_script(first_page) or ""
     # booking.com sometimes answers with an AWS WAF challenge page: 200, but without the apollo data
-    apollo_data = first_page.selector.xpath("//script[@data-capla-store-data='apollo']/text()").get()
-    if not apollo_data:
-        raise Exception("booking.com returned an anti-bot challenge page instead of search results")
+    if not apollo_data and not search_payload_from_network(first_page):
+        raise Exception(describe_search_failure(first_page))
     # and sometimes with a results page without results ("0 properties are available ..."), which has no search data
-    if '"searchQueries"' not in apollo_data:
+    if apollo_data and '"searchQueries"' not in apollo_data:
         heading = " ".join(first_page.selector.xpath("//h1//text()").getall()).strip()
         raise ValueError(f"booking.com returned a results page without search results for {query!r}: {heading!r}")
     search_data = retrieve_search_data(first_page)
@@ -255,24 +383,29 @@ async def scrape_search(
     if max_pages and max_pages * _page_size < _total_results:
         _total_results = max_pages * _page_size
 
-    data = []
     # request every page through the graphql api, including the first one: the results embedded in the page
-    # carry extra fields, and mixing them would give the first page a different shape than the others
+    # carry extra fields, and mixing them would give the first page a different shape than the others.
+    # pages are sequential on the first page's session so a later offset cannot be overwritten by an earlier one.
     offsets = list(range(0, _total_results, _page_size))
     body = retrieve_graphql_body(first_page)
-    body["variables"]["input"]["pagination"]["rowsPerPage"] = _page_size
-    to_scrape = [generate_graphql_request(url_params, body, offset, session) for offset in offsets]
-    log.info(f"scraping search results from the graphql api: {len(to_scrape)} pages to request")
-    async for response in CLIENT.fetch_many(to_scrape):
-        try:
-            data.extend(parse_graphql_response(response))
-        except Exception as e:
-            log.error("Failed to parse search results: {}", e)
-
-    # the same property can appear on multiple pages
+    body["variables"]["input"].setdefault("pagination", {})["rowsPerPage"] = _page_size
+    log.info(f"scraping search results from the graphql api: {len(offsets)} pages to request")
     unique_data = {}
-    for result in data:
-        unique_data.setdefault(result.get("basicPropertyData", {}).get("id"), result)
+    for offset in offsets:
+        try:
+            response = await CLIENT.fetch(generate_graphql_request(url_params, body, offset, session))
+            page_rows = parse_graphql_response(response)
+        except Exception as e:
+            log.error(f"Failed to parse search results at offset {offset}: {e}")
+            continue
+        before = len(unique_data)
+        for result in page_rows:
+            unique_data.setdefault(result.get("basicPropertyData", {}).get("id"), result)
+        added = len(unique_data) - before
+        log.info(f"graphql offset {offset}: {len(page_rows)} rows, {added} new")
+        if page_rows and added == 0 and offset != 0:
+            log.warning(f"graphql offset {offset} repeated hotels already scraped; stopping pagination")
+            break
     data = list(unique_data.values())
     log.success(f"scraped {len(data)} results from search pages")
     return data
@@ -338,17 +471,62 @@ async def scrape_hotel(url: str, checkin: str, price_n_days=61) -> Hotel:
     # note: we are using AdsCrawl session here as both info and pricing requests
     #       have to be from the same IP address/session
     log.info(f"scraping hotel {url} {checkin} with {price_n_days} days of pricing data")
-    session = str(uuid4()).replace("-", "")
-    result = await CLIENT.fetch(
-        Request(
-            url,
-            render=True,
-            waitMs=3000,
-            session=session,
-            **BASE_CONFIG,
-            autoScroll=True
-        )
-    )
+    result = None
+    session = None
+    last_error: Optional[BaseException] = None
+    for attempt in range(2):
+        session = str(uuid4()).replace("-", "")
+        try:
+            result = await CLIENT.fetch(
+                Request(
+                    url,
+                    render=True,
+                    session=session,
+                    actions=[
+                        {
+                            "type": "waitForSelector",
+                            "selector": "[data-testid='PropertyHeaderAddressDesktop-wrapper']",
+                            "timeoutMs": 25000,
+                            "optional": True,
+                        },
+                    ],
+                    timeoutMs=90000,
+                    **BASE_CONFIG,
+                    autoScroll=True,
+                )
+            )
+            if result.selector.xpath(
+                "//div[@data-testid='PropertyHeaderAddressDesktop-wrapper']//a/@data-atlas-latlng"
+            ).get() is None:
+                title = _page_title(result)
+                loading = title.lower().startswith("loading")
+                raise ScrapeError(
+                    f"booking.com hotel page did not finish loading (title: {title!r}, url: {result.url})",
+                    response=result,
+                    code="BROWSER_ERROR" if loading else "SELECTOR_NOT_FOUND",
+                )
+            break
+        except ScrapeError as error:
+            last_error = error
+            title = ""
+            if error.response and error.response.content:
+                title = _page_title(error.response)
+            retriable = error.code in {
+                "BROWSER_ERROR", "TIMEOUT", "SELECTOR_NOT_FOUND",
+                "ERR_HTTP2_PROTOCOL_ERROR", "ERR_TUNNEL_CONNECTION_FAILED", "ERR_CONNECTION_CLOSED",
+            } or title.lower().startswith("loading")
+            if attempt == 0 and retriable:
+                log.warning(f"booking hotel page failed ({error}); retrying once")
+                continue
+            if title.lower().startswith("loading"):
+                raise ScrapeError(
+                    f"booking.com hotel page stayed on its loading shell (title: {title!r})",
+                    response=error.response,
+                    code=error.code,
+                ) from None
+            raise
+    else:
+        raise last_error or ScrapeError("booking.com hotel page failed", code="BROWSER_ERROR")
     hotel = parse_hotel(result)
 
     # To scrape price we'll be calling Booking.com's graphql service

@@ -15,7 +15,7 @@ from typing import Dict, List, Union
 from parsel import Selector
 from urllib.parse import urlencode, quote_plus
 from loguru import logger as log
-from adscrawl_scrapers import Request, ScraperClient, Response
+from adscrawl_scrapers import Request, ScraperClient, Response, ScrapeError
 
 CLIENT = ScraperClient()
 
@@ -142,21 +142,40 @@ def parse_product(response: Response) -> Dict:
     return data
 
 
+_PRODUCT_TRANSIENT = {
+    "ERR_HTTP2_PROTOCOL_ERROR",
+    "ERR_TUNNEL_CONNECTION_FAILED",
+    "ERR_CONNECTION_CLOSED",
+    "TIMEOUT",
+    "BROWSER_ERROR",
+}
+
+
+async def _fetch_product(url: str) -> Response:
+    request = Request(url, **BASE_CONFIG, render=True)
+    try:
+        return await CLIENT.fetch(request)
+    except ScrapeError as error:
+        if error.code not in _PRODUCT_TRANSIENT:
+            raise
+        log.warning(f"retrying product {url} once after {error.code}")
+        return await CLIENT.fetch(request)
+
+
 @managed
 async def scrape_products(urls: List[str], max_review_pages: int = 1) -> List[Dict]:
     """scrapy product data from bestbuy product pages"""
-    to_scrape = [Request(url, **BASE_CONFIG, render=True) for url in urls]
     data = []
-    async for response in CLIENT.fetch_many(to_scrape):
+    for url in urls:
         try:
+            response = await _fetch_product(url)
             product_data = parse_product(response)
             product_data["product_reviews"] = await scrape_reviews(
                 product_data["product-info"]["skuId"], max_pages=max_review_pages
             )
             data.append(product_data)
-        except:
-            pass
-            log.error("expired selectors or product page")
+        except Exception:
+            log.error(f"expired selectors or product page: {url}")
 
     log.success(f"scraped {len(data)} products from product pages")
     return data

@@ -321,6 +321,31 @@ async def test_attachment_preserves_bytes_and_decodes_unicode_json():
     assert page.evaluate.await_args.args[1]['url'] == 'https://itunes.apple.com/lookup'
 
 
+async def test_binary_gzip_xml_is_inflated_before_text_decode():
+    import gzip
+    xml = (
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+        '<url><loc>https://www.bestbuy.com/site/promo</loc></url></urlset>'
+    ).encode()
+    raw = gzip.compress(xml)
+    page = SimpleNamespace(route=AsyncMock(), goto=AsyncMock(), evaluate=AsyncMock(return_value={
+        'url': 'https://sitemaps.bestbuy.com/sitemaps_promos.0000.xml.gz',
+        'status': 200,
+        'headers': {'content-type': 'application/xml'},
+        'bytes': list(raw),
+    }))
+    context = SimpleNamespace(cookies=AsyncMock(return_value=[]))
+    result = await ScraperClient(sdk=object())._fetch_binary(
+        SimpleNamespace(context=context), page,
+        Request('https://sitemaps.bestbuy.com/sitemaps_promos.0000.xml.gz', binary=True),
+        {},
+    )
+    assert result.raw == raw
+    assert result.raw[:2] == b'\x1f\x8b'
+    assert 'https://www.bestbuy.com/site/promo' in result.content
+    assert not result.content.startswith('\x1f')
+
+
 async def test_browser_action_failure_retains_safe_error_code_and_closes_page(monkeypatch, tmp_path):
     from playwright.async_api import Error
     monkeypatch.setenv('ADSCRAWL_FAILURE_DIR', str(tmp_path))
@@ -499,6 +524,80 @@ def test_default_us_route_respects_explicit_country_and_custom_proxy(monkeypatch
     settings = Request('https://example.com', proxy={'server':'http://proxy.example:8080'}).browser_settings()
     assert settings['proxy']['server'] == 'http://proxy.example:8080'
     assert 'countryCode' not in settings
+
+
+async def test_unnamed_timeout_is_not_replaced_when_session_cleanup_fails(monkeypatch):
+    class Messy:
+        def __init__(self, sdk, settings):
+            self.info = {"sessionId": "stuck"}
+            self.lock = asyncio.Lock()
+            self.settings = settings
+
+        async def open(self):
+            return self
+
+        async def close(self):
+            raise ScrapeError("AdsCrawl session cleanup failed", code="CLEANUP_FAILED")
+
+    monkeypatch.setattr("adscrawl_scrapers.runtime._Session", Messy)
+    client = ScraperClient(sdk=object(), concurrency=1)
+
+    async def timed_out(session, request):
+        raise asyncio.TimeoutError()
+
+    client._fetch_page = timed_out
+    with pytest.raises(ScrapeError) as caught:
+        await client.fetch(Request("https://example.com/product"))
+    assert caught.value.code == "TIMEOUT"
+    assert client._sessions == {}
+    client._fetch_page = AsyncMock(return_value=Response("https://example.com/search"))
+    page = await client.fetch(Request("https://example.com/search"))
+    assert page.url.endswith("/search")
+    assert client._sessions == {}
+
+
+async def test_failed_sdk_delete_forgets_the_session_id():
+    sdk = SimpleNamespace(cdp=SimpleNamespace(close=AsyncMock(side_effect=RuntimeError("delete failed"))))
+    session = _Session(sdk, {})
+    session.info = {"sessionId": "leak"}
+    with pytest.raises(ScrapeError) as caught:
+        await session.close()
+    assert caught.value.code == "CLEANUP_FAILED"
+    assert session.info is None
+    sdk.cdp.close.assert_awaited_once_with("leak", timeout_ms=30_000)
+
+
+async def test_closed_loop_leftovers_do_not_block_the_next_fetch():
+    sdk = object()
+    client = ScraperClient(sdk=sdk)
+    dead = asyncio.new_event_loop()
+    client._loop = dead
+    client._sessions["leftover"] = object()
+    dead.close()
+    client._bind_loop()
+    assert client._sessions == {}
+    assert client._loop is asyncio.get_running_loop()
+    assert client._sdk is sdk
+
+
+def test_a_live_loop_still_requires_close_before_another_loop():
+    client = ScraperClient(sdk=object())
+    client._loop = asyncio.new_event_loop()
+    client._sessions["live"] = object()
+
+    async def touch():
+        client._bind_loop()
+
+    def run():
+        other = asyncio.new_event_loop()
+        try:
+            other.run_until_complete(touch())
+        finally:
+            other.close()
+            client._loop.close()
+
+    with pytest.raises(RuntimeError, match="another event loop"):
+        run()
 
 
 async def test_explicit_accept_is_applied_to_get_navigation_interception():

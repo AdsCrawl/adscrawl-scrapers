@@ -26,6 +26,19 @@ not need to download or launch a local Chromium browser.
 - `scrape_property_for_sale`
 - `scrape_property_for_rent`
 
+## US route notes (2026-11-03 retest)
+
+Rent and search passed. For-sale HTML navigation timed out on the first retest.
+On the tip2 retest the direct stingray call (`render=False`) returned HTTP 403,
+then the property document was the 2 KB noscript shell with no property data.
+
+For-sale now opens the property page on a session first and keeps any
+`aboveTheFold` response the page captured. The detail APIs are then requested
+like the GIS search that passed: a normal US navigation on that session, not
+`render=False`. `initialInfo` and a 403 are retried once. If `initialInfo`
+fails, `aboveTheFold` uses the property id from the URL. This has not been
+re-run live.
+
 ## Validation
 
 Run the credential-free repository checks with `python -m pytest tests` from the root.
@@ -35,10 +48,9 @@ To run this site's **live** tests (uses AdsCrawl credits):
 python -m pytest redfin-scraper/test.py -v
 ```
 
-This site has been migrated at source level. Live website behavior is **not yet
-verified** with AdsCrawl. Websites can change selectors, require sign-in, or
-reject a browser session. Historical files in `results/` are upstream examples,
-not outputs from a verified AdsCrawl run. Review URLs and dates in `run.py` first.
+Rent and search passed on the 2026-11-03 US-route retest. For-sale did not; see
+the notes above. Historical files in `results/` are upstream examples, not
+outputs from that retest.
 
 ## Source and license
 
