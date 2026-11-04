@@ -26,7 +26,10 @@ not need to download or launch a local Chromium browser.
 - `scrape_reviews`
 - `scrape_product`
 
-## US route notes (through tip6, not live-verified)
+## US route notes (through tip7)
+
+Tip6 (`74d70d7`, concurrency 1, US, no 402) passed product and search. Those two
+paths are unchanged below. Reviews failed and are the only tip7 change.
 
 Product pages are fetched one at a time. The live product set is the PS5 slim
 `B0CL61F39H` and the 2024 MacBook `B0CX22ZW1T`. `style` is `Space Gray` on the
@@ -47,21 +50,25 @@ failures were independent:
   and no request-level `waitForSelector`. `#productTitle` is a 20s optional
   action. A timeout, tunnel error, or `CLEANUP_FAILED` (after `CLIENT.reset()`)
   is retried, up to three navigations. A page that loads without a title is
-  retried the same way. This has not been re-run live.
+  retried the same way. Tip6 product passed. This path was not edited again.
 - Search `k=kindle` was HTTP 503 on `/s` (including the same-session retry) and
   again on `/gp/search?k=kindle&ref=nb_sb_noss`. The first page now warms
   `https://www.amazon.com/` on the session, keeps that `/s` plus `/gp/search`
   path, then requests `/s/query` (`render=False`, `X-Requested-With`) and parses
   `s-search-result` cards out of the `&&&` body. A later page that still fails
-  keeps the previews already parsed. `len(result) > 30` is unchanged. Not
-  re-run live. If `/s/query` is also HTTP 503, search still fails.
-- Reviews for Atomic Habits `0735211299` loaded the product page in about 10s
-  and found no `[data-hook=review]` cards. `/product-reviews/0735211299/` was
-  then HTTP 404. The in-page script now also POSTs the reviews medley endpoint
-  and keeps `review-card` HTML plus JSON objects with `reviewText` or
-  `reviewBody`. The fallback reviews URL is the product page's "see all reviews"
-  link and reuses the product session. `assert len(result) != 0` stays. Not
-  re-run live.
+  keeps the previews already parsed. `len(result) > 30` is unchanged. Tip6
+  search passed. This path was not edited again. If `/s/query` is also HTTP
+  503, search still fails.
+- Reviews for Atomic Habits `0735211299` did not return a document on tip6.
+  The product-page script started at 13:00:37 and the same-session retry was
+  not logged until 13:08:53 (`TIMEOUT`). The retry then timed out at 90s.
+  `product-reviews/...?reviewerType=all_reviews` timed out twice as well
+  (`TIMEOUT HTTP 0`). `assert 0 != 0`. The in-page `fetch` now aborts each
+  reviews endpoint after 8s. The document uses `waitUntil=commit` and a 45s
+  budget, the same commit navigation that returned the product pages. A timeout
+  closes that browser and retries once on a new session. The dedicated reviews
+  URL no longer scrolls and no longer waits for `domcontentloaded`.
+  `assert len(result) != 0` stays. This reviews change has not been re-run live.
 
 ## Validation
 
@@ -72,10 +79,9 @@ To run this site's **live** tests (uses AdsCrawl credits):
 python -m pytest amazon-scraper/test.py -v
 ```
 
-Search passed on the first 2026-11-03 US-route retest and was HTTP 503 on
-tip3 and tip5. Tip4 did not reach search or reviews because the product timeout
-poisoned the shared client. Tip5 showed that reset worked and that the three
-checks fail on their own. The tip6 request changes above are not a live pass.
+Search passed on the first 2026-11-03 US-route retest, failed on tip3 and
+tip5, and passed on tip6 with product. Reviews are still open. The tip7 reviews
+change is not a live pass.
 Historical files in `results/` are upstream examples, not outputs from those
 retests.
 

@@ -11,6 +11,7 @@ import json
 import math
 import os
 import re
+from dataclasses import replace
 from typing import Dict, List, TypedDict, Optional
 from urllib.parse import urljoin, urlparse, parse_qsl, urlencode, urlunparse
 from uuid import uuid4
@@ -417,24 +418,36 @@ def reviews_ajax_script(asin: str, page: int) -> str:
     page issues this call; do the same with fetch() so a non-200 stays a body
     instead of a failed navigation. Origin and Referer are forbidden fetch
     headers and are left for the browser to set.
+
+    Tip6's script had no abort. The first product-page evaluate did not return
+    for about eight minutes, and the retry on that same browser then hit the
+    outer 90s timeout. Each endpoint now aborts after 8s so the browser is
+    released.
     """
     endpoints = json.dumps([REVIEWS_AJAX, REVIEWS_MEDLEY])
+    fields = json.dumps(reviews_ajax_fields(asin, page))
     return (
-        "const body = new URLSearchParams("
-        + json.dumps(reviews_ajax_fields(asin, page))
-        + ");\n"
+        "const body = new URLSearchParams(" + fields + ");\n"
         "const endpoints = " + endpoints + ";\n"
         "let last = {status: 0, text: ''};\n"
         "for (const endpoint of endpoints) {\n"
-        "  const response = await fetch(endpoint, {method: 'POST', credentials: 'include', headers: {\n"
-        "    'content-type': 'application/x-www-form-urlencoded;charset=UTF-8',\n"
-        "    'accept': 'text/html,*/*',\n"
-        "    'x-requested-with': 'XMLHttpRequest'\n"
-        "  }, body: body.toString()});\n"
-        "  const text = await response.text();\n"
-        "  last = {status: response.status, text: text};\n"
-        "  if (text.includes('data-hook=\"review\"') || text.includes('\"reviewBody\"') || text.includes('\"reviewText\"')) {\n"
-        "    return JSON.stringify(last);\n"
+        "  const controller = new AbortController();\n"
+        "  const timer = setTimeout(() => controller.abort(), 8000);\n"
+        "  try {\n"
+        "    const response = await fetch(endpoint, {method: 'POST', credentials: 'include', signal: controller.signal, headers: {\n"
+        "      'content-type': 'application/x-www-form-urlencoded;charset=UTF-8',\n"
+        "      'accept': 'text/html,*/*',\n"
+        "      'x-requested-with': 'XMLHttpRequest'\n"
+        "    }, body: body.toString()});\n"
+        "    const text = await response.text();\n"
+        "    last = {status: response.status, text: text};\n"
+        "    if (text.includes('data-hook=\"review\"') || text.includes('\"reviewBody\"') || text.includes('\"reviewText\"')) {\n"
+        "      return JSON.stringify(last);\n"
+        "    }\n"
+        "  } catch (error) {\n"
+        "    last = {status: 0, text: ''};\n"
+        "  } finally {\n"
+        "    clearTimeout(timer);\n"
         "  }\n"
         "}\n"
         "return JSON.stringify(last);"
@@ -532,17 +545,65 @@ def parse_review_fragments(content: str) -> List[Review]:
     return reviews
 
 
+_REVIEWS_TIMEOUT_MS = 45_000
+
+
 def _review_request(page_url: str, session: Optional[str] = None) -> Request:
+    """the dedicated reviews document.
+
+    Tip6 waited for domcontentloaded for 90s, scrolled, and timed out twice
+    (HTTP 0). commit is the navigation that already returned Amazon product
+    pages in this run. A missing widget must not consume the whole budget.
+    """
     return Request(
         page_url,
         session=session,
         render=True,
-        autoScroll=True,
+        waitUntil="commit",
+        timeoutMs=_REVIEWS_TIMEOUT_MS,
         actions=[
-            {"type": "waitForSelector", "selector": "[data-hook=review], [data-hook=review-card]", "timeoutMs": 12000, "optional": True},
+            {
+                "type": "waitForSelector",
+                "selector": "[data-hook=review], [data-hook=review-card]",
+                "timeoutMs": 8000,
+                "optional": True,
+            },
         ],
         **BASE_CONFIG,
     )
+
+
+async def _fetch_reviews_document(request: Request) -> tuple[Optional[Response], str]:
+    """one reviews navigation, retried once on a new browser.
+
+    A timed-out evaluate leaves the named session wedged. The extra attempt
+    must not reuse it. `_fetch_once_retry` retries the same session and stays
+    on the product and search paths that passed.
+    """
+    session = request.session or uuid4().hex
+    try:
+        return await CLIENT.fetch(request), session
+    except ScrapeError as error:
+        if error.code == "CLEANUP_FAILED":
+            await CLIENT.reset()
+        retryable = error.code in {"TIMEOUT", "BROWSER_ERROR", "CLEANUP_FAILED"} or _transient_failure(error)
+        if not retryable:
+            log.warning(f"reviews {request.url} failed ({error.code})")
+            return None, session
+        log.warning(f"reviews {request.url} failed ({error.code}); one fresh session")
+        try:
+            await CLIENT.close_session(session)
+        except ScrapeError as close_error:
+            log.warning(f"reviews session close failed ({close_error.code})")
+        session = uuid4().hex
+        try:
+            return await CLIENT.fetch(replace(request, session=session)), session
+        except ScrapeError as again:
+            if again.code == "CLEANUP_FAILED":
+                await CLIENT.reset()
+            status = again.response.status_code if again.response else 0
+            log.warning(f"reviews {request.url} failed ({again.code} HTTP {status})")
+            return None, session
 
 
 def _extend_reviews(reviews: List[Review], seen: set, parsed: List[Review]) -> None:
@@ -639,7 +700,9 @@ async def scrape_reviews(url: str, max_pages: int = 2) -> List[Review]:
     /hz/reviews-render/ raised ERR_HTTP_RESPONSE_CODE_FAILURE for Atomic Habits
     (0735211299), and both the reviews URL and the product page rendered zero
     [data-hook=review] cards. Cards in that script body, in the product HTML,
-    or in JSON-LD Review nodes are all kept.
+    or in JSON-LD Review nodes are all kept. Tip6 product and search passed.
+    The reviews evaluate hung, so this path uses commit, a 45s budget, and an
+    aborted XHR. Product and search fetches are unchanged.
     """
     asin = _asin_from_url(url)
     referer = product_page_url(url)
@@ -653,13 +716,13 @@ async def scrape_reviews(url: str, max_pages: int = 2) -> List[Review]:
                 referer,
                 session=session,
                 countryCode="US",
+                render=True,
+                waitUntil="commit",
+                timeoutMs=_REVIEWS_TIMEOUT_MS,
                 javascript=reviews_ajax_script(asin, page_number),
-                timeoutMs=90000,
             )
-            try:
-                page = await _fetch_once_retry(request)
-            except ScrapeError as error:
-                log.warning(f"reviews page {page_number} failed ({error.code})")
+            page, session = await _fetch_reviews_document(request)
+            if page is None:
                 break
             parsed = _collect_page_reviews(page)
             if not parsed:
@@ -676,12 +739,8 @@ async def scrape_reviews(url: str, max_pages: int = 2) -> List[Review]:
 
         page_url = reviews_page_url(url)
         log.info(f"scraping review page: {page_url}")
-        try:
-            page = await _fetch_once_retry(_review_request(page_url, session))
-        except ScrapeError as error:
-            status = error.response.status_code if error.response else 0
-            log.warning(f"{page_url} failed ({error.code} HTTP {status})")
-        else:
+        page, session = await _fetch_reviews_document(_review_request(page_url, session))
+        if page is not None:
             parsed = (
                 parse_reviews(page)
                 or parse_jsonld_reviews(page)

@@ -346,6 +346,9 @@ async def test_amazon_reviews_use_ajax_pages(monkeypatch):
     assert opened.method == "GET"
     assert amazon.REVIEWS_AJAX in (opened.javascript or "")
     assert amazon.REVIEWS_MEDLEY in (opened.javascript or "")
+    assert "AbortController" in (opened.javascript or "")
+    assert opened.waitUntil == "commit"
+    assert opened.timeoutMs == 45000
     assert '"asin": "0735211299"' in (opened.javascript or "")
     assert '"pageNumber": "1"' in (opened.javascript or "")
     assert '"pageNumber": "2"' in (fetch.await_args_list[1].args[0].javascript or "")
@@ -431,6 +434,36 @@ async def test_amazon_reviews_fall_back_to_the_product_page_on_404(monkeypatch):
     reviews = await amazon.scrape_reviews("https://www.amazon.com/dp/B0CL61F39H")
     assert reviews[0]["title"] == "Kept"
     assert reviews[0]["text"] == "Still here."
+
+
+async def test_amazon_reviews_timeout_retries_on_a_fresh_session(monkeypatch):
+    calls = []
+    card = (
+        '''<div data-hook="review"><i data-hook="review-star-rating"><span>5.0 out of 5 stars</span></i>
+        <a data-hook="review-title"><span>Kept</span></a>
+        <span data-hook="review-date">Reviewed in the United States on January 2, 2026</span>
+        <div data-hook="review-body"><span>Still here.</span></div></div>'''
+    )
+
+    async def fetch(request):
+        calls.append(request)
+        if len(calls) == 1:
+            raise ScrapeError("slow", code="TIMEOUT")
+        response = Response(request.url, "<html></html>")
+        response.javascript = json.dumps({"status": 200, "text": _ajax_reviews(card)})
+        return response
+
+    monkeypatch.setattr(amazon.CLIENT, "fetch", fetch)
+    reviews = await amazon.scrape_reviews(
+        "https://www.amazon.com/Atomic-Habits-Proven-Build-Break/dp/0735211299",
+        max_pages=1,
+    )
+    assert reviews[0]["title"] == "Kept"
+    assert len(calls) == 2
+    assert calls[0].session != calls[1].session
+    assert calls[0].waitUntil == "commit"
+    assert calls[0].timeoutMs == 45000
+    assert calls[1].url == "https://www.amazon.com/dp/0735211299"
 
 
 async def test_amazon_product_and_search_retry_tunnel_and_503_once(monkeypatch):
