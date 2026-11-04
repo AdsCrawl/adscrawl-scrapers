@@ -13,7 +13,7 @@ import datetime
 from typing import Dict, List, Optional
 from urllib.parse import quote
 from loguru import logger as log
-from adscrawl_scrapers import Request, ScraperClient, Response
+from adscrawl_scrapers import Request, ScraperClient, Response, ScrapeError
 
 CLIENT = ScraperClient()
 
@@ -32,6 +32,21 @@ BASE_CONFIG = {
     'actions': JS,
 
 }
+
+# Marketplace and event pages fail on about:blank with a tunnel error while
+# page and group fetches on the same route succeed. One new session is enough
+# when the failure is the proxy tunnel rather than the parser.
+_TUNNEL_CODES = {"ERR_TUNNEL_CONNECTION_FAILED", "ERR_CONNECTION_CLOSED"}
+
+
+async def _fetch(request: Request) -> Response:
+    try:
+        return await CLIENT.fetch(request)
+    except ScrapeError as error:
+        if error.code not in _TUNNEL_CODES:
+            raise
+        log.warning(f"retrying {request.url} once after {error.code}")
+        return await CLIENT.fetch(request)
 
 
 def parse_page(response: Response) -> Dict:
@@ -242,7 +257,7 @@ async def scrape_facebook_events(event_name: str = "New York, NY") -> List[Dict]
 
     # build events URL with location
     url = f"https://www.facebook.com/events/search?q={quote(event_name)}"
-    result = await CLIENT.fetch(
+    result = await _fetch(
         Request(
             url=url,
             **BASE_CONFIG,
@@ -257,10 +272,8 @@ async def scrape_facebook_events(event_name: str = "New York, NY") -> List[Dict]
     missing = {event["id"]: event for event in events if not event["date"] and event["url"]}
     if missing:
         log.info(f"scraping {len(missing)} event pages for details missing from the search results")
-        to_scrape = [Request(event["url"], **BASE_CONFIG) for event in missing.values()]
-        async for response in CLIENT.fetch_many(to_scrape):
-            if not isinstance(response, Response):
-                continue
+        for event in missing.values():
+            response = await _fetch(Request(event["url"], **BASE_CONFIG))
             # repeating events open on the page of their next date: /events/<event id>/<date id>/
             ids = re.search(r"/events/(\d+)/(?:(\d+)/)?", response.url)
             if not ids or ids.group(1) not in missing:
@@ -283,7 +296,7 @@ async def scrape_marketplace_listings(query: str = "electronics") -> List[Dict]:
 
     # build marketplace URL with location
     url = f"https://www.facebook.com/marketplace/search/?query={quote(query)}"
-    result = await CLIENT.fetch(
+    result = await _fetch(
         Request(
             url=url,
             **BASE_CONFIG,

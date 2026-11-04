@@ -14,7 +14,7 @@ from typing import Dict, List
 from urllib.parse import urlencode, parse_qs, urlparse
 from nested_lookup import nested_lookup
 from loguru import logger as log
-from adscrawl_scrapers import Request, ScraperClient, Response
+from adscrawl_scrapers import Request, ScraperClient, Response, ScrapeError
 
 CLIENT = ScraperClient()
 
@@ -22,9 +22,36 @@ BASE_CONFIG = {
     # bypass nordstorm.com web scraping blocking
     'countryCode': "US",
     'render': True,
-    'waitForSelector': 'script:has-text("__INITIAL_CONFIG__")',
-
+    # domcontentloaded on this site held the navigation until the outer 90s
+    # deadline, which cancelled the page before the selector error could say
+    # what was missing. Commit returns when the document starts, then the
+    # attached-state action waits for the same script the parser reads.
+    # Script nodes are not visible, so the action state has to be attached.
+    'waitUntil': "commit",
+    'timeoutMs': 120_000,
+    'actions': [
+        {
+            "type": "waitForSelector",
+            "selector": "xpath=//script[contains(., '__INITIAL_CONFIG__')]",
+            "state": "attached",
+            "timeoutMs": 45_000,
+        },
+    ],
 }
+
+# GET TIMEOUT is retried once by the runtime. Retrying it here as well would
+# run the 120s navigation four times.
+_RETRYABLE = {"ACTION_FAILED", "SELECTOR_NOT_FOUND"}
+
+
+async def _fetch(request: Request) -> Response:
+    try:
+        return await CLIENT.fetch(request)
+    except ScrapeError as error:
+        if error.code not in _RETRYABLE:
+            raise
+        log.warning(f"retrying {request.url} once after {error.code}")
+        return await CLIENT.fetch(request)
 
 
 def parse_product(data: dict) -> dict:
@@ -100,7 +127,8 @@ async def scrape_products(urls: List[str]):
     """scrape nordstorm product pages for product data"""
     to_scrape = [Request(url, **BASE_CONFIG) for url in urls]
     products = []
-    async for response in CLIENT.fetch_many(to_scrape):
+    for request in to_scrape:
+        response = await _fetch(request)
         data = find_hidden_data(response)
         entities = data["productDisplay"]["productDisplaysById"]["entities"]
         products.append(parse_product(list(entities.values())[0]))
@@ -112,7 +140,7 @@ async def scrape_products(urls: List[str]):
 async def scrape_search(url: str, max_pages: int = 10) -> List[Dict]:
     """Scrape nordstom search pages for product listings"""
     log.info(f"scraping search page {url}")
-    first_page = await CLIENT.fetch(Request(url, **BASE_CONFIG))
+    first_page = await _fetch(Request(url, **BASE_CONFIG))
     # parse first page for product search data and total amount of pages:
     data = find_hidden_data(first_page)
     _first_page_results = nested_lookup("productResults", data)[0]
@@ -123,12 +151,13 @@ async def scrape_search(url: str, max_pages: int = 10) -> List[Dict]:
     if max_pages and max_pages < total_pages:
         total_pages = max_pages
 
-    # then scrape other pages concurrently:
+    # then scrape the remaining pages, one retry each if the first load times out:
     log.info(f"scraping search pagination, remaining ({total_pages - 1}) more pages")
     _other_pages = [
         Request(update_url_parameter(url, page=page), **BASE_CONFIG) for page in range(2, total_pages + 1)
     ]
-    async for result in CLIENT.fetch_many(_other_pages):
+    for request in _other_pages:
+        result = await _fetch(request)
         data = find_hidden_data(result)
         data = nested_lookup("productResults", data)[0]
         products.extend(list(data["productsById"].values()))

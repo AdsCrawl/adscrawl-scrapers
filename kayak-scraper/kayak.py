@@ -22,7 +22,6 @@ BASE_CONFIG = {
 }
 
 POLL_URL = "https://www.kayak.com/i/api/search/dynamic/flights/poll"
-SEARCH_RESULTS_SELECTOR = "//div[contains(@id, 'results')]"
 
 
 def build_search_url(origin, destination, departure_date, return_date=None, sort="bestflight_a"):
@@ -148,9 +147,13 @@ async def scrape_flights(
     log.info(f"scraping kayak {origin}->{destination} on {departure_date}")
 
     session_id = f"kayak-{uuid4().hex}"
+    # The results container and an extra 3s wait held this navigation until the
+    # SDK's 90s HTTP deadline. The poll response is the payload the parser
+    # reads, and it arrives before that container. 180s covers a slow session
+    # create; the runtime closes that session if the deadline still hits.
     search_response = await CLIENT.fetch(Request(
         url, **BASE_CONFIG, render=True, session=session_id,
-        waitMs=3000, waitForSelector=SEARCH_RESULTS_SELECTOR,
+        timeoutMs=180_000, waitForResponse=POLL_URL,
     ))
 
     poll_call, poll_headers = parse_poll_call(search_response)

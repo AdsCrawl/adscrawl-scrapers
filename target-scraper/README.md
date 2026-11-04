@@ -28,6 +28,12 @@ not need to download or launch a local Chromium browser.
 - `scrape_store_locations`
 - `scrape_search`
 
+## Anti-bot limits
+
+Opening a `redsky.target.com` URL as the document is HTTP 435. Availability, store locations, product, and search call that API with `fetch()` from a warmed `target.com` page instead of navigating to it. Availability and store locations passed that way on the US route (2026-11-03, second retest). Product still returned HTTP 435 from `deferred_enrichment/modules` after one retry, and search hit the 90s deadline on `https://www.target.com/s?searchTerm=laptop`.
+
+Product now loads the PDP in the homepage session (up to three sessions). A 435, a timeout, or a failed modules wait uses `product_summary_with_fulfillment_v1` in that page, priced at store `1771` / zip `52404`. Ratings are absent on that summary. Search waits 45s for a product card inside a 120s navigation (`waitUntil=commit`). A timeout, a block, or a page with no cards uses `plp_search_v2` the same way. An empty API body is still an error, and a 435 that leaves no page data is still an error. The product and search fallbacks have not been confirmed live. The availability HTML fallback remains the product page (shipping and stock, not store inventory). Store locations still fall back to `/sl/{slug}/{id}`.
+
 ## Validation
 
 Run the credential-free repository checks with `python -m pytest tests` from the root.

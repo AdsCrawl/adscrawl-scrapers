@@ -6,6 +6,7 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
+from adscrawl import AdsCrawlTimeoutError
 from adscrawl_scrapers import Request, Response, ScraperClient, ScrapeError, managed
 from adscrawl_scrapers.runtime import _Session, perform_actions, evaluate_script
 
@@ -164,7 +165,7 @@ async def test_sdk_close_runs_even_when_browser_disconnect_fails():
 
 async def test_cancel_during_sdk_creation_still_deletes_created_session():
     created = asyncio.Event()
-    async def create(params):
+    async def create(params, timeout_ms=None):
         created.set()
         await asyncio.sleep(0.02)
         return {'sessionId':'new-session','cdpBaseUrl':'https://secret.invalid/?token=hidden'}
@@ -175,6 +176,111 @@ async def test_cancel_during_sdk_creation_still_deletes_created_session():
     task.cancel()
     with pytest.raises(asyncio.CancelledError): await task
     sdk.cdp.close.assert_awaited_once_with('new-session', timeout_ms=30_000)
+
+
+async def test_session_create_timeout_closes_only_the_new_session():
+    state = {'phase': 0, 'closed': []}
+
+    async def list_sessions(timeout_ms=None):
+        state['phase'] += 1
+        ids = ['kept'] if state['phase'] == 1 else ['kept', 'orphan']
+        return {'ok': True, 'data': [
+            {'sessionId': sid, 'expiresAt': '2099-01-01T00:00:00Z', 'cdpBaseUrl': 'https://cdp.invalid/s?token=secret'}
+            for sid in ids
+        ]}
+
+    async def create(params, timeout_ms=None):
+        assert timeout_ms == 180_000
+        raise AdsCrawlTimeoutError(timeout_ms)
+
+    async def close(session_id, timeout_ms=None):
+        state['closed'].append(session_id)
+        return {'ok': True}
+
+    sdk = SimpleNamespace(cdp=SimpleNamespace(list=list_sessions, create=create, close=close))
+    session = _Session(sdk, {})
+    session.create_timeout_ms = 180_000
+    with pytest.raises(AdsCrawlTimeoutError) as caught:
+        await session.open()
+    assert state['closed'] == ['orphan']
+    assert session.info is None
+    assert 'secret' not in str(caught.value)
+
+
+async def test_get_navigation_retries_a_tunnel_once_on_a_new_browser(fake_sessions):
+    client = ScraperClient(sdk=object())
+    calls = {"n": 0}
+
+    async def page(session, request):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise ScrapeError("tunnel", code="ERR_TUNNEL_CONNECTION_FAILED")
+        return Response(request.url)
+
+    client._fetch_page = page
+    response = await client.fetch(Request("https://example.com/item"))
+    assert response.url == "https://example.com/item"
+    assert calls["n"] == 2
+    assert fake_sessions[0].closed and not client._sessions
+
+    calls["n"] = 0
+
+    async def denied(session, request):
+        calls["n"] += 1
+        raise ScrapeError("denied", response=Response(request.url, status_code=403), code="HTTP_ERROR")
+
+    client._fetch_page = denied
+    with pytest.raises(ScrapeError) as http_error:
+        await client.fetch(Request("https://example.com/item"))
+    assert http_error.value.code == "HTTP_ERROR" and calls["n"] == 1
+
+    calls["n"] = 0
+
+    async def post_tunnel(session, request):
+        calls["n"] += 1
+        raise ScrapeError("tunnel", code="ERR_TUNNEL_CONNECTION_FAILED")
+
+    client._fetch_page = post_tunnel
+    with pytest.raises(ScrapeError) as post_error:
+        await client.fetch(Request("https://example.com/item", method="POST", body="{}"))
+    assert post_error.value.code == "ERR_TUNNEL_CONNECTION_FAILED" and calls["n"] == 1
+
+    calls["n"] = 0
+
+    async def get_timeout(session, request):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise ScrapeError("timed out", code="TIMEOUT")
+        return Response(request.url)
+
+    client._fetch_page = get_timeout
+    response = await client.fetch(Request("https://www.facebook.com/events/1/"))
+    assert response.url.endswith("/events/1/") and calls["n"] == 2
+
+    calls["n"] = 0
+
+    async def post_timeout(session, request):
+        calls["n"] += 1
+        raise ScrapeError("timed out", code="TIMEOUT")
+
+    client._fetch_page = post_timeout
+    with pytest.raises(ScrapeError) as timeout_error:
+        await client.fetch(Request("https://example.com/item", method="POST", body="{}"))
+    assert timeout_error.value.code == "TIMEOUT" and calls["n"] == 1
+
+
+async def test_named_session_timeout_releases_the_browser(fake_sessions):
+    client = ScraperClient(sdk=object(), concurrency=1)
+
+    async def hang(session, request):
+        await asyncio.Event().wait()
+
+    client._fetch_page = hang
+    with pytest.raises(ScrapeError) as caught:
+        await client.fetch(Request('https://example.com/slow', session='kayak', timeoutMs=50))
+    assert caught.value.code == 'TIMEOUT'
+    assert 'example.com/slow' in str(caught.value)
+    assert fake_sessions[0].closed and not client._sessions
 
 
 async def test_stalled_browser_disconnect_still_releases_remote_session(monkeypatch):
