@@ -188,6 +188,23 @@ def build_flight_search_api_url(
     return f"{FLIGHT_SEARCH_API}?{urlencode(params)}"
 
 
+_BROWSER_FORBIDDEN_HEADERS = {
+    "accept-encoding",
+    "connection",
+    "content-length",
+    "cookie",
+    "host",
+    "origin",
+    "referer",
+    "user-agent",
+}
+
+
+def _browser_fetch_headers(headers: Dict[str, str]) -> Dict[str, str]:
+    """headers fetch() may set. Origin and Referer throw in the page and became BROWSER_ERROR."""
+    return {key: value for key, value in headers.items() if key.lower() not in _BROWSER_FORBIDDEN_HEADERS}
+
+
 def build_flight_api_headers(token: str, device_id: str) -> Dict[str, str]:
     """headers the results page sends with search-stream-dt; token is __PRE_AUTH__"""
     return {
@@ -578,16 +595,17 @@ async def _flight_via_preauth(
         headers = build_flight_api_headers(token, device_id=str(uuid4()))
         # Navigating the browser onto search-stream-dt fails with
         # ERR_HTTP2_PROTOCOL_ERROR before any event arrives. The results page
-        # itself fetches that URL; do the same from the page.
+        # itself fetches that URL; do the same from the page. A thrown status
+        # became BROWSER_ERROR and discarded the body, so the status comes back
+        # in the script result. Origin and Referer are not set: fetch() rejects them.
         script = (
             "const response = await fetch("
             + json.dumps(api_url)
             + ", {method: 'GET', credentials: 'include', headers: "
-            + json.dumps(headers)
+            + json.dumps(_browser_fetch_headers(headers))
             + "});\n"
             "const text = await response.text();\n"
-            "if (!response.ok) throw new Error('search-stream-dt HTTP ' + response.status);\n"
-            "return text;"
+            "return JSON.stringify({status: response.status, text: text});"
         )
         request = Request(
             page_url, session=session, render=False, countryCode="IN", javascript=script, timeoutMs=60000,
@@ -599,42 +617,78 @@ async def _flight_via_preauth(
                 raise
             log.warning(f"retrying the in-page flight stream once after {error.code}")
             response = await CLIENT.fetch(request)
-        body = response.javascript if isinstance(response.javascript, str) else ""
-        if "event:" not in body:
+        data = _flight_stream_from_response(response)
+        if data is None:
             raise RuntimeError(f"flight stream script returned no SSE body for {page_url}")
-        return parse_flight_stream(body)
+        return data
     except BaseException:
         await CLIENT.close_session(session)
         raise
 
 
-async def _flight_via_browser(page_url: str) -> Dict:
-    """rendered fallback: dismiss the interstitial if it is there, then click SEARCH only once enabled.
-
-    The old scenario treated a missing CTA as success and returned before the search started.
-    """
-    actions = [
-        {"type": "wait", "milliseconds": 3000},
-        {"type": "click", "selector": "[data-testid='cta-wrapper'] button", "optional": True},
-        {"type": "waitForSelector", "selector": "[data-cy='submit']:not([disabled])", "timeoutMs": 20000, "optional": True},
-        {"type": "click", "selector": "[data-cy='submit']:not([disabled])", "optional": True},
-        {"type": "wait", "milliseconds": 8000},
-    ]
+def _flight_stream_from_response(response: Response) -> Optional[Dict]:
+    """SSE from the in-page script, or from a search-stream-dt call the page recorded."""
+    text = ""
+    value = response.javascript
+    if isinstance(value, str) and value:
+        try:
+            payload = json.loads(value)
+        except json.JSONDecodeError:
+            text = value
+        else:
+            if isinstance(payload, dict) and isinstance(payload.get("text"), str):
+                text = payload["text"]
+            else:
+                text = value
+    if "event:" in text:
+        return parse_flight_stream(text)
     try:
-        page = await CLIENT.fetch(
-            Request(
-                page_url,
-                actions=actions,
-                waitForResponse=SEARCH_STREAM_DT,
-                timeoutMs=120000,
-                **BASE_CONFIG,
+        return parse_flight_stream_call(response)
+    except RuntimeError:
+        return None
+
+
+_FLIGHT_BROWSER_ACTIONS = [
+    {"type": "wait", "milliseconds": 3000},
+    {"type": "click", "selector": "[data-testid='cta-wrapper'] button", "optional": True},
+    {"type": "waitForSelector", "selector": "[data-cy='submit']:not([disabled])", "timeoutMs": 20000, "optional": True},
+    {"type": "click", "selector": "[data-cy='submit']:not([disabled])", "optional": True},
+    {"type": "wait", "milliseconds": 8000},
+]
+
+
+async def _flight_via_browser(page_url: str) -> Dict:
+    """rendered fallback. Record the page's own search call instead of blocking on it.
+
+    waitForResponse burned the whole timeout when Akamai left SEARCH disabled, and
+    the empty timeout response discarded any stream that had arrived under another URL.
+    """
+    last_error: Optional[BaseException] = None
+    for attempt in range(1, 3):
+        session = uuid4().hex
+        try:
+            page = await CLIENT.fetch(
+                Request(
+                    page_url,
+                    actions=_FLIGHT_BROWSER_ACTIONS,
+                    waitMs=5000,
+                    session=session,
+                    timeoutMs=90000,
+                    **BASE_CONFIG,
+                )
             )
-        )
-    except ScrapeError as error:
-        if error.code == "TIMEOUT":
-            raise RuntimeError(
-                "goibibo.com flight search did not start: search-stream-dt was not captured "
-                f"(SEARCH stays disabled on the page shell): {page_url}"
-            ) from error
-        raise
-    return parse_flight_stream_call(page)
+            data = _flight_stream_from_response(page)
+            if data is None:
+                raise RuntimeError(f"flight search-stream-dt API call not found in captured browser data for {page.url}")
+            return data
+        except (ScrapeError, RuntimeError) as error:
+            last_error = error
+            log.warning(f"flight page attempt {attempt} did not capture search-stream-dt ({error})")
+            if attempt == 2:
+                break
+        finally:
+            await CLIENT.close_session(session)
+    raise RuntimeError(
+        "goibibo.com flight search did not start: search-stream-dt was not captured "
+        f"(SEARCH stays disabled on the page shell): {page_url}"
+    ) from last_error

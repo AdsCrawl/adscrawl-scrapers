@@ -84,7 +84,7 @@ async def test_flight_search_uses_preauth_instead_of_the_disabled_shell(monkeypa
         '<html><button data-cy="submit" disabled></button><script>__PRE_AUTH__ = "abc123";</script></html>',
     )
     stream = Response("https://www.goibibo.com/flight/search?itinerary=DEL-BOM", "<html></html>")
-    stream.javascript = _sse(_flight_payload())
+    stream.javascript = json.dumps({"status": 200, "text": _sse(_flight_payload())})
     fetch = AsyncMock(side_effect=[shell, stream])
     monkeypatch.setattr(goibibo.CLIENT, "fetch", fetch)
     flights = await goibibo.scrape_flight_search("DEL", "BOM", "2026-11-04")
@@ -95,6 +95,8 @@ async def test_flight_search_uses_preauth_instead_of_the_disabled_shell(monkeypa
     assert follow.url == page.url and follow.session == page.session
     assert "search-stream-dt" in (follow.javascript or "")
     assert "abc123" in (follow.javascript or "")
+    assert '"origin"' not in (follow.javascript or "")
+    assert '"referer"' not in (follow.javascript or "").lower()
 
 
 async def test_flight_shell_without_token_waits_for_search_instead_of_exiting(monkeypatch):
@@ -112,7 +114,9 @@ async def test_flight_shell_without_token_waits_for_search_instead_of_exiting(mo
     flights = await goibibo.scrape_flight_search("DEL", "BOM", "2026-11-04")
     assert len(flights) == 1
     browser = fetch.await_args_list[1].args[0]
-    assert browser.waitForResponse == goibibo.SEARCH_STREAM_DT
+    assert not browser.waitForResponse
+    assert browser.waitMs == 5000
+    assert browser.session
     assert all(action.get("outcome") != "exit_success" for action in browser.actions)
     assert any(action.get("selector") == "[data-cy='submit']:not([disabled])" for action in browser.actions)
 
@@ -316,26 +320,76 @@ def _ajax_reviews(html: str) -> str:
 
 
 async def test_amazon_reviews_use_ajax_pages(monkeypatch):
-    first = Response(amazon.REVIEWS_AJAX, _ajax_reviews(
+    def page(html: str) -> Response:
+        response = Response("https://www.amazon.com/dp/0735211299", "<html></html>")
+        response.javascript = json.dumps({"status": 200, "text": _ajax_reviews(html)})
+        return response
+
+    first = page(
         '''<div data-hook="review"><i data-hook="review-star-rating"><span>5.0 out of 5 stars</span></i>
         <a data-hook="review-title"><span>First</span></a>
         <span data-hook="review-date">Reviewed in the United States on January 2, 2026</span>
         <div data-hook="review-body"><span>One</span></div></div>'''
-    ))
-    second = Response(amazon.REVIEWS_AJAX, _ajax_reviews(
+    )
+    second = page(
         '''<div data-hook="review"><i data-hook="review-star-rating"><span>4.0 out of 5 stars</span></i>
         <a data-hook="review-title"><span>Second</span></a>
         <span data-hook="review-date">Reviewed in the United States on January 3, 2026</span>
         <div data-hook="review-body"><span>Two</span></div></div>'''
-    ))
+    )
     fetch = AsyncMock(side_effect=[first, second])
     monkeypatch.setattr(amazon.CLIENT, "fetch", fetch)
     reviews = await amazon.scrape_reviews("https://www.amazon.com/Atomic-Habits-Proven-Build-Break/dp/0735211299")
     assert [item["title"] for item in reviews] == ["First", "Second"]
-    assert fetch.await_args_list[0].args[0].url == amazon.REVIEWS_AJAX
-    assert fetch.await_args_list[0].args[0].method == "POST"
-    assert fetch.await_args_list[0].args[0].data["asin"] == "0735211299"
-    assert fetch.await_args_list[1].args[0].data["pageNumber"] == "2"
+    opened = fetch.await_args_list[0].args[0]
+    assert opened.url == "https://www.amazon.com/dp/0735211299"
+    assert opened.method == "GET"
+    assert amazon.REVIEWS_AJAX in (opened.javascript or "")
+    assert '"asin": "0735211299"' in (opened.javascript or "")
+    assert '"pageNumber": "1"' in (opened.javascript or "")
+    assert '"pageNumber": "2"' in (fetch.await_args_list[1].args[0].javascript or "")
+    assert "reviews-render" not in opened.url
+
+
+def test_amazon_description_reads_paragraph_jsonld_and_aplus_not_feature_bullets():
+    paragraph = amazon.parse_product(Response("https://www.amazon.com/dp/B0CL61F39H", '''
+    <span id="productTitle">PS5</span>
+    <input name="ASIN" value="B0CL61F39H">
+    <ul id="feature-bullets"><li>Model Number CFI-2000.</li></ul>
+    <div id="productDescription"><p>The PS5 console unleashes new gaming possibilities that you never anticipated.</p></div>
+    '''))
+    assert "unleashes" in paragraph["description"]
+    assert "Model Number" not in paragraph["description"]
+
+    embedded = amazon.parse_product(Response("https://www.amazon.com/dp/B0CX22ZW1T", '''
+    <span id="productTitle">MacBook</span>
+    <input name="ASIN" value="B0CX22ZW1T">
+    <script type="application/ld+json">{"@type":"Product","name":"MacBook","description":"Apple 2024 MacBook Air with the M3 chip and a Liquid Retina display."}</script>
+    '''))
+    assert "Liquid Retina" in embedded["description"]
+
+    aplus = amazon.parse_product(Response("https://www.amazon.com/dp/B0CL61F39H", '''
+    <span id="productTitle">PS5</span>
+    <div id="aplus"><p>Experience lightning fast loading with an ultra-high speed SSD and deeper immersion.</p></div>
+    '''))
+    assert "ultra-high speed SSD" in aplus["description"]
+    blank = amazon.parse_product(Response(
+        "https://www.amazon.com/dp/B0CL61F39H",
+        '<span id="productTitle">PS5</span><ul id="feature-bullets"><li>Only a bullet.</li></ul>',
+    ))
+    assert blank["description"] == ""
+
+
+def test_amazon_jsonld_reviews_count_when_the_widget_is_absent():
+    html = '''<script type="application/ld+json">{"@type":"Product","review":[
+      {"@type":"Review","name":"Changed my year","reviewBody":"Small habits, kept.",
+       "datePublished":"2024-05-01","author":{"@type":"Person","name":"Ada"},
+       "reviewRating":{"@type":"Rating","ratingValue":"5"}}
+    ]}</script>'''
+    parsed = amazon.parse_jsonld_reviews(Response("https://www.amazon.com/dp/0735211299", html))
+    assert parsed[0]["title"] == "Changed my year"
+    assert parsed[0]["rating"] == 5.0
+    assert "Small habits" in parsed[0]["text"]
 
 
 def test_amazon_style_reads_dimension_json_and_overview_and_blank_is_null():
@@ -407,6 +461,27 @@ async def test_amazon_product_and_search_retry_tunnel_and_503_once(monkeypatch):
     found = await amazon.scrape_search("https://www.amazon.com/s?k=kindle", max_pages=2)
     assert len(found) == 2
     assert sum(1 for url in search_calls if "page=2" in url) == 2
+
+
+async def test_amazon_search_first_page_503_rotates_session_and_path(monkeypatch):
+    search_html = '''<div cel_widget_id="UPPER-RESULT_INFO_BAR-0"><span>1-16 of 48 results</span></div>
+    <div class="s-result-item" data-component-type="s-search-result"><div><a href="/dp/ASINONE"><h2 aria-label="Kindle"></h2></a></div></div>'''
+    calls = []
+
+    async def fetch(request):
+        calls.append(request)
+        if len(calls) <= 2:
+            raise ScrapeError("busy", response=Response(request.url, status_code=503), code="HTTP_ERROR")
+        return Response(request.url, search_html)
+
+    monkeypatch.setattr(amazon.CLIENT, "fetch", fetch)
+    found = await amazon.scrape_search("https://www.amazon.com/s?k=kindle", max_pages=1)
+    assert len(found) == 1
+    assert calls[2].session != calls[0].session
+    assert calls[0].session == calls[1].session
+    assert "/gp/search" in calls[2].url
+    assert "k=kindle" in calls[2].url
+    assert "ref=nb_sb_noss" in calls[2].url
 
 
 def test_booking_graphql_pages_keep_distinct_offsets():
@@ -529,8 +604,12 @@ async def test_allegro_requests_use_the_polish_route(monkeypatch):
     await allegro.scrape_product(["https://allegro.pl/oferta/example-1"])
     assert seen and all(request.countryCode == "PL" and request.locale == "pl-PL" for request in seen)
     assert all(request.headers.get("Accept-Language", "").startswith("pl-PL") for request in seen)
-    assert any("/listing" in request.url for request in seen)
-    assert all(request.url.rstrip("/") != "https://allegro.pl" for request in seen)
+    assert all(request.userAgentOs == "windows" for request in seen)
+    listing = next(request for request in seen if "/listing" in request.url)
+    home = next(request for request in seen if request.url.rstrip("/") == "https://allegro.pl")
+    assert home.timeoutMs == 20000
+    assert home.session == listing.session
+    assert listing.headers.get("Referer") == "https://allegro.pl/"
 
 
 async def test_allegro_403_block_page_is_an_error_and_a_data_body_is_parsed(monkeypatch):
@@ -552,3 +631,24 @@ async def test_allegro_403_block_page_is_an_error_and_a_data_body_is_parsed(monk
     monkeypatch.setattr(allegro.CLIENT, "fetch", with_data)
     data = await allegro.scrape_search("Cooler CPU")
     assert data["total_count"] == 30
+
+
+async def test_allegro_listing_continues_after_a_homepage_timeout(monkeypatch):
+    html = (
+        '<html><script data-serialize-box-id="search">'
+        '{"props":{"searchMeta":{"lastAvailablePage":1,"totalCount":30}}}</script></html>'
+    )
+    calls = []
+
+    async def fetch(request):
+        calls.append(request)
+        if request.url.rstrip("/") == "https://allegro.pl":
+            raise ScrapeError("timed out", code="TIMEOUT")
+        return Response(request.url, html)
+
+    monkeypatch.setattr(allegro.CLIENT, "fetch", fetch)
+    data = await allegro.scrape_search("Cooler CPU")
+    assert data["total_count"] == 30
+    assert calls[0].url.rstrip("/") == "https://allegro.pl"
+    assert "/listing" in calls[1].url
+    assert calls[1].session == calls[0].session

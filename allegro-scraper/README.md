@@ -28,13 +28,15 @@ not need to download or launch a local Chromium browser.
 Requests set `countryCode` to `PL` and `locale` to `pl-PL`, and send
 `Accept-Language: pl-PL`. Allegro is a Poland-only marketplace (`allegro.pl`).
 
-This is blocked. A US exit returns HTTP 403. The tip2 US retest, already on
-`countryCode=PL` with locale `pl-PL`, a Polish `Accept-Language`, and a
-homepage session before the listing, was still HTTP 403 (one test also timed
-out on that extra homepage). The homepage round-trip was removed so the block
-fails once instead of twice. A 403 body that actually contains listing or
-offer JSON is parsed. A 403 block page is raised as an anti-bot error and is
-not an empty catalog or a pass. Other sites stay on US unless they document a
+This is blocked on the routes that have been tried. A US exit returns HTTP 403.
+The tip2 US retest, already on `countryCode=PL` with locale `pl-PL`, a Polish
+`Accept-Language`, and a homepage session, was still HTTP 403. Tip3 did not
+retest Allegro. There is no residential-proxy field on `Request`. The listing
+now uses one short homepage warmup (20s; a timeout still continues), a Windows
+`userAgentOs`, and `Referer: https://allegro.pl/` on the same session. A 403
+body that actually contains listing or offer JSON is parsed. A 403 block page
+is raised as an anti-bot error and is not an empty catalog or a pass. That
+warmup has not been re-run live. Other sites stay on US unless they document a
 different code.
 
 ## Validation
@@ -47,9 +49,9 @@ python -m pytest allegro-scraper/test.py -v
 ```
 
 Both live tests failed with HTTP 403 on the 2026-11-03 US retest and again on
-the tip2 retest. Treat a later 403 the same way: it is an anti-bot block, not
-a passing empty scrape. Historical files in `results/` are upstream examples,
-not outputs from those retests.
+the tip2 retest. Tip3 did not retest Allegro. Treat a later 403 the same way:
+it is an anti-bot block, not a passing empty scrape. Historical files in
+`results/` are upstream examples, not outputs from those retests.
 
 ## Source and license
 

@@ -26,25 +26,30 @@ not need to download or launch a local Chromium browser.
 - `scrape_reviews`
 - `scrape_product`
 
-## US route notes (2026-11-03 retests)
+## US route notes (2026-11-03 retests, tip c2d2551)
 
 Product pages are fetched one at a time. The live product set is the PS5 slim
-`B0CL61F39H` and the 2024 MacBook `B0CX22ZW1T`. On the tip2 retest both pages
-scraped, and `style` was `""` because the inline-twister span was empty. Style
-is now read from that span, the variation selection, the product-overview row,
-and `dimensionValuesDisplayData`. When the page has none of those, `style` is
-`null` (not `""`). A nullable style with no `min_presence` counts that null as
-present. Name, images, and the other fields keep their presence checks.
+`B0CL61F39H` and the 2024 MacBook `B0CX22ZW1T`. On the tip3 retest both pages
+scraped. `style` is fixed (`Space Gray` on the MacBook, `null` on the PS5).
+`description` was still `""` on both: the old selector only read
+`#productDescription p span`. Description now also reads a bare
+`#productDescription` paragraph, the book description block, a
+`productDescription` string in the page, Product/Book JSON-LD, and A+
+paragraphs. Feature bullets stay on `features`. `min_presence` for description
+stays 0.01. This parser has not been re-run live.
 
-Search page 2 of `k=kindle` was HTTP 503 after one retry on a fresh browser.
-Later pages reuse the first page's session and, if that session is still
-blocked, try once on a new session. The `len(result) > 30` assertion is unchanged.
+Search page 1 of `k=kindle` was HTTP 503 after the one same-session retry.
+That first page now gets one more attempt on a new session, against
+`/gp/search` with `ref=nb_sb_noss`. Later pages still reuse the session and
+rotate once if that session stays blocked. `len(result) > 30` is unchanged.
+Not re-run live.
 
-`/product-reviews/B0CL61F39H` was HTTP 404 and the product page never rendered
-the review widget (6 attempts). Reviews are requested from
-`/hz/reviews-render/ajax/reviews/get/` first. The live example ASIN is Atomic
-Habits `0735211299`. `assert len(result) != 0` stays. This path has not been
-re-run live.
+Reviews for Atomic Habits `0735211299` navigated onto
+`/hz/reviews-render/ajax/reviews/get/` and failed with
+`ERR_HTTP_RESPONSE_CODE_FAILURE`. The reviews HTML pages then rendered zero
+cards. The XHR is now `fetch()`'d from the product document, and JSON-LD
+`Review` nodes count when the widget is absent. `assert len(result) != 0`
+stays. Not re-run live.
 
 ## Validation
 
@@ -55,9 +60,10 @@ To run this site's **live** tests (uses AdsCrawl credits):
 python -m pytest amazon-scraper/test.py -v
 ```
 
-Search passed on the 2026-11-03 US-route retest. Product and reviews did not;
-see the notes above. Historical files in `results/` are upstream examples, not
-outputs from that retest.
+Search passed on the first 2026-11-03 US-route retest and failed again on tip3
+(page 1 HTTP 503). Product style passed on tip3; description, search, and
+reviews did not. The changes above are not a live pass. Historical files in
+`results/` are upstream examples, not outputs from those retests.
 
 ## Source and license
 
