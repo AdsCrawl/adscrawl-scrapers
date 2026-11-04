@@ -17,15 +17,96 @@ from html import unescape
 from typing import Dict, List, TypedDict
 from urllib.parse import parse_qs, urlencode, urlparse
 from loguru import logger as log
-from adscrawl_scrapers import Request, ScraperClient, Response
+from adscrawl_scrapers import Request, ScraperClient, Response, ScrapeError
 
 CLIENT = ScraperClient()
 
 BASE_CONFIG = {
-    # bypass yelp.com web scraping blocking
-    'countryCode': "US",
-
+    # A document navigation is HTTP 403 even after a same-session reload.
+    # Pages are read with an in-page fetch. The review POST uses the same
+    # browser so it sends the page cookies. The SDK fingerprint is the OS below.
+    "countryCode": "US",
+    "locale": "en-US",
+    "userAgentOs": "windows",
+    "render": True,
 }
+_HOME = "https://www.yelp.com/"
+_DOCUMENT_HEADERS = {
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Upgrade-Insecure-Requests": "1",
+}
+_RETRYABLE = {
+    "HTTP_ERROR",
+    "SELECTOR_NOT_FOUND",
+    "ERR_TUNNEL_CONNECTION_FAILED",
+    "ERR_CONNECTION_CLOSED",
+    "ERR_HTTP2_PROTOCOL_ERROR",
+    "CONNECT_FAILED",
+    "BROWSER_ERROR",
+    "TIMEOUT",
+}
+
+
+def _challenge(response: Response) -> bool:
+    title = " ".join(response.selector.css("title::text").getall()).strip().lower()
+    if any(phrase in title for phrase in (
+        "access denied", "just a moment", "attention required",
+        "pardon our interruption", "robot check",
+    )):
+        return True
+    url = (response.url or "").lower()
+    return "captcha-delivery" in url or "/blocked" in url
+
+
+async def _get(session: str, url: str, **extra) -> Response:
+    """Read a Yelp document without navigating the tab to it.
+
+    The homepage and the reload both still returned HTTP 403. Selectors are
+    ignored: an in-page fetch returns the response body, which is what the
+    parsers read (apollo state, biz id, the business markup).
+    """
+    extra.pop("waitForSelector", None)
+    extra.pop("autoScroll", None)
+    extra.pop("actions", None)
+    extra.pop("waitMs", None)
+    page = await CLIENT.fetch(Request(
+        url,
+        session=session,
+        headers={**_DOCUMENT_HEADERS, "Referer": _HOME},
+        binary=True,
+        timeoutMs=45_000,
+        raiseOnHttpError=False,
+        **BASE_CONFIG,
+        **extra,
+    ))
+    if page.status_code >= 400 or _challenge(page):
+        raise ScrapeError(
+            f"Target returned HTTP {page.status_code}",
+            response=page,
+            code="HTTP_ERROR",
+        )
+    return page
+
+
+async def _attempt(work):
+    """Run `work(session)` in a fresh named session, once more if it is blocked or the tunnel drops.
+
+    The session is closed before the retry so concurrency 1 can open the next browser.
+    """
+    last = None
+    for attempt in range(2):
+        session = f"yelp-{uuid.uuid4().hex}"
+        try:
+            return await work(session)
+        except ScrapeError as error:
+            last = error
+            if error.code not in _RETRYABLE or attempt == 1:
+                raise
+            log.warning(f"retrying yelp once after {error.code}")
+        finally:
+            await CLIENT.close_session(session)
+    raise last
 
 
 class Review(TypedDict):
@@ -181,15 +262,16 @@ async def scrape_pages(urls: List[str]) -> List[Dict]:
     """scrape yelp business pages"""
     # add the business pages to a scraping list
     result = []
-    to_scrape = [Request(url, **BASE_CONFIG) for url in urls]
-    async for response in CLIENT.fetch_many(to_scrape):
-        result.append(parse_page(response))
+    for url in urls:
+        async def read(session, page_url=url):
+            return await _get(session, page_url)
+        result.append(parse_page(await _attempt(read)))
     log.success(f"scraped {len(result)} business pages")
     return result
 
 
 @managed
-async def request_reviews_api(url: str, start_index: int, business_id):
+async def request_reviews_api(url: str, start_index: int, business_id, session: str = None):
     """request the graphql API for review data"""
     pagionation_data = {"version": 1, "type": "offset", "offset": start_index}
     pagionation_data = json.dumps(pagionation_data)
@@ -244,7 +326,12 @@ async def request_reviews_api(url: str, start_index: int, business_id):
             headers=headers,
             body=payload,
             method="POST",
+            session=session,
+            binary=True,
+            timeoutMs=45_000,
             countryCode="US",
+            locale="en-US",
+            userAgentOs="windows",
         )
     )
     return response
@@ -253,32 +340,43 @@ async def request_reviews_api(url: str, start_index: int, business_id):
 @managed
 async def scrape_reviews(url: str, max_reviews: int = None) -> List[Review]:
     # first find business ID from business URL
-    log.info("scraping the business id from the business page")
-    response_business = await CLIENT.fetch(Request(url, **BASE_CONFIG, render=True))
-    business_id = parse_business_id(response_business)
+    async def read(session):
+        log.info("scraping the business id from the business page")
+        response_business = await _get(session, url)
+        business_id = parse_business_id(response_business)
+        if not business_id:
+            raise ScrapeError(
+                "Yelp business page did not include a business id",
+                response=response_business,
+                code="SELECTOR_NOT_FOUND",
+            )
 
-    log.info("scraping the first review page")
-    first_page = await request_reviews_api(url=url, business_id=business_id, start_index=1)
-    review_data = parse_review_data(first_page)
-    reviews = review_data["reviews"]
-    total_reviews = review_data["total_reviews"]
+        log.info("scraping the first review page")
+        # the review POST stays in the business-page session so it sends those cookies
+        first_page = await request_reviews_api(
+            url=url, business_id=business_id, start_index=1, session=session
+        )
+        review_data = parse_review_data(first_page)
+        reviews = review_data["reviews"]
+        total_reviews = review_data["total_reviews"]
 
-    # find total page count to scrape
-    if max_reviews and max_reviews < total_reviews:
-        total_reviews = max_reviews
+        if max_reviews and max_reviews < total_reviews:
+            total_reviews = max_reviews
 
-    # next, scrape the remaining review pages
-    log.info(f"scraping review pagination, remaining ({total_reviews // 10}) more pages")
-    for offset in range(11, total_reviews, 10):
-        try:
-            response = await request_reviews_api(url=url, business_id=business_id, start_index=offset)
-            new_review_data = parse_review_data(response)["reviews"]
-            reviews.extend(new_review_data)
-        except Exception as e:
-            log.error(f"An error occurred while scraping search pages", e)
-            pass
-    log.success(f"scraped {len(reviews)} reviews from review pages")
-    return reviews
+        log.info(f"scraping review pagination, remaining ({total_reviews // 10}) more pages")
+        for offset in range(11, total_reviews, 10):
+            try:
+                response = await request_reviews_api(
+                    url=url, business_id=business_id, start_index=offset, session=session
+                )
+                reviews.extend(parse_review_data(response)["reviews"])
+            except Exception as e:
+                log.error(f"An error occurred while scraping review pages", e)
+                pass
+        log.success(f"scraped {len(reviews)} reviews from review pages")
+        return reviews
+
+    return await _attempt(read)
 
 
 @managed
@@ -292,28 +390,26 @@ async def scrape_search(keyword: str, location: str, max_pages: int = None):
         # final url example:
         # https://www.yelp.com/search?find_desc=plumbers&find_loc=Seattle%2C+WA&start=1
 
-    log.info("scraping the first search page")
-    first_page = await CLIENT.fetch(Request(make_search_url(1), **BASE_CONFIG, render=True))
-    data = parse_search(first_page)
-    search_data = data["search_data"]
-    total_results = data["total_results"]
+    async def read(session):
+        log.info("scraping the first search page")
+        first_page = await _get(session, make_search_url(1))
+        data = parse_search(first_page)
+        search_data = data["search_data"]
+        total_results = data["total_results"]
 
-    # find total page count to scrape
-    total_pages = math.ceil(total_results / 10)  # each page contains 10 results
-    if max_pages and max_pages < total_pages:
-        total_pages = max_pages
+        total_pages = math.ceil(total_results / 10)  # each page contains 10 results
+        if max_pages and max_pages < total_pages:
+            total_pages = max_pages
 
-    # add the remaining pages to a scraping list and scrape them concurrently
-    log.info(f"scraping search pagination, remaining ({total_pages - 1}) more pages")
-    other_pages = [
-        Request(make_search_url(offset), **BASE_CONFIG, render=True)
-        for offset in range(11, total_pages * 10, 10)
-    ]
-    async for response in CLIENT.fetch_many(other_pages):
-        try:
-            search_data.extend(parse_search(response)["search_data"])
-        except Exception as e:
-            log.error(f"An error occurred while scraping search pages", e)
-            pass
-    log.success(f"scraped {len(search_data)} listings from search pages")
-    return search_data
+        log.info(f"scraping search pagination, remaining ({total_pages - 1}) more pages")
+        for offset in range(11, total_pages * 10, 10):
+            try:
+                response = await _get(session, make_search_url(offset))
+                search_data.extend(parse_search(response)["search_data"])
+            except Exception as e:
+                log.error(f"An error occurred while scraping search pages", e)
+                pass
+        log.success(f"scraped {len(search_data)} listings from search pages")
+        return search_data
+
+    return await _attempt(read)

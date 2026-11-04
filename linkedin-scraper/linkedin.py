@@ -11,10 +11,10 @@ import os
 import json
 import jmespath
 from typing import Dict, List
-from urllib.parse import urlencode, quote_plus
+from urllib.parse import urlencode, quote_plus, urlsplit, urlunsplit
 from parsel import Selector
 from loguru import logger as log
-from adscrawl_scrapers import Request, ScraperClient, Response
+from adscrawl_scrapers import Request, ScraperClient, Response, ScrapeError
 
 CLIENT = ScraperClient()
 
@@ -27,6 +27,43 @@ BASE_CONFIG = {
     'render': True,
 
 }
+
+# Guest job pagination and company pages die as TIMEOUT or BROWSER_ERROR, often
+# after the tab has already been sent to the login wall. One new browser.
+_TRANSIENT = {
+    "ERR_TUNNEL_CONNECTION_FAILED",
+    "ERR_CONNECTION_CLOSED",
+    "ERR_HTTP2_PROTOCOL_ERROR",
+    "CONNECT_FAILED",
+    "BROWSER_ERROR",
+    "TIMEOUT",
+}
+
+
+def _www(url: str) -> str:
+    """Public LinkedIn pages on the apex host spend the navigation budget on a redirect."""
+    parts = urlsplit(url.strip())
+    if parts.netloc.lower() in {"linkedin.com", "www.linkedin.com"}:
+        parts = parts._replace(scheme="https", netloc="www.linkedin.com")
+    return urlunsplit(parts)
+
+
+def _login_wall(response: Response) -> bool:
+    url = (response.url or "").lower()
+    if any(part in url for part in ("/login", "/uas/login", "authwall", "/signup", "/checkpoint")):
+        return True
+    title = " ".join(response.selector.css("title::text").getall()).lower()
+    return "sign up" in title or "sign in" in title or "log in" in title
+
+
+async def _fetch(request: Request) -> Response:
+    try:
+        return await CLIENT.fetch(request)
+    except ScrapeError as error:
+        if error.code not in _TRANSIENT:
+            raise
+        log.warning(f"retrying {request.url} once after {error.code}")
+        return await CLIENT.fetch(request)
 
 def refine_profile(data: Dict) -> Dict:
     """refine and clean the parsed profile data"""
@@ -131,19 +168,27 @@ def parse_company_overview(response: Response) -> Dict:
 @managed
 async def scrape_company(urls: List[str]) -> List[Dict]:
     """scrape prublic linkedin company pages"""
-    to_scrape = [Request(url, **BASE_CONFIG) for url in urls]
     data = []
     # scrape main company URLs then then the life page
-    async for response in CLIENT.fetch_many(to_scrape):
+    for url in urls:
         try:
+            response = await _fetch(Request(_www(url), **BASE_CONFIG, timeoutMs=120_000))
+            if _login_wall(response):
+                raise ScrapeError(
+                    "LinkedIn company page redirected to login",
+                    response=response,
+                    code="HTTP_ERROR",
+                )
             # create the life page URL from the overiew page response
-            company_id = str(response.url).split("/")[-1]
-            company_life_url = f"https://linkedin.com/company/{company_id}/life"
+            company_id = str(response.url).rstrip("/").split("/")[-1]
+            company_life_url = f"https://www.linkedin.com/company/{company_id}/life"
             # request the company life page
-            life_page_response = await CLIENT.fetch(Request(company_life_url, **BASE_CONFIG))
+            life_page_response = await _fetch(Request(company_life_url, **BASE_CONFIG, timeoutMs=120_000))
             overview = parse_company_overview(response)
             life = parse_company_life(life_page_response)
             data.append({"overview": overview, "life": life})
+        except ScrapeError:
+            raise
         except Exception as e:
             log.error("An occured while scraping company pages", e)
             pass
@@ -187,27 +232,59 @@ async def scrape_job_search(keyword: str, location: str, max_pages: int = None) 
         return urlencode(params)
 
     first_page_url = "https://www.linkedin.com/jobs/search?" + form_urls_params(keyword, location)
-    first_page = await CLIENT.fetch(Request(first_page_url, **BASE_CONFIG))
+    first_page = await _fetch(Request(first_page_url, **BASE_CONFIG, timeoutMs=120_000))
+    if _login_wall(first_page):
+        # _fetch already retried tunnel and browser errors. A completed login
+        # document is a different failure: one new browser, then give up.
+        log.warning("linkedin job search redirected to login; retrying once")
+        first_page = await CLIENT.fetch(Request(first_page_url, **BASE_CONFIG, timeoutMs=120_000))
+    if _login_wall(first_page):
+        raise ScrapeError(
+            "LinkedIn job search redirected to login",
+            response=first_page,
+            code="HTTP_ERROR",
+        )
     data = parse_job_search(first_page)["data"]
     total_results = parse_job_search(first_page)["total_results"]
     # get the total number of pages to scrape, each page contain 25 results
+    if not total_results:
+        log.success(f"scraped {len(data)} jobs from Linkedin job search")
+        return data
     if max_pages and max_pages * 25 < total_results:
         total_results = max_pages * 25
 
-    log.info(f"scraped the first job page, {total_results // 25 - 1} more pages")
-    # scrape the remaining pages concurrently
+    # start=0 is the page already parsed. The next starts are 25, 50, ... strictly
+    # below the capped total. The previous range included one extra page (start
+    # equal to the cap) which LinkedIn answers with the login wall.
+    next_starts = list(range(25, total_results, 25))
+    log.info(f"scraped the first job page, {len(next_starts)} more pages")
+    # the guest endpoint returns an HTML fragment. Rendering it runs the login
+    # redirect and the tab dies as BROWSER_ERROR. Keep the fragment body.
     other_pages_url = "https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?"
-    to_scrape = [
-        Request(other_pages_url + form_urls_params(keyword, location) + f"&start={index}", **BASE_CONFIG)
-        for index in range(25, total_results + 25, 25)
-    ]
-    async for response in CLIENT.fetch_many(to_scrape):
+    guest_headers = {
+        "Accept": "text/html,application/xhtml+xml",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Referer": first_page_url,
+    }
+    for index in next_starts:
         try:
-            page_data = parse_job_search(response)["data"]
-            data.extend(page_data)
+            response = await _fetch(Request(
+                other_pages_url + form_urls_params(keyword, location) + f"&start={index}",
+                render=False,
+                headers=guest_headers,
+                countryCode="US",
+                timeoutMs=120_000,
+            ))
+            if _login_wall(response):
+                log.warning(f"linkedin guest jobs page start={index} redirected to login; stopping pagination")
+                break
+            data.extend(parse_job_search(response)["data"])
+        except ScrapeError as error:
+            log.warning(f"stopping job pagination after {error.code} on start={index}")
+            break
         except Exception as e:
             log.error("An occured while scraping search pagination", e)
-            pass
+            break
 
     log.success(f"scraped {len(data)} jobs from Linkedin job search")
     return data
@@ -230,17 +307,17 @@ def parse_job_page(response: Response):
 @managed
 async def scrape_jobs(urls: List[str]) -> List[Dict]:
     """scrape Linkedin job pages"""
-    to_scrape = [Request(url, **BASE_CONFIG) for url in urls]
+    to_scrape = [Request(_www(url), **BASE_CONFIG, timeoutMs=120_000) for url in urls]
     data = []
-    # scrape the URLs concurrently
-    async for response in CLIENT.fetch_many(to_scrape):
+    for request in to_scrape:
         try:
+            response = await _fetch(request)
             job_data = parse_job_page(response)
             if job_data is None:
                 raise Exception("Job page is expired, no hidden json data found")
             data.append(parse_job_page(response))
-        except:
-            log.debug(f"Job page with {response.url} URL is expired")
+        except Exception:
+            log.debug(f"Job page with {request.url} URL is expired")
     log.success(f"scraped {len(data)} jobs from Linkedin")
     return data
 

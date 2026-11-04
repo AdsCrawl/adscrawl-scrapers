@@ -21,6 +21,26 @@ BASE_CONFIG = {
     'countryCode': "US",
     'render': True,
 }
+# Search pagination and property pages fail on about:blank with a tunnel error
+# after the first page has already loaded. One new browser is enough.
+_TRANSIENT = {
+    "ERR_TUNNEL_CONNECTION_FAILED",
+    "ERR_CONNECTION_CLOSED",
+    "ERR_HTTP2_PROTOCOL_ERROR",
+    "CONNECT_FAILED",
+    "BROWSER_ERROR",
+    "TIMEOUT",
+}
+
+
+async def _fetch(request: Request) -> Response:
+    try:
+        return await CLIENT.fetch(request)
+    except ScrapeError as error:
+        if error.code not in _TRANSIENT:
+            raise
+        log.warning(f"retrying {request.url} once after {error.code}")
+        return await CLIENT.fetch(request)
 
 
 class AirbnbSearchResult(TypedDict):
@@ -327,7 +347,7 @@ async def scrape_listings(
     # scrape the first page, which also carries the cursors of all other pages
     first_url = _build_search_url(query, check_in, check_out, adults)
     log.info(f"scraping first search page: {first_url}")
-    first_page = await CLIENT.fetch(Request(first_url, **BASE_CONFIG, waitMs=5000))
+    first_page = await _fetch(Request(first_url, **BASE_CONFIG, waitMs=5000))
 
     results = parse_search(first_page)
     if not results:
@@ -343,13 +363,10 @@ async def scrape_listings(
         return results
 
     log.info(f"scraping {len(cursors)} more pages of {len(all_cursors)} total")
-    to_scrape = [
-        Request(
+    for cursor in cursors:
+        response = await _fetch(Request(
             _build_search_url(query, check_in, check_out, adults, cursor), **BASE_CONFIG, waitMs=5000
-        )
-        for cursor in cursors
-    ]
-    async for response in CLIENT.fetch_many(to_scrape):
+        ))
         # Airbnb reshuffles results between requests so pages can overlap
         page_results = [item for item in parse_search(response) if item["id"] not in seen]
         seen.update(item["id"] for item in page_results)
@@ -380,20 +397,11 @@ async def scrape_properties(
             params["check_out"] = check_out
         full_url = url + ("&" if "?" in url else "?") + urlencode(params)
         log.info(f"scraping property page: {full_url}")
-        try:
-            response = await CLIENT.fetch(
-                Request(
-                    full_url,
-                    **BASE_CONFIG,
-                    waitMs=15000,
-                    waitForResponse="StaysPdpReviewsQuery",
-                )
-            )
-        except ScrapeError as e:
-            if e.code != "SELECTOR_NOT_FOUND":
-                raise
-            log.warning(f"no reviews XHR on {url}, scraping without reviews")
-            response = await CLIENT.fetch(Request(full_url, **BASE_CONFIG, waitMs=15000))
-
+        # The listing payload is in the page. Waiting on StaysPdpReviewsQuery
+        # used the whole fetch deadline, and cancelling that wait left the
+        # remote browser running until the AdsCrawl 90s deadline. Reviews that
+        # arrive during the settle are still on response.network. One fetch,
+        # no second pass.
+        response = await CLIENT.fetch(Request(full_url, **BASE_CONFIG, waitMs=8000))
         results.append(parse_property(response))
     return results

@@ -14,14 +14,28 @@ from pathlib import Path
 from typing import List, TypedDict
 from urllib.parse import urlparse
 from loguru import logger as log
-from adscrawl_scrapers import Request, ScraperClient
+from adscrawl_scrapers import Request, ScraperClient, ScrapeError
 
 CLIENT = ScraperClient()
 
 BASE_CONFIG = {
-    # the answer API is called directly, so no browser rendering is needed, and with asp
-    # perplexity answers with its sign-up wall more often
+    # the answer API is a POST. A cold call, with no homepage cookies, is what
+    # comes back as the sign-up wall. The homepage visit below is the session
+    # those cookies come from.
     'countryCode': "US",
+    'locale': "en-US",
+    'userAgentOs': "windows",
+}
+_HOME = "https://www.perplexity.ai/"
+_ASK = "https://www.perplexity.ai/rest/sse/perplexity_ask"
+_SIGNUP_WALL = "Sign up and repeat your request."
+_TRANSIENT = {
+    "HTTP_ERROR",
+    "ERR_TUNNEL_CONNECTION_FAILED",
+    "ERR_CONNECTION_CLOSED",
+    "CONNECT_FAILED",
+    "BROWSER_ERROR",
+    "TIMEOUT",
 }
 
 output = Path(__file__).parent / "results"
@@ -130,25 +144,59 @@ def parse_answer(content: str) -> PerplexityAnswer:
     }
 
 
+async def _ask(prompt: str) -> str:
+    """Homepage in a named session, then the answer POST with that session's cookies."""
+    session = f"perplexity-{uuid.uuid4().hex}"
+    try:
+        await CLIENT.fetch(Request(
+            _HOME,
+            session=session,
+            render=True,
+            headers={
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                "Accept-Language": "en-US,en;q=0.9",
+            },
+            waitMs=2000,
+            timeoutMs=60_000,
+            **BASE_CONFIG,
+        ))
+        params = {**ASK_PARAMS, "frontend_uuid": str(uuid.uuid4()), "frontend_context_uuid": str(uuid.uuid4())}
+        response = await CLIENT.fetch(Request(
+            _ASK,
+            method="POST",
+            body=json.dumps({"params": params, "query_str": prompt}),
+            headers={
+                "content-type": "application/json",
+                "accept": "text/event-stream",
+                "origin": "https://www.perplexity.ai",
+                "referer": _HOME,
+            },
+            render=False,
+            session=session,
+            **BASE_CONFIG,
+        ))
+        return response.content
+    finally:
+        await CLIENT.close_session(session)
+
+
 @managed
 async def scrape_answer(prompt: str) -> PerplexityAnswer:
     """Single-turn: submit one prompt to the perplexity answer API and parse the answer"""
     # the prompt goes in the POST body, the answer comes back as a server-sent event stream
-    url = "https://www.perplexity.ai/rest/sse/perplexity_ask"
-    params = {**ASK_PARAMS, "frontend_uuid": str(uuid.uuid4()), "frontend_context_uuid": str(uuid.uuid4())}
-    response = await CLIENT.fetch(
-        Request(
-            url,
-            method="POST",
-            body=json.dumps({"params": params, "query_str": prompt}),
-            headers={"content-type": "application/json"},
-            render=False,
-            **BASE_CONFIG,
-        )
-    )
-    content = response.content
-    # perplexity answers some anonymous requests with a sign-up wall instead of the answer
-    if "Sign up and repeat your request." in content:
+    content = ""
+    for attempt in range(2):
+        try:
+            content = await _ask(prompt)
+        except ScrapeError as error:
+            if error.code not in _TRANSIENT or attempt == 1:
+                raise
+            log.warning(f"retrying perplexity once after {error.code}")
+            continue
+        if _SIGNUP_WALL not in content:
+            break
+        log.warning("perplexity returned a sign-up wall; retrying once with a new session")
+    else:
         raise ValueError(f"perplexity.ai returned its sign-up wall instead of an answer for the prompt: {prompt}")
     data = parse_answer(content)
     if not data["answer_markdown"]:

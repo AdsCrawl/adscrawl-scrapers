@@ -7,6 +7,7 @@ To run this scraper set env variable $ADSCRAWL_API_KEY with your AdsCrawl API ke
 $ export ADSCRAWL_API_KEY="your key from https://app.adscrawl.net/dashboard/keys/"
 """
 from adscrawl_scrapers import managed
+import asyncio
 import json
 import os
 import re
@@ -28,6 +29,21 @@ BASE_CONFIG = {
 }
 THREADS_APP_ID = "238260118697367"  # ssr_qpl_app_id embedded in every page
 MAX_REPLY_PAGES = 3  # extra reply screens to fetch, each is another API call
+# One gate per event loop, sized to CLIENT.concurrency. Two scrape_thread calls
+# each hold a named session for the page plus reply pagination. At concurrency 1
+# the second must wait until the first has close_session'd, or the runtime
+# raises SESSION_LIMIT while the first browser is still in the pool.
+_GATE = {"loop": None, "concurrency": None, "semaphore": None}
+
+
+def _named_session_gate():
+    loop = asyncio.get_running_loop()
+    limit = max(CLIENT.concurrency, 1)
+    if _GATE["loop"] is not loop or _GATE["concurrency"] != limit:
+        _GATE["loop"] = loop
+        _GATE["concurrency"] = limit
+        _GATE["semaphore"] = asyncio.Semaphore(limit)
+    return _GATE["semaphore"]
 
 
 def parse_thread(data: Dict) -> Dict:
@@ -176,17 +192,7 @@ async def _scrape_more_replies(
     return posts
 
 
-@managed
-async def scrape_thread(url: str) -> Dict:
-    """
-    Scrape a single thread page:
-    https://www.threads.net/t/CuVdfsNtmvh/
-    Return parent thread and reply threads
-    """
-    log.info("scraping thread: {}", url)
-    path = [part for part in url.split("?")[0].rstrip("/").split("/") if part]
-    code = path[path.index("post") + 1] if "post" in path else path[-1]
-    session = f"threads-post-{code}"  # reused by reply pagination calls below
+async def _scrape_thread_in_session(url: str, code: str, session: str) -> Dict:
     for _ in range(3):
         result = await CLIENT.fetch(
             Request(url, session=session, **BASE_CONFIG)
@@ -220,6 +226,27 @@ async def scrape_thread(url: str) -> Dict:
         "thread": threads[0],
         "replies": threads[1:],
     }
+
+
+@managed
+async def scrape_thread(url: str) -> Dict:
+    """
+    Scrape a single thread page:
+    https://www.threads.net/t/CuVdfsNtmvh/
+    Return parent thread and reply threads
+    """
+    log.info("scraping thread: {}", url)
+    path = [part for part in url.split("?")[0].rstrip("/").split("/") if part]
+    code = path[path.index("post") + 1] if "post" in path else path[-1]
+    session = f"threads-post-{code}"  # reused by reply pagination calls below
+    async with _named_session_gate():
+        try:
+            return await _scrape_thread_in_session(url, code, session)
+        finally:
+            # @managed closes this scope when the operation returns, but a second
+            # concurrent post is already waiting on the gate. Close now, before
+            # the gate is released, so that waiter can open its own browser.
+            await CLIENT.close_session(session)
 
 
 @managed

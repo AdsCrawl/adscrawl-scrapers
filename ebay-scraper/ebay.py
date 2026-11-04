@@ -12,6 +12,7 @@ import json
 import math
 import os
 import re
+import uuid
 from collections import defaultdict
 from typing import Dict, List, Optional
 from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
@@ -23,11 +24,138 @@ from adscrawl_scrapers import Response, Request, ScraperClient, ScrapeError
 
 CLIENT = ScraperClient()
 BASE_CONFIG = {
-
-
-    'countryCode': "US",  # change country for geo details like currency and shipping
-    'locale': "en-US",
+    # change country for geo details like currency and shipping
+    "countryCode": "US",
+    "locale": "en-US",
+    # Cold item and search navigations are HTTP 403. The SDK fingerprint is
+    # this desktop OS; there is no further stealth switch. The homepage in the
+    # same browser still runs first.
+    "userAgentOs": "windows",
+    "render": True,
 }
+_HOME = "https://www.ebay.com/"
+_DOCUMENT_HEADERS = {
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Upgrade-Insecure-Requests": "1",
+}
+_RETRYABLE = {
+    "HTTP_ERROR",
+    "SELECTOR_NOT_FOUND",
+    "ERR_TUNNEL_CONNECTION_FAILED",
+    "ERR_CONNECTION_CLOSED",
+    "ERR_HTTP2_PROTOCOL_ERROR",
+    "CONNECT_FAILED",
+    "BROWSER_ERROR",
+    "TIMEOUT",
+}
+
+
+def _challenge(response: Response) -> bool:
+    title = " ".join(response.selector.css("title::text").getall()).strip().lower()
+    if any(phrase in title for phrase in (
+        "access denied", "just a moment", "attention required",
+        "pardon our interruption", "robot check",
+    )):
+        return True
+    url = (response.url or "").lower()
+    return "captcha-delivery" in url or "/blocked" in url or "splashui/challenge" in url
+
+
+# Applied only after the probe. On a 403 page, wait_for_selector would sit until
+# timeoutMs and the same-session reload would never run.
+_READY = {"waitForSelector", "autoScroll", "actions", "waitForResponse", "javascript"}
+
+
+def _usable(response: Response) -> bool:
+    """A solved interstitial keeps the original 403 on the navigation response.
+
+    runtime records that status and does not update it when the document is
+    rewritten. A large page with a normal title is the storefront.
+    """
+    if _challenge(response):
+        return False
+    if response.status_code < 400:
+        return True
+    title = " ".join(response.selector.css("title::text").getall()).strip()
+    return bool(title) and len(response.content or "") > 1500
+
+
+async def _navigate(session: str, url: str, referer: str = None, **extra) -> Response:
+    """Open a document and let a 403 interstitial run.
+
+    The fetch raises HTTP_ERROR at the navigation status, before waitMs, when
+    raiseOnHttpError stays on. The homepage warm-up still returned 403 live
+    because the challenge script never ran. Opt out, wait, and reload once in
+    this session. A 200 page is returned as-is, which is the product path that
+    already passed.
+    """
+    headers = dict(_DOCUMENT_HEADERS)
+    if referer:
+        headers["Referer"] = referer
+    probe = {key: value for key, value in extra.items() if key not in _READY}
+    wait_ms = probe.pop("waitMs", 4_000)
+    timeout_ms = probe.pop("timeoutMs", 60_000)
+
+    async def load(**more) -> Response:
+        return await CLIENT.fetch(Request(
+            url,
+            session=session,
+            headers=headers,
+            raiseOnHttpError=False,
+            waitMs=wait_ms,
+            timeoutMs=timeout_ms,
+            **BASE_CONFIG,
+            **probe,
+            **more,
+        ))
+
+    page = await load()
+    if not _usable(page):
+        log.info(f"reloading {url} once in the same session after HTTP {page.status_code}")
+        page = await load()
+    if not _usable(page):
+        raise ScrapeError(
+            f"Target returned HTTP {page.status_code}",
+            response=page,
+            code="HTTP_ERROR",
+        )
+    if not _READY.intersection(extra):
+        return page
+    ready = await CLIENT.fetch(Request(
+        url,
+        session=session,
+        headers=headers,
+        raiseOnHttpError=False,
+        timeoutMs=timeout_ms,
+        **BASE_CONFIG,
+        **extra,
+    ))
+    if not _usable(ready):
+        raise ScrapeError(
+            f"Target returned HTTP {ready.status_code}",
+            response=ready,
+            code="HTTP_ERROR",
+        )
+    return ready
+
+
+async def _fetch_document(url: str, **extra) -> Response:
+    """Homepage, then the document, in one named session. Closed before a retry."""
+    last = None
+    for attempt in range(2):
+        session = f"ebay-{uuid.uuid4().hex}"
+        try:
+            await _navigate(session, _HOME)
+            return await _navigate(session, url, referer=_HOME, **extra)
+        except ScrapeError as error:
+            last = error
+            if error.code not in _RETRYABLE or attempt == 1:
+                raise
+            log.warning(f"retrying {url} once after {error.code}")
+        finally:
+            await CLIENT.close_session(session)
+    raise last
 
 
 def _find_json_objects(text: str, decoder=json.JSONDecoder()):
@@ -174,13 +302,13 @@ def parse_product(result: Response):
 @managed
 async def scrape_product(url: str) -> Dict:
     """Scrape ebay.com product listing page for product data"""
-    page = await CLIENT.fetch(Request(url, **BASE_CONFIG))
+    page = await _fetch_document(url)
     return parse_product(page)
 
 @managed
 async def scrape_product_variants(url: str) -> List[Dict]:
     """Scrape ebay.com product listing page for variant data (price, stock, quantity, images)"""
-    page = await CLIENT.fetch(Request(url, **BASE_CONFIG))
+    page = await _fetch_document(url)
     return parse_variants(page)
 
 def parse_search(result: Response) -> List[Dict]:
@@ -245,7 +373,7 @@ async def scrape_search(url: str, max_pages: Optional[int] = None) -> List[Dict]
     """Scrape Ebay's search for product preview data for given"""
     log.info("Scraping search for {}", url)
 
-    first_page = await CLIENT.fetch(Request(url, **BASE_CONFIG))
+    first_page = await _fetch_document(url)
     results = parse_search(first_page)
     # find total amount of results for concurrent pagination
     total_results = first_page.selector.css(".srp-controls__count-heading>span::text").get()
@@ -254,17 +382,12 @@ async def scrape_search(url: str, max_pages: Optional[int] = None) -> List[Dict]
     total_pages = math.ceil(total_results / items_per_page)
     if max_pages and total_pages > max_pages:
         total_pages = max_pages
-    other_pages = [
-        Request(_update_url_param(first_page.url, _pgn=i), **BASE_CONFIG)
-        for i in range(2, total_pages + 1)
-    ]
+    other_pages = [_update_url_param(first_page.url, _pgn=i) for i in range(2, total_pages + 1)]
     log.info("Scraping search pagination of {} total pages for {}", len(other_pages), url)
-    async for result in CLIENT.fetch_many(other_pages):
-        if not isinstance(result, ScrapeError):
-            try:
-                results.extend(parse_search(result))
-            except Exception as e:
-                log.error(f"failed to parse search: {result.url}: {e}")
-        else:
-            log.error(f"failed to scrape {result.response.request_url}, got: {result.message}")
+    for page_url in other_pages:
+        try:
+            result = await _fetch_document(page_url)
+            results.extend(parse_search(result))
+        except Exception as e:
+            log.error(f"failed to scrape search page {page_url}: {e}")
     return results
