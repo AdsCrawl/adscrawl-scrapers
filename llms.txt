@@ -2,6 +2,9 @@
 
 Repository: https://github.com/AdsCrawl/adscrawl-scrapers
 License: OSL-3.0; see NOTICE for upstream attribution.
+Pricing and included credits: https://github.com/AdsCrawl/adscrawl-scrapers#pricing
+Browser and site limits: https://github.com/AdsCrawl/adscrawl-scrapers#limits
+Quick start (one US App Store listing): https://github.com/AdsCrawl/adscrawl-scrapers#quick-start
 Install from root: python -m pip install -e ".[dev]"
 Credentials: ADSCRAWL_API_KEY (never print or commit it).
 Offline checks: python -m pytest tests -q; python scripts/check_catalog.py
@@ -10,7 +13,7 @@ Historical results are upstream examples, not verified AdsCrawl output.
 Use adscrawl_scrapers.Request and ScraperClient for HTML, JSON and network data.
 Remote traffic must go through the AdsCrawl SDK, never a local requests client.
 Decorate async site operations with managed to close named remote sessions.
-Unknown request options must raise errors. All sites need live verification.
+Unknown request options must raise errors. Dated live results: https://github.com/AdsCrawl/adscrawl-scrapers/blob/main/docs/live-verification/2026-10-27.md
 
 - airbnb-scraper/airbnb.py: scrape_listings, scrape_properties
 - airfrance-scraper/airfrance.py: scrape_flights

@@ -3,30 +3,54 @@
 由 AdsCrawl 维护的 Python 爬虫示例集，使用 [AdsCrawl Python SDK](https://github.com/AdsCrawl/adscrawl-python)，覆盖 81 个站点。
 包含商品、搜索、评论、房产、航班等数据提取。完整目录见 [英文 README](README.md)。
 
-## 安装与运行
+## 定价
 
-需要 Python 3.10 或更新版本：
+价格核对日期为 2026 年 11 月 6 日。AdsCrawl 爬虫示例可免费下载。在线运行使用你的 AdsCrawl 账户额度。一个脚本可能打开多个浏览器会话或抓取多页数据，费用取决于实际调用。
+
+| AdsCrawl 套餐 | 价格（美元） | 包含额度 |
+| --- | ---: | ---: |
+| Free | $0 | 每个账户一次性获得 500 credits |
+| Hobby | $9/月 | 每月 3,000 credits |
+| Starter | $49/月 | 每月 100,000 credits |
+| Pro | $199/月 | 每月 500,000 credits |
+
+HTML、截图或 SPA 提取请求每次通过参数校验后扣 1 credit，随后执行失败也会消耗这笔额度。多数爬虫会创建计费的远程 CDP 会话，实际用量可在控制台的 Billing & Usage 查看。[官方定价](https://www.adscrawl.net/pricing/) · [计费规则](https://docs.adscrawl.net/zh/credits-and-limits)
+
+## 限制
+
+- 共用客户端默认最多同时打开两个浏览器会话。首次运行可设置 `ADSCRAWL_CONCURRENCY=1`。Free 支持一个 API key 和两个并发浏览器。密钥自身的 CDP 并发上限也适用，HTTP 429 可能表示触发了频率或会话限制。
+- 请求默认走美国线路，站点显式设置的 `countryCode` 优先。使用自定义代理时请省略国家参数。
+- 登录要求、验证页、地区和页面结构都会影响抓取。2026 年 10 月 27 日的全站实测覆盖 81 个站点，其中 15 个整套通过、11 个部分通过、55 个未通过。[逐站结果与证据](docs/live-verification/2026-10-27.md)
+
+## 快速开始
+
+在 macOS 或 Linux 终端使用 Python 3.10 或更新版本，从仓库根目录安装依赖。Chromium 由 AdsCrawl 在远程运行。
 
 ```bash
 git clone https://github.com/AdsCrawl/adscrawl-scrapers.git
 cd adscrawl-scrapers
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -e ".[dev]"
-export ADSCRAWL_API_KEY="你的 API Key"
-export ADSCRAWL_DEFAULT_COUNTRY=US
-cd amazon-scraper
-python run.py
 ```
 
-先修改 `run.py` 中的 URL、日期和页数。真实请求会消耗 AdsCrawl 额度。
-默认每个客户端最多使用两个浏览器会话，可以通过 `ADSCRAWL_CONCURRENCY` 调整。
-无需安装本地 Chromium；浏览器由 AdsCrawl 提供。
+如需离线检查，可在根目录运行 `python scripts/check_catalog.py`。如需抓取真实数据，到 [AdsCrawl 控制台](https://app.adscrawl.net/dashboard/keys/)创建密钥，替换下面的占位符。这个示例读取美国 App Store 中的一个应用，打印应用 ID 和名称。
 
-未指定国家或自定义代理时使用 **US 美国线路**。
-`scripts/live_test.py` 在 `ADSCRAWL_DEFAULT_COUNTRY` 为空时设为 `US`，手动在线工作流也会设为 `US`。
-自行设置该变量可改用其他线路。站点显式设置的 `countryCode` 优先。
-自定义代理与国家路由不会同时发送。
+```bash
+export ADSCRAWL_API_KEY="你的_ADSCRAWL_API_KEY"
+export ADSCRAWL_DEFAULT_COUNTRY=US
+export ADSCRAWL_CONCURRENCY=1
+(cd app-store-scraper && python - <<'PY'
+from adscrawl_scrapers import run
+from app_store import scrape_app_metadata
+
+app = run(scrape_app_metadata("6448311069", country="us"))
+print(app["appId"], app["title"])
+PY
+)
+```
+
+2026 年 11 月 6 日的美国线路实测输出 `6448311069 ChatGPT`，名称取自在线详情页。[App Store 爬虫](app-store-scraper/)
 
 ## SDK 工作方式
 

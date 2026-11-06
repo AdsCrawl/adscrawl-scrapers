@@ -10,6 +10,57 @@ content using remote browsers, HTML/JSON parsers and bounded concurrency.
 [API documentation](https://www.adscrawl.net/docs/) ·
 [中文](README.zh-CN.md) · [Transport details](docs/MIGRATION.md)
 
+## Pricing
+
+Prices checked on November 6, 2026. The scraper examples are free to download. Running them against live websites uses your AdsCrawl account. One run can open several browser sessions or fetch several pages.
+
+| AdsCrawl plan | Price (USD) | Included credits |
+| --- | ---: | ---: |
+| Free | $0 | 500 once per account |
+| Hobby | $9/month | 3,000 per month |
+| Starter | $49/month | 100,000 per month |
+| Pro | $199/month | 500,000 per month |
+
+AdsCrawl charges 1 credit per validated HTML, screenshot or SPA extraction request, including requests that later fail during execution. Most examples open billed remote CDP sessions. Check your account's Billing & Usage for actual usage. [Official prices](https://www.adscrawl.net/pricing/) · [Credit rules](https://docs.adscrawl.net/credits-and-limits)
+
+## Limits
+
+- The shared scraper client defaults to two concurrent browser sessions. Set `ADSCRAWL_CONCURRENCY=1` for a first run. Free includes one API key and allows two concurrent browsers. Your key's CDP limit also applies. HTTP 429 can indicate a rate or session limit.
+- Requests default to the US route. A site's explicit `countryCode` takes precedence. If you supply a custom proxy, omit the country route.
+- Site access depends on login requirements, verification pages, region and current page structure. The full October 27, 2026 audit recorded 15 complete passes, 11 partial passes and 55 failures across 81 sites. [Per-site results and evidence](docs/live-verification/2026-10-27.md)
+
+## Quick start
+
+Use Python 3.10+ and a macOS or Linux shell. AdsCrawl runs Chromium remotely. Install from the repository root.
+
+```bash
+git clone https://github.com/AdsCrawl/adscrawl-scrapers.git
+cd adscrawl-scrapers
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -e ".[dev]"
+```
+
+For an offline check, run `python scripts/check_catalog.py` from the root. For a live example, create a key in the [AdsCrawl dashboard](https://app.adscrawl.net/dashboard/keys/) and replace the placeholder below. This reads one US App Store listing and prints its ID and title.
+
+```bash
+export ADSCRAWL_API_KEY="YOUR_ADSCRAWL_API_KEY"
+export ADSCRAWL_DEFAULT_COUNTRY=US
+export ADSCRAWL_CONCURRENCY=1
+(cd app-store-scraper && python - <<'PY'
+from adscrawl_scrapers import run
+from app_store import scrape_app_metadata
+
+app = run(scrape_app_metadata("6448311069", country="us"))
+print(app["appId"], app["title"])
+PY
+)
+```
+
+The US live run on November 6, 2026 printed `6448311069 ChatGPT`. The title comes from the live listing. [App Store scraper](app-store-scraper/)
+
+## Live verification
+
 > Live re-verification on 2026-11-03 (Asia/Shanghai, PR #1 harness, US default
 > routing, one attempt per run, no reruns): offline tests 47/47 and catalog
 > checks 81/81 passed. The live smoke test (rendered HTML + JSON POST + session
@@ -80,33 +131,6 @@ Full passes recorded on 2026-10-27. Bing, Shopify, and ChatGPT were re-run on 20
 [Scope, output counts and limitations](docs/live-verification/2026-10-27.md)
 
 <!-- LIVE_VERIFIED_END -->
-
-## Quick start
-
-Python 3.10 or newer is required.
-
-```bash
-git clone https://github.com/AdsCrawl/adscrawl-scrapers.git
-cd adscrawl-scrapers
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install -e ".[dev]"
-export ADSCRAWL_API_KEY="your_api_key"
-export ADSCRAWL_DEFAULT_COUNTRY=US
-cd amazon-scraper
-python run.py
-```
-
-Edit `run.py` to choose URLs, dates and page limits before running. Requests
-consume AdsCrawl credits. The default limit is two browser sessions per client;
-set `ADSCRAWL_CONCURRENCY` to match your account capacity. No local Chromium
-installation is necessary. Never commit your API key.
-
-Requests use a **US** browser route when no country or custom proxy is
-specified. `scripts/live_test.py` sets `ADSCRAWL_DEFAULT_COUNTRY=US` when that
-variable is unset or blank, and the manual live workflow sets it to `US`.
-Set `ADSCRAWL_DEFAULT_COUNTRY` yourself to choose another route. A site's explicit
-`countryCode` takes precedence; custom proxies are not combined with country routing.
 
 ## How requests run
 
