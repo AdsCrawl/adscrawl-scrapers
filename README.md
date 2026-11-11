@@ -61,6 +61,17 @@ The US live run on November 6, 2026 printed `6448311069 ChatGPT`. The title come
 
 ## Live verification
 
+**Latest failure retest: November 11, 2026.** See the [dated report](docs/live-verification/2026-11-11.md)
+and [machine-readable results](docs/live-verification/2026-11-11.json) for the previously
+failed or partially working sites, the fixes, completed checks and remaining access
+failures. DHL was excluded from further testing at the user's request. A parser fix
+or an offline CI pass does not establish that every live workflow works.
+Of the 66 selected sites: **4 passed their full suite, 15 partially passed,
+43 failed, 3 remained incomplete within the time limit, and DHL was skipped**.
+The 15 sites that fully passed the earlier audit were not retested in this run.
+
+Earlier checkpoint:
+
 > Live re-verification on 2026-11-03 (Asia/Shanghai, PR #1 harness, US default
 > routing, one attempt per run, no reruns): offline tests 47/47 and catalog
 > checks 81/81 passed. The live smoke test (rendered HTML + JSON POST + session

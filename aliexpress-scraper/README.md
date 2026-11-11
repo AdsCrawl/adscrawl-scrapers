@@ -36,10 +36,12 @@ To run this site's **live** tests (uses AdsCrawl credits):
 python -m pytest aliexpress-scraper/test.py -v
 ```
 
-This site has been migrated at source level. Live website behavior is **not yet
-verified** with AdsCrawl. Websites can change selectors, require sign-in, or
-reject a browser session. Historical files in `results/` are upstream examples,
-not outputs from a verified AdsCrawl run. Review URLs and dates in `run.py` first.
+On November 11, 2026, the US product test passed in a targeted run. In the later
+full suite, reviews and categories passed, while the product request timed out
+and search failed with a proxy tunnel error. This site remains **partially
+verified and unstable**. [Dated evidence](../docs/live-verification/2026-11-11.md)
+preserves both attempts. Missing product data now raises `DATA_MISSING` instead
+of returning an empty product. Historical files in `results/` were not replaced.
 
 ## Source and license
 

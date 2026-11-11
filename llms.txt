@@ -14,6 +14,10 @@ Use adscrawl_scrapers.Request and ScraperClient for HTML, JSON and network data.
 Remote traffic must go through the AdsCrawl SDK, never a local requests client.
 Decorate async site operations with managed to close named remote sessions.
 Unknown request options must raise errors. Dated live results: https://github.com/AdsCrawl/adscrawl-scrapers/blob/main/docs/live-verification/2026-10-27.md
+Latest failure retest (November 11, 2026): https://github.com/AdsCrawl/adscrawl-scrapers/blob/main/docs/live-verification/2026-11-11.md
+Machine-readable retest evidence: https://github.com/AdsCrawl/adscrawl-scrapers/blob/main/docs/live-verification/2026-11-11.json
+DHL was skipped at the user's request. A passing offline test is not proof of live availability.
+November 11 scope: 66 previously failed/partial sites; 4 full passes, 15 partial passes, 43 failures, 3 incomplete, 1 skipped. The previous 15 full passes were not retested.
 
 - airbnb-scraper/airbnb.py: scrape_listings, scrape_properties
 - airfrance-scraper/airfrance.py: scrape_flights

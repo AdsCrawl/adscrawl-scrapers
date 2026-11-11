@@ -1,0 +1,3298 @@
+{
+  "date": "2026-11-11",
+  "timezone": "Asia/Shanghai",
+  "source_base": "346dbf1e726b16ab0cfafe7e197ff8e8365bac7b",
+  "fixes_revision": "143913707c13c5d446f6624c55417d36d8659c2a",
+  "state": "completed_with_failures",
+  "counts": {
+    "incomplete": 3,
+    "failed": 43,
+    "partial": 15,
+    "passed": 4,
+    "skipped_by_user": 1
+  },
+  "sites": [
+    {
+      "site": "airbnb-scraper",
+      "status": "incomplete",
+      "latest_passed": 0,
+      "latest_executed": 0,
+      "attempts": [
+        {
+          "site": "airbnb",
+          "started": "2026-11-11T06:31:06.413631+00:00",
+          "seconds": 212.0,
+          "exit_code": 2,
+          "timeout": true,
+          "cases": [],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 2
+          },
+          "sessions_created": 2,
+          "error_codes": [],
+          "target_or_api_http_statuses": [],
+          "exception_types": []
+        }
+      ]
+    },
+    {
+      "site": "airfrance-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "airfrance",
+          "started": "2026-11-11T06:51:14.337752+00:00",
+          "seconds": 124.0,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_scrape_flights",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 106.61,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {},
+          "sessions_created": 0,
+          "error_codes": [],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "RuntimeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "aliexpress-scraper",
+      "status": "partial",
+      "latest_passed": 2,
+      "latest_executed": 4,
+      "attempts": [
+        {
+          "site": "aliexpress",
+          "started": "2026-11-11T06:34:38.395177+00:00",
+          "seconds": 67.4,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_product_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 60.35,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [],
+          "target_or_api_http_statuses": [],
+          "exception_types": []
+        },
+        {
+          "site": "aliexpress-scraper/test.py::test_product_scraping",
+          "started": "2026-11-11T07:09:32.324884+00:00",
+          "seconds": 41.0,
+          "exit_code": 0,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_product_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 38.51,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 360,
+          "stop_on_first_failure": false,
+          "countries": {
+            "US": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [],
+          "target_or_api_http_statuses": [],
+          "exception_types": []
+        },
+        {
+          "site": "aliexpress-scraper/test.py",
+          "started": "2026-11-11T07:11:33.748745+00:00",
+          "seconds": 154.8,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_product_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 55.14,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_search_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 48.01,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_review_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 13.01,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_category_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 33.92,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 360,
+          "stop_on_first_failure": false,
+          "countries": {
+            "US": 8
+          },
+          "sessions_created": 8,
+          "error_codes": [
+            "ERR_TUNNEL_CONNECTION_FAILED",
+            "TIMEOUT"
+          ],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "allegro-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "allegro",
+          "started": "2026-11-11T06:53:18.347637+00:00",
+          "seconds": 69.4,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_product_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 48.49,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "PL": 2
+          },
+          "sessions_created": 2,
+          "error_codes": [
+            "HTTP_ERROR"
+          ],
+          "target_or_api_http_statuses": [
+            "403"
+          ],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "amazon-scraper",
+      "status": "partial",
+      "latest_passed": 1,
+      "latest_executed": 3,
+      "attempts": [
+        {
+          "site": "amazon",
+          "started": "2026-11-11T06:03:09.459501+00:00",
+          "seconds": 299.9,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_product_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 194.04,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_search_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 69.4,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_review_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 23.84,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 360,
+          "stop_on_first_failure": false,
+          "countries": {
+            "not_recorded": 6
+          },
+          "sessions_created": 6,
+          "error_codes": [
+            "ERR_TUNNEL_CONNECTION_FAILED",
+            "TIMEOUT"
+          ],
+          "target_or_api_http_statuses": [
+            "404"
+          ],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "autoscout24-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "autoscout24",
+          "started": "2026-11-11T06:35:45.807365+00:00",
+          "seconds": 35.4,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_page_url",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 0.0,
+              "live": false
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_listings_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 21.79,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [
+            "ERR_TUNNEL_CONNECTION_FAILED"
+          ],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "bestbuy-scraper",
+      "status": "partial",
+      "latest_passed": 1,
+      "latest_executed": 4,
+      "attempts": [
+        {
+          "site": "bestbuy",
+          "started": "2026-11-11T06:08:09.374429+00:00",
+          "seconds": 275.0,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_product_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 113.34,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_sitemap_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 5.96,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_review_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 9.81,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_search_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 138.77,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 360,
+          "stop_on_first_failure": false,
+          "countries": {
+            "US": 6
+          },
+          "sessions_created": 6,
+          "error_codes": [
+            "ERR_TUNNEL_CONNECTION_FAILED",
+            "TIMEOUT"
+          ],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "bookingcom-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 3,
+      "attempts": [
+        {
+          "site": "bookingcom",
+          "started": "2026-11-11T06:14:28.442122+00:00",
+          "seconds": 260.8,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_search_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 56.51,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_hotel_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 152.45,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_hotel_reviews_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 47.6,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 360,
+          "stop_on_first_failure": false,
+          "countries": {
+            "US": 4
+          },
+          "sessions_created": 4,
+          "error_codes": [
+            "ACTION_FAILED",
+            "ERR_TUNNEL_CONNECTION_FAILED",
+            "SESSION_LIMIT"
+          ],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        },
+        {
+          "site": "bookingcom-scraper/test.py::test_hotel_scraping",
+          "started": "2026-11-11T06:33:49.268304+00:00",
+          "seconds": 385.0,
+          "exit_code": 2,
+          "timeout": true,
+          "cases": [],
+          "deadline_seconds": 360,
+          "stop_on_first_failure": false,
+          "countries": {
+            "US": 4
+          },
+          "sessions_created": 4,
+          "error_codes": [],
+          "target_or_api_http_statuses": [],
+          "exception_types": []
+        }
+      ]
+    },
+    {
+      "site": "capterra-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "capterra",
+          "started": "2026-11-11T06:54:27.721551+00:00",
+          "seconds": 13.9,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_category_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 6.49,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [
+            "HTTP_ERROR"
+          ],
+          "target_or_api_http_statuses": [
+            "403"
+          ],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "crunchbase-scraper",
+      "status": "passed",
+      "latest_passed": 2,
+      "latest_executed": 2,
+      "attempts": [
+        {
+          "site": "crunchbase",
+          "started": "2026-11-11T06:36:21.240298+00:00",
+          "seconds": 60.4,
+          "exit_code": 0,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_company_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 26.71,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_person_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 29.61,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 2
+          },
+          "sessions_created": 2,
+          "error_codes": [],
+          "target_or_api_http_statuses": [],
+          "exception_types": []
+        }
+      ]
+    },
+    {
+      "site": "dhl-scraper",
+      "status": "skipped_by_user",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "dhl",
+          "started": "2026-11-11T06:26:51.691620+00:00",
+          "seconds": 72.4,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_scrape_tracking",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 67.21,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 360,
+          "stop_on_first_failure": false,
+          "countries": {
+            "US": 2
+          },
+          "sessions_created": 2,
+          "error_codes": [
+            "HTTP_ERROR"
+          ],
+          "target_or_api_http_statuses": [
+            "403"
+          ],
+          "exception_types": [
+            "AssertionError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "digikey-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "digikey",
+          "started": "2026-11-11T06:54:41.645732+00:00",
+          "seconds": 43.1,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_product_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 37.03,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 2
+          },
+          "sessions_created": 2,
+          "error_codes": [
+            "ERR_TUNNEL_CONNECTION_FAILED"
+          ],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "domaincom-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "domaincom",
+          "started": "2026-11-11T06:37:21.640685+00:00",
+          "seconds": 152.5,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_properties_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 123.6,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "AU": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [
+            "TIMEOUT"
+          ],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "ebay-scraper",
+      "status": "partial",
+      "latest_passed": 2,
+      "latest_executed": 3,
+      "attempts": [
+        {
+          "site": "ebay",
+          "started": "2026-11-11T06:12:44.423499+00:00",
+          "seconds": 104.0,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_product_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 31.11,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_product_variants_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 45.63,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_search_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 24.66,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 360,
+          "stop_on_first_failure": false,
+          "countries": {
+            "US": 3
+          },
+          "sessions_created": 3,
+          "error_codes": [],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "AttributeError"
+          ]
+        },
+        {
+          "site": "ebay-scraper/test.py::test_search_scraping",
+          "started": "2026-11-11T06:43:20.242986+00:00",
+          "seconds": 191.0,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_search_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 186.17,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 360,
+          "stop_on_first_failure": false,
+          "countries": {
+            "US": 2
+          },
+          "sessions_created": 2,
+          "error_codes": [
+            "HTTP_ERROR"
+          ],
+          "target_or_api_http_statuses": [
+            "403"
+          ],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        },
+        {
+          "site": "ebay-scraper/test.py",
+          "started": "2026-11-11T07:06:16.805802+00:00",
+          "seconds": 195.5,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_product_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 53.8,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_product_variants_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 30.51,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_search_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 98.59,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 360,
+          "stop_on_first_failure": false,
+          "countries": {
+            "US": 4
+          },
+          "sessions_created": 4,
+          "error_codes": [
+            "HTTP_ERROR"
+          ],
+          "target_or_api_http_statuses": [
+            "403"
+          ],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "emirates-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "emirates",
+          "started": "2026-11-11T06:55:24.741016+00:00",
+          "seconds": 120.0,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_scrape_flights",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 91.05,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 2
+          },
+          "sessions_created": 2,
+          "error_codes": [
+            "TIMEOUT"
+          ],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "etsy-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 3,
+      "attempts": [
+        {
+          "site": "etsy",
+          "started": "2026-11-11T06:21:48.163452+00:00",
+          "seconds": 294.0,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_product_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 107.13,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_shop_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 33.22,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_search_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 37.3,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 360,
+          "stop_on_first_failure": false,
+          "countries": {
+            "US": 5
+          },
+          "sessions_created": 5,
+          "error_codes": [
+            "CONNECT_FAILED",
+            "HTTP_ERROR"
+          ],
+          "target_or_api_http_statuses": [
+            "403"
+          ],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "expedia-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "expedia",
+          "started": "2026-11-11T06:39:54.190812+00:00",
+          "seconds": 126.9,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_scrape_hotel_search",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 96.65,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [
+            "TIMEOUT"
+          ],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "facebook-scraper",
+      "status": "partial",
+      "latest_passed": 1,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "facebook",
+          "started": "2026-11-11T06:57:24.711102+00:00",
+          "seconds": 189.9,
+          "exit_code": 2,
+          "timeout": true,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_page_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 154.28,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 4
+          },
+          "sessions_created": 4,
+          "error_codes": [],
+          "target_or_api_http_statuses": [],
+          "exception_types": []
+        }
+      ]
+    },
+    {
+      "site": "g2-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "g2",
+          "started": "2026-11-11T06:42:01.121990+00:00",
+          "seconds": 28.6,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_review_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 18.67,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [
+            "HTTP_ERROR"
+          ],
+          "target_or_api_http_statuses": [
+            "403"
+          ],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "glassdoor-scraper",
+      "status": "partial",
+      "latest_passed": 1,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "glassdoor",
+          "started": "2026-11-11T07:00:34.639085+00:00",
+          "seconds": 196.2,
+          "exit_code": 2,
+          "timeout": true,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_glassdoor_url",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 0.0,
+              "live": false
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_salary_range_parsing",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 0.0,
+              "live": false
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_find_companies",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 4.29,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 3
+          },
+          "sessions_created": 3,
+          "error_codes": [],
+          "target_or_api_http_statuses": [],
+          "exception_types": []
+        }
+      ]
+    },
+    {
+      "site": "goat-scraper",
+      "status": "incomplete",
+      "latest_passed": 0,
+      "latest_executed": 0,
+      "attempts": [
+        {
+          "site": "goat",
+          "started": "2026-11-11T06:42:29.722490+00:00",
+          "seconds": 192.3,
+          "exit_code": 2,
+          "timeout": true,
+          "cases": [],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 4
+          },
+          "sessions_created": 4,
+          "error_codes": [],
+          "target_or_api_http_statuses": [],
+          "exception_types": []
+        }
+      ]
+    },
+    {
+      "site": "goibibo-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 2,
+      "attempts": [
+        {
+          "site": "goibibo",
+          "started": "2026-11-11T06:08:19.185578+00:00",
+          "seconds": 224.4,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_hotel_search_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 128.75,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_flight_search_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 86.36,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 360,
+          "stop_on_first_failure": false,
+          "countries": {
+            "IN": 4
+          },
+          "sessions_created": 4,
+          "error_codes": [
+            "TIMEOUT"
+          ],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "RuntimeError"
+          ]
+        },
+        {
+          "site": "goibibo-scraper/test.py",
+          "started": "2026-11-11T06:29:13.702611+00:00",
+          "seconds": 275.6,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_hotel_search_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 76.85,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_flight_search_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 194.83,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 360,
+          "stop_on_first_failure": false,
+          "countries": {
+            "IN": 5
+          },
+          "sessions_created": 5,
+          "error_codes": [
+            "TIMEOUT"
+          ],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "RuntimeError",
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "goodreads-scraper",
+      "status": "partial",
+      "latest_passed": 2,
+      "latest_executed": 2,
+      "attempts": [
+        {
+          "site": "goodreads",
+          "started": "2026-11-11T07:03:50.795125+00:00",
+          "seconds": 186.2,
+          "exit_code": 2,
+          "timeout": true,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_book_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 90.81,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_review_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 62.51,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 4
+          },
+          "sessions_created": 4,
+          "error_codes": [],
+          "target_or_api_http_statuses": [],
+          "exception_types": []
+        }
+      ]
+    },
+    {
+      "site": "google-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "google",
+          "started": "2026-11-11T07:06:57.026650+00:00",
+          "seconds": 33.9,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_serp_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 28.57,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 4
+          },
+          "sessions_created": 4,
+          "error_codes": [],
+          "target_or_api_http_statuses": [],
+          "exception_types": []
+        },
+        {
+          "site": "google-scraper/test.py::test_serp_scraping",
+          "started": "2026-11-11T07:14:27.163594+00:00",
+          "seconds": 11.8,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_serp_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 6.65,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 360,
+          "stop_on_first_failure": false,
+          "countries": {
+            "US": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [
+            "TARGET_BLOCKED"
+          ],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "google-flights-scraper",
+      "status": "passed",
+      "latest_passed": 2,
+      "latest_executed": 2,
+      "attempts": [
+        {
+          "site": "google-flights",
+          "started": "2026-11-11T06:28:02.876567+00:00",
+          "seconds": 104.7,
+          "exit_code": 0,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_scrape_flights",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 37.07,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_scrape_price_insights",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 61.23,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 360,
+          "stop_on_first_failure": false,
+          "countries": {
+            "US": 2
+          },
+          "sessions_created": 2,
+          "error_codes": [],
+          "target_or_api_http_statuses": [],
+          "exception_types": []
+        }
+      ]
+    },
+    {
+      "site": "google-jobs-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "google-jobs",
+          "started": "2026-11-11T06:45:42.006955+00:00",
+          "seconds": 23.1,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_search_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 17.23,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [],
+          "target_or_api_http_statuses": [],
+          "exception_types": []
+        },
+        {
+          "site": "google-jobs-scraper/test.py",
+          "started": "2026-11-11T07:14:08.507575+00:00",
+          "seconds": 18.7,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_search_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 14.16,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 360,
+          "stop_on_first_failure": false,
+          "countries": {
+            "US": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [
+            "TARGET_BLOCKED"
+          ],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "google-play-scraper",
+      "status": "passed",
+      "latest_passed": 3,
+      "latest_executed": 3,
+      "attempts": [
+        {
+          "site": "google-play",
+          "started": "2026-11-11T05:58:03.718535+00:00",
+          "seconds": 51.5,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_app_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 22.3,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_reviews_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 5.2,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_search_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 16.55,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 360,
+          "stop_on_first_failure": false,
+          "countries": {
+            "not_recorded": 4
+          },
+          "sessions_created": 4,
+          "error_codes": [
+            "ERR_TUNNEL_CONNECTION_FAILED"
+          ],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        },
+        {
+          "site": "google-play-scraper/test.py",
+          "started": "2026-11-11T06:28:05.497277+00:00",
+          "seconds": 68.2,
+          "exit_code": 0,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_app_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 33.12,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_reviews_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 8.73,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_search_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 23.25,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 360,
+          "stop_on_first_failure": false,
+          "countries": {
+            "US": 4
+          },
+          "sessions_created": 4,
+          "error_codes": [],
+          "target_or_api_http_statuses": [],
+          "exception_types": []
+        }
+      ]
+    },
+    {
+      "site": "homegate-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "homegate",
+          "started": "2026-11-11T06:46:05.057416+00:00",
+          "seconds": 16.1,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_properties_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 9.65,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [
+            "HTTP_ERROR"
+          ],
+          "target_or_api_http_statuses": [
+            "403"
+          ],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "idealista-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "idealista",
+          "started": "2026-11-11T07:07:30.889854+00:00",
+          "seconds": 10.5,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_idealista_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 6.14,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "ES": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [
+            "ERR_TUNNEL_CONNECTION_FAILED"
+          ],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "immobilienscout24-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "immobilienscout24",
+          "started": "2026-11-11T06:46:21.146282+00:00",
+          "seconds": 47.2,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_properties_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 41.94,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "DE": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "immoscout24-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "immoscout24",
+          "started": "2026-11-11T07:07:41.366754+00:00",
+          "seconds": 26.1,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_properties_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 21.28,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [
+            "HTTP_ERROR"
+          ],
+          "target_or_api_http_statuses": [
+            "403"
+          ],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "immowelt-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 2,
+      "attempts": [
+        {
+          "site": "immowelt",
+          "started": "2026-11-11T06:47:08.368332+00:00",
+          "seconds": 55.8,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_properties_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 36.04,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "DE": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [
+            "HTTP_ERROR"
+          ],
+          "target_or_api_http_statuses": [
+            "410"
+          ],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        },
+        {
+          "site": "immowelt-scraper/test.py::test_search_scraping",
+          "started": "2026-11-11T07:10:13.301649+00:00",
+          "seconds": 15.9,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_search_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 11.36,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 360,
+          "stop_on_first_failure": false,
+          "countries": {
+            "DE": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [
+            "HTTP_ERROR"
+          ],
+          "target_or_api_http_statuses": [
+            "403"
+          ],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "indeed-scraper",
+      "status": "partial",
+      "latest_passed": 1,
+      "latest_executed": 2,
+      "attempts": [
+        {
+          "site": "indeed",
+          "started": "2026-11-11T07:08:07.499748+00:00",
+          "seconds": 33.5,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_search_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 24.33,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_job_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 4.0,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 2
+          },
+          "sessions_created": 2,
+          "error_codes": [
+            "HTTP_ERROR"
+          ],
+          "target_or_api_http_statuses": [
+            "401"
+          ],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "instagram-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "instagram",
+          "started": "2026-11-11T06:48:04.192789+00:00",
+          "seconds": 10.5,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_user_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 6.48,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "CA": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [
+            "ERR_TUNNEL_CONNECTION_FAILED"
+          ],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "kayak-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "kayak",
+          "started": "2026-11-11T07:08:41.000145+00:00",
+          "seconds": 8.9,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_scrape_roundtrip",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 3.58,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [
+            "ERR_TUNNEL_CONNECTION_FAILED"
+          ],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "leboncoin-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "leboncoin",
+          "started": "2026-11-11T06:48:14.728958+00:00",
+          "seconds": 42.6,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_search_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 39.26,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "FR": 2
+          },
+          "sessions_created": 2,
+          "error_codes": [
+            "HTTP_ERROR"
+          ],
+          "target_or_api_http_statuses": [
+            "403"
+          ],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "linkedin-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "linkedin",
+          "started": "2026-11-11T07:08:49.909803+00:00",
+          "seconds": 10.9,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_profile_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 5.78,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [
+            "ERR_TUNNEL_CONNECTION_FAILED"
+          ],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "loopnet-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "loopnet",
+          "started": "2026-11-11T06:48:57.370871+00:00",
+          "seconds": 10.3,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_listing_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 6.48,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [
+            "HTTP_ERROR"
+          ],
+          "target_or_api_http_statuses": [
+            "403"
+          ],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "lowes-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "lowes",
+          "started": "2026-11-11T07:09:00.846653+00:00",
+          "seconds": 20.6,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_product_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 15.9,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "maersk-scraper",
+      "status": "passed",
+      "latest_passed": 2,
+      "latest_executed": 2,
+      "attempts": [
+        {
+          "site": "maersk",
+          "started": "2026-11-11T06:24:09.604729+00:00",
+          "seconds": 162.1,
+          "exit_code": 0,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_scrape_tracking",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 62.69,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_scrape_schedule_search",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 45.29,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 360,
+          "stop_on_first_failure": false,
+          "countries": {
+            "US": 2
+          },
+          "sessions_created": 2,
+          "error_codes": [],
+          "target_or_api_http_statuses": [],
+          "exception_types": []
+        }
+      ]
+    },
+    {
+      "site": "marriott-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "marriott",
+          "started": "2026-11-11T06:49:07.653149+00:00",
+          "seconds": 104.0,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_search_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 97.87,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [
+            "TIMEOUT"
+          ],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "mouser-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "mouser",
+          "started": "2026-11-11T07:09:21.406519+00:00",
+          "seconds": 11.4,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_product_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 6.02,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [
+            "HTTP_ERROR"
+          ],
+          "target_or_api_http_statuses": [
+            "403"
+          ],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "naver-scraper",
+      "status": "partial",
+      "latest_passed": 1,
+      "latest_executed": 3,
+      "attempts": [
+        {
+          "site": "naver",
+          "started": "2026-11-11T06:17:31.478504+00:00",
+          "seconds": 398.1,
+          "exit_code": 2,
+          "timeout": true,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_web_search_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 146.07,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_image_search_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 100.12,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_blog_post_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 87.84,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 360,
+          "stop_on_first_failure": false,
+          "countries": {
+            "KR": 5
+          },
+          "sessions_created": 5,
+          "error_codes": [
+            "CONNECT_FAILED",
+            "TIMEOUT"
+          ],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "nordstorm-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 2,
+      "attempts": [
+        {
+          "site": "nordstorm",
+          "started": "2026-11-11T06:04:55.375990+00:00",
+          "seconds": 203.8,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_product_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 100.56,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_search_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 93.1,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 360,
+          "stop_on_first_failure": false,
+          "countries": {
+            "US": 2
+          },
+          "sessions_created": 2,
+          "error_codes": [
+            "TIMEOUT"
+          ],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        },
+        {
+          "site": "nordstorm-scraper/test.py",
+          "started": "2026-11-11T06:40:14.239494+00:00",
+          "seconds": 186.0,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_product_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 83.25,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_search_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 79.7,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 360,
+          "stop_on_first_failure": false,
+          "countries": {
+            "US": 2
+          },
+          "sessions_created": 2,
+          "error_codes": [
+            "TIMEOUT"
+          ],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "perplexity-scraper",
+      "status": "incomplete",
+      "latest_passed": 0,
+      "latest_executed": 0,
+      "attempts": [
+        {
+          "site": "perplexity",
+          "started": "2026-11-11T06:50:51.638671+00:00",
+          "seconds": 184.4,
+          "exit_code": 2,
+          "timeout": true,
+          "cases": [],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 2
+          },
+          "sessions_created": 2,
+          "error_codes": [],
+          "target_or_api_http_statuses": [],
+          "exception_types": []
+        }
+      ]
+    },
+    {
+      "site": "pinterest-scraper",
+      "status": "partial",
+      "latest_passed": 2,
+      "latest_executed": 3,
+      "attempts": [
+        {
+          "site": "pinterest",
+          "started": "2026-11-11T07:09:32.852619+00:00",
+          "seconds": 104.1,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_search_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 59.84,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_board_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 30.04,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_profile_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 9.75,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 3
+          },
+          "sessions_created": 3,
+          "error_codes": [
+            "ERR_TUNNEL_CONNECTION_FAILED"
+          ],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "realestatecom-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "realestatecom",
+          "started": "2026-11-11T06:53:56.052577+00:00",
+          "seconds": 34.8,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_properties_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 23.14,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [
+            "HTTP_ERROR"
+          ],
+          "target_or_api_http_statuses": [
+            "429"
+          ],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "realtorcom-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "realtorcom",
+          "started": "2026-11-11T07:11:16.956449+00:00",
+          "seconds": 12.3,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_property_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 6.48,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [
+            "HTTP_ERROR"
+          ],
+          "target_or_api_http_statuses": [
+            "429"
+          ],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "redfin-scraper",
+      "status": "partial",
+      "latest_passed": 2,
+      "latest_executed": 3,
+      "attempts": [
+        {
+          "site": "redfin",
+          "started": "2026-11-11T05:58:55.231957+00:00",
+          "seconds": 360.1,
+          "exit_code": -2,
+          "timeout": true,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_properties_for_sale_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 129.01,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_properties_for_rent_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 210.03,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_search_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 17.84,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 360,
+          "stop_on_first_failure": false,
+          "countries": {
+            "not_recorded": 7
+          },
+          "sessions_created": 7,
+          "error_codes": [],
+          "target_or_api_http_statuses": [],
+          "exception_types": []
+        },
+        {
+          "site": "redfin-scraper/test.py",
+          "started": "2026-11-11T06:46:31.248984+00:00",
+          "seconds": 280.4,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_properties_for_sale_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 133.36,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_properties_for_rent_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 118.75,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_search_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 22.55,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 360,
+          "stop_on_first_failure": false,
+          "countries": {
+            "US": 9
+          },
+          "sessions_created": 9,
+          "error_codes": [
+            "ERR_TUNNEL_CONNECTION_FAILED",
+            "HTTP_ERROR",
+            "TIMEOUT"
+          ],
+          "target_or_api_http_statuses": [
+            "403"
+          ],
+          "exception_types": [
+            "ScrapeError",
+            "ValueError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "rs-online-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "rs-online",
+          "started": "2026-11-11T06:54:30.850525+00:00",
+          "seconds": 13.8,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_product_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 7.41,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [
+            "HTTP_ERROR"
+          ],
+          "target_or_api_http_statuses": [
+            "403"
+          ],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "seloger-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "seloger",
+          "started": "2026-11-11T07:11:29.271766+00:00",
+          "seconds": 11.1,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_search_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 6.33,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "FR": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [
+            "HTTP_ERROR"
+          ],
+          "target_or_api_http_statuses": [
+            "403"
+          ],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "skyscanner-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "skyscanner",
+          "started": "2026-11-11T06:54:44.612347+00:00",
+          "seconds": 104.8,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_scrape_flights_oneway",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 94.23,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [
+            "TIMEOUT"
+          ],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "stockx-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "stockx",
+          "started": "2026-11-11T07:11:40.353291+00:00",
+          "seconds": 19.8,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_product_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 12.55,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [
+            "HTTP_ERROR"
+          ],
+          "target_or_api_http_statuses": [
+            "403"
+          ],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "target-scraper",
+      "status": "partial",
+      "latest_passed": 1,
+      "latest_executed": 5,
+      "attempts": [
+        {
+          "site": "target",
+          "started": "2026-11-11T06:12:03.552700+00:00",
+          "seconds": 327.9,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_product_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 52.23,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_search_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 92.38,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_availability_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 79.7,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_store_locations_sitemap",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 30.98,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_store_locations",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 68.61,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 360,
+          "stop_on_first_failure": false,
+          "countries": {
+            "US": 5
+          },
+          "sessions_created": 5,
+          "error_codes": [
+            "HTTP_ERROR",
+            "TIMEOUT"
+          ],
+          "target_or_api_http_statuses": [
+            "435"
+          ],
+          "exception_types": [
+            "ScrapeError",
+            "ValueError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "threads-scraper",
+      "status": "partial",
+      "latest_passed": 1,
+      "latest_executed": 2,
+      "attempts": [
+        {
+          "site": "threads",
+          "started": "2026-11-11T06:56:29.422460+00:00",
+          "seconds": 147.4,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_thread_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 62.9,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_user_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 22.25,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 3
+          },
+          "sessions_created": 3,
+          "error_codes": [
+            "ERR_TUNNEL_CONNECTION_FAILED"
+          ],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "tiktok-scraper",
+      "status": "partial",
+      "latest_passed": 1,
+      "latest_executed": 2,
+      "attempts": [
+        {
+          "site": "tiktok",
+          "started": "2026-11-11T07:12:00.178530+00:00",
+          "seconds": 80.9,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_comment_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 55.93,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_post_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 6.16,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "AU": 2
+          },
+          "sessions_created": 2,
+          "error_codes": [],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "tripadvisor-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "tripadvisor",
+          "started": "2026-11-11T06:58:56.814379+00:00",
+          "seconds": 35.4,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_hotel_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 19.77,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [
+            "HTTP_ERROR"
+          ],
+          "target_or_api_http_statuses": [
+            "403"
+          ],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "trustpilot-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 3,
+      "attempts": [
+        {
+          "site": "trustpilot",
+          "started": "2026-11-11T06:26:42.155965+00:00",
+          "seconds": 80.7,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_company_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 10.99,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_search_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 12.28,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_review_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 48.07,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 360,
+          "stop_on_first_failure": false,
+          "countries": {
+            "US": 3
+          },
+          "sessions_created": 3,
+          "error_codes": [
+            "HTTP_ERROR"
+          ],
+          "target_or_api_http_statuses": [
+            "403"
+          ],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "walmart-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 2,
+      "attempts": [
+        {
+          "site": "walmart",
+          "started": "2026-11-11T06:18:49.285720+00:00",
+          "seconds": 178.9,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_product_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 132.73,
+              "live": true
+            },
+            {
+              "type": "case",
+              "nodeid": "test.py::test_search_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 27.84,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 360,
+          "stop_on_first_failure": false,
+          "countries": {
+            "US": 2
+          },
+          "sessions_created": 2,
+          "error_codes": [
+            "ERR_TUNNEL_CONNECTION_FAILED",
+            "TIMEOUT"
+          ],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "wellfound-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "wellfound",
+          "started": "2026-11-11T07:13:21.109123+00:00",
+          "seconds": 15.6,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_company_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 7.79,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [
+            "HTTP_ERROR"
+          ],
+          "target_or_api_http_statuses": [
+            "403"
+          ],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "yellowpages-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "yellowpages",
+          "started": "2026-11-11T06:59:32.245482+00:00",
+          "seconds": 65.6,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_page_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 60.49,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 3
+          },
+          "sessions_created": 3,
+          "error_codes": [
+            "HTTP_ERROR"
+          ],
+          "target_or_api_http_statuses": [
+            "403"
+          ],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "yelp-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "yelp",
+          "started": "2026-11-11T07:13:36.677164+00:00",
+          "seconds": 20.4,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_review_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 14.47,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 2
+          },
+          "sessions_created": 2,
+          "error_codes": [
+            "HTTP_ERROR"
+          ],
+          "target_or_api_http_statuses": [
+            "403"
+          ],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "youtube-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "youtube",
+          "started": "2026-11-11T07:00:37.866017+00:00",
+          "seconds": 149.2,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_video_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 125.46,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [
+            "TIMEOUT"
+          ],
+          "target_or_api_http_statuses": [],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "zoominfo-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "zoominfo",
+          "started": "2026-11-11T07:13:57.062811+00:00",
+          "seconds": 10.1,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_company_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 4.83,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "CA": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [
+            "HTTP_ERROR"
+          ],
+          "target_or_api_http_statuses": [
+            "403"
+          ],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    },
+    {
+      "site": "zoopla-scraper",
+      "status": "partial",
+      "latest_passed": 1,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "zoopla",
+          "started": "2026-11-11T07:03:07.088422+00:00",
+          "seconds": 189.3,
+          "exit_code": 2,
+          "timeout": true,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_search_scraping",
+              "phase": "call",
+              "outcome": "passed",
+              "seconds": 76.26,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "GB": 4
+          },
+          "sessions_created": 4,
+          "error_codes": [],
+          "target_or_api_http_statuses": [],
+          "exception_types": []
+        }
+      ]
+    },
+    {
+      "site": "zoro-scraper",
+      "status": "failed",
+      "latest_passed": 0,
+      "latest_executed": 1,
+      "attempts": [
+        {
+          "site": "zoro",
+          "started": "2026-11-11T07:14:07.115329+00:00",
+          "seconds": 10.0,
+          "exit_code": 1,
+          "timeout": false,
+          "cases": [
+            {
+              "type": "case",
+              "nodeid": "test.py::test_product_scraping",
+              "phase": "call",
+              "outcome": "failed",
+              "seconds": 5.5,
+              "live": true
+            }
+          ],
+          "deadline_seconds": 180,
+          "stop_on_first_failure": true,
+          "countries": {
+            "US": 1
+          },
+          "sessions_created": 1,
+          "error_codes": [
+            "HTTP_ERROR"
+          ],
+          "target_or_api_http_statuses": [
+            "403"
+          ],
+          "exception_types": [
+            "ScrapeError"
+          ]
+        }
+      ]
+    }
+  ],
+  "additional_checks": [
+    {
+      "trigger": "injected CDP tunnel failure",
+      "transport": "real AdsCrawl HTML API",
+      "country": "US",
+      "appId": "com.whatsapp",
+      "title": "WhatsApp",
+      "developer": "WhatsApp LLC",
+      "ratings": 247519716
+    },
+    {
+      "workflow": "Booking.com Garden Court Hotel details and pricing",
+      "country": "US",
+      "calendar_days": 61,
+      "result": "first hotel passed its field validation before the later hotel sample timed out; not a full-suite pass"
+    }
+  ],
+  "schema_version": 1,
+  "scope": {
+    "selection": "55 failed and 11 partially passing sites from the 2026-10-27 audit",
+    "selected_sites": 66,
+    "previously_passed_sites_not_retested": 15,
+    "dhl": "The old sample returned empty before the user requested skipping further DHL verification."
+  },
+  "environment": {
+    "python": "3.12.14",
+    "adscrawl_sdk": "0.1.0",
+    "default_country": "US",
+    "concurrency_per_process": 1,
+    "max_parallel_site_processes": 2,
+    "pytest_reruns": 0
+  },
+  "methodology": {
+    "broad_queue": "50 sites: 180-second site budget and stop on first failure",
+    "initial_and_targeted_retests": "360-second site budget; no stop-on-first-failure",
+    "deadline_grace_seconds": 45,
+    "cases": "Only finished live cases count; unfinished cases and offline-only URL/parser tests do not count as live passes. Each case uses its latest completed result; full pass requires a clean latest full-suite exit.",
+    "revisions": "Attempts span diagnosis and source edits; fixes_revision identifies the final repaired source, not an immutable revision used for every earlier attempt.",
+    "secrets": "API key, CDP URLs, session IDs, cookies and raw debug output are excluded."
+  },
+  "offline_validation": {
+    "new_regression_tests_passed": 18,
+    "ci_python_versions": [
+      "3.10",
+      "3.12",
+      "3.13"
+    ],
+    "ci_checks": [
+      "offline tests",
+      "81-site catalog check",
+      "package build"
+    ],
+    "ci_url": "https://github.com/AdsCrawl/adscrawl-scrapers/actions/runs/42977694198",
+    "ci_result": "success"
+  },
+  "session_cleanup": {
+    "checked_at": "2026-11-11T07:15:54.956351+00:00",
+    "tracked_sessions": 186,
+    "owned_sessions_remaining": 0,
+    "sessions_closed_at_final_cleanup": 0,
+    "account_sessions_listed": 0
+  },
+  "attempt_count": 78,
+  "completed_at": "2026-11-11T07:15:54.956351+00:00"
+}

@@ -62,6 +62,15 @@ PY
 
 ## 验证状态
 
+**最新失败项复测：2026-11-11。** [逐站报告](docs/live-verification/2026-11-11.md)和
+[可供 AI 读取的 JSON](docs/live-verification/2026-11-11.json)记录了历史失败、部分通过站点的
+修复、已完成用例和剩余访问限制。DHL 按用户要求不再继续测试。
+解析器修复或离线 CI 通过，不等于所有在线功能都通过。
+本轮 66 站：**4 个整套通过、15 个部分通过、43 个未通过、3 个限时内未完成，DHL 跳过**。
+此前整套通过的 15 个站点不在本轮复测范围内。
+
+以下为更早的验证记录：
+
 > 2026-11-03（Asia/Shanghai）用 PR #1 的验收脚本复测，默认美国线路，每轮不重试（`--reruns=0`），并发为 1。离线测试 47/47、目录检查 81/81 通过。在线烟雾测试通过（渲染后的 HTML、JSON POST、会话清理）。在线套件通过的是 **bing**（第二次 2/2，走代码里写死的英国线路）、**shopify**（5/5），以及提交 `3f7a7b4` 的 **chatgpt**（美国线路、未设置 `ADSCRAWL_CHATGPT_COUNTRY`，1/1，70.17 秒，退出码 0）。同一天更早的 ChatGPT 尝试没有通过：第一次复测 0/1（超时或空回答）；`ddd17ac` 先是 `ERR_TUNNEL_CONNECTION_FAILED` 再是 `ACTION_FAILED`；`ef4cc2b` 返回了导航和免责声明。其余站点本轮没有重测。上一次全站审计仍是 [2026-10-27 报告](docs/live-verification/2026-10-27.md)（15 个整套通过、11 个部分通过、55 个未通过）。这些结果只说明当天目标网站的表现。
 
 `scripts/live_test.py` 在 `ADSCRAWL_DEFAULT_COUNTRY` 为空时设为 `US`。站点自己的 `countryCode` 会覆盖该默认值。Bing 的 `BASE_CONFIG` 写死 `countryCode` 为 `GB`，所以两次 Bing 都走英国线路，而不是这次的美国默认值。第一次 Bing 为 1 通过 / 1 失败（分页导航错误），第二次为 2/2。
