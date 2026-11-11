@@ -30,8 +30,13 @@ Run the credential-free repository checks with `python -m pytest tests` from the
 To run this site's **live** tests (uses AdsCrawl credits):
 
 ```bash
+export DHL_TRACKING_NUMBER="your_current_tracking_number"
 python -m pytest dhl-scraper/test.py -v
 ```
+
+The historical sample `LBAA19526` returned no shipment on November 11, 2026.
+Use a current number you are authorized to test. Empty tracking results still
+fail acceptance; changing the sample does not relax the event checks.
 
 This site has been migrated at source level. Live website behavior is **not yet
 verified** with AdsCrawl. Websites can change selectors, require sign-in, or

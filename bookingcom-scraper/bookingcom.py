@@ -358,6 +358,7 @@ async def scrape_search(
                 "BROWSER_ERROR", "TIMEOUT", "SELECTOR_NOT_FOUND", "ERR_TUNNEL_CONNECTION_FAILED",
             }:
                 raise
+            await CLIENT.close_session(session)
             log.warning(f"booking search page was not usable ({error}); retrying once")
     else:
         raise last_error or Exception("booking.com search page was not usable")
@@ -516,6 +517,9 @@ async def scrape_hotel(url: str, checkin: str, price_n_days=61) -> Hotel:
                 "ERR_HTTP2_PROTOCOL_ERROR", "ERR_TUNNEL_CONNECTION_FAILED", "ERR_CONNECTION_CLOSED",
             } or title.lower().startswith("loading")
             if attempt == 0 and retriable:
+                # A failed named session still occupies the pool. Release it
+                # before opening the replacement, including at concurrency=1.
+                await CLIENT.close_session(session)
                 log.warning(f"booking hotel page failed ({error}); retrying once")
                 continue
             if title.lower().startswith("loading"):

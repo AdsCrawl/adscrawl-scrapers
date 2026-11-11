@@ -52,7 +52,7 @@ MODULE_WITH_STORE = "ProductDetailWebDatasourceWithStore"
 MODULE_REVIEWS = "ProductDetailReviewsAndQuestions"
 
 
-def _extract_deferred_modules(response: Response) -> Dict[str, Dict]:
+def _extract_deferred_modules(response: Response, required=()) -> Dict[str, Dict]:
     """collect deferred_enrichment module payloads from captured XHR calls"""
     modules = {}
     errors = []
@@ -74,7 +74,7 @@ def _extract_deferred_modules(response: Response) -> Dict[str, Dict]:
         for module in data.get("modules", []):
             if module_type := module.get("module_type"):
                 modules[module_type] = module.get("module_data", {})
-    if not modules and errors:
+    if errors and (not modules or any(name not in modules for name in required)):
         raise ScrapeError(f'Target data API returned HTTP {errors[-1]}', response=response, code='HTTP_ERROR')
     return modules
 
@@ -130,7 +130,7 @@ def _parse_price_display(item: Dict) -> Optional[Price]:
 
 def parse_product(response: Response) -> Product:
     """parse product data from deferred_enrichment XHR modules captured on the PDP"""
-    modules = _extract_deferred_modules(response)
+    modules = _extract_deferred_modules(response, required=(MODULE_FULFILLMENT,))
     if MODULE_FULFILLMENT not in modules:
         raise ValueError(f"missing deferred_enrichment module: {MODULE_FULFILLMENT}")
     if MODULE_WITH_STORE not in modules and 'ProductDetailPrice' not in modules:

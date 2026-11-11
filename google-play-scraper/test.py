@@ -55,7 +55,8 @@ async def test_app_scraping():
     validator = Validator(app_schema, allow_unknown=True)
     for item in apps:
         validate_or_fail(item, validator)
-    assert len(apps) >= 1
+    assert {app["appId"] for app in apps} == {"com.whatsapp", "com.spotify.music"}
+    assert all(app["title"] and app["developer"] for app in apps)
 
 
 @pytest.mark.asyncio

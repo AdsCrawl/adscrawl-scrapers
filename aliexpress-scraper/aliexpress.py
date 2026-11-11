@@ -128,7 +128,9 @@ def _parse_count(text):
 
     if not text:
         return 0
-    multiplier = 1
+    multiplier = {"K": 1_000, "M": 1_000_000}.get(text[-1:].upper(), 1)
+    if multiplier != 1:
+        text = text[:-1]
     try:
         return int(float(text) * multiplier)
     except (ValueError, TypeError):
@@ -138,13 +140,17 @@ def _parse_count(text):
 def parse_product(result: Response) -> Product:
     """parse product HTML page for product data"""
     selector = result.selector
+    name = selector.xpath("//h1[@data-pl]/text()").get()
+    if not name or not name.strip():
+        raise ScrapeError("AliExpress product data is missing; the page is not a usable product listing",
+                          response=result, code="DATA_MISSING")
     reviews = selector.xpath("//a[contains(@class,'reviewer--reviews')]/text()").get()
     rate = selector.xpath("//div[contains(@class,'rating--wrap')]/div").getall()
     sold_count = selector.xpath("//a[contains(@class, 'reviewer--sliderItem')]//span[contains(text(), 'sold')]/text()").get()
     available_count = selector.xpath("//div[contains(@class,'quantity--info')]/div/span/text()").get()
 
     info = {
-        "name": selector.xpath("//h1[@data-pl]/text()").get(),
+        "name": name.strip(),
         "productId": int(result.url.split("item/")[-1].split(".")[0]),
         "link": result.url,
         "media": selector.xpath("//div[contains(@class,'slider--img')]/img/@src").getall(),
@@ -156,11 +162,10 @@ def parse_product(result: Response) -> Product:
     price = selector.xpath("//span[contains(@class,'price-default--current')]/text()").get()
     original_price = selector.xpath("//span[contains(@class,'price-default--original')]//text()").get()
     discount = selector.xpath("//span[contains(@class,'price--discount')]/text()").get()
-    discount = selector.xpath("//span[contains(@class,'price--discount')]/text()").get()
     pricing = {
         "priceCurrency": "USD $",
-        "price": float(price.split("$")[-1]) if price else None, # for US localization
-        "originalPrice": float(original_price.split("$")[-1]) if original_price else "No discount",
+        "price": float(price.split("$")[-1].replace(",", "")) if price else None, # for US localization
+        "originalPrice": float(original_price.split("$")[-1].replace(",", "")) if original_price else None,
         "discount": discount if discount else "No discount",
     }
     delivery = selector.xpath("(//div[@class='dynamic-shipping']//strong/text())[2]").get()
@@ -187,11 +192,13 @@ def parse_product(result: Response) -> Product:
 
 
 @managed
-async def scrape_product(url: str) -> List[Product]:
+async def scrape_product(url: str) -> Product:
     """scrape aliexpress products by id"""
     log.info("scraping product: {}", url)
     result = await CLIENT.fetch(Request(
-        url, **BASE_CONFIG, render=True, autoScroll=True
+        url, **BASE_CONFIG, render=True, autoScroll=True, timeoutMs=45_000,
+        actions=[{"type": "waitForSelector", "selector": "h1[data-pl]", "state": "attached",
+                  "timeoutMs": 12_000, "optional": True}],
     ))
     data = parse_product(result)
     log.success("successfully scraped product: {}", url)

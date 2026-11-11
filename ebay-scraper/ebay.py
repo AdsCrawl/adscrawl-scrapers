@@ -55,7 +55,7 @@ def _challenge(response: Response) -> bool:
     title = " ".join(response.selector.css("title::text").getall()).strip().lower()
     if any(phrase in title for phrase in (
         "access denied", "just a moment", "attention required",
-        "pardon our interruption", "robot check",
+        "pardon our interruption", "robot check", "error page | ebay",
     )):
         return True
     url = (response.url or "").lower()
@@ -77,8 +77,9 @@ def _usable(response: Response) -> bool:
         return False
     if response.status_code < 400:
         return True
-    title = " ".join(response.selector.css("title::text").getall()).strip()
-    return bool(title) and len(response.content or "") > 1500
+    # The current generic 403 error page is 1.9 KB and has a title. Size alone
+    # misclassified it as a solved challenge and the search parser crashed.
+    return bool(response.selector.css(".x-item-title, ul.srp-results, .srp-controls__count-heading"))
 
 
 async def _navigate(session: str, url: str, referer: str = None, **extra) -> Response:
@@ -377,7 +378,10 @@ async def scrape_search(url: str, max_pages: Optional[int] = None) -> List[Dict]
     results = parse_search(first_page)
     # find total amount of results for concurrent pagination
     total_results = first_page.selector.css(".srp-controls__count-heading>span::text").get()
-    total_results = int(total_results.replace(",", "").replace(".", ""))
+    count = re.search(r"[\d][\d,.]*", total_results or "")
+    if not count:
+        raise ScrapeError("eBay search result count is missing", response=first_page, code="DATA_MISSING")
+    total_results = int(re.sub(r"[,.]", "", count.group()))
     items_per_page = int(_get_url_parameter(first_page.url, "_ipg", default=60))
     total_pages = math.ceil(total_results / items_per_page)
     if max_pages and total_pages > max_pages:

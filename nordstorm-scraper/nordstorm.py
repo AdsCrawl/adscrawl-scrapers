@@ -9,21 +9,26 @@ from adscrawl_scrapers import managed
 
 import os
 import json
+import re
 import jmespath
 from typing import Dict, List
 from urllib.parse import urlencode, parse_qs, urlparse
 from nested_lookup import nested_lookup
 from loguru import logger as log
-from adscrawl_scrapers import Request, ScraperClient, Response
+from adscrawl_scrapers import Request, ScraperClient, Response, ScrapeError
 
 CLIENT = ScraperClient()
 
 BASE_CONFIG = {
-    # bypass nordstorm.com web scraping blocking
     'countryCode': "US",
     'render': True,
-    'waitForSelector': 'script:has-text("__INITIAL_CONFIG__")',
-
+    'timeoutMs': 45_000,
+    # The verification document never contains the product configuration.
+    # Give hydration a bounded wait, then inspect the document we received.
+    'actions': [{
+        'type': 'waitForSelector', 'selector': 'script:has-text("__INITIAL_CONFIG__")',
+        'state': 'attached', 'timeoutMs': 12_000, 'optional': True,
+    }],
 }
 
 
@@ -89,10 +94,16 @@ def find_hidden_data(result: Response) -> dict:
     # use XPath to find script tag with data
     data = result.selector.xpath("//script[contains(.,'__INITIAL_CONFIG__')]/text()").get()
     if not data:
-        raise ValueError('Nordstrom page configuration is missing; the page may still be loading or require verification')
-    data = data.split("=", 1)[-1].strip().strip(";")
-    data = json.loads(data)
-    return data
+        blocked = 'istlWasHere' in result.content
+        raise ScrapeError(
+            'Nordstrom returned a verification document' if blocked else 'Nordstrom page configuration is missing',
+            response=result, code='TARGET_BLOCKED' if blocked else 'DATA_MISSING',
+        )
+    assignment = re.search(r'\b__INITIAL_CONFIG__\s*=\s*', data)
+    if not assignment:
+        raise ScrapeError('Nordstrom configuration assignment is missing', response=result, code='DATA_MISSING')
+    config, _ = json.JSONDecoder().raw_decode(data, assignment.end())
+    return config
 
 
 @managed

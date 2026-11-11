@@ -66,7 +66,7 @@ async def test_product_scraping():
             "schema": {
                 "priceCurrency": {"type": "string"},
                 "price": {"type": "float"},
-                "originalPrice": {"type": "float"},
+                "originalPrice": {"type": "float", "nullable": True},
                 "discount": {"type": "string"},
             }
         },

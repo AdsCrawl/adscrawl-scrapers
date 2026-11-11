@@ -105,13 +105,19 @@ def build_search_url(
     locus_type: str = "city",
 ) -> str:
     params = {
-        "checkin": checkin,
-        "checkout": checkout,
+        "checkin": datetime.strptime(checkin.replace("-", ""), "%Y%m%d").strftime("%Y%m%d"),
+        "checkout": datetime.strptime(checkout.replace("-", ""), "%Y%m%d").strftime("%Y%m%d"),
         "roomString": f"{rooms}-{adults}-{children}",
         "searchText": search_text,
         "locusId": locus_id,
         "locusType": locus_type,
+        "cc": "IN",
+        "_uCurrency": "INR",
     }
+    # The current listing app initializes destination._id from cityCode.
+    # locusId alone leaves it empty and no hotel listing API request starts.
+    if locus_type == "city":
+        params["cityCode"] = locus_id
     return "https://www.goibibo.com/hotels/hotel-listing/?" + urlencode(params)
 
 

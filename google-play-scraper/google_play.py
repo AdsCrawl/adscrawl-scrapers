@@ -14,6 +14,7 @@ from html import unescape
 from typing import Any, Dict, List, Optional, Tuple
 from urllib.parse import parse_qs, quote, urlencode, urlparse
 from loguru import logger as log
+from adscrawl import AsyncAdsCrawl, AdsCrawlAPIError
 from adscrawl_scrapers import Request, ScraperClient, Response, ScrapeError
 
 CLIENT = ScraperClient()
@@ -41,6 +42,27 @@ async def _fetch(request: Request) -> Response:
     except ScrapeError as error:
         if error.code not in _TRANSIENT:
             raise
+        if request.method == "GET" and not request.binary:
+            # The US CDP navigation can fail at the proxy tunnel while /html
+            # still returns the full AF_initDataCallback document. Use that
+            # different transport once; replaying the same navigation failed
+            # twice during the 2026-11-11 retest.
+            log.warning("reading {} through AdsCrawl HTML after {}", request.url, error.code)
+            timeout = min(request.timeoutMs, 45_000)
+            params = {
+                **request.browser_settings(),
+                "url": request.url, "contentMode": "html",
+                "waitUntil": "domcontentloaded", "timeoutMs": timeout,
+                "userAgentMode": "random", "userAgentOs": "windows",
+            }
+            try:
+                html = await AsyncAdsCrawl(timeout_ms=timeout + 15_000).html(params)
+            except AdsCrawlAPIError as failure:
+                raise ScrapeError(
+                    f"AdsCrawl HTML API HTTP {failure.status}", code="API_ERROR"
+                ) from None
+            # /html provides a document, not the target's response metadata.
+            return Response(request.url, html, request_url=request.url, status_code=0)
         log.warning(f"retrying {request.url} once after {error.code}")
         return await CLIENT.fetch(request)
 
@@ -90,6 +112,11 @@ def parse_app(response: Response) -> Dict:
     """parse app detail"""
     dataset = _parse_af_init_data(response.content)
     app = _nested_get(dataset, ["ds:5", 1, 2]) or []
+    if not _nested_get(app, [0, 0]):
+        raise ScrapeError(
+            "Google Play app data is missing; the page may be unavailable or require verification",
+            response=response, code="DATA_MISSING",
+        )
     price = _nested_get(app, [57, 0, 0, 0, 0, 1, 0, 0]) or 0
     description = _nested_get(app, [12, 0, 0, 1]) or _nested_get(app, [72, 0, 1])
     histogram = _nested_get(app, [51, 1]) or []
@@ -227,13 +254,7 @@ async def scrape_apps(app_ids: List[str], lang: str = "en", country: str = "us")
     apps = []
     for request in to_scrape:
         response = await _fetch(request)
-        if isinstance(response, ScrapeError):
-            log.error("failed to scrape app: {}", response.error)
-            continue
-        try:
-            apps.append(parse_app(response))
-        except Exception as e:
-            log.error("failed to parse app: {}", e)
+        apps.append(parse_app(response))
     log.success("scraped {} apps", len(apps))
     return apps
 
