@@ -155,7 +155,7 @@ def parse_product(result: Response) -> Product:
         "link": result.url,
         "media": selector.xpath("//div[contains(@class,'slider--img')]/img/@src").getall(),
         "rate": len(rate) if rate else None,
-        "reviews": int(reviews.replace(" Reviews", "")) if reviews else None,
+        "reviews": _parse_count(reviews) if reviews else None,
         "soldCount": _parse_count(sold_count),
         "availableCount": _parse_count(available_count)
     }

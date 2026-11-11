@@ -12,6 +12,7 @@ import target
 import bookingcom
 import goibibo
 import aliexpress
+import redfin
 from urllib.parse import parse_qs, urlsplit
 from adscrawl_scrapers import Request, Response, ScrapeError
 
@@ -76,6 +77,16 @@ async def test_ebay_missing_result_count_reports_data_error(monkeypatch):
         await ebay.scrape_search("https://www.ebay.com/sch/i.html", max_pages=1)
 
 
+async def test_ebay_denied_homepage_does_not_prevent_an_accessible_item(monkeypatch):
+    page = Response("https://www.ebay.com/itm/123", '<h1 class="x-item-title">Product</h1>')
+    navigate = AsyncMock(side_effect=[ScrapeError("HTTP 403", code="HTTP_ERROR"), page])
+    monkeypatch.setattr(ebay, "_navigate", navigate)
+    monkeypatch.setattr(ebay.CLIENT, "close_session", AsyncMock())
+    assert await ebay._fetch_document(page.url) is page
+    assert navigate.await_args_list[0].args[0] == navigate.await_args_list[1].args[0]
+    assert navigate.await_args_list[1].args[1] == page.url
+
+
 def test_target_preserves_block_status_when_only_pricing_loaded():
     page = Response("https://www.target.com/p/example", network=[
         {"url": "https://www.target.com/deferred_enrichment/modules", "response": {
@@ -132,7 +143,17 @@ def test_aliexpress_prices_and_abbreviated_counts_remain_numeric():
     product = aliexpress.parse_product(Response("https://www.aliexpress.us/item/123.html", '''
         <h1 data-pl>Example product</h1><span class="price-default--current">US $1,299.50</span>
         <a class="reviewer--sliderItem"><span>100K+ sold</span></a>
+        <a class="reviewer--reviews">1,234 Reviews</a>
     '''))
     assert product["info"]["soldCount"] == 100_000
+    assert product["info"]["reviews"] == 1234
     assert product["pricing"]["price"] == 1299.50 and product["pricing"]["originalPrice"] is None
     assert aliexpress._parse_count("1.2M sold") == 1_200_000
+
+
+async def test_redfin_detail_api_preserves_access_errors(monkeypatch):
+    failure = ScrapeError("Target returned HTTP 403", code="HTTP_ERROR")
+    monkeypatch.setattr(redfin, "_stingray_get", AsyncMock(side_effect=failure))
+    with pytest.raises(ScrapeError) as caught:
+        await redfin._property_from_apis("https://www.redfin.com/WA/Seattle/example/home/123")
+    assert caught.value is failure

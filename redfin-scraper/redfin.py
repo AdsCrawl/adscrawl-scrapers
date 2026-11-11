@@ -304,6 +304,8 @@ async def _property_from_apis(url: str, session: Optional[str] = None) -> Respon
             break
         last_error = ValueError(f"aboveTheFold had no address for {api_url}")
     if not chosen or above_body is None:
+        if isinstance(last_error, ScrapeError):
+            raise last_error
         raise ValueError(f"redfin.com aboveTheFold had no property details for {url}") from last_error
 
     network = [{

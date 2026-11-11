@@ -71,7 +71,7 @@ def _usable(response: Response) -> bool:
     """A solved interstitial keeps the original 403 on the navigation response.
 
     runtime records that status and does not update it when the document is
-    rewritten. A large page with a normal title is the storefront.
+    rewritten. Require storefront elements before accepting that response.
     """
     if _challenge(response):
         return False
@@ -147,7 +147,14 @@ async def _fetch_document(url: str, **extra) -> Response:
     for attempt in range(2):
         session = f"ebay-{uuid.uuid4().hex}"
         try:
-            await _navigate(session, _HOME)
+            try:
+                await _navigate(session, _HOME)
+            except ScrapeError as warmup:
+                if warmup.code != "HTTP_ERROR":
+                    raise
+                # A denied homepage does not imply that the item/search URL
+                # is denied. Keep the browser, but validate the target itself.
+                log.warning("eBay homepage warm-up was denied; checking the requested document")
             return await _navigate(session, url, referer=_HOME, **extra)
         except ScrapeError as error:
             last = error
