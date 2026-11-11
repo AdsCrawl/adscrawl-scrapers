@@ -13,6 +13,8 @@ import bookingcom
 import goibibo
 import aliexpress
 import redfin
+import google
+import google_jobs
 from urllib.parse import parse_qs, urlsplit
 from adscrawl_scrapers import Request, Response, ScrapeError
 
@@ -157,3 +159,22 @@ async def test_redfin_detail_api_preserves_access_errors(monkeypatch):
     with pytest.raises(ScrapeError) as caught:
         await redfin._property_from_apis("https://www.redfin.com/WA/Seattle/example/home/123")
     assert caught.value is failure
+
+
+@pytest.mark.parametrize("parse", [google.parse_serp, google_jobs.parse_job_cards])
+def test_google_verification_redirect_is_not_an_empty_search(parse):
+    page = Response("https://www.google.com/sorry/index", "<form id='captcha-form'></form>", status_code=200)
+    with pytest.raises(ScrapeError) as caught:
+        parse(page)
+    assert caught.value.code == "TARGET_BLOCKED" and caught.value.response is page
+
+
+async def test_google_blocked_pagination_cannot_return_partial_success(monkeypatch):
+    valid = Response("https://www.google.com/search?q=example", "<h1>Search Results</h1>")
+    blocked = Response("https://www.google.com/sorry/index", "<form id='captcha-form'></form>")
+    async def pages(_):
+        yield valid
+        yield blocked
+    monkeypatch.setattr(google.CLIENT, "fetch_many", pages)
+    with pytest.raises(ScrapeError, match="TARGET_BLOCKED"):
+        await google.scrape_serp("example", max_pages=2, resolve_goto_urls=False)

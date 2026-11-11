@@ -11,7 +11,8 @@ from datetime import datetime
 import os
 from typing import List, Optional, TypedDict
 import re
-from adscrawl_scrapers import Response, Request, ScraperClient
+from urllib.parse import urlparse
+from adscrawl_scrapers import Response, Request, ScraperClient, ScrapeError
 
 client = ScraperClient()
 
@@ -175,6 +176,8 @@ def _parse_job_card(card) -> Optional[JobResult]:
 
 
 def parse_job_cards(response: Response) -> List[JobResult]:
+    if urlparse(response.url).path.startswith("/sorry/") or response.selector.css("form#captcha-form"):
+        raise ScrapeError("Google returned a verification page instead of job results", code="TARGET_BLOCKED", response=response)
     jobs: List[JobResult] = []
     for card in response.selector.css(".EimVGf"):
         if job := _parse_job_card(card):

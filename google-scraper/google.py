@@ -222,6 +222,8 @@ def parse_serp(response: Response) -> List[Dict]:
     """parse search results from google search page"""
     results = []
     selector = response.selector
+    if urlparse(response.url).path.startswith("/sorry/") or selector.css("form#captcha-form"):
+        raise ScrapeError("Google returned a verification page instead of search results", code="TARGET_BLOCKED", response=response)
     has_data = selector.xpath("//h1[contains(text(),'Search Results')]").get()
     if not has_data:
         raise NoResults("No search results found")
@@ -342,11 +344,8 @@ async def scrape_serp(query: str, max_pages: int = None, resolve_goto_urls: bool
         try:
             data = parse_serp(response)
             results.extend(data)
-        except NoResults as e:  # catch any exception
-            log.warning(f"Encouterned search page without results")
-            continue
-        except Exception as e:
-            log.error(f"Error occured: {e}")
+        except NoResults:
+            log.warning("Encountered a search page without results")
             continue
     log.success(f"scraped {len(results)} SERP results of the query: {query}")
     if resolve_goto_urls:
